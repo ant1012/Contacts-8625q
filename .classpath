@@ -4,8 +4,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/android-support-v13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/com.android.location.provider_intermediates.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/com.android.vcard_intermediates.jar"/>
-	<classpathentry kind="lib" path="E:/Contacts_qrd/lib/android-support-v4.jar"/>
-	<classpathentry kind="lib" path="E:/Contacts_qrd/lib/Phone_intermediates.jar"/>
+	<classpathentry kind="lib" path="lib/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="lib/Phone_intermediates.jar"/>
 	<classpathentry kind="lib" path="lib/ext_intermediates.jar"/>
 	<classpathentry kind="lib" path="lib/framework_intermediates.jar"/>
 	<classpathentry kind="lib" path="lib/core_intermediates.jar"/>
