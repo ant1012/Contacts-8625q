@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract.Intents;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -80,6 +81,7 @@ public class ContactEditorAccountsChangedActivity extends Activity {
         final List<AccountWithDataSet> accounts = AccountTypeManager.getInstance(this).
                 getAccounts(true);
         final int numAccounts = accounts.size();
+        Log.i("numAccounts",""+numAccounts);
         if (numAccounts < 0) {
             throw new IllegalStateException("Cannot have a negative number of accounts");
         }
@@ -98,7 +100,9 @@ public class ContactEditorAccountsChangedActivity extends Activity {
 
             final ListView accountListView = (ListView) findViewById(R.id.account_list);
             mAccountListAdapter = new AccountsListAdapter(this,
-                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE);
+                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE);//AccountListFilter.ACCOUNTS_CONTACT_WRITABLE
+//            Log.i("AccountListFilter","AccountListFilter.ALL_ACCOUNTS ="+AccountListFilter.ALL_ACCOUNTS);
+//            Log.i("AccountListFilter","AccountListFilter.ACCOUNTS_CONTACT_WRITABLE ="+AccountListFilter.ACCOUNTS_CONTACT_WRITABLE);
             accountListView.setAdapter(mAccountListAdapter);
             accountListView.setOnItemClickListener(mAccountListItemClickListener);
         } else if (numAccounts == 1) {

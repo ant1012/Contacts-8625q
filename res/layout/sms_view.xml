@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sms_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/sms_title"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/sms_name"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="bottom|left"
+            android:textColor="#99CC00"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/sms_phone"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="top|left"
+            android:textColor="#99CC00"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/reply"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/reply"
+        android:textSize="20sp" />
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/reply"
+        android:layout_below="@+id/sms_title" >
+
+        <TextView
+            android:id="@+id/sms_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </ScrollView>
+
+</RelativeLayout>

@@ -116,6 +116,9 @@ public class ContactSaveService extends IntentService {
 
     public static final String ACTION_SET_RINGTONE = "setRingtone";
     public static final String EXTRA_CUSTOM_RINGTONE = "customRingtone";
+    
+    public static final String ACTION_SET_MSGRING = "setMsgRing";
+    public static final String EXTRA_CUSTOM_MSGRING = "customMsgRing";
 
     private static final HashSet<String> ALLOWED_DATA_COLUMNS = Sets.newHashSet(
         Data.MIMETYPE,
@@ -213,7 +216,10 @@ public class ContactSaveService extends IntentService {
         } else if (ACTION_SET_RINGTONE.equals(action)) {
             setRingtone(intent);
             CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
-        }
+        } else if (ACTION_SET_MSGRING.equals(action)) {
+            setMsgRing(intent);
+            CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
+        } 
     }
 
     /**
@@ -876,6 +882,7 @@ public class ContactSaveService extends IntentService {
 
     private void setRingtone(Intent intent) {
         Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+        Log.i("contactUri",""+contactUri);
         String value = intent.getStringExtra(EXTRA_CUSTOM_RINGTONE);
         if (contactUri == null) {
             Log.e(TAG, "Invalid arguments for setRingtone");
@@ -885,6 +892,30 @@ public class ContactSaveService extends IntentService {
         values.put(Contacts.CUSTOM_RINGTONE, value);
         getContentResolver().update(contactUri, values, null, null);
     }
+    
+    
+    public static Intent createSetMsgRing(Context context, Uri contactUri,
+            String value) {
+        Intent serviceIntent = new Intent(context, ContactSaveService.class);
+        serviceIntent.setAction(ContactSaveService.ACTION_SET_MSGRING);
+        serviceIntent.putExtra(ContactSaveService.EXTRA_CONTACT_URI, contactUri);
+        serviceIntent.putExtra(ContactSaveService.EXTRA_CUSTOM_MSGRING, value);
+
+        return serviceIntent;
+    }
+
+    private void setMsgRing(Intent intent) {
+        Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+        String value = intent.getStringExtra(EXTRA_CUSTOM_MSGRING);
+        if (contactUri == null) {
+            Log.e(TAG, "Invalid arguments for setMsgRing");
+            return;
+        }
+        ContentValues values = new ContentValues(1);
+        values.put(RawContacts.SOURCE_ID, value);
+        getContentResolver().update(contactUri, values, null, null);
+    }
+    
 
     /**
      * Creates an intent that sets the selected data item as super primary (default)

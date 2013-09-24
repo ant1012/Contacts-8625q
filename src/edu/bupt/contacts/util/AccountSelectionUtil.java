@@ -20,6 +20,7 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
+import edu.bupt.contacts.msim.MultiSimConfig;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -158,7 +159,7 @@ public class AccountSelectionUtil {
     public static void doImport(Context context, int resId, AccountWithDataSet account) {
         switch (resId) {
             case R.string.manage_sim_contacts: {
-                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                if (MultiSimConfig.isMultiSimEnabled()) {
                     SimSelectedListener simSelListner = new SimSelectedListener(context, account);
                     displaySelectSimDialog(context, simSelListner);
                 } else {

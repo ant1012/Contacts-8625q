@@ -28,6 +28,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.Groups;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,51 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         return position;
     }
 
+//    @Override
+//    public GroupListItem getItem(int position) {
+//        if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
+//            return null;
+//        }
+//        String accountName = mCursor.getString(GroupListLoader.ACCOUNT_NAME);
+//        String accountType = mCursor.getString(GroupListLoader.ACCOUNT_TYPE);
+//        String dataSet = null;
+//        long groupId = 0;
+//        String title = null;
+//        int memberCount = 0;
+//        String previousGroupAccountName;
+//        String previousGroupAccountType;
+//        String previousGroupDataSet;
+//        boolean isFirstGroupInAccount = true;
+//        if("PHONE".equals(accountName) && "com.android.localphone".equals(accountType)){
+//            dataSet = mCursor.getString(GroupListLoader.DATA_SET);
+//            groupId = mCursor.getLong(GroupListLoader.GROUP_ID);
+//            title = mCursor.getString(GroupListLoader.TITLE);
+//            memberCount = mCursor.getInt(GroupListLoader.MEMBER_COUNT);
+//
+//            // Figure out if this is the first group for this account name / account type pair by
+//            // checking the previous entry. This is to determine whether or not we need to display an
+//            // account header in this item.
+//            int previousIndex = position - 1;
+////            boolean isFirstGroupInAccount = true;
+//            if (previousIndex >= 0 && mCursor.moveToPosition(previousIndex)) {
+//                previousGroupAccountName = mCursor.getString(GroupListLoader.ACCOUNT_NAME);
+//                previousGroupAccountType = mCursor.getString(GroupListLoader.ACCOUNT_TYPE);
+//                previousGroupDataSet = mCursor.getString(GroupListLoader.DATA_SET);
+//
+//                if (accountName.equals(previousGroupAccountName) &&
+//                        accountType.equals(previousGroupAccountType) &&
+//                        Objects.equal(dataSet, previousGroupDataSet)) {
+//                    isFirstGroupInAccount = false;
+//                }
+//            }
+//        }
+//
+//
+//        return new GroupListItem(accountName, accountType, dataSet, groupId, title,
+//                isFirstGroupInAccount, memberCount);
+//    }
+    
+    
     @Override
     public GroupListItem getItem(int position) {
         if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
@@ -123,6 +169,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         long groupId = mCursor.getLong(GroupListLoader.GROUP_ID);
         String title = mCursor.getString(GroupListLoader.TITLE);
         int memberCount = mCursor.getInt(GroupListLoader.MEMBER_COUNT);
+        Log.i("Account",accountName+";"+accountType);
 
         // Figure out if this is the first group for this account name / account type pair by
         // checking the previous entry. This is to determine whether or not we need to display an

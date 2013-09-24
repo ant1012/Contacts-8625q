@@ -27,6 +27,7 @@ import edu.bupt.contacts.list.ContactListItemView;
 import edu.bupt.contacts.list.OnPhoneNumberPickerActionListener;
 import edu.bupt.contacts.list.PhoneFavoriteFragment;
 import edu.bupt.contacts.list.PhoneNumberPickerFragment;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.Constants;
 import com.android.internal.telephony.ITelephony;
@@ -951,7 +952,8 @@ public class DialtactsActivity extends TransactionSafeActivity
         filterOptionMenuItem.setOnMenuItemClickListener(mFilterOptionsMenuItemClickListener);
         addContactOptionMenuItem.setIntent(
                 new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
-
+//        Intent intent = new Intent(this, ContactDetailActivity.class);
+//        startActivity(intent);
         return true;
     }
 
@@ -1248,7 +1250,7 @@ public class DialtactsActivity extends TransactionSafeActivity
     /** Returns an Intent to launch Call Settings screen */
     public static Intent getCallSettingsIntent() {
         final Intent intent = new Intent(Intent.ACTION_MAIN);
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             intent.setClassName(PHONE_PACKAGE, MSIM_CALL_SETTINGS_CLASS_NAME);
         } else {
             intent.setClassName(PHONE_PACKAGE, CALL_SETTINGS_CLASS_NAME);

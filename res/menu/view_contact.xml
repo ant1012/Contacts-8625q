@@ -19,7 +19,12 @@
         android:id="@+id/menu_edit"
         android:title="@string/menu_editContact"
         android:alphabeticShortcut="e" />
-
+    <item
+        android:id="@+id/menu_calendar"
+        android:title="@string/menu_calendar" />
+    <item
+        android:id="@+id/menu_history"
+        android:title="@string/menu_history" />
     <item
         android:id="@+id/menu_share"
         android:title="@string/menu_share"
@@ -32,7 +37,9 @@
     <item
         android:id="@+id/menu_set_ringtone"
         android:title="@string/menu_set_ring_tone" />
-
+    <item
+        android:id="@+id/menu_set_msgring"
+        android:title="@string/menu_set_msg_ring" />
     <item
         android:id="@+id/menu_send_to_voicemail"
         android:checkable="true"

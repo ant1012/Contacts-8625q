@@ -29,6 +29,7 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +107,7 @@ public class AccountWithDataSet extends Account {
 
         final Cursor c = context.getContentResolver().query(RAW_CONTACTS_URI_LIMIT_1,
                 ID_PROJECTION, selection, args, null);
+        Log.i("RAW_CONTACTS_URI_LIMIT_1",""+RAW_CONTACTS_URI_LIMIT_1);
         if (c == null) return false;
         try {
             return c.moveToFirst();

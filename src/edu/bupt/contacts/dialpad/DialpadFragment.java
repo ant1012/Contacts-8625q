@@ -75,6 +75,7 @@ import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.SpecialCharSequenceMgr;
 import edu.bupt.contacts.activities.DialtactsActivity;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.PhoneNumberFormatter;
 import edu.bupt.contacts.util.StopWatch;
@@ -1563,7 +1564,7 @@ public class DialpadFragment extends Fragment
         } else {
             try {
                 mSubscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
-                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                if (MultiSimConfig.isMultiSimEnabled()) {
                     return (MSimTelephonyManager.getDefault().
                             getVoiceMailNumber(mSubscription) != null);
                 } else {

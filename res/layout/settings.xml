@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/msg_block"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <CheckBox
+        android:id="@+id/block_stranger"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:button="@null"
+        android:background="@null"
+        android:drawableRight="@drawable/checkbox"
+        android:gravity="center_vertical"
+        android:text="@string/block_stranger"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/settings_introduction"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/settings_introduction"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/block_stranger"
+        android:cacheColorHint="#00000000"
+        android:drawSelectorOnTop="false"
+        android:scrollingCache="false" />
+
+</RelativeLayout>

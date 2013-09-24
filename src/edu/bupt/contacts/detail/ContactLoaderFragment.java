@@ -16,9 +16,16 @@
 
 package edu.bupt.contacts.detail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.bupt.contacts.ContactLoader;
 import edu.bupt.contacts.ContactSaveService;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.activities.MenuCalendar;
+import edu.bupt.contacts.activities.MenuHistory;
+import edu.bupt.contacts.activities.MultiSelectExport;
+import edu.bupt.contacts.activities.PersonInfo;
 import edu.bupt.contacts.activities.ContactDetailActivity.FragmentKeyListener;
 import edu.bupt.contacts.list.ShortcutIntentBuilder;
 import edu.bupt.contacts.list.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
@@ -30,14 +37,18 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -58,6 +69,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
     /** The launch code when picking a ringtone */
     private static final int REQUEST_CODE_PICK_RINGTONE = 1;
+    private static final int REQUEST_CODE_PICK_MSGRING = 2;
 
     /** This is the Intent action to install a shortcut in the launcher. */
     private static final String ACTION_INSTALL_SHORTCUT =
@@ -69,6 +81,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     private boolean mOptionsMenuCanCreateShortcut;
     private boolean mSendToVoicemailState;
     private String mCustomRingtone;
+    private String mCustomMsgRing;
 
     /**
      * This is a listener to the {@link ContactLoaderFragment} and will be notified when the
@@ -116,7 +129,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mLookupUri = savedInstanceState.getParcelable(KEY_CONTACT_URI);
+            mLookupUri = savedInstanceState.getParcelable(KEY_CONTACT_URI);           
         }
     }
 
@@ -240,9 +253,12 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         mOptionsMenuEditable = isContactEditable();
         mOptionsMenuShareable = isContactShareable();
         mOptionsMenuCanCreateShortcut = isContactCanCreateShortcut();
+        Log.i("mContactData","mContactData ="+mContactData);
         if (mContactData != null) {
             mSendToVoicemailState = mContactData.isSendToVoicemail();
             mCustomRingtone = mContactData.getCustomRingtone();
+            mCustomMsgRing = mContactData.getCustomMsgRing();
+            Log.i("mCustomMsgRing","mCustomMsgRing ="+mCustomMsgRing);
         }
 
         // Hide telephony-related settings (ringtone, send to voicemail)
@@ -253,8 +269,12 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             optionsSendToVoicemail.setVisible(mOptionsMenuOptions);
         }
         final MenuItem optionsRingtone = menu.findItem(R.id.menu_set_ringtone);
+        final MenuItem optionsMsgRing = menu.findItem(R.id.menu_set_msgring);
         if (optionsRingtone != null) {
             optionsRingtone.setVisible(mOptionsMenuOptions);
+        }
+        if (optionsMsgRing != null) {
+        	optionsMsgRing.setVisible(mOptionsMenuOptions);
         }
 
         final MenuItem editMenu = menu.findItem(R.id.menu_edit);
@@ -293,15 +313,46 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         switch (item.getItemId()) {
             case R.id.menu_edit: {
                 if (mListener != null) mListener.onEditRequested(mLookupUri);
+                
                 break;
             }
             case R.id.menu_delete: {
                 if (mListener != null) mListener.onDeleteRequested(mLookupUri);
                 return true;
             }
+            case R.id.menu_calendar: {
+            	Log.i("mLookupUri",""+mLookupUri);
+               	String check_calendar = ""+mLookupUri;
+            	String shortmsg[] = check_calendar.split("/");
+            	Log.i("update",""+shortmsg[6]);
+            	Bundle bundle = new Bundle(); 
+            	bundle.putString("check_calendar", shortmsg[6]);
+                Intent intent = new Intent(mContext,MenuCalendar.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.menu_history:{
+            	Log.i("mLookupUri",""+mLookupUri);
+               	String check_calendar = ""+mLookupUri;
+            	String shortmsg[] = check_calendar.split("/");
+            	Log.i("update",""+shortmsg[6]);
+            	Bundle bundle = new Bundle(); 
+            	bundle.putString("check_history", shortmsg[6]);
+                Intent intent = new Intent(mContext,MenuHistory.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            	return true;
+            }
             case R.id.menu_set_ringtone: {
                 if (mContactData == null) return false;
                 doPickRingtone();
+                return true;
+            }
+            case R.id.menu_set_msgring: {
+                if (mContactData == null) return false;
+                doPickMsgRing();
+//                msgUri();
                 return true;
             }
             case R.id.menu_share: {
@@ -345,9 +396,12 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                 createLauncherShortcutWithContact();
                 return true;
             }
+            
         }
         return false;
     }
+    
+
 
     /**
      * Creates a launcher shortcut with the current contact.
@@ -432,6 +486,83 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         // Launch!
         startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE);
     }
+    
+    private void doPickMsgRing() {
+
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        // Allow user to pick 'Default'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        // Show only ringtones
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        // Don't show 'Silent'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+
+//        Uri msgringUri;
+//        Log.i("mCustomMsgRing",""+mCustomMsgRing);
+//        if (mCustomMsgRing != null) {
+//        	
+//        	msgringUri = Uri.parse(mCustomMsgRing);
+//        } else {
+//            // Otherwise pick default ringtone Uri so that something is selected.
+//        	msgringUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//        }
+
+        // Put checkmark next to the current ringtone for this contact
+//        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, msgringUri);
+
+ 
+        // Launch!
+        startActivityForResult(intent, REQUEST_CODE_PICK_MSGRING);
+    }
+    
+    private void msgUri() {	
+        Uri msgringUri;
+        Log.i("mCustomMsgRing",""+mCustomMsgRing);
+        if (mCustomMsgRing != null) {
+        	
+        	msgringUri = Uri.parse(mCustomMsgRing);
+        } else {
+            // Otherwise pick default ringtone Uri so that something is selected.
+        	msgringUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
+       	String msg = ""+mLookupUri;
+    	String shortmsg[] = msg.split("/");
+    	Log.i("update",""+shortmsg[6]);
+    	ContentValues values = new ContentValues();  
+    	values.put(RawContacts.SOURCE_ID, ""+msgringUri);  //"content://media/internal/audio/media/31"
+    	mContext.getContentResolver().update(RawContacts.CONTENT_URI, values, "_id=" + shortmsg[6], null);
+//    	cur.moveToFirst();
+//    	while(cur.getCount() > cur.getPosition()) {   		
+//    		String raw_id = cur.getString(cur.getColumnIndex(RawContacts._ID));	
+//    		
+////    		if(id.equals("2176")){
+////    			 ;		//msg = cur.getString(cur.getColumnIndex(RawContacts.SOURCE_ID))
+////    		}
+//    		 
+//    		cur.moveToNext();
+//    	}
+//    	cur.close();
+//    	return msg;
+    }
+    
+    private String fetchMsgUri() {	    
+    	String msg = null;
+       	String msg0 = ""+mLookupUri;
+    	String shortmsg[] = msg0.split("/");
+    	Cursor cur = mContext.getContentResolver().query(RawContacts.CONTENT_URI, null, null, null, null);
+    	cur.moveToFirst();
+    	while(cur.getCount() > cur.getPosition()) {   		
+    		String raw_id = cur.getString(cur.getColumnIndex(RawContacts._ID));	
+    		
+    		if(raw_id.equals(shortmsg[6])){
+    			msg = cur.getString(cur.getColumnIndex(RawContacts.SOURCE_ID));		//
+    		}
+    		 
+    		cur.moveToNext();
+    	}
+    	cur.close();
+    	return msg;
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -442,11 +573,27 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         switch (requestCode) {
             case REQUEST_CODE_PICK_RINGTONE: {
                 Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                Log.i("pickedUri",""+pickedUri);
                 handleRingtonePicked(pickedUri);
+                break;
+            }
+            case REQUEST_CODE_PICK_MSGRING: {
+//            	msgUri();
+                Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);// fetchMsgUri()   
+                Log.i("RingtoneManager",pickedUri+";");
+                handleMsgRingPicked(pickedUri);
+               	String msg = ""+mLookupUri;
+            	String shortmsg[] = msg.split("/");
+            	Log.i("update",""+shortmsg[6]);
+            	ContentValues values = new ContentValues();  
+            	values.put(RawContacts.SOURCE_ID, ""+pickedUri);  //"content://media/internal/audio/media/31"
+            	mContext.getContentResolver().update(RawContacts.CONTENT_URI, values, "_id=" + shortmsg[6], null);
                 break;
             }
         }
     }
+    
+    
 
     private void handleRingtonePicked(Uri pickedUri) {
         if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
@@ -458,6 +605,18 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                 mContext, mLookupUri, mCustomRingtone);
         mContext.startService(intent);
     }
+    
+    private void handleMsgRingPicked(Uri pickedUri) {
+        if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
+        	mCustomMsgRing = null;
+        } else {
+        	mCustomMsgRing = pickedUri.toString();
+        }
+        Intent intent = ContactSaveService.createSetMsgRing(
+                mContext, mLookupUri, mCustomMsgRing);
+        mContext.startService(intent);
+    }
+    
 
     /** Toggles whether to load stream items. Just for debugging */
     public void toggleLoadStreamItems() {

@@ -1,0 +1,43 @@
+<resources>
+    <array name="block_content">
+        <item>@string/msg_and_phone</item>
+        <item>@string/msg</item>
+        <item>@string/phone</item>
+    </array>
+    
+    <array name="mode">
+        <item>@string/mode1</item>
+        <item>@string/mode2</item>
+        <item>@string/mode3</item>
+        <item>@string/mode4</item>
+    </array>
+    
+    <array name="ringtone">
+        <item>@string/ringtone1</item>
+        <item>@string/ringtone2</item>
+    </array>
+    
+    <array name="blacklist_item_click">
+        <item>编辑</item>
+        <item>删除</item>
+        <item>发送短信</item>
+        <item>呼叫</item>
+        <item>清空列表</item>
+    </array>
+    
+    <array name="sms_item_click">
+        <item>查看</item>
+        <item>删除</item>
+        <item>发送短信</item>
+        <item>呼叫</item>
+        <item>清空列表</item>
+    </array>
+    
+    <array name="call_item_click">
+        <item>删除</item>
+        <item>发送短信</item>
+        <item>呼叫</item>
+        <item>清空列表</item>
+    </array>
+    
+</resources>
