@@ -3786,7 +3786,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_header_color
+          @attr name edu.bupt.contacts:call_log_header_color
         */
         public static final int CallLog_call_log_header_color = 4;
         /**
@@ -3801,7 +3801,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_primary_background_color
+          @attr name edu.bupt.contacts:call_log_primary_background_color
         */
         public static final int CallLog_call_log_primary_background_color = 1;
         /**
@@ -3816,7 +3816,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_primary_text_color
+          @attr name edu.bupt.contacts:call_log_primary_text_color
         */
         public static final int CallLog_call_log_primary_text_color = 0;
         /**
@@ -3831,7 +3831,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_secondary_background_color
+          @attr name edu.bupt.contacts:call_log_secondary_background_color
         */
         public static final int CallLog_call_log_secondary_background_color = 3;
         /**
@@ -3846,7 +3846,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_secondary_text_color
+          @attr name edu.bupt.contacts:call_log_secondary_text_color
         */
         public static final int CallLog_call_log_secondary_text_color = 2;
         /** Attributes that can be used with a ContactBrowser.
@@ -3873,7 +3873,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:contact_browser_background
+          @attr name edu.bupt.contacts:contact_browser_background
         */
         public static final int ContactBrowser_contact_browser_background = 2;
         /**
@@ -3889,7 +3889,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:contact_browser_list_padding_left
+          @attr name edu.bupt.contacts:contact_browser_list_padding_left
         */
         public static final int ContactBrowser_contact_browser_list_padding_left = 0;
         /**
@@ -3905,7 +3905,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:contact_browser_list_padding_right
+          @attr name edu.bupt.contacts:contact_browser_list_padding_right
         */
         public static final int ContactBrowser_contact_browser_list_padding_right = 1;
         /** Attributes that can be used with a ContactListItemView.
@@ -3988,7 +3988,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:activated_background
+          @attr name edu.bupt.contacts:activated_background
         */
         public static final int ContactListItemView_activated_background = 2;
         /**
@@ -4003,7 +4003,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_contacts_count_text_color
+          @attr name edu.bupt.contacts:list_item_contacts_count_text_color
         */
         public static final int ContactListItemView_list_item_contacts_count_text_color = 23;
         /**
@@ -4019,7 +4019,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_contacts_count_text_size
+          @attr name edu.bupt.contacts:list_item_contacts_count_text_size
         */
         public static final int ContactListItemView_list_item_contacts_count_text_size = 25;
         /**
@@ -4033,7 +4033,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_data_width_weight
+          @attr name edu.bupt.contacts:list_item_data_width_weight
         */
         public static final int ContactListItemView_list_item_data_width_weight = 26;
         /**
@@ -4043,7 +4043,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:list_item_divider
+          @attr name edu.bupt.contacts:list_item_divider
         */
         public static final int ContactListItemView_list_item_divider = 4;
         /**
@@ -4059,7 +4059,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_gap_between_image_and_text
+          @attr name edu.bupt.contacts:list_item_gap_between_image_and_text
         */
         public static final int ContactListItemView_list_item_gap_between_image_and_text = 9;
         /**
@@ -4075,7 +4075,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_gap_between_label_and_data
+          @attr name edu.bupt.contacts:list_item_gap_between_label_and_data
         */
         public static final int ContactListItemView_list_item_gap_between_label_and_data = 10;
         /**
@@ -4091,7 +4091,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_height
+          @attr name edu.bupt.contacts:list_item_header_height
         */
         public static final int ContactListItemView_list_item_header_height = 20;
         /**
@@ -4106,7 +4106,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_text_color
+          @attr name edu.bupt.contacts:list_item_header_text_color
         */
         public static final int ContactListItemView_list_item_header_text_color = 18;
         /**
@@ -4122,7 +4122,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_text_indent
+          @attr name edu.bupt.contacts:list_item_header_text_indent
         */
         public static final int ContactListItemView_list_item_header_text_indent = 17;
         /**
@@ -4138,7 +4138,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_text_size
+          @attr name edu.bupt.contacts:list_item_header_text_size
         */
         public static final int ContactListItemView_list_item_header_text_size = 19;
         /**
@@ -4153,7 +4153,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_underline_color
+          @attr name edu.bupt.contacts:list_item_header_underline_color
         */
         public static final int ContactListItemView_list_item_header_underline_color = 22;
         /**
@@ -4169,7 +4169,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_header_underline_height
+          @attr name edu.bupt.contacts:list_item_header_underline_height
         */
         public static final int ContactListItemView_list_item_header_underline_height = 21;
         /**
@@ -4185,7 +4185,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_height
+          @attr name edu.bupt.contacts:list_item_height
         */
         public static final int ContactListItemView_list_item_height = 0;
         /**
@@ -4199,7 +4199,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_label_width_weight
+          @attr name edu.bupt.contacts:list_item_label_width_weight
         */
         public static final int ContactListItemView_list_item_label_width_weight = 27;
         /**
@@ -4215,7 +4215,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_padding_bottom
+          @attr name edu.bupt.contacts:list_item_padding_bottom
         */
         public static final int ContactListItemView_list_item_padding_bottom = 7;
         /**
@@ -4231,7 +4231,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_padding_left
+          @attr name edu.bupt.contacts:list_item_padding_left
         */
         public static final int ContactListItemView_list_item_padding_left = 8;
         /**
@@ -4247,7 +4247,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_padding_right
+          @attr name edu.bupt.contacts:list_item_padding_right
         */
         public static final int ContactListItemView_list_item_padding_right = 6;
         /**
@@ -4263,7 +4263,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_padding_top
+          @attr name edu.bupt.contacts:list_item_padding_top
         */
         public static final int ContactListItemView_list_item_padding_top = 5;
         /**
@@ -4279,7 +4279,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_photo_size
+          @attr name edu.bupt.contacts:list_item_photo_size
         */
         public static final int ContactListItemView_list_item_photo_size = 14;
         /**
@@ -4294,7 +4294,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_prefix_highlight_color
+          @attr name edu.bupt.contacts:list_item_prefix_highlight_color
         */
         public static final int ContactListItemView_list_item_prefix_highlight_color = 16;
         /**
@@ -4310,7 +4310,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_presence_icon_margin
+          @attr name edu.bupt.contacts:list_item_presence_icon_margin
         */
         public static final int ContactListItemView_list_item_presence_icon_margin = 12;
         /**
@@ -4326,7 +4326,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_presence_icon_size
+          @attr name edu.bupt.contacts:list_item_presence_icon_size
         */
         public static final int ContactListItemView_list_item_presence_icon_size = 13;
         /**
@@ -4342,7 +4342,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_profile_photo_size
+          @attr name edu.bupt.contacts:list_item_profile_photo_size
         */
         public static final int ContactListItemView_list_item_profile_photo_size = 15;
         /**
@@ -4358,7 +4358,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_text_indent
+          @attr name edu.bupt.contacts:list_item_text_indent
         */
         public static final int ContactListItemView_list_item_text_indent = 24;
         /**
@@ -4374,7 +4374,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_item_vertical_divider_margin
+          @attr name edu.bupt.contacts:list_item_vertical_divider_margin
         */
         public static final int ContactListItemView_list_item_vertical_divider_margin = 11;
         /**
@@ -4390,7 +4390,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:list_section_header_height
+          @attr name edu.bupt.contacts:list_section_header_height
         */
         public static final int ContactListItemView_list_section_header_height = 1;
         /**
@@ -4400,7 +4400,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:section_header_background
+          @attr name edu.bupt.contacts:section_header_background
         */
         public static final int ContactListItemView_section_header_background = 3;
         /** Attributes that can be used with a EdgeTriggerView.
@@ -4431,7 +4431,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:edgeWidth
+          @attr name edu.bupt.contacts:edgeWidth
         */
         public static final int EdgeTriggerView_edgeWidth = 0;
         /**
@@ -4448,7 +4448,7 @@ containing a value of this type.
 <tr><td><code>left</code></td><td>0x01</td><td></td></tr>
 <tr><td><code>right</code></td><td>0x02</td><td></td></tr>
 </table>
-          @attr name android:listenEdges
+          @attr name edu.bupt.contacts:listenEdges
         */
         public static final int EdgeTriggerView_listenEdges = 1;
         /** Attributes that can be used with a Favorites.
@@ -4477,7 +4477,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:favorites_padding_bottom
+          @attr name edu.bupt.contacts:favorites_padding_bottom
         */
         public static final int Favorites_favorites_padding_bottom = 0;
         /** Attributes that can be used with a InterpolatingLayout_Layout.
@@ -4530,7 +4530,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowMarginLeft
+          @attr name edu.bupt.contacts:layout_narrowMarginLeft
         */
         public static final int InterpolatingLayout_Layout_layout_narrowMarginLeft = 2;
         /**
@@ -4546,7 +4546,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowMarginRight
+          @attr name edu.bupt.contacts:layout_narrowMarginRight
         */
         public static final int InterpolatingLayout_Layout_layout_narrowMarginRight = 3;
         /**
@@ -4562,7 +4562,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowPaddingLeft
+          @attr name edu.bupt.contacts:layout_narrowPaddingLeft
         */
         public static final int InterpolatingLayout_Layout_layout_narrowPaddingLeft = 4;
         /**
@@ -4578,7 +4578,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowPaddingRight
+          @attr name edu.bupt.contacts:layout_narrowPaddingRight
         */
         public static final int InterpolatingLayout_Layout_layout_narrowPaddingRight = 5;
         /**
@@ -4594,7 +4594,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowParentWidth
+          @attr name edu.bupt.contacts:layout_narrowParentWidth
         */
         public static final int InterpolatingLayout_Layout_layout_narrowParentWidth = 0;
         /**
@@ -4610,7 +4610,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_narrowWidth
+          @attr name edu.bupt.contacts:layout_narrowWidth
         */
         public static final int InterpolatingLayout_Layout_layout_narrowWidth = 1;
         /**
@@ -4626,7 +4626,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_wideMarginLeft
+          @attr name edu.bupt.contacts:layout_wideMarginLeft
         */
         public static final int InterpolatingLayout_Layout_layout_wideMarginLeft = 8;
         /**
@@ -4642,7 +4642,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_wideMarginRight
+          @attr name edu.bupt.contacts:layout_wideMarginRight
         */
         public static final int InterpolatingLayout_Layout_layout_wideMarginRight = 9;
         /**
@@ -4658,7 +4658,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_widePaddingLeft
+          @attr name edu.bupt.contacts:layout_widePaddingLeft
         */
         public static final int InterpolatingLayout_Layout_layout_widePaddingLeft = 10;
         /**
@@ -4674,7 +4674,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_widePaddingRight
+          @attr name edu.bupt.contacts:layout_widePaddingRight
         */
         public static final int InterpolatingLayout_Layout_layout_widePaddingRight = 11;
         /**
@@ -4690,7 +4690,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_wideParentWidth
+          @attr name edu.bupt.contacts:layout_wideParentWidth
         */
         public static final int InterpolatingLayout_Layout_layout_wideParentWidth = 6;
         /**
@@ -4706,7 +4706,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:layout_wideWidth
+          @attr name edu.bupt.contacts:layout_wideWidth
         */
         public static final int InterpolatingLayout_Layout_layout_wideWidth = 7;
         /**  Maps a contact kind or mime-type to a RemoteViews XML formatter 
@@ -4744,7 +4744,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:detailColumn
+          @attr name edu.bupt.contacts:detailColumn
         */
         public static final int Mapping_detailColumn = 4;
         /**
@@ -4756,7 +4756,7 @@ containing a value of this type.
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           <p>This is a private symbol.
-          @attr name android:icon
+          @attr name edu.bupt.contacts:icon
         */
         public static final int Mapping_icon = 2;
         /**
@@ -4772,7 +4772,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:mimeType
+          @attr name edu.bupt.contacts:mimeType
         */
         public static final int Mapping_mimeType = 0;
         /**
@@ -4784,7 +4784,7 @@ containing a value of this type.
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           <p>This is a private symbol.
-          @attr name android:remoteViews
+          @attr name edu.bupt.contacts:remoteViews
         */
         public static final int Mapping_remoteViews = 1;
         /**
@@ -4800,7 +4800,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name android:summaryColumn
+          @attr name edu.bupt.contacts:summaryColumn
         */
         public static final int Mapping_summaryColumn = 3;
         /** Attributes that can be used with a ProportionalLayout.
@@ -4829,7 +4829,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:direction
+          @attr name edu.bupt.contacts:direction
         */
         public static final int ProportionalLayout_direction = 0;
         /**
@@ -4843,7 +4843,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:ratio
+          @attr name edu.bupt.contacts:ratio
         */
         public static final int ProportionalLayout_ratio = 1;
         /** Attributes that can be used with a VoicemailStatus.
@@ -4877,7 +4877,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_voicemail_status_action_text_color
+          @attr name edu.bupt.contacts:call_log_voicemail_status_action_text_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_action_text_color = 3;
         /**
@@ -4892,7 +4892,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_voicemail_status_background_color
+          @attr name edu.bupt.contacts:call_log_voicemail_status_background_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_background_color = 1;
         /**
@@ -4908,7 +4908,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_voicemail_status_height
+          @attr name edu.bupt.contacts:call_log_voicemail_status_height
         */
         public static final int VoicemailStatus_call_log_voicemail_status_height = 0;
         /**
@@ -4923,7 +4923,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:call_log_voicemail_status_text_color
+          @attr name edu.bupt.contacts:call_log_voicemail_status_text_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_text_color = 2;
     };
