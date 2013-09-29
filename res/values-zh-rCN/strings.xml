@@ -573,6 +573,7 @@
     <string name="exit">退出</string>
     <string name="reply">回复</string>
     <string name="block_stranger">拦截陌生人电话</string>
+    <string name="white_mode">白名单模式</string>
     <string name="stranger">陌生号码</string>
     <string name="no_name">未命名</string>
     <string name="record">拦截记录</string>
@@ -583,7 +584,7 @@
     <string name="call_block">电话拦截</string>
     <string name="black_list">黑名单</string>
     <string name="settings">拦截规则</string>
-
+	<string name="white_list">白名单</string>
     
     <!-- new_reord_dialog -->
     <string name="phone_number">电话号码</string>

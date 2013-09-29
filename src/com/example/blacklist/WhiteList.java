@@ -34,7 +34,7 @@ import android.widget.Toast;
 
 public class WhiteList extends Fragment {
 
-    public static final String TAG = "franco--->BlackList";
+    public static final String TAG = "franco--->WhiteList";
     public static final int PHONES_DISPLAY_NAME = 1;
     public static final int PHONES_NUMBER = 2;
 
@@ -52,7 +52,7 @@ public class WhiteList extends Fragment {
     private MyAlertDialog importContactDialog;
     private int spinnerLatestClicked;
     private String[] blockContent;
-    private static DBHelper mDBHelper;
+    private static WhiteDBHelper mDBHelper;
     private int _ID, blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
@@ -74,7 +74,7 @@ public class WhiteList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.black_list, container, false);
+        view = inflater.inflate(R.layout.white_list, container, false);
         findViewAndSetListener();
         return view;
     }
@@ -103,14 +103,14 @@ public class WhiteList extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new DBHelper(context, "BlackList", null, 1);
-        cursor = mDBHelper.getWritableDatabase().query(DBHelper.TB_NAME, null,
-                null, null, null, null, DBHelper.NAME + " ASC");
-        String[] from = new String[] { DBHelper.NAME, DBHelper.Phone,
-                DBHelper.BlockContent };
-        int[] to = new int[] { R.id.blacklist_item_text1,
-                R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
-        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item,
+        mDBHelper = new WhiteDBHelper(context, "WhiteList", null, 1);
+        cursor = mDBHelper.getWritableDatabase().query(WhiteDBHelper.TB_NAME, null,
+                null, null, null, null, WhiteDBHelper.NAME + " ASC");
+        String[] from = new String[] { WhiteDBHelper.NAME, WhiteDBHelper.Phone,
+                WhiteDBHelper.BlockContent };
+        int[] to = new int[] { R.id.whitelist_item_text1,
+                R.id.whitelist_item_text2, R.id.whitelist_item_text3 };
+        adapter = new SimpleCursorAdapter(context, R.layout.whitelist_item,
                 cursor, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,7 +120,7 @@ public class WhiteList extends Fragment {
                     long arg3) {
                 // TODO Auto-generated method stub
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from BlackList where _ID = " + arg3;
+                String sql = "select * from WhiteList where _ID = " + arg3;
                 Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                         null);
                 cursor.moveToFirst();
@@ -335,6 +335,7 @@ public class WhiteList extends Fragment {
                 // TODO Auto-generated method stub
                 String phone = phoneNumber.getText().toString();
                 String name = contactName.getText().toString();
+                Log.i("phone&name",name+";"+phone);
                 if ("".equals(phone)) {
                     Toast.makeText(context, R.string.no_phone_input,
                             Toast.LENGTH_SHORT).show();
@@ -367,8 +368,8 @@ public class WhiteList extends Fragment {
     }
 
     private void update() {
-        cursor = mDBHelper.getWritableDatabase().query(DBHelper.TB_NAME, null,
-                null, null, null, null, DBHelper.NAME + " ASC");
+        cursor = mDBHelper.getWritableDatabase().query(WhiteDBHelper.TB_NAME, null,
+                null, null, null, null, WhiteDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
 

@@ -18,19 +18,19 @@
           android:id="@+id/typeIndex"  
           android:layout_width="wrap_content"  
           android:layout_height="wrap_content"          
-          android:textSize="22px" />   
+          android:textSize="24px" />   
       <TextView   
           android:id="@+id/date" 
            
           android:layout_width="wrap_content"  
           android:layout_height="wrap_content"          
-          android:textSize="22px" />  
+          android:textSize="24px" />  
  
       <TextView   
           android:id="@+id/duration"  
           android:layout_width="wrap_content"  
           android:layout_height="wrap_content"          
-          android:textSize="22px" />  
+          android:textSize="24px" />  
   
      
   </LinearLayout> 
@@ -39,7 +39,7 @@
           android:layout_width="wrap_content"  
           android:layout_height="wrap_content"  
         
-          android:textSize="26px" /> 
+          android:textSize="28px" /> 
 
   
 </LinearLayout> 

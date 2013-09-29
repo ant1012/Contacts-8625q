@@ -3,9 +3,8 @@
     android:id="@+id/msg_block"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
     <CheckBox
-        android:id="@+id/block_stranger"
+        android:id="@+id/white_mode"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_alignParentTop="true"
@@ -13,9 +12,22 @@
         android:background="@null"
         android:drawableRight="@drawable/checkbox"
         android:gravity="center_vertical"
+        android:text="@string/white_mode"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+    <CheckBox
+        android:id="@+id/block_stranger"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@+id/white_mode"
+        android:button="@null"
+        android:background="@null"
+        android:drawableRight="@drawable/checkbox"
+        android:gravity="center_vertical"
         android:text="@string/block_stranger"
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/settings_introduction"

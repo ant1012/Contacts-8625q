@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/add_account_button"
-        android:visibility="gone"
+        
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

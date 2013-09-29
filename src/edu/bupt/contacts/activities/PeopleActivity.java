@@ -220,8 +220,8 @@ public class PeopleActivity extends ContactsActivity
     }
 
     private boolean areGroupWritableAccountsAvailable() {
-    	return true;
-//        return ContactsUtils.areGroupWritableAccountsAvailable(this);
+//    	return true;
+        return ContactsUtils.areGroupWritableAccountsAvailable(this);
     }
 
     /**

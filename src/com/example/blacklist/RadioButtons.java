@@ -17,6 +17,7 @@ public class RadioButtons extends Fragment {
     private RadioButton msgBlock;
     private RadioButton callBlock;
     private RadioButton blackList;
+    private RadioButton whiteList;
     private RadioButton settings;
     private Context context;
     private View view;
@@ -30,6 +31,7 @@ public class RadioButtons extends Fragment {
         public void msgBlock();
         public void callBlock();
         public void blackList();
+        public void whiteList();
         public void settings();
     }
 
@@ -65,6 +67,7 @@ public class RadioButtons extends Fragment {
         msgBlock = (RadioButton) view.findViewById(R.id.msg_block);
         callBlock = (RadioButton) view.findViewById(R.id.call_block);
         blackList = (RadioButton) view.findViewById(R.id.black_list);
+        whiteList = (RadioButton) view.findViewById(R.id.white_list);
         settings = (RadioButton) view.findViewById(R.id.settings);
         mRadioGroup.setOnCheckedChangeListener(mChangeRadio); 
     }
@@ -87,6 +90,10 @@ public class RadioButtons extends Fragment {
             
             if(checkedId == blackList.getId()) {
                 mCallback.blackList();
+                return;
+            }
+            if(checkedId == whiteList.getId()) {
+                mCallback.whiteList();
                 return;
             }
             if(checkedId == settings.getId()){

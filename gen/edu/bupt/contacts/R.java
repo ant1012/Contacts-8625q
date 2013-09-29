@@ -1095,55 +1095,58 @@ containing a value of this type.
         public static final int ic_plus=0x7f02005c;
         public static final int ic_plus_disabled_holo_dark=0x7f02005d;
         public static final int ic_plus_holo_dark=0x7f02005e;
-        public static final int ic_sound_off_speakerphone_disabled_holo_dark=0x7f02005f;
-        public static final int ic_sound_off_speakerphone_holo_dark=0x7f020060;
-        public static final int ic_sound_speakerphone_disabled_holo_dark=0x7f020061;
-        public static final int ic_sound_speakerphone_holo_dark=0x7f020062;
-        public static final int ic_speakerphone_off=0x7f020063;
-        public static final int ic_speakerphone_on=0x7f020064;
-        public static final int ic_tab_all=0x7f020065;
-        public static final int ic_tab_dialer=0x7f020066;
-        public static final int ic_tab_groups=0x7f020067;
-        public static final int ic_tab_recent=0x7f020068;
-        public static final int ic_tab_starred=0x7f020069;
-        public static final int ic_text_holo_dark=0x7f02006a;
-        public static final int ic_text_holo_light=0x7f02006b;
-        public static final int ic_trash_holo_dark=0x7f02006c;
-        public static final int img_list_background=0x7f02006d;
-        public static final int list_activated_holo=0x7f02006e;
-        public static final int list_background_holo=0x7f02006f;
-        public static final int list_divider=0x7f020070;
-        public static final int list_focused_holo=0x7f020071;
-        public static final int list_item_activated_background=0x7f020072;
-        public static final int list_pressed_holo_light=0x7f020073;
-        public static final int list_section_divider_holo_custom=0x7f020074;
-        public static final int list_selector_disabled_holo_dark=0x7f020075;
-        public static final int list_title_holo=0x7f020076;
-        public static final int panel_content=0x7f020077;
-        public static final int panel_favorites_holo_light=0x7f020078;
-        public static final int panel_message=0x7f020079;
-        public static final int quickcon_background_texture=0x7f02007a;
-        public static final int quickcontact_badge_overlay_normal_light=0x7f02007b;
-        public static final int quickcontact_badge_overlay_pressed_light=0x7f02007c;
-        public static final int quickcontact_list_item_divider=0x7f02007d;
-        public static final int quickcontact_track_background=0x7f02007e;
-        public static final int radiobutton=0x7f02007f;
-        public static final int recommend_left_cell_background2=0x7f020080;
-        public static final int recommend_left_cell_selected=0x7f020081;
-        public static final int seek_bar_thumb=0x7f020082;
-        public static final int seekbar_drawable=0x7f020083;
-        public static final int spinner_default_holo_dark=0x7f020084;
-        public static final int sym_action_audiochat_holo_light=0x7f020085;
-        public static final int sym_action_videochat_holo_light=0x7f020086;
-        public static final int tab_selected_focused_holo=0x7f020087;
-        public static final int tab_selected_holo=0x7f020088;
-        public static final int tab_selected_pressed_holo=0x7f020089;
-        public static final int tab_unselected_focused_holo=0x7f02008a;
-        public static final int tab_unselected_holo=0x7f02008b;
-        public static final int tab_unselected_pressed_holo=0x7f02008c;
-        public static final int toggle_button_normal=0x7f02008d;
-        public static final int toggle_button_selected=0x7f02008e;
-        public static final int unknown_source=0x7f02008f;
+        public static final int ic_rec_read=0x7f02005f;
+        public static final int ic_rec_unread=0x7f020060;
+        public static final int ic_send=0x7f020061;
+        public static final int ic_sound_off_speakerphone_disabled_holo_dark=0x7f020062;
+        public static final int ic_sound_off_speakerphone_holo_dark=0x7f020063;
+        public static final int ic_sound_speakerphone_disabled_holo_dark=0x7f020064;
+        public static final int ic_sound_speakerphone_holo_dark=0x7f020065;
+        public static final int ic_speakerphone_off=0x7f020066;
+        public static final int ic_speakerphone_on=0x7f020067;
+        public static final int ic_tab_all=0x7f020068;
+        public static final int ic_tab_dialer=0x7f020069;
+        public static final int ic_tab_groups=0x7f02006a;
+        public static final int ic_tab_recent=0x7f02006b;
+        public static final int ic_tab_starred=0x7f02006c;
+        public static final int ic_text_holo_dark=0x7f02006d;
+        public static final int ic_text_holo_light=0x7f02006e;
+        public static final int ic_trash_holo_dark=0x7f02006f;
+        public static final int img_list_background=0x7f020070;
+        public static final int list_activated_holo=0x7f020071;
+        public static final int list_background_holo=0x7f020072;
+        public static final int list_divider=0x7f020073;
+        public static final int list_focused_holo=0x7f020074;
+        public static final int list_item_activated_background=0x7f020075;
+        public static final int list_pressed_holo_light=0x7f020076;
+        public static final int list_section_divider_holo_custom=0x7f020077;
+        public static final int list_selector_disabled_holo_dark=0x7f020078;
+        public static final int list_title_holo=0x7f020079;
+        public static final int panel_content=0x7f02007a;
+        public static final int panel_favorites_holo_light=0x7f02007b;
+        public static final int panel_message=0x7f02007c;
+        public static final int quickcon_background_texture=0x7f02007d;
+        public static final int quickcontact_badge_overlay_normal_light=0x7f02007e;
+        public static final int quickcontact_badge_overlay_pressed_light=0x7f02007f;
+        public static final int quickcontact_list_item_divider=0x7f020080;
+        public static final int quickcontact_track_background=0x7f020081;
+        public static final int radiobutton=0x7f020082;
+        public static final int recommend_left_cell_background2=0x7f020083;
+        public static final int recommend_left_cell_selected=0x7f020084;
+        public static final int seek_bar_thumb=0x7f020085;
+        public static final int seekbar_drawable=0x7f020086;
+        public static final int spinner_default_holo_dark=0x7f020087;
+        public static final int sym_action_audiochat_holo_light=0x7f020088;
+        public static final int sym_action_videochat_holo_light=0x7f020089;
+        public static final int tab_selected_focused_holo=0x7f02008a;
+        public static final int tab_selected_holo=0x7f02008b;
+        public static final int tab_selected_pressed_holo=0x7f02008c;
+        public static final int tab_unselected_focused_holo=0x7f02008d;
+        public static final int tab_unselected_holo=0x7f02008e;
+        public static final int tab_unselected_pressed_holo=0x7f02008f;
+        public static final int toggle_button_normal=0x7f020090;
+        public static final int toggle_button_selected=0x7f020091;
+        public static final int unknown_source=0x7f020092;
     }
     public static final class fraction {
         /**  Height of the tab carousel as a percentage of the current screen width on the
@@ -1180,13 +1183,13 @@ containing a value of this type.
         public static final int add_accounts=0x7f0700fd;
         public static final int add_connection_icon=0x7f07007d;
         public static final int add_connection_label=0x7f07007e;
-        public static final int add_contact=0x7f070186;
+        public static final int add_contact=0x7f07018c;
         public static final int add_field_footer=0x7f070111;
         public static final int add_member_field=0x7f070106;
         public static final int add_organization_button=0x7f070128;
         public static final int add_text=0x7f0700e5;
         public static final int addicon=0x7f0700c1;
-        public static final int additionalData=0x7f070168;
+        public static final int additionalData=0x7f07016a;
         public static final int aggregation_suggestion_data=0x7f070024;
         public static final int aggregation_suggestion_name=0x7f070023;
         public static final int aggregation_suggestion_photo=0x7f070025;
@@ -1208,16 +1211,16 @@ containing a value of this type.
         public static final int block_item_text2=0x7f070035;
         public static final int block_item_text3=0x7f070037;
         public static final int block_item_text4=0x7f070038;
-        public static final int block_stranger=0x7f070158;
+        public static final int block_stranger=0x7f07015a;
         public static final int blue_separator=0x7f070046;
-        public static final int body=0x7f07014d;
-        public static final int border=0x7f070164;
+        public static final int body=0x7f07014e;
+        public static final int border=0x7f070166;
         public static final int browse_view=0x7f07012d;
         public static final int btn_cancel=0x7f070073;
         public static final int btn_discard=0x7f0700a5;
         public static final int btn_done=0x7f070074;
-        public static final int button_add_field=0x7f070152;
-        public static final int button_edit_externally=0x7f070154;
+        public static final int button_add_field=0x7f070153;
+        public static final int button_edit_externally=0x7f070155;
         public static final int buttons=0x7f070027;
         public static final int buttons_linear_layout=0x7f07013a;
         public static final int call_and_sms=0x7f07004c;
@@ -1275,15 +1278,15 @@ containing a value of this type.
         public static final int contact_tile_quick=0x7f0700ac;
         public static final int contact_tile_secondary_button=0x7f0700b8;
         public static final int contact_tile_status=0x7f0700ae;
-        public static final int contacts_count=0x7f070175;
+        public static final int contacts_count=0x7f070177;
         public static final int contacts_unavailable_container=0x7f07012c;
         public static final int contacts_unavailable_view=0x7f07012b;
         public static final int container=0x7f070129;
         public static final int controls=0x7f070042;
-        public static final int copy_phone_number=0x7f070177;
+        public static final int copy_phone_number=0x7f07017d;
         public static final int count=0x7f0700e4;
         public static final int create_contact_button=0x7f0700bc;
-        public static final int create_new_contact=0x7f07017e;
+        public static final int create_new_contact=0x7f070184;
         /**  An ID to be used for contents of a custom dialog so that its state be preserved 
          */
         public static final int custom_dialog_content=0x7f07001b;
@@ -1295,7 +1298,7 @@ containing a value of this type.
         public static final int date_view=0x7f0700e6;
         public static final int day=0x7f0700c5;
         public static final int deleteButton=0x7f0700d9;
-        public static final int delete_all=0x7f07017d;
+        public static final int delete_all=0x7f070183;
         public static final int delete_button=0x7f0700e7;
         public static final int delete_button_container=0x7f0700f2;
         public static final int description=0x7f07003d;
@@ -1352,22 +1355,22 @@ containing a value of this type.
         public static final int dtend=0x7f07003c;
         public static final int dtstart=0x7f07003b;
         public static final int duration=0x7f070058;
-        public static final int edit_name=0x7f07014e;
-        public static final int edit_phonetic_name=0x7f07014f;
-        public static final int edit_photo=0x7f070150;
+        public static final int edit_name=0x7f07014f;
+        public static final int edit_phonetic_name=0x7f070150;
+        public static final int edit_photo=0x7f070151;
         public static final int editor_container=0x7f070072;
         public static final int editors=0x7f0700a0;
         public static final int eight=0x7f0700d1;
         public static final int empty=0x7f0700fc;
         public static final int emptyText=0x7f070083;
-        public static final int empty_right_menu_item=0x7f070187;
+        public static final int empty_right_menu_item=0x7f07018d;
         public static final int eventLocation=0x7f07003a;
         public static final int expansion_view=0x7f0700e8;
         public static final int expansion_view_container=0x7f070137;
         public static final int extra_info=0x7f07006f;
         public static final int favorites_fragment=0x7f070134;
         public static final int favorites_view=0x7f070133;
-        public static final int filter_option=0x7f070185;
+        public static final int filter_option=0x7f07018b;
         public static final int five=0x7f0700ce;
         public static final int floating_layout=0x7f070143;
         public static final int footer=0x7f0700f6;
@@ -1400,15 +1403,15 @@ containing a value of this type.
         public static final int header_voicemail_container=0x7f070053;
         public static final int history=0x7f070041;
         public static final int holo=0x7f07001e;
-        public static final int horizontal_divider=0x7f07016e;
+        public static final int horizontal_divider=0x7f070170;
         public static final int icon=0x7f070021;
-        public static final int image=0x7f070163;
+        public static final int image=0x7f070165;
         public static final int img=0x7f070117;
         public static final int import_contact=0x7f070028;
         public static final int import_contacts_button=0x7f0700bd;
         public static final int import_failure_retry_button=0x7f0700bf;
         public static final int import_failure_uninstall_button=0x7f0700be;
-        public static final int item=0x7f07015a;
+        public static final int item=0x7f07015c;
         public static final int item_list_pager=0x7f070145;
         public static final int join_contact_blurb=0x7f070114;
         public static final int kind=0x7f07008f;
@@ -1427,48 +1430,48 @@ containing a value of this type.
         public static final int main_action=0x7f070048;
         public static final int main_action_push_layer=0x7f07004a;
         public static final int main_view=0x7f070020;
-        public static final int menu_2s_pause=0x7f070180;
-        public static final int menu_accounts=0x7f070194;
-        public static final int menu_add_contact=0x7f07018f;
-        public static final int menu_add_contacts=0x7f07017f;
-        public static final int menu_add_group=0x7f070190;
-        public static final int menu_add_wait=0x7f070181;
-        public static final int menu_calendar=0x7f070198;
-        public static final int menu_call_settings=0x7f070184;
-        public static final int menu_call_settings_dialpad=0x7f070182;
-        public static final int menu_clear_frequents=0x7f070193;
-        public static final int menu_contacts_filter=0x7f070191;
-        public static final int menu_create_contact_shortcut=0x7f07019f;
-        public static final int menu_delete=0x7f07019b;
-        public static final int menu_delete_group=0x7f0701a1;
-        public static final int menu_discard=0x7f07018b;
-        public static final int menu_done=0x7f070188;
-        public static final int menu_edit=0x7f070197;
-        public static final int menu_edit_group=0x7f0701a0;
-        public static final int menu_edit_number_before_call=0x7f07017a;
-        public static final int menu_group_source=0x7f07018d;
-        public static final int menu_heibai=0x7f070195;
-        public static final int menu_help=0x7f07018c;
-        public static final int menu_history=0x7f070199;
-        public static final int menu_import_export=0x7f070192;
-        public static final int menu_join=0x7f07018a;
-        public static final int menu_remove_from_call_log=0x7f070179;
-        public static final int menu_search=0x7f07018e;
-        public static final int menu_send_to_voicemail=0x7f07019e;
-        public static final int menu_set_msgring=0x7f07019d;
-        public static final int menu_set_ringtone=0x7f07019c;
-        public static final int menu_settings=0x7f070176;
-        public static final int menu_share=0x7f07019a;
-        public static final int menu_split=0x7f070189;
-        public static final int menu_star=0x7f070196;
-        public static final int menu_trash=0x7f070178;
+        public static final int menu_2s_pause=0x7f070186;
+        public static final int menu_accounts=0x7f07019a;
+        public static final int menu_add_contact=0x7f070195;
+        public static final int menu_add_contacts=0x7f070185;
+        public static final int menu_add_group=0x7f070196;
+        public static final int menu_add_wait=0x7f070187;
+        public static final int menu_calendar=0x7f07019e;
+        public static final int menu_call_settings=0x7f07018a;
+        public static final int menu_call_settings_dialpad=0x7f070188;
+        public static final int menu_clear_frequents=0x7f070199;
+        public static final int menu_contacts_filter=0x7f070197;
+        public static final int menu_create_contact_shortcut=0x7f0701a5;
+        public static final int menu_delete=0x7f0701a1;
+        public static final int menu_delete_group=0x7f0701a7;
+        public static final int menu_discard=0x7f070191;
+        public static final int menu_done=0x7f07018e;
+        public static final int menu_edit=0x7f07019d;
+        public static final int menu_edit_group=0x7f0701a6;
+        public static final int menu_edit_number_before_call=0x7f070180;
+        public static final int menu_group_source=0x7f070193;
+        public static final int menu_heibai=0x7f07019b;
+        public static final int menu_help=0x7f070192;
+        public static final int menu_history=0x7f07019f;
+        public static final int menu_import_export=0x7f070198;
+        public static final int menu_join=0x7f070190;
+        public static final int menu_remove_from_call_log=0x7f07017f;
+        public static final int menu_search=0x7f070194;
+        public static final int menu_send_to_voicemail=0x7f0701a4;
+        public static final int menu_set_msgring=0x7f0701a3;
+        public static final int menu_set_ringtone=0x7f0701a2;
+        public static final int menu_settings=0x7f07017c;
+        public static final int menu_share=0x7f0701a0;
+        public static final int menu_split=0x7f07018f;
+        public static final int menu_star=0x7f07019c;
+        public static final int menu_trash=0x7f07017e;
         public static final int message=0x7f0700ba;
         public static final int month=0x7f0700c4;
         public static final int msg_block=0x7f070026;
         public static final int msg_block_record=0x7f07011a;
         public static final int name=0x7f07005c;
-        public static final int name_and_snippet=0x7f070166;
-        public static final int name_and_snippet_container=0x7f070165;
+        public static final int name_and_snippet=0x7f070168;
+        public static final int name_and_snippet_container=0x7f070167;
         public static final int network_icon=0x7f070091;
         public static final int network_title=0x7f070092;
         public static final int new_contact=0x7f0700ab;
@@ -1500,67 +1503,67 @@ containing a value of this type.
         public static final int presence_icon=0x7f07008a;
         public static final int primary_action_view=0x7f070059;
         public static final int primary_indicator=0x7f07008c;
-        public static final int profile_title=0x7f070174;
+        public static final int profile_title=0x7f070176;
         public static final int progress=0x7f0700c0;
         public static final int progress_spinner=0x7f070136;
-        public static final int push_layer=0x7f07016f;
+        public static final int push_layer=0x7f070171;
         public static final int quick_contact_photo=0x7f07005b;
         public static final int radioButton=0x7f0700a8;
         public static final int radio_buttons=0x7f07001f;
         public static final int radiogroup=0x7f07014a;
         public static final int rate_decrease_button=0x7f070141;
         public static final int rate_increase_button=0x7f070142;
-        public static final int read_only_name=0x7f070153;
+        public static final int read_only_name=0x7f070154;
         public static final int read_only_warning=0x7f070071;
-        public static final int reply=0x7f07015f;
+        public static final int reply=0x7f070161;
         public static final int revert=0x7f0700f8;
         public static final int right=0x7f070001;
         public static final int right_button=0x7f07009e;
         public static final int root_view=0x7f07006d;
         public static final int save=0x7f070121;
         public static final int save_menu_item=0x7f0700f1;
-        public static final int scrollview=0x7f070160;
+        public static final int scrollview=0x7f070162;
         public static final int searchButton=0x7f0700d7;
-        public static final int search_on_action_bar=0x7f070183;
+        public static final int search_on_action_bar=0x7f070189;
         public static final int search_option=0x7f0700e1;
         public static final int search_progress=0x7f0700a3;
         public static final int search_view=0x7f0700a9;
-        public static final int second_image_container=0x7f070171;
+        public static final int second_image_container=0x7f070173;
         public static final int secondary_action_button=0x7f07008e;
         public static final int secondary_action_icon=0x7f07005a;
         public static final int secondary_action_view_container=0x7f070089;
         public static final int secondary_message=0x7f0700bb;
-        public static final int sect_fields=0x7f070151;
-        public static final int sect_general=0x7f070155;
+        public static final int sect_fields=0x7f070152;
+        public static final int sect_general=0x7f070156;
         public static final int seek_container=0x7f07013d;
         public static final int selected_tab_rectangle=0x7f070149;
-        public static final int setPrimary=0x7f070157;
-        public static final int settings=0x7f07014c;
-        public static final int settings_introduction=0x7f070159;
+        public static final int setPrimary=0x7f070158;
+        public static final int settings=0x7f07014d;
+        public static final int settings_introduction=0x7f07015b;
         public static final int seven=0x7f0700d0;
         public static final int shadow=0x7f070098;
-        public static final int show_all_calls=0x7f07017c;
-        public static final int show_voicemails_only=0x7f07017b;
+        public static final int show_all_calls=0x7f070182;
+        public static final int show_voicemails_only=0x7f070181;
         public static final int six=0x7f0700cf;
-        public static final int sms_name=0x7f07015d;
-        public static final int sms_phone=0x7f07015e;
-        public static final int sms_text=0x7f070161;
-        public static final int sms_title=0x7f07015c;
-        public static final int sms_view=0x7f07015b;
-        public static final int sourceIcon=0x7f070167;
+        public static final int sms_name=0x7f07015f;
+        public static final int sms_phone=0x7f070160;
+        public static final int sms_text=0x7f070163;
+        public static final int sms_title=0x7f07015e;
+        public static final int sms_view=0x7f07015d;
+        public static final int sourceIcon=0x7f070169;
         public static final int spacer=0x7f070108;
         public static final int spinner=0x7f0700eb;
         public static final int star=0x7f0700d3;
         public static final int static_photo_container=0x7f070087;
         public static final int status=0x7f07006c;
         public static final int status_photo=0x7f07006b;
-        public static final int stream_item_attribution=0x7f07016c;
-        public static final int stream_item_comments=0x7f07016d;
-        public static final int stream_item_content=0x7f070169;
-        public static final int stream_item_first_image=0x7f070170;
-        public static final int stream_item_html=0x7f07016b;
-        public static final int stream_item_image_rows=0x7f07016a;
-        public static final int stream_item_second_image=0x7f070172;
+        public static final int stream_item_attribution=0x7f07016e;
+        public static final int stream_item_comments=0x7f07016f;
+        public static final int stream_item_content=0x7f07016b;
+        public static final int stream_item_first_image=0x7f070172;
+        public static final int stream_item_html=0x7f07016d;
+        public static final int stream_item_image_rows=0x7f07016c;
+        public static final int stream_item_second_image=0x7f070174;
         public static final int sub_id=0x7f070119;
         public static final int tab_about=0x7f070095;
         public static final int tab_and_shadow_container=0x7f070093;
@@ -1579,20 +1582,26 @@ containing a value of this type.
         public static final int three=0x7f0700cc;
         public static final int title=0x7f070039;
         public static final int top=0x7f0700da;
-        public static final int totalContactsText=0x7f070156;
+        public static final int totalContactsText=0x7f070157;
         public static final int track=0x7f070148;
         public static final int track_scroller=0x7f070147;
         public static final int two=0x7f0700cb;
         public static final int type=0x7f07008b;
         public static final int typeIndex=0x7f070118;
         public static final int updates_fragment_container=0x7f070082;
-        public static final int user_profile_header=0x7f070173;
+        public static final int user_profile_header=0x7f070175;
         public static final int vertical_divider=0x7f07008d;
         public static final int voicemail_container=0x7f07004b;
         public static final int voicemail_status=0x7f070043;
         public static final int voicemail_status_action=0x7f070066;
         public static final int voicemail_status_message=0x7f070065;
-        public static final int widget_container=0x7f070162;
+        public static final int white_list=0x7f07014c;
+        public static final int white_mode=0x7f070159;
+        public static final int whitelist_item=0x7f070178;
+        public static final int whitelist_item_text1=0x7f070179;
+        public static final int whitelist_item_text2=0x7f07017a;
+        public static final int whitelist_item_text3=0x7f07017b;
+        public static final int widget_container=0x7f070164;
         public static final int year=0x7f0700c6;
         public static final int yearToggle=0x7f0700c2;
         public static final int zero=0x7f0700d4;
@@ -1785,6 +1794,8 @@ containing a value of this type.
         public static final int updates_header_contact=0x7f0400a0;
         public static final int user_profile_button=0x7f0400a1;
         public static final int user_profile_header=0x7f0400a2;
+        public static final int white_list=0x7f0400a3;
+        public static final int whitelist_item=0x7f0400a4;
     }
     public static final class menu {
         public static final int activity_black_list=0x7f100000;
@@ -1918,8 +1929,8 @@ containing a value of this type.
         /**  Generic action string for starting an audio chat. Used by AccessibilityService to announce the purpose of the view. [CHAR LIMIT=NONE] 
          */
         public static final int audio_chat=0x7f0c0150;
-        public static final int black_list=0x7f0c020d;
-        public static final int block_content=0x7f0c0211;
+        public static final int black_list=0x7f0c020e;
+        public static final int block_content=0x7f0c0213;
         public static final int block_stranger=0x7f0c0205;
         /**  Info blurb on the Join Contact screen [CHAR LIMIT=NONE]
          */
@@ -1950,7 +1961,7 @@ containing a value of this type.
         /**  Action string for calling an assistant phone number 
          */
         public static final int call_assistant=0x7f0c0125;
-        public static final int call_block=0x7f0c020c;
+        public static final int call_block=0x7f0c020d;
         /**  Action string for calling a callback number 
          */
         public static final int call_callback=0x7f0c011a;
@@ -2049,7 +2060,7 @@ containing a value of this type.
         /**  Title shown in a Dialog telling users cancel vCard import/export operation is failed. [CHAR LIMIT=40] 
          */
         public static final int cancel_vcard_import_or_export_failed=0x7f0c00ef;
-        public static final int cancle=0x7f0c0216;
+        public static final int cancle=0x7f0c0218;
         /**  Generic action string for starting an IM chat 
          */
         public static final int chat=0x7f0c014f;
@@ -2254,8 +2265,8 @@ containing a value of this type.
         /**  Checkbox whether to provide a year for a birthday [CHAR LIMIT=30] 
          */
         public static final int date_year_toggle=0x7f0c01a9;
-        public static final int default_mode_message=0x7f0c021c;
-        public static final int default_ringtone_message=0x7f0c021e;
+        public static final int default_mode_message=0x7f0c021e;
+        public static final int default_ringtone_message=0x7f0c0220;
         /**  Confirmation dialog contents after users selects to delete a Writable contact. 
          */
         public static final int deleteConfirmation=0x7f0c0040;
@@ -2806,7 +2817,7 @@ containing a value of this type.
          than one vCard files available in the system. 
          */
         public static final int import_all_vcard_string=0x7f0c00bf;
-        public static final int import_contact=0x7f0c020a;
+        public static final int import_contact=0x7f0c020b;
         /**  The failure message shown when the system could not find any vCard file.
          (with extension ".vcf" in SDCard.)
          [CHAR LIMIT=128] 
@@ -2950,7 +2961,7 @@ containing a value of this type.
         /**  Menu item used to add a star to a contact, which makes that contact show up at the top of favorites 
          */
         public static final int menu_addStar=0x7f0c0025;
-        public static final int menu_calendar=0x7f0c0225;
+        public static final int menu_calendar=0x7f0c0227;
         /**  Menu item used to call a specific contact when viewing the details of that contact. 
          */
         public static final int menu_call=0x7f0c002b;
@@ -3002,7 +3013,7 @@ containing a value of this type.
         /**  Menu item for invoking contextual help [CHAR LIMIT=64] 
          */
         public static final int menu_help=0x7f0c01a0;
-        public static final int menu_history=0x7f0c0226;
+        public static final int menu_history=0x7f0c0228;
         /**  The menu item to bulk import or bulk export contacts from SIM card or SD card.  [CHAR LIMIT=30]
          */
         public static final int menu_import_export=0x7f0c00fc;
@@ -3069,22 +3080,22 @@ containing a value of this type.
         /**  Shown as the display name for a person when the name is missing or unknown. [CHAR LIMIT=18]
          */
         public static final int missing_name=0x7f0c00f8;
-        public static final int mode1=0x7f0c021f;
-        public static final int mode2=0x7f0c0220;
-        public static final int mode3=0x7f0c0221;
-        public static final int mode4=0x7f0c0222;
-        public static final int mode_title=0x7f0c021b;
-        public static final int msg=0x7f0c0213;
-        public static final int msg_and_phone=0x7f0c0212;
+        public static final int mode1=0x7f0c0221;
+        public static final int mode2=0x7f0c0222;
+        public static final int mode3=0x7f0c0223;
+        public static final int mode4=0x7f0c0224;
+        public static final int mode_title=0x7f0c021d;
+        public static final int msg=0x7f0c0215;
+        public static final int msg_and_phone=0x7f0c0214;
         /**  radiobutton 
          */
-        public static final int msg_block=0x7f0c020b;
+        public static final int msg_block=0x7f0c020c;
         public static final int multiSelectExport=0x7f0c01fa;
         /**  Warning dialog contents after users selects to delete a contact with multiple Writable sources. 
          */
         public static final int multipleContactDeleteConfirmation=0x7f0c003f;
-        public static final int must=0x7f0c0219;
-        public static final int name=0x7f0c0210;
+        public static final int must=0x7f0c021b;
+        public static final int name=0x7f0c0212;
         /**  Header that expands to list all name types when editing a structured name of a contact [CHAR LIMIT=20] 
          */
         public static final int nameLabelsGroup=0x7f0c0102;
@@ -3117,7 +3128,7 @@ containing a value of this type.
         /**  Field title for the suffix name of a contact 
          */
         public static final int name_suffix=0x7f0c015f;
-        public static final int new_record=0x7f0c0209;
+        public static final int new_record=0x7f0c020a;
         /**  The "file name" displayed for vCards received directly via NFC [CHAR LIMIT=16] 
          */
         public static final int nfc_vcard_file_name=0x7f0c01d2;
@@ -3169,8 +3180,8 @@ containing a value of this type.
         /**  The text displayed when the contacts list is empty while displaying only selected contacts in multiple picker 
          */
         public static final int no_contacts_selected=0x7f0c0182;
-        public static final int no_name=0x7f0c0207;
-        public static final int no_phone_input=0x7f0c0217;
+        public static final int no_name=0x7f0c0208;
+        public static final int no_phone_input=0x7f0c0219;
         /**  Dialog message shown when SDcard does not exist. [CHAR LIMIT=30] 
          */
         public static final int no_sdcard_message=0x7f0c00b7;
@@ -3217,13 +3228,13 @@ containing a value of this type.
         /**  The percentage, used for expressing the progress of vCard import/export. 
          */
         public static final int percentage=0x7f0c00da;
-        public static final int phone=0x7f0c0214;
+        public static final int phone=0x7f0c0216;
         /**  Header that expands to list all of the types of phone numbers when editing or creating a phone number for a contact [CHAR LIMIT=20] 
          */
         public static final int phoneLabelsGroup=0x7f0c004c;
         /**  new_reord_dialog 
          */
-        public static final int phone_number=0x7f0c020f;
+        public static final int phone_number=0x7f0c0211;
         /**  Description in the dialog that appears if there are no pictures from which to create an icon for a contact 
          */
         public static final int photoPickerNotFoundText=0x7f0c0050;
@@ -3341,7 +3352,7 @@ containing a value of this type.
         /**  Section title for the page containing the contact's social updates on the contact card [CHAR LIMIT=20]
          */
         public static final int recent_updates=0x7f0c0167;
-        public static final int record=0x7f0c0208;
+        public static final int record=0x7f0c0209;
         /**  Header for the list of all relationships for a contact [CHAR LIMIT=20] 
          */
         public static final int relationLabelsGroup=0x7f0c0107;
@@ -3352,10 +3363,10 @@ containing a value of this type.
         /**  Action string for returning a missed call in the call log 
          */
         public static final int returnCall=0x7f0c009d;
-        public static final int ringtone1=0x7f0c0223;
-        public static final int ringtone2=0x7f0c0224;
-        public static final int ringtone_title=0x7f0c021d;
-        public static final int save=0x7f0c0215;
+        public static final int ringtone1=0x7f0c0225;
+        public static final int ringtone2=0x7f0c0226;
+        public static final int ringtone_title=0x7f0c021f;
+        public static final int save=0x7f0c0217;
         /**  Displayed in a spinner dialog after the user creates a contact and it's being saved to the database 
          */
         public static final int savingContact=0x7f0c005c;
@@ -3394,8 +3405,8 @@ containing a value of this type.
         /**  Option displayed in context menu to set long pressed item as default contact method [CHAR LIMIT=64] 
          */
         public static final int set_default=0x7f0c01b4;
-        public static final int settings=0x7f0c020e;
-        public static final int settings_introduction=0x7f0c021a;
+        public static final int settings=0x7f0c020f;
+        public static final int settings_introduction=0x7f0c021c;
         /**  Toast indicating that sharing a contact has failed. [CHAR LIMIT=NONE]  
          */
         public static final int share_error=0x7f0c0101;
@@ -3522,7 +3533,7 @@ containing a value of this type.
         /**   Used to display as default status when the contact is busy or Do not disturb for chat [CHAR LIMIT=19] 
          */
         public static final int status_busy=0x7f0c01d7;
-        public static final int stranger=0x7f0c0206;
+        public static final int stranger=0x7f0c0207;
         /**  Title for the activity that shows a mix of starred contacts and frequently contacted
          contacts. 
          */
@@ -3690,10 +3701,12 @@ containing a value of this type.
         /**  Header that expands to list all website types when editing a website of a contact [CHAR LIMIT=20] 
          */
         public static final int websiteLabelsGroup=0x7f0c0105;
+        public static final int white_list=0x7f0c0210;
+        public static final int white_mode=0x7f0c0206;
         /**  Format string that combines the name and the phonetic name for the widget. if the phonetic name is empty, only the display name is used instead [CHAR LIMIT=25] 
          */
         public static final int widget_name_and_phonetic=0x7f0c01a8;
-        public static final int willfully=0x7f0c0218;
+        public static final int willfully=0x7f0c021a;
     }
     public static final class style {
         public static final int AppTheme=0x7f0f0028;
@@ -3786,7 +3799,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_header_color
+          @attr name android:call_log_header_color
         */
         public static final int CallLog_call_log_header_color = 4;
         /**
@@ -3801,7 +3814,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_primary_background_color
+          @attr name android:call_log_primary_background_color
         */
         public static final int CallLog_call_log_primary_background_color = 1;
         /**
@@ -3816,7 +3829,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_primary_text_color
+          @attr name android:call_log_primary_text_color
         */
         public static final int CallLog_call_log_primary_text_color = 0;
         /**
@@ -3831,7 +3844,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_secondary_background_color
+          @attr name android:call_log_secondary_background_color
         */
         public static final int CallLog_call_log_secondary_background_color = 3;
         /**
@@ -3846,7 +3859,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_secondary_text_color
+          @attr name android:call_log_secondary_text_color
         */
         public static final int CallLog_call_log_secondary_text_color = 2;
         /** Attributes that can be used with a ContactBrowser.
@@ -3873,7 +3886,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name edu.bupt.contacts:contact_browser_background
+          @attr name android:contact_browser_background
         */
         public static final int ContactBrowser_contact_browser_background = 2;
         /**
@@ -3889,7 +3902,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:contact_browser_list_padding_left
+          @attr name android:contact_browser_list_padding_left
         */
         public static final int ContactBrowser_contact_browser_list_padding_left = 0;
         /**
@@ -3905,7 +3918,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:contact_browser_list_padding_right
+          @attr name android:contact_browser_list_padding_right
         */
         public static final int ContactBrowser_contact_browser_list_padding_right = 1;
         /** Attributes that can be used with a ContactListItemView.
@@ -3988,7 +4001,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name edu.bupt.contacts:activated_background
+          @attr name android:activated_background
         */
         public static final int ContactListItemView_activated_background = 2;
         /**
@@ -4003,7 +4016,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_contacts_count_text_color
+          @attr name android:list_item_contacts_count_text_color
         */
         public static final int ContactListItemView_list_item_contacts_count_text_color = 23;
         /**
@@ -4019,7 +4032,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_contacts_count_text_size
+          @attr name android:list_item_contacts_count_text_size
         */
         public static final int ContactListItemView_list_item_contacts_count_text_size = 25;
         /**
@@ -4033,7 +4046,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_data_width_weight
+          @attr name android:list_item_data_width_weight
         */
         public static final int ContactListItemView_list_item_data_width_weight = 26;
         /**
@@ -4043,7 +4056,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name edu.bupt.contacts:list_item_divider
+          @attr name android:list_item_divider
         */
         public static final int ContactListItemView_list_item_divider = 4;
         /**
@@ -4059,7 +4072,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_gap_between_image_and_text
+          @attr name android:list_item_gap_between_image_and_text
         */
         public static final int ContactListItemView_list_item_gap_between_image_and_text = 9;
         /**
@@ -4075,7 +4088,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_gap_between_label_and_data
+          @attr name android:list_item_gap_between_label_and_data
         */
         public static final int ContactListItemView_list_item_gap_between_label_and_data = 10;
         /**
@@ -4091,7 +4104,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_height
+          @attr name android:list_item_header_height
         */
         public static final int ContactListItemView_list_item_header_height = 20;
         /**
@@ -4106,7 +4119,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_text_color
+          @attr name android:list_item_header_text_color
         */
         public static final int ContactListItemView_list_item_header_text_color = 18;
         /**
@@ -4122,7 +4135,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_text_indent
+          @attr name android:list_item_header_text_indent
         */
         public static final int ContactListItemView_list_item_header_text_indent = 17;
         /**
@@ -4138,7 +4151,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_text_size
+          @attr name android:list_item_header_text_size
         */
         public static final int ContactListItemView_list_item_header_text_size = 19;
         /**
@@ -4153,7 +4166,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_underline_color
+          @attr name android:list_item_header_underline_color
         */
         public static final int ContactListItemView_list_item_header_underline_color = 22;
         /**
@@ -4169,7 +4182,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_header_underline_height
+          @attr name android:list_item_header_underline_height
         */
         public static final int ContactListItemView_list_item_header_underline_height = 21;
         /**
@@ -4185,7 +4198,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_height
+          @attr name android:list_item_height
         */
         public static final int ContactListItemView_list_item_height = 0;
         /**
@@ -4199,7 +4212,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_label_width_weight
+          @attr name android:list_item_label_width_weight
         */
         public static final int ContactListItemView_list_item_label_width_weight = 27;
         /**
@@ -4215,7 +4228,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_padding_bottom
+          @attr name android:list_item_padding_bottom
         */
         public static final int ContactListItemView_list_item_padding_bottom = 7;
         /**
@@ -4231,7 +4244,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_padding_left
+          @attr name android:list_item_padding_left
         */
         public static final int ContactListItemView_list_item_padding_left = 8;
         /**
@@ -4247,7 +4260,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_padding_right
+          @attr name android:list_item_padding_right
         */
         public static final int ContactListItemView_list_item_padding_right = 6;
         /**
@@ -4263,7 +4276,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_padding_top
+          @attr name android:list_item_padding_top
         */
         public static final int ContactListItemView_list_item_padding_top = 5;
         /**
@@ -4279,7 +4292,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_photo_size
+          @attr name android:list_item_photo_size
         */
         public static final int ContactListItemView_list_item_photo_size = 14;
         /**
@@ -4294,7 +4307,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_prefix_highlight_color
+          @attr name android:list_item_prefix_highlight_color
         */
         public static final int ContactListItemView_list_item_prefix_highlight_color = 16;
         /**
@@ -4310,7 +4323,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_presence_icon_margin
+          @attr name android:list_item_presence_icon_margin
         */
         public static final int ContactListItemView_list_item_presence_icon_margin = 12;
         /**
@@ -4326,7 +4339,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_presence_icon_size
+          @attr name android:list_item_presence_icon_size
         */
         public static final int ContactListItemView_list_item_presence_icon_size = 13;
         /**
@@ -4342,7 +4355,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_profile_photo_size
+          @attr name android:list_item_profile_photo_size
         */
         public static final int ContactListItemView_list_item_profile_photo_size = 15;
         /**
@@ -4358,7 +4371,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_text_indent
+          @attr name android:list_item_text_indent
         */
         public static final int ContactListItemView_list_item_text_indent = 24;
         /**
@@ -4374,7 +4387,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_item_vertical_divider_margin
+          @attr name android:list_item_vertical_divider_margin
         */
         public static final int ContactListItemView_list_item_vertical_divider_margin = 11;
         /**
@@ -4390,7 +4403,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:list_section_header_height
+          @attr name android:list_section_header_height
         */
         public static final int ContactListItemView_list_section_header_height = 1;
         /**
@@ -4400,7 +4413,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name edu.bupt.contacts:section_header_background
+          @attr name android:section_header_background
         */
         public static final int ContactListItemView_section_header_background = 3;
         /** Attributes that can be used with a EdgeTriggerView.
@@ -4431,7 +4444,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:edgeWidth
+          @attr name android:edgeWidth
         */
         public static final int EdgeTriggerView_edgeWidth = 0;
         /**
@@ -4448,7 +4461,7 @@ containing a value of this type.
 <tr><td><code>left</code></td><td>0x01</td><td></td></tr>
 <tr><td><code>right</code></td><td>0x02</td><td></td></tr>
 </table>
-          @attr name edu.bupt.contacts:listenEdges
+          @attr name android:listenEdges
         */
         public static final int EdgeTriggerView_listenEdges = 1;
         /** Attributes that can be used with a Favorites.
@@ -4477,7 +4490,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:favorites_padding_bottom
+          @attr name android:favorites_padding_bottom
         */
         public static final int Favorites_favorites_padding_bottom = 0;
         /** Attributes that can be used with a InterpolatingLayout_Layout.
@@ -4530,7 +4543,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowMarginLeft
+          @attr name android:layout_narrowMarginLeft
         */
         public static final int InterpolatingLayout_Layout_layout_narrowMarginLeft = 2;
         /**
@@ -4546,7 +4559,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowMarginRight
+          @attr name android:layout_narrowMarginRight
         */
         public static final int InterpolatingLayout_Layout_layout_narrowMarginRight = 3;
         /**
@@ -4562,7 +4575,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowPaddingLeft
+          @attr name android:layout_narrowPaddingLeft
         */
         public static final int InterpolatingLayout_Layout_layout_narrowPaddingLeft = 4;
         /**
@@ -4578,7 +4591,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowPaddingRight
+          @attr name android:layout_narrowPaddingRight
         */
         public static final int InterpolatingLayout_Layout_layout_narrowPaddingRight = 5;
         /**
@@ -4594,7 +4607,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowParentWidth
+          @attr name android:layout_narrowParentWidth
         */
         public static final int InterpolatingLayout_Layout_layout_narrowParentWidth = 0;
         /**
@@ -4610,7 +4623,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_narrowWidth
+          @attr name android:layout_narrowWidth
         */
         public static final int InterpolatingLayout_Layout_layout_narrowWidth = 1;
         /**
@@ -4626,7 +4639,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_wideMarginLeft
+          @attr name android:layout_wideMarginLeft
         */
         public static final int InterpolatingLayout_Layout_layout_wideMarginLeft = 8;
         /**
@@ -4642,7 +4655,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_wideMarginRight
+          @attr name android:layout_wideMarginRight
         */
         public static final int InterpolatingLayout_Layout_layout_wideMarginRight = 9;
         /**
@@ -4658,7 +4671,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_widePaddingLeft
+          @attr name android:layout_widePaddingLeft
         */
         public static final int InterpolatingLayout_Layout_layout_widePaddingLeft = 10;
         /**
@@ -4674,7 +4687,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_widePaddingRight
+          @attr name android:layout_widePaddingRight
         */
         public static final int InterpolatingLayout_Layout_layout_widePaddingRight = 11;
         /**
@@ -4690,7 +4703,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_wideParentWidth
+          @attr name android:layout_wideParentWidth
         */
         public static final int InterpolatingLayout_Layout_layout_wideParentWidth = 6;
         /**
@@ -4706,7 +4719,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:layout_wideWidth
+          @attr name android:layout_wideWidth
         */
         public static final int InterpolatingLayout_Layout_layout_wideWidth = 7;
         /**  Maps a contact kind or mime-type to a RemoteViews XML formatter 
@@ -4744,7 +4757,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name edu.bupt.contacts:detailColumn
+          @attr name android:detailColumn
         */
         public static final int Mapping_detailColumn = 4;
         /**
@@ -4756,7 +4769,7 @@ containing a value of this type.
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           <p>This is a private symbol.
-          @attr name edu.bupt.contacts:icon
+          @attr name android:icon
         */
         public static final int Mapping_icon = 2;
         /**
@@ -4772,7 +4785,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name edu.bupt.contacts:mimeType
+          @attr name android:mimeType
         */
         public static final int Mapping_mimeType = 0;
         /**
@@ -4784,7 +4797,7 @@ containing a value of this type.
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           <p>This is a private symbol.
-          @attr name edu.bupt.contacts:remoteViews
+          @attr name android:remoteViews
         */
         public static final int Mapping_remoteViews = 1;
         /**
@@ -4800,7 +4813,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
           <p>This is a private symbol.
-          @attr name edu.bupt.contacts:summaryColumn
+          @attr name android:summaryColumn
         */
         public static final int Mapping_summaryColumn = 3;
         /** Attributes that can be used with a ProportionalLayout.
@@ -4829,7 +4842,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:direction
+          @attr name android:direction
         */
         public static final int ProportionalLayout_direction = 0;
         /**
@@ -4843,7 +4856,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:ratio
+          @attr name android:ratio
         */
         public static final int ProportionalLayout_ratio = 1;
         /** Attributes that can be used with a VoicemailStatus.
@@ -4877,7 +4890,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_voicemail_status_action_text_color
+          @attr name android:call_log_voicemail_status_action_text_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_action_text_color = 3;
         /**
@@ -4892,7 +4905,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_voicemail_status_background_color
+          @attr name android:call_log_voicemail_status_background_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_background_color = 1;
         /**
@@ -4908,7 +4921,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_voicemail_status_height
+          @attr name android:call_log_voicemail_status_height
         */
         public static final int VoicemailStatus_call_log_voicemail_status_height = 0;
         /**
@@ -4923,7 +4936,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name edu.bupt.contacts:call_log_voicemail_status_text_color
+          @attr name android:call_log_voicemail_status_text_color
         */
         public static final int VoicemailStatus_call_log_voicemail_status_text_color = 2;
     };

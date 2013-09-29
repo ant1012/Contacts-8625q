@@ -1,10 +1,15 @@
 package edu.bupt.contacts.activities;
 
+import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+
 
 import edu.bupt.contacts.R;
 
@@ -60,6 +65,54 @@ public class MenuHistory extends Activity{
 		return str;
 	}
 	
+	public int SmsIndex(int index,int read){
+		int indexS = 0;
+		if(index == 2){
+			indexS = 1;			
+		}else if(index == 1){
+			if(read == 0){
+				indexS = 2;
+			}else{
+				indexS = 3;
+			}
+		}
+		return indexS;
+	}
+	
+	public String SmsType(int index,int read){
+		String str = null;
+		int indexS = SmsIndex(index,read);
+		switch(indexS){
+		case 1:
+			str = "已发信息";
+			break;
+		case 2:
+			str = "已收未读";
+			break;
+		case 3:
+			str = "已收已读";
+			break;
+		}
+		return str;
+	}
+	
+	public String SmsImgType(int index,int read){
+		String str = null;
+		int indexS = SmsIndex(index,read);
+		switch(indexS){
+		case 1:
+			str = ""+R.drawable.ic_send;
+			break;
+		case 2:
+			str = ""+R.drawable.ic_rec_unread;
+			break;
+		case 3:
+			str = ""+R.drawable.ic_rec_read;
+			break;
+		}
+		return str;
+	}
+	
 	public String ImgType(int index){
 		String str = null;
 		switch(index){
@@ -81,10 +134,10 @@ public class MenuHistory extends Activity{
 		String str = null;
 		switch(sub_id){
 		case 0:
-			str = "			CDMA";
+			str = "				卡一";
 			break;
 		case 1:
-			str = "			GSM";
+			str = "				卡二";
 			break;
 
 		}
@@ -108,7 +161,7 @@ public class MenuHistory extends Activity{
 	
 	public static String dt(long time){
 		Date now=new Date(time);
-		SimpleDateFormat temp=new SimpleDateFormat("yyyy-MM-dd kk:mm E");
+		SimpleDateFormat temp=new SimpleDateFormat("yyyy年 MM月dd日	kk:mm	E");
 		String str=temp.format(now);
 		return str;
 		}
@@ -173,7 +226,7 @@ public class MenuHistory extends Activity{
 					map.put("img", ImgType(typeIndex)); 
 			        map.put("typeIndex", DialType(typeIndex));   
 			        map.put("date", dt(date));   
-			        map.put("duration",checkDur(duration)); 
+			        map.put("duration","呼叫时长： "+checkDur(duration)+"\n"); 
 			        map.put("sub_id", SimType(sub_id));   
 			        
 			        list.add(map);   
@@ -182,43 +235,60 @@ public class MenuHistory extends Activity{
 
 
 					}while(cursor.moveToNext());
-//					Cursor cur = getContentResolver().query(ALL_INBOX,
-//
-//							   null, "number=?", new String[]{phoneNumber}, null);
-//							if(!cur.moveToFirst())
-//
-//							{
-//
-////							Log.i("通话记录","目前没有通话记录");
-//
-//							return;
-//
-//							}
-//							
-//							do
-//
-//							{
-//								
-//							int duration = cur.getInt(cur.getColumnIndex(CallLog.Calls.DURATION));	//s
-//							int sub_id = cur.getInt(cur.getColumnIndex("sub_id"));//0/1
-//							int typeIndex = cur.getInt(cur.getColumnIndex(CallLog.Calls.TYPE));//1/2/3
-//							long date =  cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));//
-//							Log.i("date",checkDur(duration)+";"+dt(date));
-//							
-//
-//							Map<String, Object> map = new HashMap<String, Object>();
-//							map.put("img", ImgType(typeIndex)); 
-//					        map.put("typeIndex", DialType(typeIndex));   
-//					        map.put("date", dt(date));   
-//					        map.put("duration",checkDur(duration)); 
-//					        map.put("sub_id", SimType(sub_id));   
-//					        
-//					        list.add(map);   
-//
-//							
-//
-//
-//							}while(cur.moveToNext());			
+					Cursor cur = getContentResolver().query(ALL_INBOX,null,null, null, null);
+							if(!cur.moveToFirst())
+
+							{
+
+//							Log.i("通话记录","目前没有通话记录");
+
+							return;
+
+							}
+							
+							do
+
+							{
+							String address = cur.getString(cur.getColumnIndex("address"));
+							String duration = cur.getString(cur.getColumnIndex("body"));	//s
+							int sub_id = cur.getInt(cur.getColumnIndex("sub_id"));//0/1
+							int typeIndex = cur.getInt(cur.getColumnIndex("type"));//
+							int read = cur.getInt(cur.getColumnIndex("read"));//0 no / 1 yes
+							long date =  cur.getLong(cur.getColumnIndex("date"));//
+							address = address.replace(" ", "");
+							Log.i("address",address);
+							if(address.contains(phoneNumber) && (typeIndex == 1 || typeIndex == 2)){
+								if(duration.length() > 8){
+									duration = duration.substring(0, 8)+"……";
+								}
+								
+	
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("img", SmsImgType(typeIndex,read)); 
+						        map.put("typeIndex", SmsType(typeIndex,read));   
+						        map.put("date", dt(date));   
+						        map.put("duration",duration+"\n"); 
+						        map.put("sub_id", SimType(sub_id));   
+						        
+						        list.add(map);
+							}
+   
+
+							
+
+
+							}while(cur.moveToNext());	
+							
+							
+							//排序
+							Collections.sort(list, new Comparator<Map<String, Object>>() {   
+							    public int compare(Map<String, Object> o1, Map<String, Object> o2) {      
+							        //return (o2.getValue() - o1.getValue()); 
+							        return (o2.get("date")).toString().compareTo((String) o1.get("date"));
+							    }
+
+
+							});
 					
 					
 		}catch(Exception e){
@@ -229,5 +299,9 @@ public class MenuHistory extends Activity{
 		
 
 	}
+	
+
+
+
 	
 }

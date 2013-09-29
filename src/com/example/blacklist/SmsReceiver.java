@@ -37,13 +37,16 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String ACTION_CALL = "android.intent.action.PHONE_STATE";
     private Context context;
     private DBHelper mDBHelper;
+    private WhiteDBHelper mWhiteDBHelper;
     private MsgBlockDBHelper msgDBHelper;
     private CallBlockDBHelper callDBHelper;
     private SimpleDateFormat formatter;
     private CallLogContent callLogContent;
     private Vibrator mVibrator;
     private SharedPreferences sp;
+    private SharedPreferences whiteMode;
     private boolean blockStranger;
+    private boolean white_block_mode;
     public MediaPlayer  mMediaPlayer        = null;  
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -52,6 +55,7 @@ public class SmsReceiver extends BroadcastReceiver {
         String incomingNumber = "";
         this.context = context;
         sp = context.getSharedPreferences("blacklist", 0);
+        whiteMode = context.getSharedPreferences("whitelist", 0);
         Log.v(TAG, "action = " + action);
         if (ACTION_SMS.equals(action)) {
 
@@ -171,96 +175,171 @@ public class SmsReceiver extends BroadcastReceiver {
                 break;
 
             case TelephonyManager.CALL_STATE_RINGING:
-                
-                incomingNumber = intent.getStringExtra("incoming_number");
-                Log.v(TAG, incomingNumber + " is calling...");
-                blockStranger = sp.getBoolean("blockStranger", false);
+                white_block_mode = whiteMode.getBoolean("white_mode", false);
+                Log.i("white_block_mode","white_block_mode is "+white_block_mode);
+                if(white_block_mode){
+                    incomingNumber = intent.getStringExtra("incoming_number");
+                    Log.v(TAG, incomingNumber + " is calling...");
+                    blockStranger = sp.getBoolean("blockStranger", false);
 
-                mDBHelper = new DBHelper(context, "BlackList", null, 1);
-                String sql = "select * from BlackList where phone = ?";
-                Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
-                        new String[] { incomingNumber });
-                formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
-                if (cursor.moveToFirst()
-                        || (blockStranger && isStranger(incomingNumber))) {
-                    Log.v(TAG, "This number is in blacklist...");
-                    int blockId = 2;
-                    String time = formatter.format(new Date());
-                    String name = context.getResources().getString(
-                            R.string.stranger);
+                    mWhiteDBHelper = new WhiteDBHelper(context, "WhiteList", null, 1);
+                    String sql = "select * from WhiteList where phone = ?";
+                    Cursor cursor = mWhiteDBHelper.getWritableDatabase().rawQuery(sql,
+                            new String[] { incomingNumber });
+                    formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
+                    if (!cursor.moveToFirst() && (isStranger(incomingNumber))) {
+                        Log.v(TAG, "This number is not in whitelist...");
+                        int blockId = 2;
+                        String time = formatter.format(new Date());
+                        String name = context.getResources().getString(
+                                R.string.stranger);
 
-                    if (cursor.moveToFirst()) {
-                        blockId = cursor.getInt(4);
-                        name = cursor.getString(1);
-                    }
+                        if (cursor.moveToFirst()) {
+                            blockId = cursor.getInt(4);
+                            name = cursor.getString(1);
+                        }
 
-                    if (blockId != 1) {
-                        // int modePos = sp.getInt("mode", 0);
-                        int ringtonePos = sp.getInt("ringtone", 0);
-                        // 静音
-                        try {
-                            AudioManager audioManager = (AudioManager) context
-                                    .getSystemService(Context.AUDIO_SERVICE);
-                            if (audioManager != null) {
-                                audioManager
-                                        .setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                audioManager
-                                        .getStreamVolume(AudioManager.STREAM_RING);
+                        if (blockId != 1) {
+                            // int modePos = sp.getInt("mode", 0);
+                            int ringtonePos = sp.getInt("ringtone", 0);
+                            // 静音
+                            try {
+                                AudioManager audioManager = (AudioManager) context
+                                        .getSystemService(Context.AUDIO_SERVICE);
+                                if (audioManager != null) {
+                                    audioManager
+                                            .setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                    audioManager
+                                            .getStreamVolume(AudioManager.STREAM_RING);
 
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "error: ", e);
                             }
-                        } catch (Exception e) {
-                            Log.e(TAG, "error: ", e);
+
+                            if (ringtonePos == 1) {// 震动
+                                long[] pattern = { 100, 400, 100, 400 };
+                                mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                                mVibrator.vibrate(pattern, -1);
+                            }
+
+                            try {
+                                ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+                                telephony.endCall(0);
+                                telephony.endCall(1);
+                            } catch (Exception e) {
+                                Log.e(TAG, "error: ", e);
+                            }
+
+                            callDBHelper = new CallBlockDBHelper(context,
+                                    "CallBlockRecord", null, 1);
+                            callDBHelper.addRecord(name, incomingNumber, time);
+                            callDBHelper.close();
+
+                            context.sendBroadcast(new Intent(
+                                    CallBlock.ACTION_CALL_UPDATE));
+
+                            if (callLogContent != null) {
+                                context.getContentResolver()
+                                        .unregisterContentObserver(callLogContent);
+                            }
+
+                            callLogContent = new CallLogContent(new Handler(), incomingNumber);
+                            context.getContentResolver().registerContentObserver (
+                                            CallLog.Calls.CONTENT_URI, true, callLogContent);
                         }
-
-                        if (ringtonePos == 1) {// 震动
-                            long[] pattern = { 100, 400, 100, 400 };
-                            mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                            mVibrator.vibrate(pattern, -1);
-                        }
-
-                        try {
-//                            Method method = Class.forName(
-//                                    "android.os.ServiceManager").getMethod(
-//                                    "getService", String.class);
-//                            IBinder binder = (IBinder) method.invoke(null,
-//                                    new Object[] { "phone" });
-//                            ITelephony telephony = ITelephony.Stub
-//                                    .asInterface(binder);
-//                            telephony.endCall();
-                            ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
-//                            for(int i = 0; i < 10000; i++){
-//                            	telephony.endCall(i);
-//                            }
-                            telephony.endCall(0);
-                            telephony.endCall(1);
-                        } catch (Exception e) {
-                            Log.e(TAG, "error: ", e);
-                        }
-
-                        callDBHelper = new CallBlockDBHelper(context,
-                                "CallBlockRecord", null, 1);
-                        callDBHelper.addRecord(name, incomingNumber, time);
-                        callDBHelper.close();
-
-                        context.sendBroadcast(new Intent(
-                                CallBlock.ACTION_CALL_UPDATE));
-
-                        if (callLogContent != null) {
-                            context.getContentResolver()
-                                    .unregisterContentObserver(callLogContent);
-                        }
-
-                        callLogContent = new CallLogContent(new Handler(), incomingNumber);
-                        context.getContentResolver().registerContentObserver (
-                                        CallLog.Calls.CONTENT_URI, true, callLogContent);
+                        cursor.close();
+                    } else if (callLogContent != null) {
+                        context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
-                    cursor.close();
-                } else if (callLogContent != null) {
-                    context.getContentResolver().unregisterContentObserver(callLogContent);
+                    mWhiteDBHelper.close();
+                    context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
+                    break;
+                }else{
+                  incomingNumber = intent.getStringExtra("incoming_number");
+                  Log.v(TAG, incomingNumber + " is calling...");
+                  blockStranger = sp.getBoolean("blockStranger", false);
+  
+                  mDBHelper = new DBHelper(context, "BlackList", null, 1);
+                  String sql = "select * from BlackList where phone = ?";
+                  Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
+                          new String[] { incomingNumber });
+                  formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
+                  if (cursor.moveToFirst()
+                          || (blockStranger && isStranger(incomingNumber))) {
+                      Log.v(TAG, "This number is in blacklist...");
+                      int blockId = 2;
+                      String time = formatter.format(new Date());
+                      String name = context.getResources().getString(
+                              R.string.stranger);
+  
+                      if (cursor.moveToFirst()) {
+                          blockId = cursor.getInt(4);
+                          name = cursor.getString(1);
+                      }
+  
+                      if (blockId != 1) {
+                          // int modePos = sp.getInt("mode", 0);
+                          int ringtonePos = sp.getInt("ringtone", 0);
+                          // 静音
+                          try {
+                              AudioManager audioManager = (AudioManager) context
+                                      .getSystemService(Context.AUDIO_SERVICE);
+                              if (audioManager != null) {
+                                  audioManager
+                                          .setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                  audioManager
+                                          .getStreamVolume(AudioManager.STREAM_RING);
+  
+                              }
+                          } catch (Exception e) {
+                              Log.e(TAG, "error: ", e);
+                          }
+  
+                          if (ringtonePos == 1) {// 震动
+                              long[] pattern = { 100, 400, 100, 400 };
+                              mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                              mVibrator.vibrate(pattern, -1);
+                          }
+  
+                          try {
+                              ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+                              telephony.endCall(0);
+                              telephony.endCall(1);
+                          } catch (Exception e) {
+                              Log.e(TAG, "error: ", e);
+                          }
+  
+                          callDBHelper = new CallBlockDBHelper(context,
+                                  "CallBlockRecord", null, 1);
+                          callDBHelper.addRecord(name, incomingNumber, time);
+                          callDBHelper.close();
+  
+                          context.sendBroadcast(new Intent(
+                                  CallBlock.ACTION_CALL_UPDATE));
+  
+                          if (callLogContent != null) {
+                              context.getContentResolver()
+                                      .unregisterContentObserver(callLogContent);
+                          }
+  
+                          callLogContent = new CallLogContent(new Handler(), incomingNumber);
+                          context.getContentResolver().registerContentObserver (
+                                          CallLog.Calls.CONTENT_URI, true, callLogContent);
+                      }
+                      cursor.close();
+                  } else if (callLogContent != null) {
+                      context.getContentResolver().unregisterContentObserver(callLogContent);
+                  }
+                  mDBHelper.close();
+                  context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
+                  break;
                 }
-                mDBHelper.close();
-                context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
-                break;
+
+            	
+ 
+            	
+            	
             }
         }
 
