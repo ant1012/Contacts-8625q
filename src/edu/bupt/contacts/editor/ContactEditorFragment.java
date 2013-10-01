@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2010 The Android Open  Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -534,10 +534,18 @@ public class ContactEditorFragment extends Fragment implements
     private void selectAccountAndCreateContact() {
         // If this is a local profile, then skip the logic about showing the accounts changed
         // activity and create a phone-local contact.
+        
+        /** zzz */
+        Log.d(TAG, "selectAccountAndCreateContact");
+        
+        
         if (mNewLocalProfile) {
             createContact(null);
             return;
         }
+        
+        /** zzz */
+        Log.d(TAG, "selectAccountAndCreateContact");
 
         // If there is no default account or the accounts have changed such that we need to
         // prompt the user again, then launch the account prompt.
@@ -582,15 +590,26 @@ public class ContactEditorFragment extends Fragment implements
      */
     private void createContact(AccountWithDataSet account) {
         final AccountTypeManager accountTypes = AccountTypeManager.getInstance(mContext);
-        final AccountType accountType =
+        AccountType accountType =
                 accountTypes.getAccountType(account != null ? account.type : null,
                         account != null ? account.dataSet : null);
 
         if (accountType.getCreateContactActivityClassName() != null) {
+            /** zzz */
+            Log.d(TAG, "accountType.getCreateContactActivityClassName() != null");
+            
             if (mListener != null) {
                 mListener.onCustomCreateContactActivityRequested(account, mIntentExtras);
             }
         } else {
+            /** zzz */
+            if(account == null) {
+                // use PHONE(com.android.localphone) install of null account
+                account = accountTypes.getAccounts(false).get(0);
+                accountType = accountTypes.getAccountTypeForAccount(account);
+                Log.i(TAG, "account - " + account + "\naccountType - " + accountType);
+            }
+            
             bindEditorsForNewContact(account, accountType);
         }
     }
@@ -630,6 +649,9 @@ public class ContactEditorFragment extends Fragment implements
     private void bindEditorsForNewContact(AccountWithDataSet newAccount,
             final AccountType newAccountType, EntityDelta oldState, AccountType oldAccountType) {
         mStatus = Status.EDITING;
+
+        /** zzz */
+        Log.i(TAG, "newAccount - " + newAccount.toString());
 
         final ContentValues values = new ContentValues();
         if (newAccount != null) {
@@ -700,7 +722,10 @@ public class ContactEditorFragment extends Fragment implements
             final long rawContactId = values.getAsLong(RawContacts._ID);
 
             final BaseRawContactEditorView editor;
+            
+            /** zzz */
             if (!type.areContactsWritable()) {
+                
                 editor = (BaseRawContactEditorView) inflater.inflate(
                         R.layout.raw_contact_readonly_editor_view, mContent, false);
                 ((RawContactReadOnlyEditorView) editor).setListener(this);
