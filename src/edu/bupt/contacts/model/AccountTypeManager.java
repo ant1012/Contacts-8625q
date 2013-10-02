@@ -181,6 +181,10 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
     private AccountType mFallbackAccountType;
 
+    /** zzz */
+    private AccountType mPhoneAccountType;
+    private AccountType mSimAccountType;
+
     private List<AccountWithDataSet> mAccounts = Lists.newArrayList();
     private List<AccountWithDataSet> mContactWritableAccounts = Lists.newArrayList();
     private List<AccountWithDataSet> mGroupWritableAccounts = Lists.newArrayList();
@@ -274,6 +278,11 @@ class AccountTypeManagerImpl extends AccountTypeManager
     public AccountTypeManagerImpl(Context context) {
         mContext = context;
         mFallbackAccountType = new FallbackAccountType(context);
+
+        /** zzz */
+        mPhoneAccountType = new PhoneAccountType(context);
+        mSimAccountType = new SimAccountType(context);
+        
 
         mAccountManager = AccountManager.get(mContext);
 
@@ -623,6 +632,11 @@ class AccountTypeManagerImpl extends AccountTypeManager
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
+        if(accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
+            return mPhoneAccountType;
+        } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) {
+            return mSimAccountType;
+        }
         return mFallbackAccountType;
     }
 

@@ -731,7 +731,6 @@ public class ContactEditorFragment extends Fragment implements
             
             /** zzz */
             if (!type.areContactsWritable()) {
-                
                 editor = (BaseRawContactEditorView) inflater.inflate(
                         R.layout.raw_contact_readonly_editor_view, mContent, false);
                 ((RawContactReadOnlyEditorView) editor).setListener(this);
