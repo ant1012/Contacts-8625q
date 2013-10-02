@@ -23,6 +23,7 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.ContactEditorAccountsChangedActivity;
 import edu.bupt.contacts.activities.ContactEditorActivity;
 import edu.bupt.contacts.activities.JoinContactActivity;
+import edu.bupt.contacts.activities.SelectLocalAccountActivity;
 import edu.bupt.contacts.detail.PhotoSelectionHandler;
 import edu.bupt.contacts.editor.AggregationSuggestionEngine.Suggestion;
 import edu.bupt.contacts.editor.Editor.EditorListener;
@@ -38,7 +39,6 @@ import edu.bupt.contacts.util.AccountsListAdapter;
 import edu.bupt.contacts.util.ContactPhotoUtils;
 import edu.bupt.contacts.util.AccountsListAdapter.AccountListFilter;
 import edu.bupt.contacts.util.HelpUtils;
-
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -364,19 +364,25 @@ public class ContactEditorFragment extends Fragment implements
             if (Intent.ACTION_EDIT.equals(mAction)) {
                 getLoaderManager().initLoader(LOADER_DATA, null, mDataLoaderListener);
             } else if (Intent.ACTION_INSERT.equals(mAction)) {
-                final Account account = mIntentExtras == null ? null :
-                        (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
-                final String dataSet = mIntentExtras == null ? null :
-                        mIntentExtras.getString(Intents.Insert.DATA_SET);
+                /** zzz */
+//                final Account account = mIntentExtras == null ? null :
+//                        (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
+//                final String dataSet = mIntentExtras == null ? null :
+//                        mIntentExtras.getString(Intents.Insert.DATA_SET);
+//
+//                if (account != null) {
+//                    // Account specified in Intent
+//                    createContact(new AccountWithDataSet(account.name, account.type, dataSet));
+//                } else {
+//                    // No Account specified. Let the user choose
+//                    // Load Accounts async so that we can present them
+//                    selectAccountAndCreateContact();
+//                }
 
-                if (account != null) {
-                    // Account specified in Intent
-                    createContact(new AccountWithDataSet(account.name, account.type, dataSet));
-                } else {
-                    // No Account specified. Let the user choose
-                    // Load Accounts async so that we can present them
-                    selectAccountAndCreateContact();
-                }
+                Intent intent = new Intent(mContext, SelectLocalAccountActivity.class);
+                mStatus = Status.SUB_ACTIVITY;
+                startActivityForResult(intent, REQUEST_CODE_ACCOUNTS_CHANGED);
+
             } else if (ContactEditorActivity.ACTION_SAVE_COMPLETED.equals(mAction)) {
                 // do nothing
             } else throw new IllegalArgumentException("Unknown Action String " + mAction +
@@ -603,12 +609,12 @@ public class ContactEditorFragment extends Fragment implements
             }
         } else {
             /** zzz */
-            if(account == null) {
-                // use PHONE(com.android.localphone) install of null account
-                account = accountTypes.getAccounts(false).get(0);
-                accountType = accountTypes.getAccountTypeForAccount(account);
-                Log.i(TAG, "account - " + account + "\naccountType - " + accountType);
-            }
+//            if(account == null) {
+//                // use PHONE(com.android.localphone) install of null account
+//                account = accountTypes.getAccounts(false).get(0);
+//                accountType = accountTypes.getAccountTypeForAccount(account);
+//                Log.i(TAG, "account - " + account + "\naccountType - " + accountType);
+//            }
             
             bindEditorsForNewContact(account, accountType);
         }
@@ -651,7 +657,7 @@ public class ContactEditorFragment extends Fragment implements
         mStatus = Status.EDITING;
 
         /** zzz */
-        Log.i(TAG, "newAccount - " + newAccount.toString());
+//        Log.i(TAG, "newAccount - " + newAccount.toString());
 
         final ContentValues values = new ContentValues();
         if (newAccount != null) {

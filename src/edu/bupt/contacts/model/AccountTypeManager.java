@@ -608,13 +608,22 @@ class AccountTypeManagerImpl extends AccountTypeManager
     /**
      * Return {@link AccountType} for the given account type and data set.
      */
+
+    /** zzz */
+    // force all accounts as fallback type
+//    @Override
+//    public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
+//        ensureAccountsLoaded();
+//        synchronized (this) {
+//            AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
+//            return type != null ? type : mFallbackAccountType;
+//        }
+//    }
+
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
-        synchronized (this) {
-            AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
-            return type != null ? type : mFallbackAccountType;
-        }
+        return mFallbackAccountType;
     }
 
     /**

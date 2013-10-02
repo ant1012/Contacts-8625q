@@ -697,5 +697,14 @@
                 <data android:mimeType="vnd.android.cursor.item/contact" />
             </intent-filter>
         </service>
+        
+        <!-- zzz -->
+        
+        <activity
+            android:name=".activities.SelectLocalAccountActivity"
+            android:theme="@style/ContactEditorAccountsChangedActivityTheme"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"/>
+
     </application>
 </manifest>

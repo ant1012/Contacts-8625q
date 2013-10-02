@@ -612,5 +612,9 @@
     <string name="ringtone2">振动模式</string>
     <string name="ok">确定</string>
     <string name="menu_calendar">日程安排</string>
-     <string name="menu_history">历史记录</string>
+    <string name="menu_history">历史记录</string>
+
+    <!-- zzz -->
+    <string name="select_local_account">选择存储位置</string>
+    
 </resources>

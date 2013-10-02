@@ -1838,5 +1838,8 @@
     <string name="select_sim">Select SIM</string>
 
     <string name="multiSelectExport">Multi Select Export</string>
+    
+    <!-- zzz -->
+    <string name="select_local_account">Select an account</string>
 
 </resources>
