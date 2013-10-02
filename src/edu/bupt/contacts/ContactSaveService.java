@@ -482,6 +482,10 @@ public class ContactSaveService extends IntentService {
             callbackIntent.setData(lookupUri);
             deliverCallback(callbackIntent);
         }
+
+        /** zzz */
+        // write to sim card
+        Log.d(TAG, "write to sim card here?");
     }
 
     /**
