@@ -16,10 +16,16 @@
 
 package edu.bupt.contacts.model;
 
-import edu.bupt.contacts.R;
-import edu.bupt.contacts.test.NeededForTesting;
+import com.google.android.collect.Lists;
 
+import edu.bupt.contacts.R;
+import edu.bupt.contacts.model.AccountType.DefinitionException;
+import edu.bupt.contacts.model.AccountType.EditField;
+import edu.bupt.contacts.model.BaseAccountType.SimpleInflater;
+import edu.bupt.contacts.test.NeededForTesting;
 import android.content.Context;
+import android.provider.ContactsContract.CommonDataKinds.Nickname;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
 public class SimAccountType extends BaseAccountType {
@@ -39,7 +45,6 @@ public class SimAccountType extends BaseAccountType {
             addDataKindStructuredName(context);
             addDataKindDisplayName(context);
             addDataKindPhoneticName(context);
-            addDataKindNickname(context);
             addDataKindPhone(context);
 
             mIsInitialized = true;
@@ -50,6 +55,21 @@ public class SimAccountType extends BaseAccountType {
 
     public SimAccountType(Context context) {
         this(context, null);
+    }
+
+    @Override
+    protected DataKind addDataKindDisplayName(Context context) throws DefinitionException {
+        DataKind kind = addKind(new DataKind(DataKind.PSEUDO_MIME_TYPE_DISPLAY_NAME,
+                R.string.nameLabelsGroup, -1, true, R.layout.text_fields_editor_view));
+        kind.actionHeader = new SimpleInflater(R.string.nameLabelsGroup);
+        kind.actionBody = new SimpleInflater(Nickname.NAME);
+        kind.typeOverallMax = 1;
+
+        kind.fieldList = Lists.newArrayList();
+        kind.fieldList.add(new EditField(StructuredName.DISPLAY_NAME,
+                R.string.full_name, FLAGS_PERSON_NAME).setShortForm(true));
+
+        return kind;
     }
 
     /**

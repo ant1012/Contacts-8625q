@@ -507,7 +507,7 @@ public class ContactSaveService extends IntentService {
     /** zzz */
     private void saveToSimcard(Uri lookupUri, String account_name) {
         Uri simUri = null;
-        if (account_name.equals("UIM")) {
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
             simUri = Uri.parse("content://iccmsim/adn");
             Log.i(TAG, "content://iccmsim/adn");
         } else if(account_name.equals("SIM2")) {

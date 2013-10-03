@@ -98,7 +98,7 @@ public final class AccountsListAdapter extends BaseAdapter {
         Log.i("AccountsListAdapter", "account.name - " + account.name);
         if (account.name.equals("PHONE")) {
             text1.setText(R.string.save_to_phone);
-        } else if (account.name.equals("SIM1")) {
+        } else if (account.name.equals("SIM1") || account.name.equals("UIM")) {
             text1.setText(R.string.save_to_uim);
         } else if (account.name.equals("SIM2")){
             text1.setText(R.string.save_to_sim2);
