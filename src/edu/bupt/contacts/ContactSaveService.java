@@ -495,7 +495,13 @@ public class ContactSaveService extends IntentService {
         String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
         Log.i(TAG, "account_name - " + account_name);
         
-        saveToSimcard(lookupUri, account_name);
+        if (state.get(0).isContactInsert()) {
+            Log.d(TAG, "Insert");
+            saveToSimcard(lookupUri, account_name);
+        } else {
+            Log.d(TAG, "Modify");
+//            saveToSimcard(lookupUri, account_name, state.get(0).);
+        }
     }
 
     /** zzz */
@@ -550,7 +556,7 @@ public class ContactSaveService extends IntentService {
         newSimValues.put("tag", name);
         newSimValues.put("number", phone);
         Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
-        if (newSimValues != null) {
+        if (newSimRow != null) {
             Log.d(TAG, "insert to sim card successfully");
         }
     }
