@@ -356,6 +356,39 @@ public class ContactSaveService extends IntentService {
         final ContentResolver resolver = getContentResolver();
         boolean succeeded = false;
 
+        /** zzz */
+        //get info
+        String ori_name = null;
+        String ori_phone = null;
+        final EntityDelta entity = state.get(0);
+        final ValuesDelta values = entity.getValues();
+        String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
+        Log.i(TAG, "account_name - " + account_name);
+        long contact_id = values.getAsLong(RawContacts._ID);
+        Log.i(TAG, state.toString());
+        Log.i(TAG, "_id - " + contact_id);
+
+        Cursor p = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, //
+                new String[] { CommonDataKinds.Phone.DISPLAY_NAME,
+                        CommonDataKinds.Phone.NUMBER }, //
+                CommonDataKinds.Phone.CONTACT_ID + " =? ", //
+                new String[] { String.valueOf(contact_id) }, //
+                null);
+        if (p.moveToNext()) {
+
+            try {
+                ori_name = p.getString(0);
+                ori_phone = p.getString(1);
+            } catch (Exception e) {
+                Log.w(TAG, e.toString());
+            }
+            Log.i(TAG, "ori_name - " + ori_name + "\nori_phone - " + ori_phone);
+        }
+        p.close();
+
+
+
         // Keep track of the id of a newly raw-contact (if any... there can be at most one).
         long insertedRawContactId = -1;
 
@@ -490,17 +523,13 @@ public class ContactSaveService extends IntentService {
 
         /** zzz */
         // write to sim card
-        final EntityDelta entity = state.get(0);
-        final ValuesDelta values = entity.getValues();
-        String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
-        Log.i(TAG, "account_name - " + account_name);
         
         if (state.get(0).isContactInsert()) {
             Log.d(TAG, "Insert");
             saveToSimcard(lookupUri, account_name);
         } else {
             Log.d(TAG, "Modify");
-//            saveToSimcard(lookupUri, account_name, state.get(0).);
+            saveToSimcard(lookupUri, account_name, ori_name, ori_phone);
         }
     }
 
@@ -557,6 +586,68 @@ public class ContactSaveService extends IntentService {
         newSimValues.put("number", phone);
         Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
         if (newSimRow != null) {
+            Log.d(TAG, "insert to sim card successfully");
+        }
+    }
+    
+
+    /** zzz */
+    private void saveToSimcard(Uri lookupUri, String account_name, String ori_name, String ori_phone) {
+        Uri simUri = null;
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
+            simUri = Uri.parse("content://iccmsim/adn");
+            Log.i(TAG, "content://iccmsim/adn");
+        } else if(account_name.equals("SIM2")) {
+            simUri = Uri.parse("content://iccmsim/adn_sub2");
+            Log.i(TAG, "content://iccmsim/adn_sub2");
+        } else {
+            Log.d(TAG, "return");
+            return;
+        }
+
+        Log.d(TAG, "write to sim card here?");
+        Log.i(TAG, "lookupUri - " + lookupUri.toString());
+        String name = null;
+        String phone = null;
+        long contactId = 0;
+
+        Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
+        int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
+        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        int phoneIdx = 0;
+
+        c.moveToNext();
+        name = c.getString(nameIdx);
+//        phone = c.getString(phoneIdx);
+        contactId = c.getLong(idIdx);
+        
+        if (Integer.parseInt(c.getString(c
+                .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+            Cursor p = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                    new String[] { String.valueOf(contactId) }, null);
+            p.moveToNext();
+            phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+            phone = p.getString(phoneIdx);
+            p.close();
+        }
+        c.close();
+
+        Log.i(TAG, "name - " + name);
+        Log.i(TAG, "contactId - " + contactId);
+        Log.i(TAG, "phone - " + phone);
+
+
+        // add it on the SIM card
+        ContentValues newSimValues = new ContentValues();
+
+        newSimValues.put("tag", ori_name);
+        newSimValues.put("number", ori_phone);
+        newSimValues.put("newTag", name);
+        newSimValues.put("newNumber", phone);
+        int newSimRow = getContentResolver().update(simUri, newSimValues, null, null);
+//        Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
+        if (newSimRow > 0) {
             Log.d(TAG, "insert to sim card successfully");
         }
     }
