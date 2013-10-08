@@ -21,10 +21,13 @@ import com.google.android.collect.Lists;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.model.AccountType.DefinitionException;
 import edu.bupt.contacts.model.AccountType.EditField;
+import edu.bupt.contacts.model.BaseAccountType.PhoneActionAltInflater;
+import edu.bupt.contacts.model.BaseAccountType.PhoneActionInflater;
 import edu.bupt.contacts.model.BaseAccountType.SimpleInflater;
 import edu.bupt.contacts.test.NeededForTesting;
 import android.content.Context;
 import android.provider.ContactsContract.CommonDataKinds.Nickname;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
@@ -61,13 +64,29 @@ public class SimAccountType extends BaseAccountType {
     protected DataKind addDataKindDisplayName(Context context) throws DefinitionException {
         DataKind kind = addKind(new DataKind(DataKind.PSEUDO_MIME_TYPE_DISPLAY_NAME,
                 R.string.nameLabelsGroup, -1, true, R.layout.text_fields_editor_view));
-        kind.actionHeader = new SimpleInflater(R.string.nameLabelsGroup);
         kind.actionBody = new SimpleInflater(Nickname.NAME);
         kind.typeOverallMax = 1;
 
         kind.fieldList = Lists.newArrayList();
         kind.fieldList.add(new EditField(StructuredName.DISPLAY_NAME,
                 R.string.full_name, FLAGS_PERSON_NAME).setShortForm(true));
+
+        return kind;
+    }
+
+    @Override
+    protected DataKind addDataKindPhone(Context context) throws DefinitionException {
+        DataKind kind = addKind(new DataKind(Phone.CONTENT_ITEM_TYPE, R.string.phoneLabelsGroup,
+                10, true, R.layout.text_fields_editor_view));
+        kind.iconAltRes = R.drawable.ic_text_holo_light;
+        kind.iconAltDescriptionRes = R.string.sms;
+        kind.actionHeader = new PhoneActionInflater();
+        kind.actionAltHeader = new PhoneActionAltInflater();
+        kind.actionBody = new SimpleInflater(Phone.NUMBER);
+        kind.typeColumn = Phone.TYPE;
+
+        kind.fieldList = Lists.newArrayList();
+        kind.fieldList.add(new EditField(Phone.NUMBER, R.string.phoneLabelsGroup, FLAGS_PHONE));
 
         return kind;
     }

@@ -571,10 +571,15 @@ class AccountTypeManagerImpl extends AccountTypeManager
     /**
      * Return list of all known, contact writable {@link AccountWithDataSet}'s.
      */
+//    @Override
+//    public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
+//        ensureAccountsLoaded();
+//        return contactWritableOnly ? mContactWritableAccounts : mAccounts;
+//    }
     @Override
     public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
         ensureAccountsLoaded();
-        return contactWritableOnly ? mContactWritableAccounts : mAccounts;
+        return mAccounts;
     }
 
     /**
