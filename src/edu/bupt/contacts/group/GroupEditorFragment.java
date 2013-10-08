@@ -219,6 +219,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         mMemberListAdapter = new MemberListAdapter();
     }
 
+    /** zzz */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -256,6 +257,37 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
                     ". Only support " + Intent.ACTION_EDIT + " or " + Intent.ACTION_INSERT);
         }
     }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//
+//        if (savedInstanceState != null) {
+//            // Just restore from the saved state.  No loading.
+//            onRestoreInstanceState(savedInstanceState);
+//            if (mStatus == Status.LOADING) {
+//                startGroupMetaDataLoader();
+//            } else {
+//                setupEditorForAccount();
+//            }
+//        } else if (Intent.ACTION_EDIT.equals(mAction)) {
+//            startGroupMetaDataLoader();
+//        } else if (Intent.ACTION_INSERT.equals(mAction)) {
+//            final Account account = mIntentExtras == null ? null :
+//                    (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
+//            final String dataSet = mIntentExtras == null ? null : mIntentExtras
+//                    .getString(Intents.Insert.DATA_SET);
+//
+//            // Account specified in Intent - no data set can be specified in
+//            // this manner.
+//            mAccountName = "PHONE";
+//            mAccountType = "com.android.localphone";
+//            mDataSet = dataSet;
+//            setupEditorForAccount();
+//        } else {
+//            throw new IllegalArgumentException("Unknown Action String " + mAction +
+//                    ". Only support " + Intent.ACTION_EDIT + " or " + Intent.ACTION_INSERT);
+//        }
+//    }
 
     private void startGroupMetaDataLoader() {
         mStatus = Status.LOADING;
@@ -331,8 +363,13 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         }
 
         mStatus = Status.SELECTING_ACCOUNT;
+        
+        /** zzz */
+//        SelectAccountDialogFragment.show(getFragmentManager(), this,
+//                R.string.dialog_new_group_account, AccountListFilter.ACCOUNTS_GROUP_WRITABLE,
+//                null);
         SelectAccountDialogFragment.show(getFragmentManager(), this,
-                R.string.dialog_new_group_account, AccountListFilter.ACCOUNTS_GROUP_WRITABLE,
+                R.string.dialog_new_group_account, AccountListFilter.ALL_ACCOUNTS,
                 null);
     }
 

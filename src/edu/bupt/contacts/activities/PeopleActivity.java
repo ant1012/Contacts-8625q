@@ -219,9 +219,14 @@ public class PeopleActivity extends ContactsActivity
         return ContactsUtils.areContactWritableAccountsAvailable(this);
     }
 
+    /** zzz */
+//    private boolean areGroupWritableAccountsAvailable() {
+////      return true;
+//        return ContactsUtils.areGroupWritableAccountsAvailable(this);
+//    }
     private boolean areGroupWritableAccountsAvailable() {
-//    	return true;
-        return ContactsUtils.areGroupWritableAccountsAvailable(this);
+        return true;
+        // return ContactsUtils.areGroupWritableAccountsAvailable(this);
     }
 
     /**
