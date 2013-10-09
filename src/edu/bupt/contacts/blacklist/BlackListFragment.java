@@ -52,7 +52,7 @@ public class BlackListFragment extends Fragment {
     private MyAlertDialog importContactDialog;
     private int spinnerLatestClicked;
     private String[] blockContent;
-    private static DBHelper mDBHelper;
+    private static BlacklistDBHelper mDBHelper;
     private int _ID, blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
@@ -103,11 +103,11 @@ public class BlackListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
-        cursor = mDBHelper.getWritableDatabase().query(DBHelper.TB_NAME, null,
-                null, null, null, null, DBHelper.NAME + " ASC");
-        String[] from = new String[] { DBHelper.NAME, DBHelper.Phone,
-                DBHelper.BlockContent };
+        mDBHelper = new BlacklistDBHelper(context, 1);
+        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null,
+                null, null, null, null, BlacklistDBHelper.NAME + " ASC");
+        String[] from = new String[] { BlacklistDBHelper.NAME, BlacklistDBHelper.Phone,
+                BlacklistDBHelper.BlockContent };
         int[] to = new int[] { R.id.blacklist_item_text1,
                 R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
         adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item,
@@ -368,8 +368,8 @@ public class BlackListFragment extends Fragment {
     }
 
     private void update() {
-        cursor = mDBHelper.getWritableDatabase().query(DBHelper.TB_NAME, null,
-                null, null, null, null, DBHelper.NAME + " ASC");
+        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null,
+                null, null, null, null, BlacklistDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
 

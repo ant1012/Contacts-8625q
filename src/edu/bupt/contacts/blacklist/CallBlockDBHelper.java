@@ -8,15 +8,16 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 
 public class CallBlockDBHelper extends SQLiteOpenHelper {
 
+    private static final String DATABASE_NAME = "blacklist.db";
+
     public static final String TB_NAME = "CallBlockRecord";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String PHONE = "phone";
     public static final String TIME = "time";
 
-    public CallBlockDBHelper(Context context, String name,
-            CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public CallBlockDBHelper(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
         this.getWritableDatabase();
     }
 

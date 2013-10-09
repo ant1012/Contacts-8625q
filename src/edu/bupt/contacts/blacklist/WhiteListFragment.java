@@ -103,7 +103,7 @@ public class WhiteListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new WhiteDBHelper(context, "WhiteListFragment", null, 1);
+        mDBHelper = new WhiteDBHelper(context, 1);
         cursor = mDBHelper.getWritableDatabase().query(WhiteDBHelper.TB_NAME,
                 null, null, null, null, null, WhiteDBHelper.NAME + " ASC");
         String[] from = new String[] { WhiteDBHelper.NAME, WhiteDBHelper.Phone,

@@ -89,8 +89,7 @@ public class CallBlockFragment extends Fragment {
     private void findViewAndSetListener() {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        callDBHelper = new CallBlockDBHelper(context, "CallBlockRecord", null,
-                1);
+        callDBHelper = new CallBlockDBHelper(context, 1);
         cursor = callDBHelper.getWritableDatabase().query(
                 CallBlockDBHelper.TB_NAME, null, null, null, null, null,
                 CallBlockDBHelper.ID + " ASC");
@@ -99,8 +98,9 @@ public class CallBlockFragment extends Fragment {
                 CallBlockDBHelper.PHONE, CallBlockDBHelper.TIME };
         int[] to = new int[] { R.id.block_item_text1, R.id.block_item_text2,
                 R.id.block_item_text3 };
-        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_block_item, cursor,
-                from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        adapter = new SimpleCursorAdapter(context,
+                R.layout.blacklist_block_item, cursor, from, to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

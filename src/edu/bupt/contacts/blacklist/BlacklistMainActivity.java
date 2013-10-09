@@ -1,10 +1,12 @@
 package edu.bupt.contacts.blacklist;
 
 import edu.bupt.contacts.R;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,6 +28,11 @@ public class BlacklistMainActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.blacklist_main_activity);
+
+        DBHelper dbHelper = new DBHelper(this, 1);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        dbHelper.onCreate(db);
+        Log.d(TAG, "e?");
         initFragment(savedInstanceState);
     }
 

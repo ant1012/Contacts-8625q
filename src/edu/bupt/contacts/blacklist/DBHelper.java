@@ -1,60 +1,56 @@
 package edu.bupt.contacts.blacklist;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
-
-    public static final String TAG = "franco--->DBHelper";
-    public static final String TB_NAME = "BlackListFragment";
+    private static final String DATABASE_NAME = "blacklist.db";
+    public static final String TAG = "DBHelper";
+    public static final String TB_NAME_BLACK_LIST = "BlackListFragment";
+    public static final String TB_NAME_MSG_BLOCK = "MsgBlockRecord";
+    public static final String TB_NAME_CALL_BLOCK = "CallBlockRecord";
+    public static final String TB_NAME_WHITE_LIST = "WhiteListFragment";
     public static final String ID = "_id";
     public static final String NAME = "name";
-    public static final String Phone = "phone";
+    public static final String PHONE = "phone";
+    public static final String MESSAGE = "message";
+    public static final String TIME = "time";
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public DBHelper(Context context, String name, CursorFactory factory,
-            int version) {
-        super(context, name, factory, version);
-        this.getWritableDatabase();
+    public DBHelper(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
     }
 
-    public void close() {
-        this.getWritableDatabase().close();
-    }
-
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + Phone
+    @Override
+    public void onCreate(SQLiteDatabase arg0) {
+        Log.d(TAG, "onCreate");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_BLACK_LIST + " (" + ID
+                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
+                + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
+                + " INTEGER)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_MSG_BLOCK + " (" + ID
+                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
+                + " VARCHAR," + MESSAGE + " VARCHAR," + TIME + " VARCHAR)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_CALL_BLOCK + " (" + ID
+                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
+                + " VARCHAR," + TIME + " VARCHAR)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_WHITE_LIST + " (" + ID
+                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
                 + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
                 + " INTEGER)");
     }
 
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
-        onCreate(db);
+    @Override
+    public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
+        arg0.execSQL("DROP TABLE IF EXISTS " + TB_NAME_BLACK_LIST);
+        arg0.execSQL("DROP TABLE IF EXISTS " + TB_NAME_MSG_BLOCK);
+        arg0.execSQL("DROP TABLE IF EXISTS " + TB_NAME_CALL_BLOCK);
+        arg0.execSQL("DROP TABLE IF EXISTS " + TB_NAME_WHITE_LIST);
+        onCreate(arg0);
     }
 
-    public void addPeople(String name, String phone, String blockContent,
-            Integer blockId) {
-        ContentValues values = new ContentValues();
-        values.put(DBHelper.NAME, name);
-        values.put(DBHelper.Phone, phone);
-        values.put(DBHelper.BlockContent, blockContent);
-        values.put(DBHelper.BlockId, blockId);
-        this.getWritableDatabase()
-                .insert(DBHelper.TB_NAME, DBHelper.ID, values);
-    }
-
-    public void delPeople(int id) {
-        this.getWritableDatabase().delete(DBHelper.TB_NAME,
-                DBHelper.ID + " = " + id, null);
-    }
-
-    public void delAllPeople() {
-        this.getWritableDatabase().delete(DBHelper.TB_NAME, null, null);
-    }
 }

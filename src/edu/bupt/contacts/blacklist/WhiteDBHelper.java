@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class WhiteDBHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "blacklist.db";
 
     public static final String TAG = "franco--->WhiteWhiteDBHelper";
     public static final String TB_NAME = "WhiteListFragment";
@@ -16,9 +17,8 @@ public class WhiteDBHelper extends SQLiteOpenHelper {
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public WhiteDBHelper(Context context, String name, CursorFactory factory,
-            int version) {
-        super(context, name, factory, version);
+    public WhiteDBHelper(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
         this.getWritableDatabase();
     }
 

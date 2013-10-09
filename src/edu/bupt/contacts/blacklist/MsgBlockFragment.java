@@ -93,7 +93,7 @@ public class MsgBlockFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        msgDBHelper = new MsgBlockDBHelper(context, "MsgBlockRecord", null, 1);
+        msgDBHelper = new MsgBlockDBHelper(context, 1);
         cursor = msgDBHelper.getWritableDatabase().query(
                 MsgBlockDBHelper.TB_NAME, null, null, null, null, null,
                 MsgBlockDBHelper.ID + " ASC");

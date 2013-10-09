@@ -5,19 +5,23 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.util.Log;
 
 public class MsgBlockDBHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "blacklist.db";
 
+    public static final String TAG = "MsgBlockDBHelper";
     public static final String TB_NAME = "MsgBlockRecord";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String PHONE = "phone";
     public static final String MESSAGE = "message";
     public static final String TIME = "time";
+    public static final String BlockContent = "blockContent";
+    public static final String BlockId = "blockId";
 
-    public MsgBlockDBHelper(Context context, String name,
-            CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public MsgBlockDBHelper(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
         this.getWritableDatabase();
     }
 

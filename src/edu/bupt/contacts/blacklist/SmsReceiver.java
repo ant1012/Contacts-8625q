@@ -35,7 +35,7 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String ACTION_SMS = "android.provider.Telephony.SMS_RECEIVED";
     public static final String ACTION_CALL = "android.intent.action.PHONE_STATE";
     private Context context;
-    private DBHelper mDBHelper;
+    private BlacklistDBHelper mDBHelper;
     private WhiteDBHelper mWhiteDBHelper;
     private MsgBlockDBHelper msgDBHelper;
     private CallBlockDBHelper callDBHelper;
@@ -97,7 +97,7 @@ public class SmsReceiver extends BroadcastReceiver {
             }
 
             incomingNumber = messages[0].getOriginatingAddress();
-            mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
+            mDBHelper = new BlacklistDBHelper(context, 1);
             String sql = "select * from BlackListFragment where phone = ?";
             Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                     new String[] { incomingNumber });
@@ -136,8 +136,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
                     String time = formatter.format(new Date());
-                    msgDBHelper = new MsgBlockDBHelper(context,
-                            "MsgBlockRecord", null, 1);
+                    msgDBHelper = new MsgBlockDBHelper(context, 1);
                     msgDBHelper.addRecord(name, incomingNumber, content, time);
                     msgDBHelper.close();
 
@@ -183,8 +182,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.v(TAG, incomingNumber + " is calling...");
                     blockStranger = sp.getBoolean("blockStranger", false);
 
-                    mWhiteDBHelper = new WhiteDBHelper(context,
-                            "WhiteListFragment", null, 1);
+                    mWhiteDBHelper = new WhiteDBHelper(context, 1);
                     String sql = "select * from WhiteListFragment where phone = ?";
                     Cursor cursor = mWhiteDBHelper.getWritableDatabase()
                             .rawQuery(sql, new String[] { incomingNumber });
@@ -236,8 +234,7 @@ public class SmsReceiver extends BroadcastReceiver {
                                 Log.e(TAG, "error: ", e);
                             }
 
-                            callDBHelper = new CallBlockDBHelper(context,
-                                    "CallBlockRecord", null, 1);
+                            callDBHelper = new CallBlockDBHelper(context, 1);
                             callDBHelper.addRecord(name, incomingNumber, time);
                             callDBHelper.close();
 
@@ -271,8 +268,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.v(TAG, incomingNumber + " is calling...");
                     blockStranger = sp.getBoolean("blockStranger", false);
 
-                    mDBHelper = new DBHelper(context, "BlackListFragment",
-                            null, 1);
+                    mDBHelper = new BlacklistDBHelper(context, 1);
                     String sql = "select * from BlackListFragment where phone = ?";
                     Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(
                             sql, new String[] { incomingNumber });
@@ -325,8 +321,7 @@ public class SmsReceiver extends BroadcastReceiver {
                                 Log.e(TAG, "error: ", e);
                             }
 
-                            callDBHelper = new CallBlockDBHelper(context,
-                                    "CallBlockRecord", null, 1);
+                            callDBHelper = new CallBlockDBHelper(context, 1);
                             callDBHelper.addRecord(name, incomingNumber, time);
                             callDBHelper.close();
 
