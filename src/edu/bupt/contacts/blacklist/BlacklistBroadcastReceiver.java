@@ -29,9 +29,9 @@ import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class SmsReceiver extends BroadcastReceiver {
+public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
-    public static final String TAG = "franco--->SmsReceiver";
+    public static final String TAG = "franco--->BlacklistBroadcastReceiver";
     public static final String ACTION_SMS = "android.provider.Telephony.SMS_RECEIVED";
     public static final String ACTION_CALL = "android.intent.action.PHONE_STATE";
     private Context context;

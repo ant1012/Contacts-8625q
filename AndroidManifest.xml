@@ -634,7 +634,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
-        <receiver android:name="edu.bupt.contacts.blacklist.SmsReceiver" >
+        <receiver android:name="edu.bupt.contacts.blacklist.BlacklistBroadcastReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.PHONE_STATE" />
