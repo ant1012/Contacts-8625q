@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 
 import edu.bupt.contacts.R;
@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class Main extends FragmentActivity implements RadioButtons.SwitchTabs {
+public class BlacklistMainActivity extends FragmentActivity implements RadioButtonsFragment.SwitchTabs {
 
-    public static final String TAG = "franco--->Main";
+    public static final String TAG = "BlacklistMainActivity";
     public static final String BACKGROUND_LISTEN_SERVICE = "listen_in_background";
     private Fragment radioButtons;
     private Fragment mainView;
@@ -36,7 +36,7 @@ public class Main extends FragmentActivity implements RadioButtons.SwitchTabs {
             if (savedInstanceState != null) {
                 return;
             }
-            radioButtons = new RadioButtons(this);
+            radioButtons = new RadioButtonsFragment(this);
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .add(R.id.radio_buttons, radioButtons).commit();
@@ -46,7 +46,7 @@ public class Main extends FragmentActivity implements RadioButtons.SwitchTabs {
             if (savedInstanceState != null) {
                 return;
             }
-            msgBlock = new MsgBlock(this);
+            msgBlock = new MsgBlockFragment(this);
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(R.id.main_view, msgBlock)
                     .commit();
@@ -73,24 +73,24 @@ public class Main extends FragmentActivity implements RadioButtons.SwitchTabs {
 
     @Override
     public void callBlock() {
-        callBlock = new CallBlock(this);
+        callBlock = new CallBlockFragment(this);
         updatefragment(callBlock);
     }
 
     @Override
     public void blackList() {
-        blackList = new BlackList(this);
+        blackList = new BlackListFragment(this);
         updatefragment(blackList);
     }
     
     public void whiteList() {
-        whiteList = new WhiteList(this);
+        whiteList = new WhiteListFragment(this);
         updatefragment(whiteList);
     }
 
     @Override
     public void settings() {
-        settings = new Settings(this);
+        settings = new SettingsFragment(this);
         updatefragment(settings);
     }
 

@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {   
     
     public static final String TAG = "franco--->DBHelper";
-    public static final String TB_NAME = "BlackList";   
+    public static final String TB_NAME = "BlackListFragment";   
     public static final String ID = "_id";   
     public static final String NAME = "name";   
     public static final String Phone = "phone";  

@@ -627,14 +627,14 @@
             android:exported="false" />
 
         <activity
-            android:name="com.example.blacklist.Main"
+            android:name="edu.bupt.contacts.blacklist.BlacklistMainActivity"
             android:label="@string/title_activity_black_list"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
-        <receiver android:name="com.example.blacklist.SmsReceiver" >
+        <receiver android:name="edu.bupt.contacts.blacklist.SmsReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.PHONE_STATE" />

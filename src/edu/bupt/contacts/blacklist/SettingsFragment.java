@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +22,9 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class Settings extends Fragment {
+public class SettingsFragment extends Fragment {
 
-    public static final String TAG = "franco--->Settings";
+    public static final String TAG = "franco--->SettingsFragment";
     private Context context;
     private View view;
     private ListView listView;
@@ -38,7 +38,7 @@ public class Settings extends Fragment {
     private SharedPreferences sp;
     private SharedPreferences whiteMode;
 
-    public Settings(Context context) {
+    public SettingsFragment(Context context) {
         this.context = context;
         modePosition = 0;
         ringtonePosition = 0;

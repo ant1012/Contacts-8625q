@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import edu.bupt.contacts.R;
 import android.app.Dialog;

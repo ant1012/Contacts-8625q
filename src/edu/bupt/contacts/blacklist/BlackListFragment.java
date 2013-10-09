@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import java.util.HashMap;
 
@@ -32,9 +32,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class BlackList extends Fragment {
+public class BlackListFragment extends Fragment {
 
-    public static final String TAG = "franco--->BlackList";
+    public static final String TAG = "franco--->BlackListFragment";
     public static final int PHONES_DISPLAY_NAME = 1;
     public static final int PHONES_NUMBER = 2;
 
@@ -57,7 +57,7 @@ public class BlackList extends Fragment {
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
 
-    public BlackList(Context context) {
+    public BlackListFragment(Context context) {
         this.context = context;
         spinnerLatestClicked = blockId = -1;
         blockContent = context.getResources().getStringArray(
@@ -103,7 +103,7 @@ public class BlackList extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new DBHelper(context, "BlackList", null, 1);
+        mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
         cursor = mDBHelper.getWritableDatabase().query(DBHelper.TB_NAME, null,
                 null, null, null, null, DBHelper.NAME + " ASC");
         String[] from = new String[] { DBHelper.NAME, DBHelper.Phone,
@@ -120,7 +120,7 @@ public class BlackList extends Fragment {
                     long arg3) {
                 // TODO Auto-generated method stub
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from BlackList where _ID = " + arg3;
+                String sql = "select * from BlackListFragment where _ID = " + arg3;
                 Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                         null);
                 cursor.moveToFirst();

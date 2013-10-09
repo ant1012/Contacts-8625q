@@ -1247,7 +1247,7 @@ public class DialtactsActivity extends TransactionSafeActivity
         }
     }
 
-    /** Returns an Intent to launch Call Settings screen */
+    /** Returns an Intent to launch Call SettingsFragment screen */
     public static Intent getCallSettingsIntent() {
         final Intent intent = new Intent(Intent.ACTION_MAIN);
         if (MultiSimConfig.isMultiSimEnabled()) {

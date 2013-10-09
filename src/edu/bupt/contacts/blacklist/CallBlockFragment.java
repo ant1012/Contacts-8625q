@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import edu.bupt.contacts.R;
 import android.app.AlertDialog;
@@ -21,9 +21,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class CallBlock extends Fragment {
+public class CallBlockFragment extends Fragment {
     
-    public static final String TAG = "franco--->CallBlock";
+    public static final String TAG = "franco--->CallBlockFragment";
     public static final String ACTION_CALL_UPDATE = "call";
     private Context context;
     private View view;
@@ -35,7 +35,7 @@ public class CallBlock extends Fragment {
     private int _ID;
     private String name, phone;
     
-    public CallBlock(Context context) {
+    public CallBlockFragment(Context context) {
         this.context = context;
     }
     

@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import edu.bupt.contacts.R;
 import android.app.Activity;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class RadioButtons extends Fragment {
+public class RadioButtonsFragment extends Fragment {
     
     private RadioGroup mRadioGroup;
     private RadioButton msgBlock;
@@ -23,7 +23,7 @@ public class RadioButtons extends Fragment {
     private View view;
     private  SwitchTabs mCallback;
     
-    public RadioButtons(Context context) {
+    public RadioButtonsFragment(Context context) {
         this.context = context;
     }
     

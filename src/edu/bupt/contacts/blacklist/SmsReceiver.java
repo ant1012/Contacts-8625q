@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -98,8 +98,8 @@ public class SmsReceiver extends BroadcastReceiver {
             }
             
             incomingNumber = messages[0].getOriginatingAddress();
-            mDBHelper = new DBHelper(context, "BlackList", null, 1);
-            String sql = "select * from BlackList where phone = ?";
+            mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
+            String sql = "select * from BlackListFragment where phone = ?";
             Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                     new String[] { incomingNumber });
 
@@ -142,7 +142,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     msgDBHelper.addRecord(name, incomingNumber, content, time);
                     msgDBHelper.close();
 
-                    context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
+                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     abortBroadcast();
                 }
                 cursor.close();
@@ -182,8 +182,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.v(TAG, incomingNumber + " is calling...");
                     blockStranger = sp.getBoolean("blockStranger", false);
 
-                    mWhiteDBHelper = new WhiteDBHelper(context, "WhiteList", null, 1);
-                    String sql = "select * from WhiteList where phone = ?";
+                    mWhiteDBHelper = new WhiteDBHelper(context, "WhiteListFragment", null, 1);
+                    String sql = "select * from WhiteListFragment where phone = ?";
                     Cursor cursor = mWhiteDBHelper.getWritableDatabase().rawQuery(sql,
                             new String[] { incomingNumber });
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
@@ -237,7 +237,7 @@ public class SmsReceiver extends BroadcastReceiver {
                             callDBHelper.close();
 
                             context.sendBroadcast(new Intent(
-                                    CallBlock.ACTION_CALL_UPDATE));
+                                    CallBlockFragment.ACTION_CALL_UPDATE));
 
                             if (callLogContent != null) {
                                 context.getContentResolver()
@@ -253,15 +253,15 @@ public class SmsReceiver extends BroadcastReceiver {
                         context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
                     mWhiteDBHelper.close();
-                    context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
+                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     break;
                 }else{
                   incomingNumber = intent.getStringExtra("incoming_number");
                   Log.v(TAG, incomingNumber + " is calling...");
                   blockStranger = sp.getBoolean("blockStranger", false);
   
-                  mDBHelper = new DBHelper(context, "BlackList", null, 1);
-                  String sql = "select * from BlackList where phone = ?";
+                  mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
+                  String sql = "select * from BlackListFragment where phone = ?";
                   Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                           new String[] { incomingNumber });
                   formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
@@ -316,7 +316,7 @@ public class SmsReceiver extends BroadcastReceiver {
                           callDBHelper.close();
   
                           context.sendBroadcast(new Intent(
-                                  CallBlock.ACTION_CALL_UPDATE));
+                                  CallBlockFragment.ACTION_CALL_UPDATE));
   
                           if (callLogContent != null) {
                               context.getContentResolver()
@@ -332,7 +332,7 @@ public class SmsReceiver extends BroadcastReceiver {
                       context.getContentResolver().unregisterContentObserver(callLogContent);
                   }
                   mDBHelper.close();
-                  context.sendBroadcast(new Intent(MsgBlock.ACTION_SMS_UPDATE));
+                  context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                   break;
                 }
 

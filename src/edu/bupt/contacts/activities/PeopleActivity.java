@@ -22,6 +22,7 @@ import edu.bupt.contacts.ContactsActivity;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.ActionBarAdapter.TabState;
+import edu.bupt.contacts.blacklist.BlacklistMainActivity;
 import edu.bupt.contacts.detail.ContactDetailFragment;
 import edu.bupt.contacts.detail.ContactDetailLayoutController;
 import edu.bupt.contacts.detail.ContactDetailUpdatesFragment;
@@ -61,7 +62,6 @@ import edu.bupt.contacts.util.HelpUtils;
 import edu.bupt.contacts.util.PhoneCapabilityTester;
 import edu.bupt.contacts.util.UriUtils;
 import edu.bupt.contacts.widget.TransitionAnimationView;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -97,8 +97,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.example.blacklist.Main;
 
 /**
  * Displays a list to browse contacts. For xlarge screens, this also displays a detail-pane on
@@ -1559,7 +1557,7 @@ public class PeopleActivity extends ContactsActivity
                 return true;
             }
             case R.id.menu_heibai:{
-            	Intent intent = new Intent(PeopleActivity.this,Main.class);
+            	Intent intent = new Intent(PeopleActivity.this,BlacklistMainActivity.class);
             	startActivity(intent);
 //            	msgUri();
             	return true;

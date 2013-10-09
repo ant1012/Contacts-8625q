@@ -1,4 +1,4 @@
-package com.example.blacklist;
+package edu.bupt.contacts.blacklist;
 
 import edu.bupt.contacts.R;
 import android.app.AlertDialog;
@@ -23,9 +23,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MsgBlock extends Fragment {
+public class MsgBlockFragment extends Fragment {
 
-    public static final String TAG = "franco--->MsgBlock";
+    public static final String TAG = "franco--->MsgBlockFragment";
     public static final String ACTION_SMS_UPDATE = "sms";
     private Context context;
     private View view;
@@ -37,7 +37,7 @@ public class MsgBlock extends Fragment {
     private String name, phone, message;
     private SMSReceiver smsReceiver;
 
-    public MsgBlock(Context context) {
+    public MsgBlockFragment(Context context) {
         this.context = context;
     }
     

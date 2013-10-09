@@ -137,9 +137,9 @@ public class GroupBrowseListFragment extends Fragment
 //        mAddAccountButton.setOnClickListener(new OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+//                Intent intent = new Intent(SettingsFragment.ACTION_ADD_ACCOUNT);
 //                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//                intent.putExtra(Settings.EXTRA_AUTHORITIES,
+//                intent.putExtra(SettingsFragment.EXTRA_AUTHORITIES,
 //                        new String[] { ContactsContract.AUTHORITY });
 //                startActivity(intent);
 //            }

@@ -234,7 +234,7 @@ public class CustomContactListFilterActivity extends ContactsActivity
     private static final int DEFAULT_VISIBLE = 0;
 
     /**
-     * Entry holding any changes to {@link Groups} or {@link Settings} rows,
+     * Entry holding any changes to {@link Groups} or {@link SettingsFragment} rows,
      * such as {@link Groups#SHOULD_SYNC} or {@link Groups#GROUP_VISIBLE}.
      */
     protected static class GroupDelta extends ValuesDelta {
@@ -246,9 +246,9 @@ public class CustomContactListFilterActivity extends ContactsActivity
         }
 
         /**
-         * Build {@link GroupDelta} from the {@link Settings} row for the given
-         * {@link Settings#ACCOUNT_NAME}, {@link Settings#ACCOUNT_TYPE}, and
-         * {@link Settings#DATA_SET}.
+         * Build {@link GroupDelta} from the {@link SettingsFragment} row for the given
+         * {@link SettingsFragment#ACCOUNT_NAME}, {@link SettingsFragment#ACCOUNT_TYPE}, and
+         * {@link SettingsFragment#DATA_SET}.
          */
         public static GroupDelta fromSettings(ContentResolver resolver, String accountName,
                 String accountType, String dataSet, boolean accountHasGroups) {
@@ -356,12 +356,12 @@ public class CustomContactListFilterActivity extends ContactsActivity
 
         /**
          * Build a possible {@link ContentProviderOperation} to persist any
-         * changes to the {@link Groups} or {@link Settings} row described by
+         * changes to the {@link Groups} or {@link SettingsFragment} row described by
          * this {@link GroupDelta}.
          */
         public ContentProviderOperation buildDiff() {
             if (isInsert()) {
-                // Only allow inserts for Settings
+                // Only allow inserts for SettingsFragment
                 if (mUngrouped) {
                     mAfter.remove(mIdColumn);
                     return ContentProviderOperation.newInsert(Settings.CONTENT_URI)
