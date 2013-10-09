@@ -55,13 +55,13 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.settings, container, false);
+        view = inflater.inflate(R.layout.blacklist_settings, container, false);
         findViewAndSetListener();
         return view;
     }
 
     private void findViewAndSetListener() {
-        
+
         modePosition = sp.getInt("mode", 0);
         ringtonePosition = sp.getInt("ringtone", 0);
         String[] modeArray = context.getResources()
@@ -93,8 +93,7 @@ public class SettingsFragment extends Fragment {
         listView.setOnItemClickListener(itemClickListener);
     }
 
-    private AdapterView.OnItemClickListener itemClickListener = 
-            new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -177,13 +176,12 @@ public class SettingsFragment extends Fragment {
         }
     };
 
-    private CheckBox.OnCheckedChangeListener checkedChangeListener = 
-            new CheckBox.OnCheckedChangeListener() {
+    private CheckBox.OnCheckedChangeListener checkedChangeListener = new CheckBox.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
             // TODO Auto-generated method stub
-        	sp.edit().putBoolean("blockStranger", arg0.isChecked()).commit();
+            sp.edit().putBoolean("blockStranger", arg0.isChecked()).commit();
             Log.v(TAG, "arg0.isChecked() = " + arg0.isChecked());
         }
 
@@ -192,18 +190,17 @@ public class SettingsFragment extends Fragment {
     private void save(String name, int position) {
         sp.edit().putInt(name, position).commit();
     }
-    
-    private CheckBox.OnCheckedChangeListener whitecheckedChangeListener = 
-            new CheckBox.OnCheckedChangeListener() {
+
+    private CheckBox.OnCheckedChangeListener whitecheckedChangeListener = new CheckBox.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
             // TODO Auto-generated method stub
-        	whiteMode.edit().putBoolean("white_mode", arg0.isChecked()).commit();
+            whiteMode.edit().putBoolean("white_mode", arg0.isChecked())
+                    .commit();
             Log.v(TAG, "arg0.isChecked() = " + arg0.isChecked());
         }
 
     };
-    
-    
+
 }

@@ -74,7 +74,7 @@ public class BlackListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.black_list, container, false);
+        view = inflater.inflate(R.layout.blacklist_blacklist, container, false);
         findViewAndSetListener();
         return view;
     }
@@ -90,7 +90,7 @@ public class BlackListFragment extends Fragment {
             cursor.close();
         }
 
-        if(contact != null) {
+        if (contact != null) {
             contact.close();
         }
 
@@ -120,7 +120,8 @@ public class BlackListFragment extends Fragment {
                     long arg3) {
                 // TODO Auto-generated method stub
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from BlackListFragment where _ID = " + arg3;
+                String sql = "select * from BlackListFragment where _ID = "
+                        + arg3;
                 Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                         null);
                 cursor.moveToFirst();

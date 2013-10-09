@@ -22,7 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 public class CallBlockFragment extends Fragment {
-    
+
     public static final String TAG = "franco--->CallBlockFragment";
     public static final String ACTION_CALL_UPDATE = "call";
     private Context context;
@@ -34,11 +34,11 @@ public class CallBlockFragment extends Fragment {
     private CallReceiver callReceiver;
     private int _ID;
     private String name, phone;
-    
+
     public CallBlockFragment(Context context) {
         this.context = context;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -48,8 +48,8 @@ public class CallBlockFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        
-        view = inflater.inflate(R.layout.call_block, container, false);
+
+        view = inflater.inflate(R.layout.blacklist_callblock, container, false);
         findViewAndSetListener();
         return view;
     }
@@ -72,34 +72,35 @@ public class CallBlockFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        
-        if(cursor != null) {
+
+        if (cursor != null) {
             Log.v(TAG, "cursor.close()...");
             cursor.close();
         }
-        
-        if(callDBHelper != null) {
+
+        if (callDBHelper != null) {
             Log.v(TAG, "callDBHelper.close()...");
             callDBHelper.close();
         }
-        
+
         super.onDestroy();
     }
 
     private void findViewAndSetListener() {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        callDBHelper = new CallBlockDBHelper(context, "CallBlockRecord", null, 1);
+        callDBHelper = new CallBlockDBHelper(context, "CallBlockRecord", null,
+                1);
         cursor = callDBHelper.getWritableDatabase().query(
-                CallBlockDBHelper.TB_NAME, null, null, null, null, null,     
+                CallBlockDBHelper.TB_NAME, null, null, null, null, null,
                 CallBlockDBHelper.ID + " ASC");
-        
-        String[] from = new String[] {CallBlockDBHelper.NAME, CallBlockDBHelper.PHONE,
-                CallBlockDBHelper.TIME};
-        int[] to = new int[] { R.id.block_item_text1, 
-                R.id.block_item_text2, R.id.block_item_text3 };
-        adapter = new SimpleCursorAdapter(context, R.layout.block_item,
-                cursor, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        String[] from = new String[] { CallBlockDBHelper.NAME,
+                CallBlockDBHelper.PHONE, CallBlockDBHelper.TIME };
+        int[] to = new int[] { R.id.block_item_text1, R.id.block_item_text2,
+                R.id.block_item_text3 };
+        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_block_item, cursor,
+                from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -108,9 +109,10 @@ public class CallBlockFragment extends Fragment {
                     long arg3) {
                 // TODO Auto-generated method stub
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from CallBlockRecord where _ID = " + arg3;
-                Cursor cursor = callDBHelper.getWritableDatabase()
-                            .rawQuery(sql, null);
+                String sql = "select * from CallBlockRecord where _ID = "
+                        + arg3;
+                Cursor cursor = callDBHelper.getWritableDatabase().rawQuery(
+                        sql, null);
                 cursor.moveToFirst();
 
                 _ID = cursor.getInt(0);
@@ -123,48 +125,54 @@ public class CallBlockFragment extends Fragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(name)
-                        .setItems(R.array.call_item_click, new OnClickListener() {
+                        .setItems(R.array.call_item_click,
+                                new OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                // TODO Auto-generated method stub
-                                switch (arg1) {
+                                    @Override
+                                    public void onClick(DialogInterface arg0,
+                                            int arg1) {
+                                        // TODO Auto-generated method stub
+                                        switch (arg1) {
 
-                                case 0:// 删除
-                                    callDBHelper.delRecord(_ID);
-                                    update();
-                                    break;
+                                        case 0:// 删除
+                                            callDBHelper.delRecord(_ID);
+                                            update();
+                                            break;
 
-                                case 1:// 发送短信
-                                    Uri uri = Uri.parse("smsto:" + phone);
-                                    Intent sms = new Intent(Intent.ACTION_SENDTO, uri);
-                                    startActivity(sms);
-                                    break;
+                                        case 1:// 发送短信
+                                            Uri uri = Uri.parse("smsto:"
+                                                    + phone);
+                                            Intent sms = new Intent(
+                                                    Intent.ACTION_SENDTO, uri);
+                                            startActivity(sms);
+                                            break;
 
-                                case 2:// 呼叫
-                                    Intent call = new Intent(Intent.ACTION_DIAL);
-                                    call.setData(Uri.parse("tel:" + phone));
-                                    startActivity(call);
-                                    break;
+                                        case 2:// 呼叫
+                                            Intent call = new Intent(
+                                                    Intent.ACTION_DIAL);
+                                            call.setData(Uri.parse("tel:"
+                                                    + phone));
+                                            startActivity(call);
+                                            break;
 
-                                case 3:// 清空列表
-                                    callDBHelper.delAllRecord();
-                                    update();
-                                    break;
-                                }
-                            }
-                        }).create().show();
+                                        case 3:// 清空列表
+                                            callDBHelper.delAllRecord();
+                                            update();
+                                            break;
+                                        }
+                                    }
+                                }).create().show();
             }
         });
     }
-    
+
     private void update() {
         cursor = callDBHelper.getWritableDatabase().query(
-                CallBlockDBHelper.TB_NAME, null, null, null, null, null,     
+                CallBlockDBHelper.TB_NAME, null, null, null, null, null,
                 CallBlockDBHelper.ID + " ASC");
         adapter.changeCursor(cursor);
     }
-    
+
     class CallReceiver extends BroadcastReceiver {
 
         @Override
@@ -172,6 +180,6 @@ public class CallBlockFragment extends Fragment {
             // TODO Auto-generated method stub
             update();
         }
-        
-    } 
+
+    }
 }

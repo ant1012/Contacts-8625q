@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 import android.telephony.SmsMessage;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.telephony.msim.ITelephonyMSim;
@@ -47,7 +46,8 @@ public class SmsReceiver extends BroadcastReceiver {
     private SharedPreferences whiteMode;
     private boolean blockStranger;
     private boolean white_block_mode;
-    public MediaPlayer  mMediaPlayer        = null;  
+    public MediaPlayer mMediaPlayer = null;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -60,68 +60,66 @@ public class SmsReceiver extends BroadcastReceiver {
         if (ACTION_SMS.equals(action)) {
 
             Bundle bundle = intent.getExtras();
-            if(bundle == null) {
+            if (bundle == null) {
                 return;
             }
-            
-            
-            
-    		mMediaPlayer = new MediaPlayer();  
-    		
-//  		 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
-//  			try {
-//  				Log.i("ExternalStorage",""+Environment.getExternalStorageDirectory().getCanonicalPath());
-//  				String path = Environment.getExternalStorageDirectory().getCanonicalPath();
-//  				playMusic(path+"/abc/3.mp3");//path+"/M.mp3"
-//  			} catch (IOException e) {
-//  				// TODO Auto-generated catch block
-//  				e.printStackTrace();
-//  			}
-  		 String mediaPath = "content://media/internal/audio/media/31";
 
-		    Uri audioUrl = Uri.parse(mediaPath);
-		    mMediaPlayer = MediaPlayer.create(this.context, audioUrl);
-		    mMediaPlayer.start();
-            
+            mMediaPlayer = new MediaPlayer();
+
+            // if
+            // (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+            // try {
+            // Log.i("ExternalStorage",""+Environment.getExternalStorageDirectory().getCanonicalPath());
+            // String path =
+            // Environment.getExternalStorageDirectory().getCanonicalPath();
+            // playMusic(path+"/abc/3.mp3");//path+"/M.mp3"
+            // } catch (IOException e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+            String mediaPath = "content://media/internal/audio/media/31";
+
+            Uri audioUrl = Uri.parse(mediaPath);
+            mMediaPlayer = MediaPlayer.create(this.context, audioUrl);
+            mMediaPlayer.start();
+
             Object[] pdus = (Object[]) bundle.get("pdus");
             SmsMessage[] messages = new SmsMessage[pdus.length];
-            
+
             int i = 0;
-            for (i = 0; i < messages.length; i++)
-            {
+            for (i = 0; i < messages.length; i++) {
                 byte[] pdu = (byte[]) pdus[i];
                 messages[i] = SmsMessage.createFromPdu(pdu);
-                Log.i("messages"+i,""+messages[i]);
+                Log.i("messages" + i, "" + messages[i]);
             }
-            if(i == 0) {
+            if (i == 0) {
                 return;
             }
-            
+
             incomingNumber = messages[0].getOriginatingAddress();
             mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
             String sql = "select * from BlackListFragment where phone = ?";
             Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
                     new String[] { incomingNumber });
 
-            if(cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
 
                 int blockId = cursor.getInt(4);
                 String name = cursor.getString(1);
-                
-                if(blockId != 3) {
-                    
+
+                if (blockId != 3) {
+
                     String content = "";
-                    for (SmsMessage msg:messages) {
+                    for (SmsMessage msg : messages) {
                         content += msg.getMessageBody();
 
                     }
-                    
-                    for (i = 0; i < messages.length; i++)
-                    {
+
+                    for (i = 0; i < messages.length; i++) {
                         byte[] pdu = (byte[]) pdus[i];
                         messages[i] = SmsMessage.createFromPdu(pdu);
                     }
-                    for (SmsMessage msg:messages) {
+                    for (SmsMessage msg : messages) {
                         content += msg.getMessageBody();
 
                     }
@@ -130,7 +128,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     if (ringtonePos == 1) {// 震动
                         long[] pattern = { 100, 400, 100, 400 };
-                        mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        mVibrator = (Vibrator) context
+                                .getSystemService(Context.VIBRATOR_SERVICE);
                         mVibrator.vibrate(pattern, -1);
                         // mVibrator.cancel();
                     }
@@ -142,7 +141,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     msgDBHelper.addRecord(name, incomingNumber, content, time);
                     msgDBHelper.close();
 
-                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
+                    context.sendBroadcast(new Intent(
+                            MsgBlockFragment.ACTION_SMS_UPDATE));
                     abortBroadcast();
                 }
                 cursor.close();
@@ -176,16 +176,18 @@ public class SmsReceiver extends BroadcastReceiver {
 
             case TelephonyManager.CALL_STATE_RINGING:
                 white_block_mode = whiteMode.getBoolean("white_mode", false);
-                Log.i("white_block_mode","white_block_mode is "+white_block_mode);
-                if(white_block_mode){
+                Log.i("white_block_mode", "white_block_mode is "
+                        + white_block_mode);
+                if (white_block_mode) {
                     incomingNumber = intent.getStringExtra("incoming_number");
                     Log.v(TAG, incomingNumber + " is calling...");
                     blockStranger = sp.getBoolean("blockStranger", false);
 
-                    mWhiteDBHelper = new WhiteDBHelper(context, "WhiteListFragment", null, 1);
+                    mWhiteDBHelper = new WhiteDBHelper(context,
+                            "WhiteListFragment", null, 1);
                     String sql = "select * from WhiteListFragment where phone = ?";
-                    Cursor cursor = mWhiteDBHelper.getWritableDatabase().rawQuery(sql,
-                            new String[] { incomingNumber });
+                    Cursor cursor = mWhiteDBHelper.getWritableDatabase()
+                            .rawQuery(sql, new String[] { incomingNumber });
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
                     if (!cursor.moveToFirst() && (isStranger(incomingNumber))) {
                         Log.v(TAG, "This number is not in whitelist...");
@@ -219,12 +221,15 @@ public class SmsReceiver extends BroadcastReceiver {
 
                             if (ringtonePos == 1) {// 震动
                                 long[] pattern = { 100, 400, 100, 400 };
-                                mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                                mVibrator = (Vibrator) context
+                                        .getSystemService(Context.VIBRATOR_SERVICE);
                                 mVibrator.vibrate(pattern, -1);
                             }
 
                             try {
-                                ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+                                ITelephonyMSim telephony = ITelephonyMSim.Stub
+                                        .asInterface(ServiceManager
+                                                .getService(Context.MSIM_TELEPHONY_SERVICE));
                                 telephony.endCall(0);
                                 telephony.endCall(1);
                             } catch (Exception e) {
@@ -241,105 +246,117 @@ public class SmsReceiver extends BroadcastReceiver {
 
                             if (callLogContent != null) {
                                 context.getContentResolver()
-                                        .unregisterContentObserver(callLogContent);
+                                        .unregisterContentObserver(
+                                                callLogContent);
                             }
 
-                            callLogContent = new CallLogContent(new Handler(), incomingNumber);
-                            context.getContentResolver().registerContentObserver (
-                                            CallLog.Calls.CONTENT_URI, true, callLogContent);
+                            callLogContent = new CallLogContent(new Handler(),
+                                    incomingNumber);
+                            context.getContentResolver()
+                                    .registerContentObserver(
+                                            CallLog.Calls.CONTENT_URI, true,
+                                            callLogContent);
                         }
                         cursor.close();
                     } else if (callLogContent != null) {
-                        context.getContentResolver().unregisterContentObserver(callLogContent);
+                        context.getContentResolver().unregisterContentObserver(
+                                callLogContent);
                     }
                     mWhiteDBHelper.close();
-                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
+                    context.sendBroadcast(new Intent(
+                            MsgBlockFragment.ACTION_SMS_UPDATE));
                     break;
-                }else{
-                  incomingNumber = intent.getStringExtra("incoming_number");
-                  Log.v(TAG, incomingNumber + " is calling...");
-                  blockStranger = sp.getBoolean("blockStranger", false);
-  
-                  mDBHelper = new DBHelper(context, "BlackListFragment", null, 1);
-                  String sql = "select * from BlackListFragment where phone = ?";
-                  Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
-                          new String[] { incomingNumber });
-                  formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
-                  if (cursor.moveToFirst()
-                          || (blockStranger && isStranger(incomingNumber))) {
-                      Log.v(TAG, "This number is in blacklist...");
-                      int blockId = 2;
-                      String time = formatter.format(new Date());
-                      String name = context.getResources().getString(
-                              R.string.stranger);
-  
-                      if (cursor.moveToFirst()) {
-                          blockId = cursor.getInt(4);
-                          name = cursor.getString(1);
-                      }
-  
-                      if (blockId != 1) {
-                          // int modePos = sp.getInt("mode", 0);
-                          int ringtonePos = sp.getInt("ringtone", 0);
-                          // 静音
-                          try {
-                              AudioManager audioManager = (AudioManager) context
-                                      .getSystemService(Context.AUDIO_SERVICE);
-                              if (audioManager != null) {
-                                  audioManager
-                                          .setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                  audioManager
-                                          .getStreamVolume(AudioManager.STREAM_RING);
-  
-                              }
-                          } catch (Exception e) {
-                              Log.e(TAG, "error: ", e);
-                          }
-  
-                          if (ringtonePos == 1) {// 震动
-                              long[] pattern = { 100, 400, 100, 400 };
-                              mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                              mVibrator.vibrate(pattern, -1);
-                          }
-  
-                          try {
-                              ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
-                              telephony.endCall(0);
-                              telephony.endCall(1);
-                          } catch (Exception e) {
-                              Log.e(TAG, "error: ", e);
-                          }
-  
-                          callDBHelper = new CallBlockDBHelper(context,
-                                  "CallBlockRecord", null, 1);
-                          callDBHelper.addRecord(name, incomingNumber, time);
-                          callDBHelper.close();
-  
-                          context.sendBroadcast(new Intent(
-                                  CallBlockFragment.ACTION_CALL_UPDATE));
-  
-                          if (callLogContent != null) {
-                              context.getContentResolver()
-                                      .unregisterContentObserver(callLogContent);
-                          }
-  
-                          callLogContent = new CallLogContent(new Handler(), incomingNumber);
-                          context.getContentResolver().registerContentObserver (
-                                          CallLog.Calls.CONTENT_URI, true, callLogContent);
-                      }
-                      cursor.close();
-                  } else if (callLogContent != null) {
-                      context.getContentResolver().unregisterContentObserver(callLogContent);
-                  }
-                  mDBHelper.close();
-                  context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
-                  break;
+                } else {
+                    incomingNumber = intent.getStringExtra("incoming_number");
+                    Log.v(TAG, incomingNumber + " is calling...");
+                    blockStranger = sp.getBoolean("blockStranger", false);
+
+                    mDBHelper = new DBHelper(context, "BlackListFragment",
+                            null, 1);
+                    String sql = "select * from BlackListFragment where phone = ?";
+                    Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(
+                            sql, new String[] { incomingNumber });
+                    formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
+                    if (cursor.moveToFirst()
+                            || (blockStranger && isStranger(incomingNumber))) {
+                        Log.v(TAG, "This number is in blacklist...");
+                        int blockId = 2;
+                        String time = formatter.format(new Date());
+                        String name = context.getResources().getString(
+                                R.string.stranger);
+
+                        if (cursor.moveToFirst()) {
+                            blockId = cursor.getInt(4);
+                            name = cursor.getString(1);
+                        }
+
+                        if (blockId != 1) {
+                            // int modePos = sp.getInt("mode", 0);
+                            int ringtonePos = sp.getInt("ringtone", 0);
+                            // 静音
+                            try {
+                                AudioManager audioManager = (AudioManager) context
+                                        .getSystemService(Context.AUDIO_SERVICE);
+                                if (audioManager != null) {
+                                    audioManager
+                                            .setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                    audioManager
+                                            .getStreamVolume(AudioManager.STREAM_RING);
+
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "error: ", e);
+                            }
+
+                            if (ringtonePos == 1) {// 震动
+                                long[] pattern = { 100, 400, 100, 400 };
+                                mVibrator = (Vibrator) context
+                                        .getSystemService(Context.VIBRATOR_SERVICE);
+                                mVibrator.vibrate(pattern, -1);
+                            }
+
+                            try {
+                                ITelephonyMSim telephony = ITelephonyMSim.Stub
+                                        .asInterface(ServiceManager
+                                                .getService(Context.MSIM_TELEPHONY_SERVICE));
+                                telephony.endCall(0);
+                                telephony.endCall(1);
+                            } catch (Exception e) {
+                                Log.e(TAG, "error: ", e);
+                            }
+
+                            callDBHelper = new CallBlockDBHelper(context,
+                                    "CallBlockRecord", null, 1);
+                            callDBHelper.addRecord(name, incomingNumber, time);
+                            callDBHelper.close();
+
+                            context.sendBroadcast(new Intent(
+                                    CallBlockFragment.ACTION_CALL_UPDATE));
+
+                            if (callLogContent != null) {
+                                context.getContentResolver()
+                                        .unregisterContentObserver(
+                                                callLogContent);
+                            }
+
+                            callLogContent = new CallLogContent(new Handler(),
+                                    incomingNumber);
+                            context.getContentResolver()
+                                    .registerContentObserver(
+                                            CallLog.Calls.CONTENT_URI, true,
+                                            callLogContent);
+                        }
+                        cursor.close();
+                    } else if (callLogContent != null) {
+                        context.getContentResolver().unregisterContentObserver(
+                                callLogContent);
+                    }
+                    mDBHelper.close();
+                    context.sendBroadcast(new Intent(
+                            MsgBlockFragment.ACTION_SMS_UPDATE));
+                    break;
                 }
 
-            	
- 
-            	
-            	
             }
         }
 

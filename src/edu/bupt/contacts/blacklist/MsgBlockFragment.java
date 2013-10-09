@@ -40,7 +40,7 @@ public class MsgBlockFragment extends Fragment {
     public MsgBlockFragment(Context context) {
         this.context = context;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -72,11 +72,11 @@ public class MsgBlockFragment extends Fragment {
         if (cursor != null) {
             cursor.close();
         }
-        
+
         if (msgDBHelper != null) {
             msgDBHelper.close();
         }
-        
+
         super.onDestroy();
     }
 
@@ -84,25 +84,27 @@ public class MsgBlockFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.msg_block, container, false);
+        view = inflater.inflate(R.layout.blacklist_msgblock, container, false);
         findViewAndSetListener();
         return view;
     }
 
     private void findViewAndSetListener() {
-        
+
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         msgDBHelper = new MsgBlockDBHelper(context, "MsgBlockRecord", null, 1);
         cursor = msgDBHelper.getWritableDatabase().query(
-                MsgBlockDBHelper.TB_NAME, null, null, null, null, null,     
+                MsgBlockDBHelper.TB_NAME, null, null, null, null, null,
                 MsgBlockDBHelper.ID + " ASC");
-        
-        String[] from = new String[] { MsgBlockDBHelper.NAME, MsgBlockDBHelper.PHONE,
-                    MsgBlockDBHelper.TIME, MsgBlockDBHelper.MESSAGE };
-        int[] to = new int[] { R.id.block_item_text1, R.id.block_item_text2, R.id.block_item_text4, R.id.block_item_text3 };
-        adapter = new SimpleCursorAdapter(context, R.layout.block_item,
-                cursor, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        String[] from = new String[] { MsgBlockDBHelper.NAME,
+                MsgBlockDBHelper.PHONE, MsgBlockDBHelper.TIME,
+                MsgBlockDBHelper.MESSAGE };
+        int[] to = new int[] { R.id.block_item_text1, R.id.block_item_text2,
+                R.id.block_item_text4, R.id.block_item_text3 };
+        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_block_item, cursor,
+                from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -112,7 +114,8 @@ public class MsgBlockFragment extends Fragment {
                 // TODO Auto-generated method stub
                 Log.v(TAG, "arg3 = " + arg3);
                 String sql = "select * from MsgBlockRecord where _ID = " + arg3;
-                Cursor cursor = msgDBHelper.getWritableDatabase().rawQuery(sql, null);
+                Cursor cursor = msgDBHelper.getWritableDatabase().rawQuery(sql,
+                        null);
                 cursor.moveToFirst();
 
                 _ID = cursor.getInt(0);
@@ -127,64 +130,80 @@ public class MsgBlockFragment extends Fragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(name)
-                        .setItems(R.array.sms_item_click, new OnClickListener() {
+                        .setItems(R.array.sms_item_click,
+                                new OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
+                                    @Override
+                                    public void onClick(DialogInterface arg0,
+                                            int arg1) {
 
-                                switch (arg1) {
-                                
-                                case 0://查看
-                                    LayoutInflater inflater = LayoutInflater.from(context);
-                                    view = inflater.inflate(R.layout.sms_view, null);
-                                    TextView nameView = (TextView) view.findViewById(R.id.sms_name);
-                                    TextView phoneView = (TextView) view.findViewById(R.id.sms_phone);
-                                    TextView contentView = (TextView) view.findViewById(R.id.sms_text);
-                                    nameView.setText(name);
-                                    phoneView.setText(phone);
-                                    contentView.setText(message);
-                                    Button replay = (Button) view.findViewById(R.id.reply);
-                                    replay.setOnClickListener(new Button.OnClickListener() {
+                                        switch (arg1) {
 
-                                        @Override
-                                        public void onClick(View arg0) {
-                                            // TODO Auto-generated method stub
-                                            Uri uri = Uri.parse("smsto:" + phone);
-                                            Intent sms = new Intent(Intent.ACTION_SENDTO, uri);
+                                        case 0:// 查看
+                                            LayoutInflater inflater = LayoutInflater
+                                                    .from(context);
+                                            view = inflater.inflate(
+                                                    R.layout.sms_view, null);
+                                            TextView nameView = (TextView) view
+                                                    .findViewById(R.id.sms_name);
+                                            TextView phoneView = (TextView) view
+                                                    .findViewById(R.id.sms_phone);
+                                            TextView contentView = (TextView) view
+                                                    .findViewById(R.id.sms_text);
+                                            nameView.setText(name);
+                                            phoneView.setText(phone);
+                                            contentView.setText(message);
+                                            Button replay = (Button) view
+                                                    .findViewById(R.id.reply);
+                                            replay.setOnClickListener(new Button.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(View arg0) {
+                                                    // TODO Auto-generated
+                                                    // method stub
+                                                    Uri uri = Uri
+                                                            .parse("smsto:"
+                                                                    + phone);
+                                                    Intent sms = new Intent(
+                                                            Intent.ACTION_SENDTO,
+                                                            uri);
+                                                    startActivity(sms);
+                                                }
+
+                                            });
+                                            new MyAlertDialog.Builder(context)
+                                                    .setView(view).create()
+                                                    .show();
+                                            break;
+
+                                        case 1:// 删除
+                                            msgDBHelper.delRecord(_ID);
+                                            update();
+                                            break;
+
+                                        case 2:// 发送短信
+                                            Uri uri = Uri.parse("smsto:"
+                                                    + phone);
+                                            Intent sms = new Intent(
+                                                    Intent.ACTION_SENDTO, uri);
                                             startActivity(sms);
+                                            break;
+
+                                        case 3:// 呼叫
+                                            Intent call = new Intent(
+                                                    Intent.ACTION_DIAL);
+                                            call.setData(Uri.parse("tel:"
+                                                    + phone));
+                                            startActivity(call);
+                                            break;
+
+                                        case 4:// 清空列表
+                                            msgDBHelper.delAllRecord();
+                                            update();
+                                            break;
                                         }
-                                        
-                                    });
-                                    new MyAlertDialog.Builder(context)
-                                    .setView(view)
-                                    .create()
-                                    .show();
-                                    break;
-
-                                case 1:// 删除
-                                    msgDBHelper.delRecord(_ID);
-                                    update();
-                                    break;
-
-                                case 2:// 发送短信
-                                    Uri uri = Uri.parse("smsto:" + phone);
-                                    Intent sms = new Intent(Intent.ACTION_SENDTO, uri);
-                                    startActivity(sms);
-                                    break;
-
-                                case 3:// 呼叫
-                                    Intent call = new Intent(Intent.ACTION_DIAL);
-                                    call.setData(Uri.parse("tel:" + phone));
-                                    startActivity(call);
-                                    break;
-
-                                case 4:// 清空列表
-                                    msgDBHelper.delAllRecord();
-                                    update();
-                                    break;
-                                }
-                            }
-                        }).create().show();
+                                    }
+                                }).create().show();
             }
         });
 
@@ -196,7 +215,7 @@ public class MsgBlockFragment extends Fragment {
                 MsgBlockDBHelper.ID + " ASC");
         adapter.changeCursor(cursor);
     }
-    
+
     class SMSReceiver extends BroadcastReceiver {
 
         @Override
@@ -204,7 +223,7 @@ public class MsgBlockFragment extends Fragment {
             // TODO Auto-generated method stub
             update();
         }
-        
+
     }
 
 }

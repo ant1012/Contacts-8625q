@@ -10,12 +10,11 @@ public class MyAlertDialog extends Dialog {
     public MyAlertDialog(Context context) {
         super(context);
     }
-    
+
     public MyAlertDialog(Context context, int theme) {
         super(context, theme);
     }
 
-    
     public static class Builder {
         private Context context;
         private View view;
@@ -23,12 +22,12 @@ public class MyAlertDialog extends Dialog {
         public Builder(Context context) {
             this.context = context;
         }
-        
+
         public Builder setView(View view) {
             this.view = view;
             return this;
         }
-        
+
         public MyAlertDialog create() {
 
             final MyAlertDialog dialog = new MyAlertDialog(context,
@@ -36,9 +35,9 @@ public class MyAlertDialog extends Dialog {
             if (view != null) {
                 dialog.setContentView(view);
             } else {
-                
+
             }
-            return dialog; 
+            return dialog;
         }
     }
 }

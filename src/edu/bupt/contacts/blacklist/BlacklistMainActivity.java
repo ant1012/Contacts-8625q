@@ -1,6 +1,5 @@
 package edu.bupt.contacts.blacklist;
 
-
 import edu.bupt.contacts.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class BlacklistMainActivity extends FragmentActivity implements RadioButtonsFragment.SwitchTabs {
+public class BlacklistMainActivity extends FragmentActivity implements
+        RadioButtonsFragment.SwitchTabs {
 
     public static final String TAG = "BlacklistMainActivity";
     public static final String BACKGROUND_LISTEN_SERVICE = "listen_in_background";
@@ -25,7 +25,7 @@ public class BlacklistMainActivity extends FragmentActivity implements RadioButt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_black_list);
+        setContentView(R.layout.blacklist_main_activity);
         initFragment(savedInstanceState);
     }
 
@@ -82,7 +82,7 @@ public class BlacklistMainActivity extends FragmentActivity implements RadioButt
         blackList = new BlackListFragment(this);
         updatefragment(blackList);
     }
-    
+
     public void whiteList() {
         whiteList = new WhiteListFragment(this);
         updatefragment(whiteList);

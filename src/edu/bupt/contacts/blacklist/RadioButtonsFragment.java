@@ -12,7 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 public class RadioButtonsFragment extends Fragment {
-    
+
     private RadioGroup mRadioGroup;
     private RadioButton msgBlock;
     private RadioButton callBlock;
@@ -21,17 +21,21 @@ public class RadioButtonsFragment extends Fragment {
     private RadioButton settings;
     private Context context;
     private View view;
-    private  SwitchTabs mCallback;
-    
+    private SwitchTabs mCallback;
+
     public RadioButtonsFragment(Context context) {
         this.context = context;
     }
-    
+
     public interface SwitchTabs {
         public void msgBlock();
+
         public void callBlock();
+
         public void blackList();
+
         public void whiteList();
+
         public void settings();
     }
 
@@ -44,12 +48,13 @@ public class RadioButtonsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        
-        view = inflater.inflate(R.layout.radiobuttons, container, false);
+
+        view = inflater.inflate(R.layout.blacklist_radiobuttons, container,
+                false);
         findViewAndSetListener();
         return view;
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         // TODO Auto-generated method stub
@@ -61,7 +66,7 @@ public class RadioButtonsFragment extends Fragment {
                     + " must implement interface");
         }
     }
-    
+
     private void findViewAndSetListener() {
         mRadioGroup = (RadioGroup) view.findViewById(R.id.radiogroup);
         msgBlock = (RadioButton) view.findViewById(R.id.msg_block);
@@ -69,38 +74,37 @@ public class RadioButtonsFragment extends Fragment {
         blackList = (RadioButton) view.findViewById(R.id.black_list);
         whiteList = (RadioButton) view.findViewById(R.id.white_list);
         settings = (RadioButton) view.findViewById(R.id.settings);
-        mRadioGroup.setOnCheckedChangeListener(mChangeRadio); 
+        mRadioGroup.setOnCheckedChangeListener(mChangeRadio);
     }
-    
-    private RadioGroup.OnCheckedChangeListener mChangeRadio = new 
-            RadioGroup.OnCheckedChangeListener() {
+
+    private RadioGroup.OnCheckedChangeListener mChangeRadio = new RadioGroup.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             // TODO Auto-generated method stub
-            if(checkedId == msgBlock.getId()) {
+            if (checkedId == msgBlock.getId()) {
                 mCallback.msgBlock();
                 return;
             }
-            
-            if(checkedId == callBlock.getId()) {
+
+            if (checkedId == callBlock.getId()) {
                 mCallback.callBlock();
                 return;
             }
-            
-            if(checkedId == blackList.getId()) {
+
+            if (checkedId == blackList.getId()) {
                 mCallback.blackList();
                 return;
             }
-            if(checkedId == whiteList.getId()) {
+            if (checkedId == whiteList.getId()) {
                 mCallback.whiteList();
                 return;
             }
-            if(checkedId == settings.getId()){
+            if (checkedId == settings.getId()) {
                 mCallback.settings();
             }
-        } 
+        }
 
     };
-    
+
 }
