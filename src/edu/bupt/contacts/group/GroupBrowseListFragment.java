@@ -84,8 +84,8 @@ public class GroupBrowseListFragment extends Fragment
     private View mRootView;
     private AutoScrollListView mListView;
     private TextView mEmptyView;
-    private View mAddAccountsView;
-    private View mAddAccountButton;
+//    private View mAddAccountsView;
+//    private View mAddAccountButton;
 
     private GroupBrowseListAdapter mAdapter;
     private boolean mSelectionVisible;
@@ -132,18 +132,18 @@ public class GroupBrowseListFragment extends Fragment
         });
 
         mListView.setEmptyView(mEmptyView);
-        mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
-        mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
-        mAddAccountButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                intent.putExtra(Settings.EXTRA_AUTHORITIES,
-                        new String[] { ContactsContract.AUTHORITY });
-                startActivity(intent);
-            }
-        });
+//        mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
+//        mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
+//        mAddAccountButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//                intent.putExtra(Settings.EXTRA_AUTHORITIES,
+//                        new String[] { ContactsContract.AUTHORITY });
+//                startActivity(intent);
+//            }
+//        });
         setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
 
         return mRootView;
@@ -307,8 +307,8 @@ public class GroupBrowseListFragment extends Fragment
     }
 
     public void setAddAccountsVisibility(boolean visible) {
-        if (mAddAccountsView != null) {
-            mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
+//        if (mAddAccountsView != null) {
+//            mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        }
     }
 }

@@ -754,22 +754,21 @@ public class PeopleActivity extends ContactsActivity
     }
 
     private void showEmptyStateForTab(int tab) {
-        /** zzz */
-//        if (mContactsUnavailableFragment != null) {
-//            switch (tab) {
-//                case TabState.FAVORITES:
-//                    mContactsUnavailableFragment.setMessageText(
-//                            R.string.listTotalAllContactsZeroStarred, -1);
-//                    break;
-//                case TabState.GROUPS:
-//                    mContactsUnavailableFragment.setMessageText(R.string.noGroups,
-//                            areGroupWritableAccountsAvailable() ? -1 : R.string.noAccounts);
-//                    break;
-//                case TabState.ALL:
-//                    mContactsUnavailableFragment.setMessageText(R.string.noContacts, -1);
-//                    break;
-//            }
-//        }
+        if (mContactsUnavailableFragment != null) {
+            switch (tab) {
+                case TabState.FAVORITES:
+                    mContactsUnavailableFragment.setMessageText(
+                            R.string.listTotalAllContactsZeroStarred, -1);
+                    break;
+                case TabState.GROUPS:
+                    mContactsUnavailableFragment.setMessageText(R.string.noGroups,
+                            areGroupWritableAccountsAvailable() ? -1 : R.string.noAccounts);
+                    break;
+                case TabState.ALL:
+                    mContactsUnavailableFragment.setMessageText(R.string.noContacts, -1);
+                    break;
+            }
+        }
     }
 
     private class TabPagerListener implements ViewPager.OnPageChangeListener {
