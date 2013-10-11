@@ -619,5 +619,7 @@
     <string name="save_to_phone">手机</string>
     <string name="save_to_uim">卡一</string>
     <string name="save_to_sim2">卡二</string>
+    <string name="menu_add_to_blacklist" >"添加到黑名单"</string>
+    <string name="menu_add_to_whitelist" >"添加到白名单"</string>
     
 </resources>
