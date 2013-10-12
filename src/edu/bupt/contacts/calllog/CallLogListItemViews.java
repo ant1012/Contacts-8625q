@@ -44,11 +44,15 @@ public final class CallLogListItemViews {
     public final TextView listHeaderTextView;
     /** The divider to be shown below items. */
     public final View bottomDivider;
+    
+    
+    /** by yuan */
+    public final ImageView thirdaryActionView;
 
     private CallLogListItemViews(QuickContactBadge quickContactView, View primaryActionView,
             ImageView secondaryActionView, View dividerView,
             PhoneCallDetailsViews phoneCallDetailsViews,
-            TextView listHeaderTextView, View bottomDivider) {
+            TextView listHeaderTextView, View bottomDivider, ImageView thirdaryActionView) {
         this.quickContactView = quickContactView;
         this.primaryActionView = primaryActionView;
         this.secondaryActionView = secondaryActionView;
@@ -56,6 +60,7 @@ public final class CallLogListItemViews {
         this.phoneCallDetailsViews = phoneCallDetailsViews;
         this.listHeaderTextView = listHeaderTextView;
         this.bottomDivider = bottomDivider;
+        this.thirdaryActionView = thirdaryActionView;
     }
 
     public static CallLogListItemViews fromView(View view) {
@@ -66,7 +71,8 @@ public final class CallLogListItemViews {
                 view.findViewById(R.id.divider),
                 PhoneCallDetailsViews.fromView(view),
                 (TextView) view.findViewById(R.id.call_log_header),
-                view.findViewById(R.id.call_log_divider));
+                view.findViewById(R.id.call_log_divider),
+                (ImageView) view.findViewById(R.id.thirdary_action_icon));
     }
 
     @NeededForTesting
@@ -78,6 +84,7 @@ public final class CallLogListItemViews {
                 new View(context),
                 PhoneCallDetailsViews.createForTest(context),
                 new TextView(context),
-                new View(context));
+                new View(context),
+                new ImageView(context));
     }
 }

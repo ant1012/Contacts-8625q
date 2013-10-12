@@ -17,28 +17,43 @@
 package edu.bupt.contacts.calllog;
 
 import com.android.common.widget.GroupingListAdapter;
+import com.android.internal.telephony.msim.ITelephonyMSim;
+
 import edu.bupt.contacts.ContactPhotoManager;
+import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.PhoneCallDetails;
 import edu.bupt.contacts.PhoneCallDetailsHelper;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.format.FormatUtils;
+import edu.bupt.contacts.ipcall.IPCall;
 import edu.bupt.contacts.util.ExpirableCache;
 import edu.bupt.contacts.util.UriUtils;
 import com.google.common.annotations.VisibleForTesting;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ServiceManager;
+import android.provider.CallLog;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.PhoneLookup;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import java.util.LinkedList;
 
@@ -183,20 +198,172 @@ import libcore.util.Objects;
     private final View.OnClickListener mPrimaryActionListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+        	
+        	//by yuan
             IntentProvider intentProvider = (IntentProvider) view.getTag();
             if (intentProvider != null) {
                 mContext.startActivity(intentProvider.getIntent(mContext));
             }
+        	
         }
     };
+    
+    private final View.OnLongClickListener mPrimaryLongActionListener = new View.OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View view) {
+			// TODO Auto-generated method stub
+			final IPCall ipcall = new IPCall(mContext);
+			String[] itemchoice = null;
+			if(!ipcall.isCDMAIPEnabled()&&!ipcall.isGSMIPEnabled()){
+				return false;
+			}
+			if(ipcall.isCDMAIPEnabled()&&ipcall.isGSMIPEnabled()){
+				itemchoice = new String[] {mContext.getString(R.string.ip_call_one), mContext.getString(R.string.ip_call_two)};
+			}else{
+				if(ipcall.isCDMAIPEnabled()){
+					itemchoice = new String[] {mContext.getString(R.string.ip_call_one)};
+				}
+				if(ipcall.isGSMIPEnabled()){
+					itemchoice = new String[] {mContext.getString(R.string.ip_call_two)};
+				}
+			}
+			final int length = itemchoice.length;
+			final boolean isCDMA = ipcall.isCDMAIPEnabled();
+			final boolean isGSM = ipcall.isGSMIPEnabled();
+			String phoneNumber1=null;
+			IntentProvider intentProvider = (IntentProvider) view.getTag();
+			Log.v("longclick",intentProvider.getIntent(mContext).getData().toString());
+            if (intentProvider != null) {               
+            	phoneNumber1 = getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
+            }
+			final String phoneNumber = phoneNumber1;
+			new AlertDialog.Builder(mContext, 0).setTitle(R.string.call_ip_dialog_title).setItems(itemchoice, new DialogInterface.OnClickListener() {                  
+		    	public void onClick(DialogInterface dialog, int which) {          
+		    		// TODO Auto-generated method stub          
+		    		     if(length==2){
+		    		    	 if(which == 0){
+		    		    		 call(ipcall.getCDMAIPCode()+phoneNumber); 
+		    		    	 }else{
+		    		    		 call(ipcall.getGSMIPCode()+phoneNumber); 
+		    		    	 }
+		    		     }else{
+		    		    	 if(isCDMA){
+		    		    		 call(ipcall.getCDMAIPCode()+phoneNumber); 
+		    		    	 }
+		    		    	 if(isGSM){
+		    		    		 call(ipcall.getGSMIPCode()+phoneNumber);
+		    		    	 }
+		    		     }
+		    		}        
+		    	}).setNegativeButton(
+				     R.string.menu_doNotSave, null).show();
+			return false;
+		}
+	};
+		
+	// by yuan
+	/** Return the phone call details for a given call log URI. */
+    private String getPhoneNumberForUri(Uri callUri) {
+       	
+    	final String[] CALL_LOG_PROJECTION = new String[] {CallLog.Calls.NUMBER};
+        ContentResolver resolver = mContext.getContentResolver();
+ 
+        Cursor callCursor = resolver.query(callUri, CALL_LOG_PROJECTION, null, null, null);
+        try {
+            if (callCursor == null || !callCursor.moveToFirst()) {
+                throw new IllegalArgumentException("Cannot find content: " + callUri);
+            }            
+            return callCursor.getString(0);
+
+        } finally {
+            if (callCursor != null) {
+                callCursor.close();
+            }
+        }
+    }
+	
+    public void call(String number){
+    	try
+		{
+			ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+			telephony.call(number, 0);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+    }
+    
+    // edited by yuan
+    
     /** Listener for the secondary action in the list, either call or play. */
     private final View.OnClickListener mSecondaryActionListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            IntentProvider intentProvider = (IntentProvider) view.getTag();
-            if (intentProvider != null) {
-                mContext.startActivity(intentProvider.getIntent(mContext));
-            }
+                 
+        	final String phoneNumber = (String)view.getTag();
+        	LayoutInflater inflater = LayoutInflater.from(mContext);
+        	View layout = inflater.inflate(R.layout.call_ip_choose_dialog,null);
+        	Builder dialogBuilder = new AlertDialog.Builder(mContext).setTitle("拨号选择").setView(layout).setNegativeButton("取消", null);
+        	final AlertDialog mDialog = dialogBuilder.create();
+        	layout.findViewById(R.id.imageButton_call).setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					try{
+		        		ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+                        telephony.call(phoneNumber, 0);	 
+                        mDialog.dismiss();
+		            }catch (Exception e){
+		        		e.printStackTrace();
+		        	}
+				}
+        		
+        	});
+        	final IPCall ipcall = new IPCall(mContext);
+			if(ipcall.isCDMAIPEnabled()){
+				layout.findViewById(R.id.imageButton_ipcall_one).setVisibility(View.VISIBLE);
+				layout.findViewById(R.id.imageButton_ipcall_one).setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View arg0) {
+						mDialog.dismiss();
+						call(ipcall.getCDMAIPCode()+phoneNumber);
+					}	        		
+	        	});
+				
+			}
+			if(ipcall.isGSMIPEnabled()){
+				layout.findViewById(R.id.imageButton_ipcall_two).setVisibility(View.VISIBLE);
+				layout.findViewById(R.id.imageButton_ipcall_two).setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View arg0) {
+						mDialog.dismiss();
+						call(ipcall.getGSMIPCode()+phoneNumber);
+					}	        		
+	        	});
+				
+			}
+        	
+			
+			if(!ipcall.isCDMAIPEnabled()&&!ipcall.isGSMIPEnabled()){
+				try{
+	        		ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+	        		telephony.call((String)view.getTag(), 0);
+	            }catch (Exception e){
+	        		e.printStackTrace();
+	            }
+			}else{
+				mDialog.show();
+			}
+        }
+    };
+    
+    private final View.OnClickListener mThirdaryActionListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {       
+            mContext.startActivity(((ViewEntry) view.getTag()).secondaryIntent);
         }
     };
 
@@ -488,7 +655,9 @@ import libcore.util.Objects;
         // Get the views to bind to.
         CallLogListItemViews views = CallLogListItemViews.fromView(view);
         views.primaryActionView.setOnClickListener(mPrimaryActionListener);
+        //views.primaryActionView.setOnLongClickListener(mPrimaryLongActionListener);        	
         views.secondaryActionView.setOnClickListener(mSecondaryActionListener);
+        views.thirdaryActionView.setOnClickListener(mThirdaryActionListener);
         view.setTag(views);
     }
 
@@ -502,7 +671,7 @@ import libcore.util.Objects;
     private void bindView(View view, Cursor c, int count) {
         final CallLogListItemViews views = (CallLogListItemViews) view.getTag();
         final int section = c.getInt(CallLogQuery.SECTION);
-
+        
         // This might be a header: check the value of the section column in the cursor.
         if (section == CallLogQuery.SECTION_NEW_HEADER
                 || section == CallLogQuery.SECTION_OLD_HEADER) {
@@ -532,19 +701,35 @@ import libcore.util.Objects;
         views.primaryActionView.setTag(
                 IntentProvider.getCallDetailIntentProvider(
                         this, c.getPosition(), c.getLong(CallLogQuery.ID), count));
+        //Log.v("eeeee",IntentProvider.getCallDetailIntentProvider(this, c.getPosition(), c.getLong(CallLogQuery.ID), count).getIntent(mContext).getDataString());
         // Store away the voicemail information so we can play it directly.
         if (callType == Calls.VOICEMAIL_TYPE) {
             String voicemailUri = c.getString(CallLogQuery.VOICEMAIL_URI);
             final long rowId = c.getLong(CallLogQuery.ID);
-            views.secondaryActionView.setTag(
-                    IntentProvider.getPlayVoicemailIntentProvider(rowId, voicemailUri));
+            //views.secondaryActionView.setTag(IntentProvider.getPlayVoicemailIntentProvider(rowId, voicemailUri));
         } else if (!TextUtils.isEmpty(number)) {
             // Store away the number so we can call it directly if you click on the call icon.
-            views.secondaryActionView.setTag(
-                    IntentProvider.getReturnCallIntentProvider(number));
+            //views.secondaryActionView.setTag(IntentProvider.getReturnCallIntentProvider(number));
+            views.secondaryActionView.setTag(number);
+            
+            
+            /** 这里有点问题可能  */
+            ViewEntry entry = new ViewEntry(
+                    mContext.getString(R.string.menu_callNumber,
+                            FormatUtils.forceLeftToRight(number)),
+                            ContactsUtils.getCallIntent(number),
+                            mContext.getString(R.string.description_call, number));
+            entry.setSecondaryAction(
+                    R.drawable.ic_text_holo_dark,
+                    new Intent(Intent.ACTION_SENDTO,
+                               Uri.fromParts("sms", number, null)),
+                    mContext.getString(R.string.description_send_text_message, number));
+            views.thirdaryActionView.setTag(entry);
+
         } else {
             // No action enabled.
             views.secondaryActionView.setTag(null);
+            views.thirdaryActionView.setTag(null);
         }
 
         // Lookup contacts with this number
@@ -593,13 +778,14 @@ import libcore.util.Objects;
         final int[] callTypes = getCallTypes(c, count);
         final String geocode = c.getString(CallLogQuery.GEOCODED_LOCATION);
         final PhoneCallDetails details;
+        
         if (TextUtils.isEmpty(name)) {
             details = new PhoneCallDetails(number, formattedNumber, countryIso, geocode,
-                    callTypes, date, duration);
+                    callTypes, date, duration,c.getInt(CallLogQuery.SUB_ID));
         } else {
             // We do not pass a photo id since we do not need the high-res picture.
             details = new PhoneCallDetails(number, formattedNumber, countryIso, geocode,
-                    callTypes, date, duration, name, ntype, label, lookupUri, null);
+                    callTypes, date, duration, name, ntype, label, lookupUri, null ,c.getInt(CallLogQuery.SUB_ID));  //by yuan
         }
 
         final boolean isNew = c.getInt(CallLogQuery.IS_READ) == 0;
@@ -612,6 +798,34 @@ import libcore.util.Objects;
         if (mViewTreeObserver == null) {
             mViewTreeObserver = view.getViewTreeObserver();
             mViewTreeObserver.addOnPreDrawListener(this);
+        }
+    }
+    
+    // by yuan 
+    static final class ViewEntry {
+        public final String text;
+        public final Intent primaryIntent;
+        /** The description for accessibility of the primary action. */
+        public final String primaryDescription;
+
+        public CharSequence label = null;
+        /** Icon for the secondary action. */
+        public int secondaryIcon = 0;
+        /** Intent for the secondary action. If not null, an icon must be defined. */
+        public Intent secondaryIntent = null;
+        /** The description for accessibility of the secondary action. */
+        public String secondaryDescription = null;
+
+        public ViewEntry(String text, Intent intent, String description) {
+            this.text = text;
+            primaryIntent = intent;
+            primaryDescription = description;
+        }
+
+        public void setSecondaryAction(int icon, Intent intent, String description) {
+            secondaryIcon = icon;
+            secondaryIntent = intent;
+            secondaryDescription = description;
         }
     }
 
@@ -691,11 +905,11 @@ import libcore.util.Objects;
         if (!needsUpdate) return;
 
         if (countryIso == null) {
-            mContext.getContentResolver().update(Calls.CONTENT_URI_WITH_VOICEMAIL, values,
+            mContext.getContentResolver().update(Calls.CONTENT_URI, values,
                     Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO + " IS NULL",
                     new String[]{ number });
         } else {
-            mContext.getContentResolver().update(Calls.CONTENT_URI_WITH_VOICEMAIL, values,
+            mContext.getContentResolver().update(Calls.CONTENT_URI, values,
                     Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO + " = ?",
                     new String[]{ number, countryIso });
         }

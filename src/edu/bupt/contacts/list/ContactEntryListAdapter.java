@@ -228,7 +228,9 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
             mUpperCaseQueryString = null;
         } else {
             mUpperCaseQueryString = queryString.toUpperCase().toCharArray();
+            Log.v("newsearch2",String.valueOf(mUpperCaseQueryString));
         }
+        
     }
 
     public char[] getUpperCaseQueryString() {

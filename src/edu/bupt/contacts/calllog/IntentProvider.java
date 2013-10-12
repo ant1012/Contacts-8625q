@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CallLog.Calls;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 
 /**
  * Used to create an intent to attach to an action in the call log.
@@ -43,24 +44,39 @@ public abstract class IntentProvider {
             }
         };
     }
-
-    public static IntentProvider getPlayVoicemailIntentProvider(final long rowId,
-            final String voicemailUri) {
+    
+    
+    /**
+     * added by yuan
+     * @return
+     */
+    public static IntentProvider getClearLogIntentProvider() {
         return new IntentProvider() {
             @Override
             public Intent getIntent(Context context) {
                 Intent intent = new Intent(context, CallDetailActivity.class);
-                intent.setData(ContentUris.withAppendedId(
-                        Calls.CONTENT_URI_WITH_VOICEMAIL, rowId));
-                if (voicemailUri != null) {
-                    intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_URI,
-                            Uri.parse(voicemailUri));
-                }
-                intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_START_PLAYBACK, true);
                 return intent;
             }
         };
     }
+
+//    public static IntentProvider getPlayVoicemailIntentProvider(final long rowId,
+//            final String voicemailUri) {
+//        return new IntentProvider() {
+//            @Override
+//            public Intent getIntent(Context context) {
+//                Intent intent = new Intent(context, CallDetailActivity.class);
+//                intent.setData(ContentUris.withAppendedId(
+//                        Calls.CONTENT_URI_WITH_VOICEMAIL, rowId));
+//                if (voicemailUri != null) {
+//                    intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_URI,
+//                            Uri.parse(voicemailUri));
+//                }
+//                intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_START_PLAYBACK, true);
+//                return intent;
+//            }
+//        };
+//    }
 
     public static IntentProvider getCallDetailIntentProvider(
             final CallLogAdapter adapter, final int position, final long id, final int groupSize) {
@@ -73,13 +89,13 @@ public abstract class IntentProvider {
                     // Do nothing when a header is clicked.
                     return null;
                 }
+
                 Intent intent = new Intent(context, CallDetailActivity.class);
                 // Check if the first item is a voicemail.
-                String voicemailUri = cursor.getString(CallLogQuery.VOICEMAIL_URI);
-                if (voicemailUri != null) {
-                    intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_URI,
-                            Uri.parse(voicemailUri));
-                }
+//                String voicemailUri = cursor.getString(CallLogQuery.VOICEMAIL_URI);
+//                if (voicemailUri != null) {
+//                    intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_URI,Uri.parse(voicemailUri));
+//                }
                 intent.putExtra(CallDetailActivity.EXTRA_VOICEMAIL_START_PLAYBACK, false);
 
                 if (groupSize > 1) {
@@ -93,9 +109,11 @@ public abstract class IntentProvider {
                     intent.putExtra(CallDetailActivity.EXTRA_CALL_LOG_IDS, ids);
                 } else {
                     // If there is a single item, use the direct URI for it.
-                    intent.setData(ContentUris.withAppendedId(
-                            Calls.CONTENT_URI_WITH_VOICEMAIL, id));
+                    intent.setData(ContentUris.withAppendedId(Calls.CONTENT_URI, id));
                 }
+                
+                
+                //intent.setData(ContentUris.withAppendedId(Calls.CONTENT_URI, id));
                 return intent;
             }
         };

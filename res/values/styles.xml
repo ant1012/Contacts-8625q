@@ -347,9 +347,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
         <item name="android:textAllCaps">true</item>
-    </style>
-
-    <style name="PeopleNavigationDropDownTextAppearance">
+    </style><style name="PeopleNavigationDropDownTextAppearance">
         <item name="android:textColor">#333333</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -358,14 +356,34 @@
         <item name="android:textColor">#cdffffff</item>
         <item name="android:textSize">18sp</item>
     </style>
-        <style name="AppTheme" parent="android:Theme.Light" />
-    
-    <style name="MyAlertDialogStyle"
-        parent="android:style/Theme.Dialog">
+
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+    <style name="MyAlertDialogStyle" parent="android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowNoDisplay">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowBackground">@drawable/img_list_background</item>
+    </style>
+
+    <!-- by yuan -->
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+    <style name="TextAppearanceSmall">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="AppSwitch">
+        <item name="tracks">@drawable/switch_track_holo_dark</item>
+        <item name="thumbs">@drawable/switch_inner_holo_dark</item>
+        <item name="switchtextappearance">@style/TextAppearanceSmall</item>
+        <item name="texton">@string/capital_on</item>
+        <item name="textoff">@string/capital_off</item>
+        <item name="thumbtextpadding">12dip</item>
+        <item name="switchminwidth">96dip</item>
+        <item name="switchpadding">15dip</item>
+
     </style>
 </resources>

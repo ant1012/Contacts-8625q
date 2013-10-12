@@ -14,13 +14,27 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--  
     <item
         android:id="@+id/menu_trash"
         android:icon="@drawable/ic_trash_holo_dark"
         android:showAsAction="ifRoom"
         android:title="@string/recentCalls_trashVoicemail"
         android:onClick="onMenuTrashVoicemail"
+    />-->
+    
+    <item
+        android:id="@+id/menu_call_from_card_one"
+        android:title="@string/ip_call_one"
+        android:onClick="onMenuCallFromCardOne"
     />
+    
+    <item
+        android:id="@+id/menu_call_from_card_two"
+        android:title="@string/ip_call_two"
+        android:onClick="onMenuCallFromCardTwo"
+    />
+    
     <item
         android:id="@+id/menu_remove_from_call_log"
         android:title="@string/recentCalls_removeFromRecentList"
