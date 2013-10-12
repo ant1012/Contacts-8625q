@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/show_threedays"
+        android:title="最近三天"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
+    <item
+        android:id="@+id/show_threedays_ago"
+        android:title="三天之前"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+
+</menu>

@@ -58,8 +58,7 @@ import android.view.View;
      */
     public void setPhoneCallDetails(CallLogListItemViews views, PhoneCallDetails details,
             boolean isHighlighted) {
-        mPhoneCallDetailsHelper.setPhoneCallDetails(views.phoneCallDetailsViews, details,
-                isHighlighted);
+        mPhoneCallDetailsHelper.setPhoneCallDetails(views.phoneCallDetailsViews, details,isHighlighted);
         boolean canCall = mPhoneNumberHelper.canPlaceCallsTo(details.number);
         boolean canPlay = details.callTypes[0] == Calls.VOICEMAIL_TYPE;
 

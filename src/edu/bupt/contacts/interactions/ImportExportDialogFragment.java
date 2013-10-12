@@ -20,6 +20,7 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.editor.SelectAccountDialogFragment;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.AccountSelectionUtil;
 import edu.bupt.contacts.util.AccountsListAdapter.AccountListFilter;
 import edu.bupt.contacts.vcard.ExportVCardActivity;
@@ -100,7 +101,7 @@ public class ImportExportDialogFragment extends DialogFragment
 
         boolean hasIccCard = false;
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             for (int i = 0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
                 hasIccCard = MSimTelephonyManager.getDefault().hasIccCard(i);
                 if (hasIccCard) {
@@ -155,7 +156,7 @@ public class ImportExportDialogFragment extends DialogFragment
                     }
                     case R.string.export_to_sim: {
                         dismissDialog = true;
-                        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                        if (MultiSimConfig.isMultiSimEnabled()) {
                             displaySIMSelection();
                         } else {
                             Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -17,7 +17,6 @@
 package edu.bupt.contacts.calllog;
 
 import com.android.common.io.MoreCloseables;
-import edu.bupt.contacts.voicemail.VoicemailStatusHelperImpl;
 import com.google.android.collect.Lists;
 
 import android.content.AsyncQueryHandler;
@@ -56,11 +55,11 @@ import javax.annotation.concurrent.GuardedBy;
     /** The token for the query to mark all missed calls as old after seeing the call log. */
     private static final int UPDATE_MARK_AS_OLD_TOKEN = 55;
     /** The token for the query to mark all new voicemails as old. */
-    private static final int UPDATE_MARK_VOICEMAILS_AS_OLD_TOKEN = 56;
+    //private static final int UPDATE_MARK_VOICEMAILS_AS_OLD_TOKEN = 56;
     /** The token for the query to mark all missed calls as read after seeing the call log. */
     private static final int UPDATE_MARK_MISSED_CALL_AS_READ_TOKEN = 57;
     /** The token for the query to fetch voicemail status messages. */
-    private static final int QUERY_VOICEMAIL_STATUS_TOKEN = 58;
+    //private static final int QUERY_VOICEMAIL_STATUS_TOKEN = 58;
 
     /**
      * The time window from the current time within which an unread entry will be added to the new
@@ -135,7 +134,7 @@ import javax.annotation.concurrent.GuardedBy;
         // The values in this row correspond to default values for _PROJECTION from CallLogQuery
         // plus the section value.
         matrixCursor.addRow(new Object[]{
-                0L, "", 0L, 0L, 0, "", "", "", null, 0, null, null, null, null, 0L, null, 0,
+                0L, "", 0L, 0L, 0, "", "", "", null, 0, null, null, null, null, 0L, null, 0,1,
                 section
         });
         return matrixCursor;
@@ -162,24 +161,44 @@ import javax.annotation.concurrent.GuardedBy;
         fetchCalls(QUERY_NEW_CALLS_TOKEN, requestId, true /*isNew*/, false /*voicemailOnly*/);
         fetchCalls(QUERY_OLD_CALLS_TOKEN, requestId, false /*isNew*/, false /*voicemailOnly*/);
     }
+    
+    /**
+     * by yuan
+     */
+    public void fetchPartialCalls(String callType) {
+        cancelFetch();
+        int requestId = newCallsRequest();
+        fetchTypeCalls(QUERY_NEW_CALLS_TOKEN, requestId, true /*isNew*/, false /*voicemailOnly*/,callType);
+        fetchTypeCalls(QUERY_OLD_CALLS_TOKEN, requestId, false /*isNew*/, false /*voicemailOnly*/,callType);
+    }
+    
+    
+    /**
+     * by yuan
+     */
+    public void fetchSimCalls(String callSim) {
+        cancelFetch();
+        int requestId = newCallsRequest();
+        fetchSimCalls(QUERY_NEW_CALLS_TOKEN, requestId, true /*isNew*/, false /*voicemailOnly*/,callSim);
+        fetchSimCalls(QUERY_OLD_CALLS_TOKEN, requestId, false /*isNew*/, false /*voicemailOnly*/,callSim);
+    }
 
     /**
      * Fetches the list of calls from the call log but include only the voicemail.
      * <p>
      * It will asynchronously update the content of the list view when the fetch completes.
      */
-    public void fetchVoicemailOnly() {
-        cancelFetch();
-        int requestId = newCallsRequest();
-        fetchCalls(QUERY_NEW_CALLS_TOKEN, requestId, true /*isNew*/, true /*voicemailOnly*/);
-        fetchCalls(QUERY_OLD_CALLS_TOKEN, requestId, false /*isNew*/, true /*voicemailOnly*/);
-    }
+//    public void fetchVoicemailOnly() {
+//        cancelFetch();
+//        int requestId = newCallsRequest();
+//        fetchCalls(QUERY_NEW_CALLS_TOKEN, requestId, true /*isNew*/, true /*voicemailOnly*/);
+//        fetchCalls(QUERY_OLD_CALLS_TOKEN, requestId, false /*isNew*/, true /*voicemailOnly*/);
+//    }
 
 
-    public void fetchVoicemailStatus() {
-        startQuery(QUERY_VOICEMAIL_STATUS_TOKEN, null, Status.CONTENT_URI,
-                VoicemailStatusHelperImpl.PROJECTION, null, null, null);
-    }
+//    public void fetchVoicemailStatus() {
+//        startQuery(QUERY_VOICEMAIL_STATUS_TOKEN, null, Status.CONTENT_URI,VoicemailStatusHelperImpl.PROJECTION, null, null, null);
+//    }
 
     /** Fetches the list of calls in the call log, either the new one or the old ones. */
     private void fetchCalls(int token, int requestId, boolean isNew, boolean voicemailOnly) {
@@ -188,18 +207,60 @@ import javax.annotation.concurrent.GuardedBy;
         // We consider the calls that are not yet consumed (i.e. IS_READ = 0) as "new".
         String selection = String.format("%s IS NOT NULL AND %s = 0 AND %s > ?",
                 Calls.IS_READ, Calls.IS_READ, Calls.DATE);
+        //Log.v("aa",selection.toString());
         List<String> selectionArgs = Lists.newArrayList(
                 Long.toString(System.currentTimeMillis() - NEW_SECTION_TIME_WINDOW));
         if (!isNew) {
             // Negate the query.
             selection = String.format("NOT (%s)", selection);
         }
-        if (voicemailOnly) {
-            // Add a clause to fetch only items of type voicemail.
-            selection = String.format("(%s) AND (%s = ?)", selection, Calls.TYPE);
-            selectionArgs.add(Integer.toString(Calls.VOICEMAIL_TYPE));
+//        if (voicemailOnly) {
+//            // Add a clause to fetch only items of type voicemail.
+//            selection = String.format("(%s) AND (%s = ?)", selection, Calls.TYPE);
+//            selectionArgs.add(Integer.toString(Calls.VOICEMAIL_TYPE));
+//        }
+        startQuery(token, requestId, Calls.CONTENT_URI,
+                CallLogQuery._PROJECTION, selection, selectionArgs.toArray(EMPTY_STRING_ARRAY),
+                Calls.DEFAULT_SORT_ORDER);
+    }
+    
+    /**
+     * 
+     * by yuan
+     */
+    private void fetchTypeCalls(int token, int requestId, boolean isNew, boolean voicemailOnly, String callType) {
+        // We need to check for NULL explicitly otherwise entries with where READ is NULL
+        // may not match either the query or its negation.
+        // We consider the calls that are not yet consumed (i.e. IS_READ = 0) as "new".
+        String selection = String.format("%s = %s AND %s > ?",Calls.TYPE, callType , Calls.DATE);
+        List<String> selectionArgs = Lists.newArrayList(Long.toString(System.currentTimeMillis() - NEW_SECTION_TIME_WINDOW));
+        if (!isNew) {
+            // Negate the query.
+            selection = String.format("NOT (%s)", selection);
         }
-        startQuery(token, requestId, Calls.CONTENT_URI_WITH_VOICEMAIL,
+//        if (voicemailOnly) {
+//            // Add a clause to fetch only items of type voicemail.
+//            selection = String.format("(%s) AND (%s = ?)", selection, Calls.TYPE);
+//            selectionArgs.add(Integer.toString(Calls.VOICEMAIL_TYPE));
+//        }
+        //Log.v("aa2",selection.toString());
+        startQuery(token, requestId, Calls.CONTENT_URI,
+                CallLogQuery._PROJECTION, selection, selectionArgs.toArray(EMPTY_STRING_ARRAY),
+                Calls.DEFAULT_SORT_ORDER);
+    }
+    
+    /**
+     * 
+     * by yuan
+     */
+    private void fetchSimCalls(int token, int requestId, boolean isNew, boolean voicemailOnly, String callSim) {
+        // We need to check for NULL explicitly otherwise entries with where READ is NULL
+        // may not match either the query or its negation.
+        // We consider the calls that are not yet consumed (i.e. IS_READ = 0) as "new".
+        String selection = String.format("%s = %s AND %s > ?","sub_id", callSim , Calls.DATE);
+        Log.v("aa1",selection.toString());
+        List<String> selectionArgs = Lists.newArrayList(Long.toString(System.currentTimeMillis() - NEW_SECTION_TIME_WINDOW));
+        startQuery(token, requestId, Calls.CONTENT_URI,
                 CallLogQuery._PROJECTION, selection, selectionArgs.toArray(EMPTY_STRING_ARRAY),
                 Calls.DEFAULT_SORT_ORDER);
     }
@@ -220,25 +281,23 @@ import javax.annotation.concurrent.GuardedBy;
         ContentValues values = new ContentValues(1);
         values.put(Calls.NEW, "0");
 
-        startUpdate(UPDATE_MARK_AS_OLD_TOKEN, null, Calls.CONTENT_URI_WITH_VOICEMAIL,
-                values, where.toString(), null);
+        startUpdate(UPDATE_MARK_AS_OLD_TOKEN, null, Calls.CONTENT_URI,values, where.toString(), null);
     }
 
     /** Updates all new voicemails to mark them as old. */
-    public void markNewVoicemailsAsOld() {
-        // Mark all "new" voicemails as not new anymore.
-        StringBuilder where = new StringBuilder();
-        where.append(Calls.NEW);
-        where.append(" = 1 AND ");
-        where.append(Calls.TYPE);
-        where.append(" = ?");
-
-        ContentValues values = new ContentValues(1);
-        values.put(Calls.NEW, "0");
-
-        startUpdate(UPDATE_MARK_VOICEMAILS_AS_OLD_TOKEN, null, Calls.CONTENT_URI_WITH_VOICEMAIL,
-                values, where.toString(), new String[]{ Integer.toString(Calls.VOICEMAIL_TYPE) });
-    }
+//    public void markNewVoicemailsAsOld() {
+//        // Mark all "new" voicemails as not new anymore.
+//        StringBuilder where = new StringBuilder();
+//        where.append(Calls.NEW);
+//        where.append(" = 1 AND ");
+//        where.append(Calls.TYPE);
+//        where.append(" = ?");
+//
+//        ContentValues values = new ContentValues(1);
+//        values.put(Calls.NEW, "0");
+//
+//        startUpdate(UPDATE_MARK_VOICEMAILS_AS_OLD_TOKEN, null, Calls.CONTENT_URI_WITH_VOICEMAIL,values, where.toString(), new String[]{ Integer.toString(Calls.VOICEMAIL_TYPE) });
+//    }
 
     /** Updates all missed calls to mark them as read. */
     public void markMissedCallsAsRead() {
@@ -251,8 +310,7 @@ import javax.annotation.concurrent.GuardedBy;
         ContentValues values = new ContentValues(1);
         values.put(Calls.IS_READ, "1");
 
-        startUpdate(UPDATE_MARK_MISSED_CALL_AS_READ_TOKEN, null, Calls.CONTENT_URI, values,
-                where.toString(), null);
+        startUpdate(UPDATE_MARK_MISSED_CALL_AS_READ_TOKEN, null, Calls.CONTENT_URI, values, where.toString(), null);
     }
 
     /**
@@ -293,10 +351,12 @@ import javax.annotation.concurrent.GuardedBy;
             MoreCloseables.closeQuietly(mOldCallsCursor);
             mOldCallsCursor = new ExtendedCursor(
                     cursor, CallLogQuery.SECTION_NAME, CallLogQuery.SECTION_OLD_ITEM);
-        } else if (token == QUERY_VOICEMAIL_STATUS_TOKEN) {
-            updateVoicemailStatus(cursor);
-            return;
-        } else {
+        } 
+//        else if (token == QUERY_VOICEMAIL_STATUS_TOKEN) {
+//            updateVoicemailStatus(cursor);
+//            return;
+//        } 
+        else {
             Log.w(TAG, "Unknown query completed: ignoring: " + token);
             return;
         }
@@ -346,17 +406,17 @@ import javax.annotation.concurrent.GuardedBy;
         }
     }
 
-    private void updateVoicemailStatus(Cursor statusCursor) {
-        final Listener listener = mListener.get();
-        if (listener != null) {
-            listener.onVoicemailStatusFetched(statusCursor);
-        }
-    }
+//    private void updateVoicemailStatus(Cursor statusCursor) {
+//        final Listener listener = mListener.get();
+//        if (listener != null) {
+//            listener.onVoicemailStatusFetched(statusCursor);
+//        }
+//    }
 
     /** Listener to completion of various queries. */
     public interface Listener {
         /** Called when {@link CallLogQueryHandler#fetchVoicemailStatus()} completes. */
-        void onVoicemailStatusFetched(Cursor statusCursor);
+        //void onVoicemailStatusFetched(Cursor statusCursor);
 
         /**
          * Called when {@link CallLogQueryHandler#fetchAllCalls()} or

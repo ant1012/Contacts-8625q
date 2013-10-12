@@ -78,5 +78,7 @@
 
     <!-- Standard color for selected items. -->
     <color name="item_selected">#660099cc</color>
+    
+     <color name="white">#ffffffff</color>
 
 </resources>

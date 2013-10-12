@@ -19,6 +19,13 @@
         android:title="@string/recentCalls_addToContact"
         android:showAsAction="withText"
         android:orderInCategory="1" />
+    
+    <item
+        android:id="@+id/menu_send_sms"
+        android:title="@string/menu_send_sms"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
     <item
         android:id="@+id/menu_2s_pause"
         android:title="@string/add_2sec_pause"
@@ -28,6 +35,24 @@
     <item
         android:id="@+id/menu_add_wait"
         android:title="@string/add_wait"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
+    <item
+        android:id="@+id/menu_ip_call_one"
+        android:title="@string/ip_call_one"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
+    <item
+        android:id="@+id/menu_ip_call_two"
+        android:title="@string/ip_call_two"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
+    <item
+        android:id="@+id/menu_call_setting"
+        android:title="@string/call_setting"
         android:showAsAction="withText"
         android:orderInCategory="1" />
 

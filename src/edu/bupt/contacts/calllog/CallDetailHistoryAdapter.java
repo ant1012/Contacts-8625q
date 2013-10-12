@@ -139,6 +139,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         TextView callTypeTextView = (TextView) result.findViewById(R.id.call_type_text);
         TextView dateView = (TextView) result.findViewById(R.id.date);
         TextView durationView = (TextView) result.findViewById(R.id.duration);
+        TextView msimcardView = (TextView) result.findViewById(R.id.msimcard);
 
         int callType = details.callTypes[0];
         callTypeIconView.clear();
@@ -156,6 +157,14 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
             durationView.setVisibility(View.VISIBLE);
             durationView.setText(formatDuration(details.duration));
         }
+        if (details.msimType==0){  //by yuan
+        	msimcardView.setText("CDMA"); 
+        }else if(details.msimType==1){
+        	msimcardView.setText("GSM"); 
+        }else{
+        	msimcardView.setText("unknown");
+        }
+        
 
         return result;
     }
