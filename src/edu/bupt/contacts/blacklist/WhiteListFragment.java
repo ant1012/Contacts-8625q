@@ -52,7 +52,7 @@ public class WhiteListFragment extends Fragment {
     private MyAlertDialog importContactDialog;
     private int spinnerLatestClicked;
     private String[] blockContent;
-    private static WhiteDBHelper mDBHelper;
+    private static WhiteListDBHelper mDBHelper;
     private int _ID, blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
@@ -103,11 +103,11 @@ public class WhiteListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new WhiteDBHelper(context, 1);
-        cursor = mDBHelper.getWritableDatabase().query(WhiteDBHelper.TB_NAME,
-                null, null, null, null, null, WhiteDBHelper.NAME + " ASC");
-        String[] from = new String[] { WhiteDBHelper.NAME, WhiteDBHelper.Phone,
-                WhiteDBHelper.BlockContent };
+        mDBHelper = new WhiteListDBHelper(context, 1);
+        cursor = mDBHelper.getWritableDatabase().query(WhiteListDBHelper.TB_NAME,
+                null, null, null, null, null, WhiteListDBHelper.NAME + " ASC");
+        String[] from = new String[] { WhiteListDBHelper.NAME, WhiteListDBHelper.Phone,
+                WhiteListDBHelper.BlockContent };
         int[] to = new int[] { R.id.whitelist_item_text1,
                 R.id.whitelist_item_text2, R.id.whitelist_item_text3 };
         adapter = new SimpleCursorAdapter(context,
@@ -370,8 +370,8 @@ public class WhiteListFragment extends Fragment {
     }
 
     private void update() {
-        cursor = mDBHelper.getWritableDatabase().query(WhiteDBHelper.TB_NAME,
-                null, null, null, null, null, WhiteDBHelper.NAME + " ASC");
+        cursor = mDBHelper.getWritableDatabase().query(WhiteListDBHelper.TB_NAME,
+                null, null, null, null, null, WhiteListDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
 

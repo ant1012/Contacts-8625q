@@ -27,18 +27,23 @@ import edu.bupt.contacts.activities.MenuHistory;
 import edu.bupt.contacts.activities.MultiSelectExport;
 import edu.bupt.contacts.activities.PersonInfo;
 import edu.bupt.contacts.activities.ContactDetailActivity.FragmentKeyListener;
+import edu.bupt.contacts.blacklist.BlacklistDBHelper;
+import edu.bupt.contacts.blacklist.WhiteListDBHelper;
 import edu.bupt.contacts.list.ShortcutIntentBuilder;
 import edu.bupt.contacts.list.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import edu.bupt.contacts.util.PhoneCapabilityTester;
+
 import com.android.internal.util.Objects;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -46,6 +51,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.RawContacts;
@@ -429,12 +435,156 @@ public class ContactLoaderFragment extends Fragment implements
         case R.id.menu_add_to_blacklist: {
             Log.d(TAG, "menu_add_to_blacklist");
 
+            final String name = mContactData.getDisplayName();
+            // Log.i(TAG, mContactData.getContentValues().toString());
+            // Log.i(TAG, mContactData.getContentValues().get(2).toString());
+            // Log.i(TAG,
+            // mContactData.getContentValues().get(2).getAsString("data1"));
+            //
+            // final String phone = mContactData.getContentValues().get(2)
+            // .getAsString("data1");
+
+            //get phone number
+            Uri uri = mContactData.getLookupUri();
+            String phone = null;
+            long contactId;
+
+            Cursor c = mContext.getContentResolver().query(uri, null, null,
+                    null, null);
+            int phoneIdx = 0;
+            int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+
+            c.moveToNext();
+            // phone = c.getString(phoneIdx);
+            contactId = c.getLong(idIdx);
+
+            if (Integer
+                    .parseInt(c.getString(c
+                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                Cursor p = mContext.getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] { CommonDataKinds.Phone.NUMBER },
+                        CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                        new String[] { String.valueOf(contactId) }, null);
+                p.moveToNext();
+                phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+                phone = p.getString(phoneIdx);
+                p.close();
+            }
+            c.close();
+
+            Log.i(TAG, "phone - " + phone);
+            if (phone == null) {
+                Toast.makeText(mContext,
+                        R.string.menu_add_to_blacklist_nophonenum,
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            final String phoneFinal = phone;
+
+            new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.menu_add_to_blacklist)
+                    .setMessage(
+                            mContext.getString(
+                                    R.string.menu_add_to_blacklist_check, name))
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0,
+                                        int arg1) {
+                                    BlacklistDBHelper mDBHelper;
+                                    mDBHelper = new BlacklistDBHelper(mContext,
+                                            1);
+                                    mDBHelper.addPeople(name, phoneFinal);
+                                    Toast.makeText(mContext,
+                                            R.string.menu_add_to_blacklist,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton(android.R.string.cancel, null)
+                    .show();
+
             return true;
         }
 
         case R.id.menu_add_to_whitelist: {
             Log.d(TAG, "menu_add_to_whitelist");
+
+            final String name = mContactData.getDisplayName();
+            // Log.i(TAG, mContactData.getContentValues().toString());
+            //
+            // Log.i(TAG, mContactData.getContentValues().get(2).toString());
+            // Log.i(TAG,
+            // mContactData.getContentValues().get(2).getAsString("data1"));
+            //
+            // final String phone = mContactData.getContentValues().get(2)
+            // .getAsString("data1");
+
+            // get phone number
+            Uri uri = mContactData.getLookupUri();
+            String phone = null;
+            long contactId;
+
+            Cursor c = mContext.getContentResolver().query(uri, null, null,
+                    null, null);
+            int phoneIdx = 0;
+            int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+
+            c.moveToNext();
+            // phone = c.getString(phoneIdx);
+            contactId = c.getLong(idIdx);
+
+            if (Integer
+                    .parseInt(c.getString(c
+                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                Cursor p = mContext.getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] { CommonDataKinds.Phone.NUMBER },
+                        CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                        new String[] { String.valueOf(contactId) }, null);
+                p.moveToNext();
+                phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+                phone = p.getString(phoneIdx);
+                p.close();
+            }
+            c.close();
+
+            Log.i(TAG, "phone - " + phone);
+            if (phone == null) {
+                Toast.makeText(mContext,
+                        R.string.menu_add_to_blacklist_nophonenum,
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            final String phoneFinal = phone;
+            
+            
+            new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.menu_add_to_whitelist)
+                    .setMessage(
+                            mContext.getString(
+                                    R.string.menu_add_to_whitelist_check, name))
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0,
+                                        int arg1) {
+                                    WhiteListDBHelper mDBHelper;
+                                    mDBHelper = new WhiteListDBHelper(mContext,
+                                            1);
+                                    mDBHelper.addPeople(name, phoneFinal);
+                                    Toast.makeText(mContext,
+                                            R.string.menu_add_to_whitelist,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton(android.R.string.cancel, null)
+                    .show();
+
             return true;
+
         }
         }
         return false;

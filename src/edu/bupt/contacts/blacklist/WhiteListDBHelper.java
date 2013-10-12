@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class WhiteDBHelper extends SQLiteOpenHelper {
+public class WhiteListDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
 
     public static final String TAG = "franco--->WhiteWhiteDBHelper";
@@ -17,7 +17,7 @@ public class WhiteDBHelper extends SQLiteOpenHelper {
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public WhiteDBHelper(Context context, int version) {
+    public WhiteListDBHelper(Context context, int version) {
         super(context, DATABASE_NAME, null, version);
         this.getWritableDatabase();
     }
@@ -41,20 +41,31 @@ public class WhiteDBHelper extends SQLiteOpenHelper {
     public void addPeople(String name, String phone, String blockContent,
             Integer blockId) {
         ContentValues values = new ContentValues();
-        values.put(WhiteDBHelper.NAME, name);
-        values.put(WhiteDBHelper.Phone, phone);
-        values.put(WhiteDBHelper.BlockContent, blockContent);
-        values.put(WhiteDBHelper.BlockId, blockId);
-        this.getWritableDatabase().insert(WhiteDBHelper.TB_NAME,
-                WhiteDBHelper.ID, values);
+        values.put(WhiteListDBHelper.NAME, name);
+        values.put(WhiteListDBHelper.Phone, phone);
+        values.put(WhiteListDBHelper.BlockContent, blockContent);
+        values.put(WhiteListDBHelper.BlockId, blockId);
+        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
+                WhiteListDBHelper.ID, values);
+    }
+
+    public void addPeople(String name, String phone) {
+        ContentValues values = new ContentValues();
+        values.put(WhiteListDBHelper.NAME, name);
+        values.put(WhiteListDBHelper.Phone, phone);
+//        values.put(WhiteListDBHelper.BlockContent, blockContent);
+//        values.put(WhiteListDBHelper.BlockId, blockId);
+        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
+                WhiteListDBHelper.ID, values);
     }
 
     public void delPeople(int id) {
-        this.getWritableDatabase().delete(WhiteDBHelper.TB_NAME,
-                WhiteDBHelper.ID + " = " + id, null);
+        this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME,
+                WhiteListDBHelper.ID + " = " + id, null);
     }
 
     public void delAllPeople() {
-        this.getWritableDatabase().delete(WhiteDBHelper.TB_NAME, null, null);
+        this.getWritableDatabase()
+                .delete(WhiteListDBHelper.TB_NAME, null, null);
     }
 }

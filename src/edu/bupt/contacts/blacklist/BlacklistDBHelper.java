@@ -51,6 +51,16 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
         this.getWritableDatabase()
                 .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
     }
+    
+    public void addPeople(String name, String phone) {
+        ContentValues values = new ContentValues();
+        values.put(BlacklistDBHelper.NAME, name);
+        values.put(BlacklistDBHelper.Phone, phone);
+//        values.put(BlacklistDBHelper.BlockContent, "");
+//        values.put(BlacklistDBHelper.BlockId, 0);
+        this.getWritableDatabase()
+                .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
+    }
 
     public void delPeople(int id) {
         this.getWritableDatabase().delete(BlacklistDBHelper.TB_NAME,
