@@ -441,6 +441,12 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                         mCloseActivityAfterDelete);
                 return true;
             }
+            /** zzz */
+            case R.id.menu_add_group_to_whitelist: {
+                Log.d(TAG, "menu_add_group_to_whitelist");
+
+                return true;
+            }
         }
         return false;
     }
