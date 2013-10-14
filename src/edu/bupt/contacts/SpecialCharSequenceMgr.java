@@ -23,6 +23,8 @@ import com.android.internal.telephony.msim.ITelephonyMSim;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.telephony.TelephonyCapabilities;
 
+import edu.bupt.contacts.msim.MultiSimConfig;
+
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ProgressDialog;
@@ -217,7 +219,7 @@ public class SpecialCharSequenceMgr {
                 sc.progressDialog.show();
                 subscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
 
-                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                if (MultiSimConfig.isMultiSimEnabled()) {
                     if(subscription == SUB1) {
                         uri = Uri.parse("content://iccmsim/adn");
                     } else if (subscription == SUB2) {
@@ -253,7 +255,7 @@ public class SpecialCharSequenceMgr {
                 // Use Voice Subscription for both change PIN & unblock PIN using PUK.
                 subscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
                 Log.d(TAG, "Sending MMI on subscription :" + subscription);
-                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                if (MultiSimConfig.isMultiSimEnabled()) {
                     return ITelephonyMSim.Stub.asInterface(ServiceManager.getService("phone_msim"))
                             .handlePinMmi(input, subscription);
                 } else {
@@ -272,7 +274,7 @@ public class SpecialCharSequenceMgr {
         if (input.equals(MMI_IMEI_DISPLAY)) {
             int subscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
             int phoneType;
-            if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            if (MultiSimConfig.isMultiSimEnabled()) {
                 phoneType = ((MSimTelephonyManager)context.getSystemService(
                         Context.MSIM_TELEPHONY_SERVICE)).getCurrentPhoneType(subscription);
             } else {
@@ -300,7 +302,7 @@ public class SpecialCharSequenceMgr {
     static void showIMEIPanel(Context context, boolean useSystemWindow) {
         int subscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
         String imeiStr;
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             imeiStr = ((MSimTelephonyManager)context.
                     getSystemService(Context.MSIM_TELEPHONY_SERVICE)).getDeviceId(subscription);
         } else {
@@ -319,7 +321,7 @@ public class SpecialCharSequenceMgr {
     static void showMEIDPanel(Context context, boolean useSystemWindow) {
         int subscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
         String meidStr;
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             meidStr = ((MSimTelephonyManager)context.
                     getSystemService(Context.MSIM_TELEPHONY_SERVICE)).getDeviceId(subscription);
         } else {

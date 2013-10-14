@@ -282,13 +282,28 @@ public class ContactEditorUtils {
         // Javadoc doesn't say anything about resultCode but that the data intent will be non null
         // on success.
         if (resultData == null) return null;
-
+        {
+        	  String accountType = "com.android.localphone";
+              String accountName = "PHONE";
+        }
         final String accountType = resultData.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
         final String accountName = resultData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
         // Just in case
         if (TextUtils.isEmpty(accountType) || TextUtils.isEmpty(accountName)) return null;
-
+    	
+//    	String accountType = null;
+//        String accountName = null;
+//        if (resultData == null) 
+//        {
+//        	   accountType = "com.android.localphone";
+//               accountName = "PHONE";
+//        }
+//          accountType = resultData.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+//          accountName = resultData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//
+//        // Just in case
+//        if (TextUtils.isEmpty(accountType) || TextUtils.isEmpty(accountName)) return null;
         return new AccountWithDataSet(accountName, accountType, null);
     }
 }

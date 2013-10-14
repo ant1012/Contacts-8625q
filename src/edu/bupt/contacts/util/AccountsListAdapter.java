@@ -20,9 +20,9 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
-
 import android.content.Context;
 import android.text.TextUtils.TruncateAt;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +93,16 @@ public final class AccountsListAdapter extends BaseAdapter {
         final AccountWithDataSet account = mAccounts.get(position);
         final AccountType accountType = mAccountTypes.getAccountType(account.type, account.dataSet);
 
-        text1.setText(accountType.getDisplayLabel(mContext));
+        /** zzz */
+        //text1.setText(accountType.getDisplayLabel(mContext));
+        Log.i("AccountsListAdapter", "account.name - " + account.name);
+        if (account.name.equals("PHONE")) {
+            text1.setText(R.string.save_to_phone);
+        } else if (account.name.equals("SIM1") || account.name.equals("UIM")) {
+            text1.setText(R.string.save_to_uim);
+        } else if (account.name.equals("SIM2")){
+            text1.setText(R.string.save_to_sim2);
+        }
 
         // For email addresses, we don't want to truncate at end, which might cut off the domain
         // name.

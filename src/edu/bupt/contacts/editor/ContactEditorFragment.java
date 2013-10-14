@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2010 The Android Open  Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.ContactEditorAccountsChangedActivity;
 import edu.bupt.contacts.activities.ContactEditorActivity;
 import edu.bupt.contacts.activities.JoinContactActivity;
+import edu.bupt.contacts.activities.SelectLocalAccountActivity;
 import edu.bupt.contacts.detail.PhotoSelectionHandler;
 import edu.bupt.contacts.editor.AggregationSuggestionEngine.Suggestion;
 import edu.bupt.contacts.editor.Editor.EditorListener;
@@ -38,7 +39,6 @@ import edu.bupt.contacts.util.AccountsListAdapter;
 import edu.bupt.contacts.util.ContactPhotoUtils;
 import edu.bupt.contacts.util.AccountsListAdapter.AccountListFilter;
 import edu.bupt.contacts.util.HelpUtils;
-
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -364,19 +364,25 @@ public class ContactEditorFragment extends Fragment implements
             if (Intent.ACTION_EDIT.equals(mAction)) {
                 getLoaderManager().initLoader(LOADER_DATA, null, mDataLoaderListener);
             } else if (Intent.ACTION_INSERT.equals(mAction)) {
-                final Account account = mIntentExtras == null ? null :
-                        (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
-                final String dataSet = mIntentExtras == null ? null :
-                        mIntentExtras.getString(Intents.Insert.DATA_SET);
+                /** zzz */
+//                final Account account = mIntentExtras == null ? null :
+//                        (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
+//                final String dataSet = mIntentExtras == null ? null :
+//                        mIntentExtras.getString(Intents.Insert.DATA_SET);
+//
+//                if (account != null) {
+//                    // Account specified in Intent
+//                    createContact(new AccountWithDataSet(account.name, account.type, dataSet));
+//                } else {
+//                    // No Account specified. Let the user choose
+//                    // Load Accounts async so that we can present them
+//                    selectAccountAndCreateContact();
+//                }
 
-                if (account != null) {
-                    // Account specified in Intent
-                    createContact(new AccountWithDataSet(account.name, account.type, dataSet));
-                } else {
-                    // No Account specified. Let the user choose
-                    // Load Accounts async so that we can present them
-                    selectAccountAndCreateContact();
-                }
+                Intent intent = new Intent(mContext, SelectLocalAccountActivity.class);
+                mStatus = Status.SUB_ACTIVITY;
+                startActivityForResult(intent, REQUEST_CODE_ACCOUNTS_CHANGED);
+
             } else if (ContactEditorActivity.ACTION_SAVE_COMPLETED.equals(mAction)) {
                 // do nothing
             } else throw new IllegalArgumentException("Unknown Action String " + mAction +
@@ -534,10 +540,18 @@ public class ContactEditorFragment extends Fragment implements
     private void selectAccountAndCreateContact() {
         // If this is a local profile, then skip the logic about showing the accounts changed
         // activity and create a phone-local contact.
+        
+        /** zzz */
+        Log.d(TAG, "selectAccountAndCreateContact");
+        
+        
         if (mNewLocalProfile) {
             createContact(null);
             return;
         }
+        
+        /** zzz */
+        Log.d(TAG, "selectAccountAndCreateContact");
 
         // If there is no default account or the accounts have changed such that we need to
         // prompt the user again, then launch the account prompt.
@@ -582,15 +596,26 @@ public class ContactEditorFragment extends Fragment implements
      */
     private void createContact(AccountWithDataSet account) {
         final AccountTypeManager accountTypes = AccountTypeManager.getInstance(mContext);
-        final AccountType accountType =
+        AccountType accountType =
                 accountTypes.getAccountType(account != null ? account.type : null,
                         account != null ? account.dataSet : null);
 
         if (accountType.getCreateContactActivityClassName() != null) {
+            /** zzz */
+            Log.d(TAG, "accountType.getCreateContactActivityClassName() != null");
+            
             if (mListener != null) {
                 mListener.onCustomCreateContactActivityRequested(account, mIntentExtras);
             }
         } else {
+            /** zzz */
+//            if(account == null) {
+//                // use PHONE(com.android.localphone) install of null account
+//                account = accountTypes.getAccounts(false).get(0);
+//                accountType = accountTypes.getAccountTypeForAccount(account);
+//                Log.i(TAG, "account - " + account + "\naccountType - " + accountType);
+//            }
+            
             bindEditorsForNewContact(account, accountType);
         }
     }
@@ -630,6 +655,9 @@ public class ContactEditorFragment extends Fragment implements
     private void bindEditorsForNewContact(AccountWithDataSet newAccount,
             final AccountType newAccountType, EntityDelta oldState, AccountType oldAccountType) {
         mStatus = Status.EDITING;
+
+        /** zzz */
+//        Log.i(TAG, "newAccount - " + newAccount.toString());
 
         final ContentValues values = new ContentValues();
         if (newAccount != null) {
@@ -700,6 +728,8 @@ public class ContactEditorFragment extends Fragment implements
             final long rawContactId = values.getAsLong(RawContacts._ID);
 
             final BaseRawContactEditorView editor;
+            
+            /** zzz */
             if (!type.areContactsWritable()) {
                 editor = (BaseRawContactEditorView) inflater.inflate(
                         R.layout.raw_contact_readonly_editor_view, mContent, false);

@@ -16,6 +16,11 @@
 
 package edu.bupt.contacts.activities;
 
+import java.lang.reflect.Method;
+
+import com.android.internal.telephony.ITelephony;
+import com.android.internal.telephony.msim.ITelephonyMSim;
+
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.calllog.CallLogFragment;
@@ -27,23 +32,27 @@ import edu.bupt.contacts.list.ContactListItemView;
 import edu.bupt.contacts.list.OnPhoneNumberPickerActionListener;
 import edu.bupt.contacts.list.PhoneFavoriteFragment;
 import edu.bupt.contacts.list.PhoneNumberPickerFragment;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.Constants;
-import com.android.internal.telephony.ITelephony;
 
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.preference.PreferenceManager;
@@ -79,26 +88,22 @@ import android.widget.SearchView.OnQueryTextListener;
  * embedded using intents.
  * The dialer tab's title is 'phone', a more common name (see strings.xml).
  */
-public class DialtactsActivity extends TransactionSafeActivity
-        implements View.OnClickListener {
+public class DialtactsActivity extends TransactionSafeActivity implements View.OnClickListener {
     private static final String TAG = "DialtactsActivity";
 
     public static final boolean DEBUG = false;
 
     /** Used to open Call Setting */
     private static final String PHONE_PACKAGE = "com.android.phone";
-    private static final String CALL_SETTINGS_CLASS_NAME =
-            "com.android.phone.CallFeaturesSetting";
-   private static final String MSIM_CALL_SETTINGS_CLASS_NAME =
-            "com.android.phone.MSimCallFeaturesSetting";
+    private static final String CALL_SETTINGS_CLASS_NAME = "com.android.phone.CallFeaturesSetting";
+    private static final String MSIM_CALL_SETTINGS_CLASS_NAME = "com.android.phone.MSimCallFeaturesSetting";
 
     /**
      * Copied from PhoneApp. See comments in Phone app for more detail.
      */
     public static final String EXTRA_CALL_ORIGIN = "com.android.phone.CALL_ORIGIN";
     /** @see #getCallOrigin() */
-    private static final String CALL_ORIGIN_DIALTACTS =
-            "edu.bupt.contacts.activities.DialtactsActivity";
+    private static final String CALL_ORIGIN_DIALTACTS = "edu.bupt.contacts.activities.DialtactsActivity";
 
     /**
      * Just for backward compatibility. Should behave as same as {@link Intent#ACTION_DIAL}.
@@ -115,8 +120,7 @@ public class DialtactsActivity extends TransactionSafeActivity
     private SharedPreferences mPrefs;
 
     /** Last manually selected tab index */
-    private static final String PREF_LAST_MANUALLY_SELECTED_TAB =
-            "DialtactsActivity_last_manually_selected_tab";
+    private static final String PREF_LAST_MANUALLY_SELECTED_TAB = "DialtactsActivity_last_manually_selected_tab";
     private static final int PREF_LAST_MANUALLY_SELECTED_TAB_DEFAULT = TAB_INDEX_DIALER;
 
     private static final int SUBACTIVITY_ACCOUNT_FILTER = 1;
@@ -447,6 +451,7 @@ public class DialtactsActivity extends TransactionSafeActivity
                     // Show search result with non-empty text. Show a bare list otherwise.
                     if (mSearchFragment != null) {
                         mSearchFragment.setQueryString(newText, true);
+                        Log.v("newsearch1",newText);
                     }
                     return true;
                 }
@@ -630,8 +635,7 @@ public class DialtactsActivity extends TransactionSafeActivity
     }
 
     private void prepareSearchView() {
-        final View searchViewLayout =
-                getLayoutInflater().inflate(R.layout.dialtacts_custom_action_bar, null);
+        final View searchViewLayout = getLayoutInflater().inflate(R.layout.dialtacts_custom_action_bar, null);
         mSearchView = (SearchView) searchViewLayout.findViewById(R.id.search_view);
         mSearchView.setOnQueryTextListener(mPhoneSearchQueryTextListener);
         mSearchView.setOnCloseListener(mPhoneSearchCloseListener);
@@ -862,6 +866,45 @@ public class DialtactsActivity extends TransactionSafeActivity
         }
         return false;
     }
+    
+    /**
+     * 
+     * yuan
+     * @param number
+     */
+    public void call(String number){
+    	try
+		{
+			ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+			telephony.call(number, 0);
+			
+//			MSimTelephonyManager m = (MSimTelephonyManager)getSystemService(MSIM_TELEPHONY_SERVICE);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+    }
+    
+//    private void chooseSIMDialog(final String number) {
+//    	AlertDialog.Builder builder = new Builder(this);
+//    	builder.setTitle("Choose SIM Card");
+//    	builder.setPositiveButton("SIM", new DialogInterface.OnClickListener(){
+//			@Override
+//			public void onClick(DialogInterface arg0, int arg1) {
+//				// TODO Auto-generated method stub	
+//				callFromSim(number,1);
+//			}   		
+//    	});
+//    	builder.setNegativeButton("UIM", new DialogInterface.OnClickListener(){
+//			@Override
+//			public void onClick(DialogInterface arg0, int arg1) {
+//				// TODO Auto-generated method stub	
+//				callFromSim(number,0);
+//			}   		
+//    	});
+//    	builder.create().show();
+//    }
 
     /**
      * Returns an appropriate call origin for this Activity. May return null when no call origin
@@ -951,7 +994,8 @@ public class DialtactsActivity extends TransactionSafeActivity
         filterOptionMenuItem.setOnMenuItemClickListener(mFilterOptionsMenuItemClickListener);
         addContactOptionMenuItem.setIntent(
                 new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
-
+//        Intent intent = new Intent(this, ContactDetailActivity.class);
+//        startActivity(intent);
         return true;
     }
 
@@ -1245,10 +1289,10 @@ public class DialtactsActivity extends TransactionSafeActivity
         }
     }
 
-    /** Returns an Intent to launch Call Settings screen */
+    /** Returns an Intent to launch Call SettingsFragment screen */
     public static Intent getCallSettingsIntent() {
         final Intent intent = new Intent(Intent.ACTION_MAIN);
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             intent.setClassName(PHONE_PACKAGE, MSIM_CALL_SETTINGS_CLASS_NAME);
         } else {
             intent.setClassName(PHONE_PACKAGE, CALL_SETTINGS_CLASS_NAME);

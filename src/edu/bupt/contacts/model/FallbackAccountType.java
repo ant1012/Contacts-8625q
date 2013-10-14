@@ -72,6 +72,7 @@ public class FallbackAccountType extends BaseAccountType {
 
     @Override
     public boolean areContactsWritable() {
+        Log.d(TAG, "areContactsWritable");
         return true;
     }
 }

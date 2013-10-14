@@ -275,7 +275,11 @@ public class ContactDetailActivity extends ContactsActivity {
                 return;
             }
             try {
-                startActivity(intent);
+                /** zzz */
+                Log.d(TAG, "dial here?");
+                Log.i(TAG, "intent - " + intent.toString());
+                Log.i(TAG, "intent - " + intent.getDataString());
+//                startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Log.e(TAG, "No activity found for intent: " + intent);
             }

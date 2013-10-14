@@ -218,6 +218,7 @@ public class ExternalAccountType extends BaseAccountType {
 
     @Override
     public boolean areContactsWritable() {
+        Log.d(TAG, "areContactsWritable");
         return mHasEditSchema;
     }
 

@@ -19,11 +19,20 @@
 
 package edu.bupt.contacts.dialpad;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +44,9 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
@@ -42,6 +54,7 @@ import android.provider.Contacts.Intents.Insert;
 import android.provider.Contacts.People;
 import android.provider.Contacts.Phones;
 import android.provider.Contacts.PhonesColumns;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.PhoneNumberUtils;
@@ -60,27 +73,39 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.SpecialCharSequenceMgr;
 import edu.bupt.contacts.activities.DialtactsActivity;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.PhoneNumberFormatter;
 import edu.bupt.contacts.util.StopWatch;
 import com.android.internal.telephony.ITelephony;
-import com.android.phone.CallLogAsync;
-import com.android.phone.HapticFeedback;
+import com.android.internal.telephony.TelephonyProperties;
+
+import edu.bupt.contacts.ipcall.IPCall;
+import edu.bupt.contacts.msim.MultiSimConfig;
+import edu.bupt.contacts.phone.CallLogAsync;
+import edu.bupt.contacts.phone.HapticFeedback;
+
+import edu.bupt.contacts.settings.*;
 
 /**
  * Fragment that displays a twelve-key phone dialpad.
@@ -114,6 +139,8 @@ public class DialpadFragment extends Fragment
      */
     private View mDigitsContainer;
     private EditText mDigits;
+    private TextView mMatchedPhones;
+    private TextView mMatchedName;
 
     /** Remembers if we need to clear digits field when the screen is completely gone. */
     private boolean mClearDigitsOnStop;
@@ -122,6 +149,9 @@ public class DialpadFragment extends Fragment
     private ToneGenerator mToneGenerator;
     private final Object mToneGeneratorLock = new Object();
     private View mDialpad;
+    private View mMatchList;
+    private ListView matchListView;
+    
     /**
      * Remembers the number of dialpad buttons which are pressed at this moment.
      * If it becomes 0, meaning no buttons are pressed, we'll call
@@ -171,6 +201,22 @@ public class DialpadFragment extends Fragment
             = "com.android.phone.extra.SEND_EMPTY_FLASH";
 
     private String mCurrentCountryIso;
+    
+    /*
+     * added by yuan
+     */
+	private List<CallResearchModel> allContactList,totalMatchedList;	
+	
+	
+	private List<CallResearchModel> rawThreeDaysList, rawThirtyDaysList, rawHistoryList;
+	
+	private initQueryDataThread rawThreeDaysListThread;
+	private initQueryDataThread rawThirtyDaysListThread;
+	private initQueryDataThread rawHistoryListThread;
+	
+	private Button mMatchMore,mMatchAddNew;
+	
+	ArrayList<String> numbers;
 
     private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
         /**
@@ -196,6 +242,8 @@ public class DialpadFragment extends Fragment
     };
 
     private boolean mWasEmptyBeforeTextChange;
+    
+    private CallResearchAdapter adapter;
 
     /**
      * This field is set to true while processing an incoming DIAL intent, in order to make sure
@@ -242,11 +290,24 @@ public class DialpadFragment extends Fragment
 
         updateDialAndDeleteButtonEnabledState();
     }
-
+    
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-
+        
+        //added by yuan        
+        
+    	allContactList = new ArrayList<CallResearchModel>();
+    	totalMatchedList = new ArrayList<CallResearchModel>();
+    	
+    	rawThreeDaysList = new ArrayList<CallResearchModel>();
+    	rawThirtyDaysList = new ArrayList<CallResearchModel>();
+    	rawHistoryList = new ArrayList<CallResearchModel>();
+    	numbers = new ArrayList<String>();
+    	
+        adapter = new CallResearchAdapter(getActivity());
+        
+        initQueryData();
         mCurrentCountryIso = ContactsUtils.getCurrentCountryIso(getActivity());
 
         try {
@@ -258,12 +319,12 @@ public class DialpadFragment extends Fragment
 
         setHasOptionsMenu(true);
 
-        mProhibitedPhoneNumberRegexp = getResources().getString(
-                R.string.config_prohibited_phone_number_regexp);
+        mProhibitedPhoneNumberRegexp = getResources().getString(R.string.config_prohibited_phone_number_regexp);
 
         if (state != null) {
             mDigitsFilledByIntent = state.getBoolean(PREF_DIGITS_FILLED_BY_INTENT);
-        }
+        }        
+        
     }
 
     @Override
@@ -280,6 +341,45 @@ public class DialpadFragment extends Fragment
         mDigits.setOnKeyListener(this);
         mDigits.setOnLongClickListener(this);
         mDigits.addTextChangedListener(this);
+        
+        //added by yuan
+        mMatchedPhones = (TextView) fragmentView.findViewById(R.id.textView_match_phonenumber);
+        mMatchedName = (TextView) fragmentView.findViewById(R.id.textView_match_name);
+        mMatchedPhones.setClickable(true);
+        mMatchedPhones.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				mDigits.getText().clear();
+								
+			    if(mMatchList.isShown()){
+			    	mMatchList.setVisibility(View.GONE);
+			    	mDialpad.setVisibility(View.VISIBLE);
+			    }
+			    
+			    if(numbers!=null&&numbers.size()>1){
+			    	final String sequence[] = (String[])numbers.toArray(new String[numbers.size()]);
+			    	Builder dialog = new AlertDialog.Builder(getActivity()).setTitle("号码选择").setItems(sequence, new DialogInterface.OnClickListener() {                  
+				    	public void onClick(DialogInterface dialog, int which) {          
+				    		// TODO Auto-generated method stub          
+				    		mDigits.getText().append(sequence[which]);				          
+				    		}        
+				    	}).setNegativeButton("取消", new DialogInterface.OnClickListener() {                  
+				    		public void onClick(DialogInterface dialog, int which) {}        
+				    		} 
+				    	);
+				    dialog.create().show();
+				    return;
+			    }
+			    
+			    if(numbers!=null&&numbers.size()==1){
+			    	mDigits.getText().append(numbers.get(0).toString());	
+			    }
+			}
+        	
+        });
+
 
         PhoneNumberFormatter.setPhoneNumberFormattingTextWatcher(getActivity(), mDigits);
 
@@ -315,6 +415,74 @@ public class DialpadFragment extends Fragment
         }
 
         mDialpad = fragmentView.findViewById(R.id.dialpad);  // This is null in landscape mode.
+        
+        // added by yuan
+        mMatchList = fragmentView.findViewById(R.id.dialpad_match_list);
+        matchListView= (ListView) mMatchList.findViewById(R.id.listView_match_list);
+        matchListView.setAdapter(adapter);
+        mMatchList.setVisibility(View.GONE);
+        
+        mMatchAddNew = (Button) fragmentView.findViewById(R.id.button_add_new);
+        mMatchAddNew.setVisibility(View.GONE);
+        mMatchAddNew.setOnClickListener(new OnClickListener(){
+        	@Override
+			public void onClick(View arg0) {
+        		final CharSequence digits = mDigits.getText();
+        		startActivity(getAddToContactIntent(digits));
+        		Log.v("mMatchAddNew","mMatchAddNew");
+			}
+        });
+        
+        mMatchMore = (Button) fragmentView.findViewById(R.id.button_more);
+        mMatchMore.setVisibility(View.GONE);
+        mMatchMore.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if(mMatchList.isShown()){
+					mMatchList.setVisibility(View.GONE);
+					mDialpad.setVisibility(View.VISIBLE);
+				}else{
+					mMatchList.setVisibility(View.VISIBLE);
+					mDialpad.setVisibility(View.GONE);
+				}
+				
+//				Intent intent = new Intent(getActivity(), MultiSimSettings.class);
+//				startActivity(intent);
+			}     	 
+        });
+        
+        // by yuan 
+        matchListView.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				//Log.v("yuanyetao",""+adapter.getAdapterList().get(arg2).telnum);
+				mDigits.getText().clear();
+				mDigits.getText().append(adapter.getAdapterList().get(arg2).telnum);
+				
+				mMatchedName.setText(adapter.getAdapterList().get(arg2).name); 
+			    mMatchList.setVisibility(View.GONE);
+			    mDialpad.setVisibility(View.VISIBLE);
+			    
+			    StringBuffer sb = new StringBuffer();
+			    numbers = getPhonenumbersFromName(totalMatchedList,adapter.getAdapterList().get(arg2).name.toString());
+				if(numbers!=null&&numbers.size()>1){
+					for(int i=0;i<numbers.size();i++){
+						sb.append(numbers.get(i).toString()).append('/');							
+					}
+					sb.deleteCharAt(sb.length()-1);
+				}else if(numbers!=null&&numbers.size()==1){
+					sb.append(numbers.get(0).toString());
+				}
+				mMatchedPhones.setText(sb.toString());
+				
+			}
+        	
+        });
 
         // In landscape we put the keyboard in phone mode.
         if (null == mDialpad) {
@@ -331,6 +499,8 @@ public class DialpadFragment extends Fragment
 
         return fragmentView;
     }
+    
+
 
     private boolean isLayoutReady() {
         return mDigits != null;
@@ -467,8 +637,7 @@ public class DialpadFragment extends Fragment
     private void setFormattedDigits(String data, String normalizedNumber) {
         // strip the non-dialable numbers out of the data string.
         String dialString = PhoneNumberUtils.extractNetworkPortion(data);
-        dialString =
-                PhoneNumberUtils.formatNumber(dialString, normalizedNumber, mCurrentCountryIso);
+        dialString = PhoneNumberUtils.formatNumber(dialString, normalizedNumber, mCurrentCountryIso);
         if (!TextUtils.isEmpty(dialString)) {
             Editable digits = mDigits.getText();
             digits.replace(0, digits.length(), dialString);
@@ -580,6 +749,17 @@ public class DialpadFragment extends Fragment
         stopWatch.lap("bes");
 
         stopWatch.stopAndLog(TAG, 50);
+        
+        //added by yuan
+
+    	mDigits.getText().clear();
+		mMatchedPhones.setText("");
+		mMatchedName.setText(""); 
+	    mMatchList.setVisibility(View.GONE);
+	    mDialpad.setVisibility(View.VISIBLE);
+	    mMatchMore.setVisibility(View.GONE);	  
+	    mMatchAddNew.setVisibility(View.GONE);
+	    
     }
 
     @Override
@@ -647,6 +827,44 @@ public class DialpadFragment extends Fragment
         final MenuItem addToContactMenuItem = menu.findItem(R.id.menu_add_contacts);
         final MenuItem twoSecPauseMenuItem = menu.findItem(R.id.menu_2s_pause);
         final MenuItem waitMenuItem = menu.findItem(R.id.menu_add_wait);
+        final MenuItem sendSMSMenuItem = menu.findItem(R.id.menu_send_sms);
+        final MenuItem callLogSettingMenuItem = menu.findItem(R.id.menu_call_setting);
+        
+        final MenuItem callIPOneMenuItem = menu.findItem(R.id.menu_ip_call_one);
+        final MenuItem callIPTwoMenuItem = menu.findItem(R.id.menu_ip_call_two);
+        //by yuan
+        
+        final IPCall ipcall = new IPCall(getActivity());
+        
+        callIPOneMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				final String number = mDigits.getText().toString();
+	            if (number != null){	               
+	            	((DialtactsActivity)getActivity()).call(ipcall.getCDMAIPCode()+number); 
+	            }
+				return false;
+			}
+        	
+        });
+        
+        
+        callIPTwoMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				final String number = mDigits.getText().toString();
+	            if (number != null){	               
+	            	((DialtactsActivity)getActivity()).call(ipcall.getGSMIPCode()+number); 
+	            }
+				return false;
+			}
+        	
+        });
+        
 
         // Check if all the menu items are inflated correctly. As a shortcut, we assume all menu
         // items are ready if the first item is non-null.
@@ -658,30 +876,64 @@ public class DialpadFragment extends Fragment
         if (activity != null && ViewConfiguration.get(activity).hasPermanentMenuKey()) {
             // Call settings should be available via its parent Activity.
             callSettingsMenuItem.setVisible(false);
+            //callLogSettingMenuItem.setVisible(false);
         } else {
             callSettingsMenuItem.setVisible(true);
             callSettingsMenuItem.setIntent(DialtactsActivity.getCallSettingsIntent());
+            //callLogSettingMenuItem.setVisible(true);
+                      
         }
+        callLogSettingMenuItem.setVisible(true);
+        callLogSettingMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				final Intent intent = new Intent(getActivity(),CalllogSettingActivity.class);
+				startActivity(intent);
+				return false;
+			}
+        	
+        });
+        
+        
 
         // We show "add to contacts", "2sec pause", and "add wait" menus only when the user is
         // seeing usual dialpads and has typed at least one digit.
         // We never show a menu if the "choose dialpad" UI is up.
         if (dialpadChooserVisible() || isDigitsEmpty()) {
             addToContactMenuItem.setVisible(false);
+            sendSMSMenuItem.setVisible(false);
             twoSecPauseMenuItem.setVisible(false);
             waitMenuItem.setVisible(false);
+            callIPOneMenuItem.setVisible(false);
+            callIPTwoMenuItem.setVisible(false);
         } else {
+        	
+        	if(ipcall.isCDMAIPEnabled()){
+            	callIPOneMenuItem.setVisible(true);
+            }else{
+            	callIPOneMenuItem.setVisible(false);
+            }
+        	if(ipcall.isGSMIPEnabled()){
+            	callIPTwoMenuItem.setVisible(true);
+            }else{
+            	callIPTwoMenuItem.setVisible(false);
+            }            	
+        	
             final CharSequence digits = mDigits.getText();
 
             // Put the current digits string into an intent
             addToContactMenuItem.setIntent(getAddToContactIntent(digits));
             addToContactMenuItem.setVisible(true);
+            
+            sendSMSMenuItem.setIntent(getSendSMSIntent(digits));
+            sendSMSMenuItem.setVisible(true);
 
             // Check out whether to show Pause & Wait option menu items
             int selectionStart;
             int selectionEnd;
             String strDigits = digits.toString();
-
             selectionStart = mDigits.getSelectionStart();
             selectionEnd = mDigits.getSelectionEnd();
 
@@ -719,6 +971,14 @@ public class DialpadFragment extends Fragment
         intent.putExtra(Insert.PHONE, digits);
         intent.setType(People.CONTENT_ITEM_TYPE);
         return intent;
+    }
+    
+    private static Intent getSendSMSIntent(CharSequence digits){	
+    	Uri uri = Uri.parse("smsto:"+digits);
+    	final Intent intent = new Intent(Intent.ACTION_SENDTO,uri);
+//        intent.putExtra(Insert.PHONE, digits);
+//        intent.setType(People.CONTENT_ITEM_TYPE);
+        return intent;   	
     }
 
     private void keyPressed(int keyCode) {
@@ -766,15 +1026,264 @@ public class DialpadFragment extends Fragment
         mHaptic.vibrate();
         KeyEvent event = new KeyEvent(KeyEvent.ACTION_DOWN, keyCode);
         mDigits.onKeyDown(keyCode, event);
-
+        //matchPhoneNumber(mDigits.getText().toString());
+        myHandler.sendEmptyMessage(0);
+        
         // If the cursor is at the end of the text we hide it.
         final int length = mDigits.length();
+        
         if (length == mDigits.getSelectionStart() && length == mDigits.getSelectionEnd()) {
             mDigits.setCursorVisible(false);
         }
     }
+    
+    private Handler myHandler = new Handler(){
+    	public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            matchPhoneNumber(mDigits.getText().toString());                    
+        }
+    };
+   
+    /*
+     * 
+     * added by yuan
+     */
+    private void matchPhoneNumber(String phonenumber) {
+		// TODO Auto-generated method stub
+    	if(phonenumber.length()<1){
+    		mMatchedPhones.setText("");
+    		mMatchedName.setText("");
+    		adapter.refresh(allContactList, true);
+    		mMatchMore.setVisibility(View.GONE);
+    		mMatchList.setVisibility(View.GONE);
+    		mMatchAddNew.setVisibility(View.GONE);
+    	    mDialpad.setVisibility(View.VISIBLE);
+    	}else{ 
+    		totalMatchedList.clear();
+    		mMatchAddNew.setVisibility(View.GONE);
+    		//Log.v("aaaa",""+rawThreeDaysListThread.get_state());
+    		if(rawThreeDaysListThread!=null&&rawThreeDaysListThread.get_state()&&rawThreeDaysList.size()>0){
+    			search(totalMatchedList,rawThreeDaysList,phonenumber.replace(" ", ""));
+    			//Log.v("aa1","bb");
+    		}
+    		if(rawThirtyDaysListThread!=null&&rawThirtyDaysListThread.get_state()&&rawThirtyDaysList.size()>0){
+    			search(totalMatchedList,rawThirtyDaysList,phonenumber.replace(" ", ""));
+    			//Log.v("aa2","bb");
+    		}
+    		if(rawHistoryListThread!=null&&rawHistoryListThread.get_state()&&rawHistoryList.size()>0){
+    			search(totalMatchedList,rawHistoryList,phonenumber.replace(" ", ""));
+    			//Log.v("aa3","bb");
+    		}
+    		if(totalMatchedList.size()<1){
+    			mMatchAddNew.setVisibility(View.VISIBLE);
+    		}
+    	}  	
+	}
+    
+    /**
+     * 根据名字中的某一个字进行模糊查询
+     * @param key
+     */
+    private boolean getFuzzyQuery(List<CallResearchModel> dataList,long startTime,long endTime){
+    	  	
+    	StringBuilder sb = new StringBuilder();
+    	ContentResolver cr = getActivity().getContentResolver();   	
+    	//Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/"+key);  
+    	Uri uri = Uri.parse("content://com.android.contacts/data/phones/"); 
+    	String selection = "(( last_time_contacted  >= ?) AND ( last_time_contacted < ?))";
+        String[] selectionArgs = new String[] {String.valueOf(startTime), String.valueOf(endTime)};
+        Cursor cursor = cr.query(uri, new String[] {ContactsContract.Contacts.DISPLAY_NAME,
+        		ContactsContract.CommonDataKinds.Phone.NUMBER,"last_time_contacted","times_contacted"},selection, selectionArgs, "times_contacted DESC"); 
+		for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+			CallResearchModel m = new CallResearchModel(cursor.getString(0), cursor.getString(1));
+			//Log.v("dddd",""+cursor.getString(0)+":"+cursor.getString(1)+":"+cursor.getString(2)+":"+cursor.getString(3));
+			dataList.add(m);
+		}
+		cursor.close();
+		return true;
+    }
+    
+    /*
+     * 
+     * added by yuan
+     */
+    
+    public void initQueryData(){
+    	long currentTime = System.currentTimeMillis();
+		long threeDaysBeforeTime = System.currentTimeMillis() - 3*24*3600*1000L;
+		long thirtyDaysBeforeTime = System.currentTimeMillis() - 2592000000L;
+		//Log.v("dddd",new Date((long) currentTime).toLocaleString()+currentTime);
+		//Log.v("dddd",new Date((long) threeDaysBeforeTime).toLocaleString()+threeDaysBeforeTime);
+		//Log.v("dddd",new Date((long) thirtyDaysBeforeTime).toLocaleString()+thirtyDaysBeforeTime);
 
-    @Override
+		rawThreeDaysListThread = new initQueryDataThread(rawThreeDaysList,threeDaysBeforeTime,currentTime);
+		rawThreeDaysListThread.start();
+		rawThirtyDaysListThread = new initQueryDataThread(rawThirtyDaysList,thirtyDaysBeforeTime,threeDaysBeforeTime);
+		rawThirtyDaysListThread.start();
+		rawHistoryListThread = new initQueryDataThread(rawHistoryList,0,thirtyDaysBeforeTime);
+		rawHistoryListThread.start();
+		   			
+    }
+    
+    public class initQueryDataThread extends Thread {
+    	
+    	List<CallResearchModel> dataList;
+    	long startTime,endTime;
+    	public boolean state;
+    	public initQueryDataThread(List<CallResearchModel> dataList,long startTime,long endTime){
+    		this.dataList = dataList;
+    		this.startTime = startTime;
+    		this.endTime = endTime;
+    		this.state = false;
+    	}
+    	
+    	public void run(){  	    	   		   		
+    		state = getFuzzyQuery(dataList,startTime,endTime);  
+    		Log.v("yuantest","加载完成"+dataList.size());
+    	}
+    	
+    	public boolean get_state(){
+    		return state;
+    	}
+    }
+    
+    /**
+	 * 按号码-拼音搜索联系人
+	 * @param str
+	 */
+	public void search(List<CallResearchModel> totalMatchedList,List<CallResearchModel> rawDataList,String str){
+		       	
+		List<CallResearchModel> headPinyinMatchedList = new ArrayList<CallResearchModel>();
+		List<CallResearchModel> partPinyinMatchedList = new ArrayList<CallResearchModel>();
+		List<CallResearchModel> phoneNumberMatchedList = new ArrayList<CallResearchModel>();
+    	String strForMatch = str;
+    	
+    	if(str.toString().contains("+")){
+			//Log.v("aaa1",""+str.length());
+			strForMatch = str.replace("+", "");
+			Log.v("aaa2",strForMatch+":"+strForMatch.length());
+		}
+    	
+		StringBuffer T9pinyin = new StringBuffer();
+		//获取每一个数字对应的字母列表并以'-'隔开
+		for(int i = 0; i < strForMatch.length(); i++){
+			T9pinyin.append((strForMatch.charAt(i) <= '9' && strForMatch.charAt(i) >= '0')? BaseUtil.STRS[strForMatch.charAt(i) - '0'] : strForMatch.charAt(i));
+			if(i != strForMatch.length() - 1){
+				T9pinyin.append("-");
+			}
+		}
+		
+		//如果搜索条件以0 1 +开头则按号码搜索
+		//if(str.toString().startsWith("0") || str.toString().startsWith("1")|| str.toString().startsWith("+")){
+		
+		
+		if(rawDataList.size()>0&&strForMatch.length()>0){
+			for(CallResearchModel model : rawDataList){
+				if(pinyinMatched(T9pinyin.toString(),model,strForMatch,headPinyinMatchedList,partPinyinMatchedList)){				
+					continue;				
+				}
+				else if(model.searchnum.contains(strForMatch)){ 
+					model.group = strForMatch;
+					phoneNumberMatchedList.add(model);
+				}
+			}
+			totalMatchedList.addAll(headPinyinMatchedList);
+			totalMatchedList.addAll(partPinyinMatchedList);
+			totalMatchedList.addAll(phoneNumberMatchedList);
+			if(totalMatchedList.size()>0){
+				
+				if(totalMatchedList.get(0).name!=""){
+					mMatchedName.setText(totalMatchedList.get(0).name.toString());
+					StringBuffer sb = new StringBuffer();
+					sb.append("");
+					numbers = getPhonenumbersFromName(totalMatchedList,totalMatchedList.get(0).name.toString());
+					if(numbers!=null&&numbers.size()>1){
+						for(int i=0;i<numbers.size();i++){
+							sb.append(numbers.get(i).toString()).append('/');							
+						}
+						sb.deleteCharAt(sb.length()-1);
+					}else if(numbers!=null&&numbers.size()==1){
+						sb.append(numbers.get(0).toString());
+					}
+					mMatchedPhones.setText(sb.toString());
+					
+				}else{
+					mMatchedName.setText(totalMatchedList.get(0).telnum.toString());
+					mMatchedPhones.setText(totalMatchedList.get(0).telnum.toString());
+				}				
+			}else{
+				mMatchedPhones.setText("");
+				mMatchedName.setText("");
+			}
+			if(totalMatchedList.size()>1){
+				mMatchMore.setVisibility(View.VISIBLE);
+			}else{
+			    mMatchMore.setVisibility(View.GONE);
+            }
+			adapter.refresh(totalMatchedList, false);
+			return;
+		}
+    }
+	
+	/**
+	 * 根据名字查询所有号码
+	 */
+	
+	public ArrayList<String> getPhonenumbersFromName(List<CallResearchModel> totalMatchedList,String name){
+		ArrayList<String> numbers = new ArrayList<String>();
+		for(CallResearchModel model : totalMatchedList){
+			if(model.name.equals(name)){ 
+				numbers.add(model.telnum);
+			}
+		}
+		return numbers;
+	}
+	
+	/**
+	 * 根据拼音搜索
+	 * @param str			正则表达式
+	 * @param pyName		拼音
+	 * @param isIncludsive	搜索条件是否大于6个字符
+	 * @return
+	 */
+	public boolean pinyinMatched(String str, CallResearchModel model, String search,List<CallResearchModel> headPinyinMatchedList,List<CallResearchModel> partPinyinMatchedList){
+		if(TextUtils.isEmpty(model.pyname)){
+			return false;
+		}
+		
+		String tempStr1 = str;
+		model.group = "";
+		//搜索条件大于6个字符将不按拼音首字母查询
+		if(search.length() < 6&&tempStr1.length()>0){
+			//根据首字母进行模糊查询
+			//Pattern pattern = Pattern.compile("^" + tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));
+			Pattern pattern = Pattern.compile(tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));			
+			Matcher matcher = pattern.matcher(model.pyname);
+			
+			if(matcher.find()){
+				String tempStr = matcher.group();
+				for(int i = 0; i < tempStr.length(); i++){
+					if(tempStr.charAt(i) >= 'A' && tempStr.charAt(i) <= 'Z'){
+						model.group += tempStr.charAt(i);						
+					}
+				}
+				headPinyinMatchedList.add(model);
+				return true;
+			}		
+		}
+		
+		//根据全拼查询
+		Pattern pattern = Pattern.compile(str.replace("-", ""), Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(model.pyname);
+		boolean flag = matcher.find();
+		if(flag){
+			model.group = matcher.group();
+			partPinyinMatchedList.add(model);
+		}
+		return flag;
+	}
+
+	@Override
     public boolean onKey(View view, int keyCode, KeyEvent event) {
         switch (view.getId()) {
             case R.id.digits:
@@ -918,37 +1427,38 @@ public class DialpadFragment extends Fragment
                 // TODO: The framework forgets to clear the pressed
                 // status of disabled button. Until this is fixed,
                 // clear manually the pressed status. b/2133127
+                myHandler.sendEmptyMessage(0);
                 mDelete.setPressed(false);
                 return true;
             }
             case R.id.one: {
                 // '1' may be already entered since we rely on onTouch() event for numeric buttons.
                 // Just for safety we also check if the digits field is empty or not.
-                if (isDigitsEmpty() || TextUtils.equals(mDigits.getText(), "1")) {
-                    // We'll try to initiate voicemail and thus we want to remove irrelevant string.
-                    removePreviousDigitIfPossible();
-
-                    if (isVoicemailAvailable()) {
-                        callVoicemail();
-                    } else if (getActivity() != null) {
-                        // Voicemail is unavailable maybe because Airplane mode is turned on.
-                        // Check the current status and show the most appropriate error message.
-                        final boolean isAirplaneModeOn =
-                                Settings.System.getInt(getActivity().getContentResolver(),
-                                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
-                        if (isAirplaneModeOn) {
-                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
-                                    R.string.dialog_voicemail_airplane_mode_message);
-                            dialogFragment.show(getFragmentManager(),
-                                    "voicemail_request_during_airplane_mode");
-                        } else {
-                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
-                                    R.string.dialog_voicemail_not_ready_message);
-                            dialogFragment.show(getFragmentManager(), "voicemail_not_ready");
-                        }
-                    }
-                    return true;
-                }
+//                if (isDigitsEmpty() || TextUtils.equals(mDigits.getText(), "1")) {
+//                    // We'll try to initiate voicemail and thus we want to remove irrelevant string.
+//                    removePreviousDigitIfPossible();
+//
+//                    if (isVoicemailAvailable()) {
+//                        callVoicemail();
+//                    } else if (getActivity() != null) {
+//                        // Voicemail is unavailable maybe because Airplane mode is turned on.
+//                        // Check the current status and show the most appropriate error message.
+//                        final boolean isAirplaneModeOn =
+//                                Settings.System.getInt(getActivity().getContentResolver(),
+//                                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+//                        if (isAirplaneModeOn) {
+//                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
+//                                    R.string.dialog_voicemail_airplane_mode_message);
+//                            dialogFragment.show(getFragmentManager(),
+//                                    "voicemail_request_during_airplane_mode");
+//                        } else {
+//                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
+//                                    R.string.dialog_voicemail_not_ready_message);
+//                            dialogFragment.show(getFragmentManager(), "voicemail_not_ready");
+//                        }
+//                    }
+//                    return true;
+//                }
                 return false;
             }
             case R.id.zero: {
@@ -1076,7 +1586,6 @@ public class DialpadFragment extends Fragment
             handleDialButtonClickWithEmptyDigits();
         } else {
             final String number = mDigits.getText().toString();
-
             // "persist.radio.otaspdial" is a temporary hack needed for one carrier's automated
             // test equipment.
             // TODO: clean it up.
@@ -1094,15 +1603,16 @@ public class DialpadFragment extends Fragment
                 // Clear the digits just in case.
                 mDigits.getText().clear();
             } else {
-                final Intent intent = ContactsUtils.getCallIntent(number,
-                        (getActivity() instanceof DialtactsActivity ?
-                                ((DialtactsActivity)getActivity()).getCallOrigin() : null));
-                startActivity(intent);
-                mClearDigitsOnStop = true;
-                getActivity().finish();
+//                final Intent intent = ContactsUtils.getCallIntent(number,(getActivity() instanceof DialtactsActivity ?
+//                                ((DialtactsActivity)getActivity()).getCallOrigin() : null));
+//                startActivity(intent);
+//                mClearDigitsOnStop = true;
+//                getActivity().finish();
+            	((DialtactsActivity)getActivity()).call(number); //by yuan
             }
         }
     }
+    
 
     private void handleDialButtonClickWithEmptyDigits() {
         if (phoneIsCdma() && phoneIsOffhook()) {
@@ -1563,7 +2073,7 @@ public class DialpadFragment extends Fragment
         } else {
             try {
                 mSubscription = MSimTelephonyManager.getDefault().getPreferredVoiceSubscription();
-                if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                if (MultiSimConfig.isMultiSimEnabled()) {
                     return (MSimTelephonyManager.getDefault().
                             getVoiceMailNumber(mSubscription) != null);
                 } else {

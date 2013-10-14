@@ -181,6 +181,10 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
     private AccountType mFallbackAccountType;
 
+    /** zzz */
+    private AccountType mPhoneAccountType;
+    private AccountType mSimAccountType;
+
     private List<AccountWithDataSet> mAccounts = Lists.newArrayList();
     private List<AccountWithDataSet> mContactWritableAccounts = Lists.newArrayList();
     private List<AccountWithDataSet> mGroupWritableAccounts = Lists.newArrayList();
@@ -274,6 +278,11 @@ class AccountTypeManagerImpl extends AccountTypeManager
     public AccountTypeManagerImpl(Context context) {
         mContext = context;
         mFallbackAccountType = new FallbackAccountType(context);
+
+        /** zzz */
+        mPhoneAccountType = new PhoneAccountType(context);
+        mSimAccountType = new SimAccountType(context);
+        
 
         mAccountManager = AccountManager.get(mContext);
 
@@ -562,10 +571,15 @@ class AccountTypeManagerImpl extends AccountTypeManager
     /**
      * Return list of all known, contact writable {@link AccountWithDataSet}'s.
      */
+//    @Override
+//    public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
+//        ensureAccountsLoaded();
+//        return contactWritableOnly ? mContactWritableAccounts : mAccounts;
+//    }
     @Override
     public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
         ensureAccountsLoaded();
-        return contactWritableOnly ? mContactWritableAccounts : mAccounts;
+        return mAccounts;
     }
 
     /**
@@ -608,13 +622,27 @@ class AccountTypeManagerImpl extends AccountTypeManager
     /**
      * Return {@link AccountType} for the given account type and data set.
      */
+
+    /** zzz */
+    // force all accounts as fallback type
+//    @Override
+//    public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
+//        ensureAccountsLoaded();
+//        synchronized (this) {
+//            AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
+//            return type != null ? type : mFallbackAccountType;
+//        }
+//    }
+
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
-        synchronized (this) {
-            AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
-            return type != null ? type : mFallbackAccountType;
+        if(accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
+            return mPhoneAccountType;
+        } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) {
+            return mSimAccountType;
         }
+        return mFallbackAccountType;
     }
 
     /**
