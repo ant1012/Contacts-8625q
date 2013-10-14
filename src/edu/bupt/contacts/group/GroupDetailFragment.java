@@ -20,13 +20,13 @@ import edu.bupt.contacts.ContactPhotoManager;
 import edu.bupt.contacts.GroupMemberLoader;
 import edu.bupt.contacts.GroupMetaDataLoader;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.blacklist.WhiteListDBHelper;
 import edu.bupt.contacts.interactions.GroupDeletionDialogFragment;
 import edu.bupt.contacts.list.ContactTileAdapter;
 import edu.bupt.contacts.list.ContactTileAdapter.DisplayType;
 import edu.bupt.contacts.list.ContactTileView;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -41,6 +41,7 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Groups;
 import android.text.TextUtils;
 import android.util.Log;
@@ -441,9 +442,55 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                         mCloseActivityAfterDelete);
                 return true;
             }
+
             /** zzz */
             case R.id.menu_add_group_to_whitelist: {
                 Log.d(TAG, "menu_add_group_to_whitelist");
+    
+                String[] projection = new String[] {
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.GroupMembership.CONTACT_ID };
+
+                Cursor c = mContext // get contact id from group id
+                        .getContentResolver()
+                        .query(ContactsContract.Data.CONTENT_URI,
+                                projection,
+                                ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID
+                                        + "=" + mGroupId, null, null);
+                WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext, 1);;
+                
+                while (c.moveToNext()) {
+                    String id = c
+                            .getString(c
+                                    .getColumnIndex(ContactsContract.CommonDataKinds.GroupMembership.CONTACT_ID));
+                    Cursor pCur = mContext.getContentResolver().query( // get name and phone number from contact id
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                                    + " = ?", new String[] { id }, null);
+                    Log.i(TAG, "id - " + id);
+
+                    while (pCur.moveToNext()) {
+                        String name = pCur
+                                .getString(pCur
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+    
+                        String phone = pCur
+                                .getString(pCur
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        Log.i(TAG, "name - " + name);
+                        Log.i(TAG, "phone - " + phone);
+
+                        mDBHelper.addPeople(name, phone);
+                        Log.d(TAG, "add " + name + "to white list");
+                    }
+
+                    pCur.close();
+    
+                }
+                mDBHelper.close();
+                c.close();
 
                 return true;
             }
