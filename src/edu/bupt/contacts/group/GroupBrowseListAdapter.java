@@ -19,8 +19,10 @@ package edu.bupt.contacts.group;
 import edu.bupt.contacts.ContactPhotoManager;
 import edu.bupt.contacts.GroupListLoader;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.blacklist.WhiteListDBHelper;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
+
 import com.android.internal.util.Objects;
 
 import android.content.ContentUris;
@@ -39,7 +41,7 @@ import android.widget.TextView;
  * Adapter to populate the list of groups.
  */
 public class GroupBrowseListAdapter extends BaseAdapter {
-
+    private final String TAG = "GroupBrowseListAdapter";
     private final Context mContext;
     private final LayoutInflater mLayoutInflater;
     private final AccountTypeManager mAccountTypeManager;
@@ -105,6 +107,11 @@ public class GroupBrowseListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        /** zzz */
+        if(true) {
+            return mCursor == null ? 1 : mCursor.getCount() + 1;
+        }
+        
         return mCursor == null ? 0 : mCursor.getCount();
     }
 
@@ -161,6 +168,13 @@ public class GroupBrowseListAdapter extends BaseAdapter {
     @Override
     public GroupListItem getItem(int position) {
         if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
+
+            /** zzz */
+            if (position == getCount() - 1 ) {
+                Log.d(TAG, "position == getCount() - 1");
+                return new GroupListItem("accountName", "accountType", "dataSet", -1, mContext.getString(R.string.white_list), true, position);
+            }
+
             return null;
         }
         String accountName = mCursor.getString(GroupListLoader.ACCOUNT_NAME);
@@ -228,17 +242,36 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         }
 
         // Bind the group data
-        Uri groupUri = getGroupUriFromId(entry.getGroupId());
-        String memberCountString = mContext.getResources().getQuantityString(
-                R.plurals.group_list_num_contacts_in_group, entry.getMemberCount(),
-                entry.getMemberCount());
-        viewCache.setUri(groupUri);
-        viewCache.groupTitle.setText(entry.getTitle());
-        viewCache.groupMemberCount.setText(memberCountString);
+        /** zzz */
+        if (entry.getGroupId() == -1) { // white list
+            viewCache.accountType.setText(R.string.white_list);
+            viewCache.accountName.setText("");
+            viewCache.groupTitle.setText(entry.getTitle());
 
-        if (mSelectionVisible) {
-            result.setActivated(isSelectedGroup(groupUri));
+            int count = 0;
+            WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext, 1);
+            count = mDBHelper.getCount();
+
+            String memberCountString = mContext.getResources()
+                    .getQuantityString(
+                            R.plurals.group_list_num_contacts_in_group, count,
+                            count);
+            viewCache.groupMemberCount.setText(memberCountString);
+        } else {
+            Uri groupUri = getGroupUriFromId(entry.getGroupId());
+            String memberCountString = mContext.getResources()
+                    .getQuantityString(
+                            R.plurals.group_list_num_contacts_in_group,
+                            entry.getMemberCount(), entry.getMemberCount());
+            viewCache.setUri(groupUri);
+            viewCache.groupTitle.setText(entry.getTitle());
+            viewCache.groupMemberCount.setText(memberCountString);
+
+            if (mSelectionVisible) {
+                result.setActivated(isSelectedGroup(groupUri));
+            }
         }
+
         return result;
     }
 

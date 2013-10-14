@@ -19,9 +19,9 @@ package edu.bupt.contacts.group;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.GroupListLoader;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.blacklist.BlacklistMainActivity;
 import edu.bupt.contacts.group.GroupBrowseListAdapter.GroupListItemViewCache;
 import edu.bupt.contacts.widget.AutoScrollListView;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -37,6 +37,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -125,7 +126,16 @@ public class GroupBrowseListFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GroupListItemViewCache groupListItem = (GroupListItemViewCache) view.getTag();
-                if (groupListItem != null) {
+
+                /** zzz */
+                if (position == mListView.getCount() - 1) {
+                    Log.d(TAG, "white list entry clicked");
+                    Intent i = new Intent(mContext, BlacklistMainActivity.class);
+                    i.putExtra("fragment_display_whitelist", true);
+                    startActivity(i);
+                }
+
+                else if (groupListItem != null) {
                     viewGroup(groupListItem.getUri());
                 }
             }
