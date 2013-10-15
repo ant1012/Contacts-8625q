@@ -15,7 +15,7 @@ public class BlacklistMainActivity extends FragmentActivity implements
 
     public static final String TAG = "BlacklistMainActivity";
     public static final String BACKGROUND_LISTEN_SERVICE = "listen_in_background";
-    private Fragment radioButtons;
+    private RadioButtonsFragment radioButtons;
     private Fragment mainView;
     private Fragment msgBlock;
     private Fragment callBlock;
@@ -32,8 +32,19 @@ public class BlacklistMainActivity extends FragmentActivity implements
         DBHelper dbHelper = new DBHelper(this, 1);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.onCreate(db);
-        Log.d(TAG, "e?");
+        Log.d(TAG, "onCreate");
         initFragment(savedInstanceState);
+
+        /** zzz */
+        if (getIntent().getExtras() != null
+                && getIntent().getExtras().getBoolean("fragment_display_whitelist", false)) {
+            Log.d(TAG, "fragment_display_whitelist");
+            Log.i(TAG, "radioButtons - " + radioButtons.toString());
+
+            whiteList = new WhiteListFragment(this);
+            updatefragment(whiteList);
+            radioButtons.setWhiteListChecked();
+        }
     }
 
     private void initFragment(Bundle savedInstanceState) {

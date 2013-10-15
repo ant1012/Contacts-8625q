@@ -4,6 +4,7 @@ import edu.bupt.contacts.R;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,5 +107,16 @@ public class RadioButtonsFragment extends Fragment {
         }
 
     };
+
+    public void setWhiteListChecked() {
+        new Handler().post(new Runnable()
+        {
+            public void run() 
+            {
+                mRadioGroup.check(R.id.white_list);
+            }
+        });
+    }
+
 
 }

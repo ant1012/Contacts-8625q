@@ -2,6 +2,7 @@ package edu.bupt.contacts.blacklist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -9,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class WhiteListDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
 
-    public static final String TAG = "franco--->WhiteWhiteDBHelper";
+    public static final String TAG = "WhiteWhiteDBHelper";
     public static final String TB_NAME = "WhiteListFragment";
     public static final String ID = "_id";
     public static final String NAME = "name";
@@ -67,5 +68,15 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
     public void delAllPeople() {
         this.getWritableDatabase()
                 .delete(WhiteListDBHelper.TB_NAME, null, null);
+    }
+    
+    public int getCount() {
+        int count = 0;
+        Cursor cursor = this.getWritableDatabase().rawQuery(
+                "select count(*) from " + TB_NAME, null);
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        return count;
     }
 }

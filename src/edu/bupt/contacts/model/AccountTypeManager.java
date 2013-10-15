@@ -637,6 +637,9 @@ class AccountTypeManagerImpl extends AccountTypeManager
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
+        if(accountTypeWithDataSet.accountType == null) {
+            return mFallbackAccountType;
+        }
         if(accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
             return mPhoneAccountType;
         } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) {
