@@ -1,9 +1,10 @@
 package edu.bupt.contacts.blacklist;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.bupt.contacts.R;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -104,10 +105,11 @@ public class BlackListFragment extends Fragment {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         mDBHelper = new BlacklistDBHelper(context, 1);
-        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null,
-                null, null, null, null, BlacklistDBHelper.NAME + " ASC");
-        String[] from = new String[] { BlacklistDBHelper.NAME, BlacklistDBHelper.Phone,
-                BlacklistDBHelper.BlockContent };
+        cursor = mDBHelper.getWritableDatabase().query(
+                BlacklistDBHelper.TB_NAME, null, null, null, null, null,
+                BlacklistDBHelper.NAME + " ASC");
+        String[] from = new String[] { BlacklistDBHelper.NAME,
+                BlacklistDBHelper.Phone, BlacklistDBHelper.BlockContent };
         int[] to = new int[] { R.id.blacklist_item_text1,
                 R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
         adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item,
@@ -237,9 +239,17 @@ public class BlackListFragment extends Fragment {
 
                 if (checkedMap.get(arg2) == null
                         || checkedMap.get(arg2) == false) {
+                    Log.d(TAG, "true");
                     checkedMap.put(arg2, true);
+                    CheckedTextView checkedTextView = (CheckedTextView) arg1
+                            .findViewById(R.id.contact_checked_text_view);
+                    checkedTextView.setChecked(true);
                 } else {
+                    Log.d(TAG, "false");
                     checkedMap.put(arg2, false);
+                    CheckedTextView checkedTextView = (CheckedTextView) arg1
+                            .findViewById(R.id.contact_checked_text_view);
+                    checkedTextView.setChecked(false);
                 }
             }
         });
@@ -254,6 +264,16 @@ public class BlackListFragment extends Fragment {
                         contact.moveToPosition(position);
                         String name = contact.getString(PHONES_DISPLAY_NAME);
                         String phone = contact.getString(PHONES_NUMBER);
+
+                        String strip1 = replacePattern(phone,
+                                "^((\\+{0,1}86){0,1})", ""); // strip +86
+                        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip
+                                                                             // -
+                        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip
+                                                                             // space
+
+                        phone = strip3;
+
                         save(name, phone, 0);
                     }
                 }
@@ -279,6 +299,20 @@ public class BlackListFragment extends Fragment {
         importContactDialog = builder.create();
         importContactDialog.setCanceledOnTouchOutside(true);
         importContactDialog.show();
+    }
+
+    private String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
     }
 
     private void showNewRecordDialog(String name, String phone, int blockId,
@@ -368,8 +402,9 @@ public class BlackListFragment extends Fragment {
     }
 
     private void update() {
-        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null,
-                null, null, null, null, BlacklistDBHelper.NAME + " ASC");
+        cursor = mDBHelper.getWritableDatabase().query(
+                BlacklistDBHelper.TB_NAME, null, null, null, null, null,
+                BlacklistDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
 
