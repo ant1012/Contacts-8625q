@@ -1,5 +1,8 @@
 package edu.bupt.contacts.blacklist;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -42,23 +45,30 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-//    public void addPeople(String name, String phone, String blockContent,
-//            Integer blockId) {
-//        ContentValues values = new ContentValues();
-//        values.put(BlacklistDBHelper.NAME, name);
-//        values.put(BlacklistDBHelper.Phone, phone);
-//        values.put(BlacklistDBHelper.BlockContent, blockContent);
-//        values.put(BlacklistDBHelper.BlockId, blockId);
-//        this.getWritableDatabase()
-//                .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
-//    }
+    // public void addPeople(String name, String phone, String blockContent,
+    // Integer blockId) {
+    // ContentValues values = new ContentValues();
+    // values.put(BlacklistDBHelper.NAME, name);
+    // values.put(BlacklistDBHelper.Phone, phone);
+    // values.put(BlacklistDBHelper.BlockContent, blockContent);
+    // values.put(BlacklistDBHelper.BlockId, blockId);
+    // this.getWritableDatabase()
+    // .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
+    // }
 
     public void addPeople(String name, String phone) {
-        String sql = "select * from "+ TB_NAME + " where phone = ?";
-        Cursor cursor = this.getWritableDatabase().rawQuery(
-                sql, new String[] { phone });
+        String sql = "select * from " + TB_NAME + " where phone = ?";
+        Cursor cursor = this.getWritableDatabase().rawQuery(sql,
+                new String[] { phone });
         if (!cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
+
+            String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                               // +86
+            String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
+            String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
+            phone = strip3;
+
             values.put(BlacklistDBHelper.NAME, name);
             values.put(BlacklistDBHelper.Phone, phone);
             // values.put(BlacklistDBHelper.BlockContent, "");
@@ -66,6 +76,7 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
             this.getWritableDatabase().insert(BlacklistDBHelper.TB_NAME,
                     BlacklistDBHelper.ID, values);
         }
+        cursor.close();
     }
 
     public void delPeople(int id) {
@@ -74,6 +85,21 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
     }
 
     public void delAllPeople() {
-        this.getWritableDatabase().delete(BlacklistDBHelper.TB_NAME, null, null);
+        this.getWritableDatabase()
+                .delete(BlacklistDBHelper.TB_NAME, null, null);
+    }
+
+    private String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
     }
 }

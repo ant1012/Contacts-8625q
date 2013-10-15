@@ -147,39 +147,39 @@ public class BlackListFragment extends Fragment {
                                     public void onClick(DialogInterface arg0,
                                             int arg1) {
                                         // TODO Auto-generated method stub
-                                        switch (arg1) {
-
-                                        case 0:// 编辑
-                                            showNewRecordDialog(name, phone,
-                                                    blockId, true);
-                                            break;
-
-                                        case 1:// 删除
+//                                        switch (arg1) {
+//
+////                                        case 0:// 编辑
+////                                            showNewRecordDialog(name, phone,
+////                                                    blockId, true);
+////                                            break;
+//
+//                                        case 1:// 删除
                                             mDBHelper.delPeople(_ID);
                                             update();
-                                            break;
+//                                            break;
 
-                                        case 2:// 发送短信
-                                            Uri uri = Uri.parse("smsto:"
-                                                    + phone);
-                                            Intent sms = new Intent(
-                                                    Intent.ACTION_SENDTO, uri);
-                                            startActivity(sms);
-                                            break;
-
-                                        case 3:// 呼叫
-                                            Intent call = new Intent(
-                                                    Intent.ACTION_DIAL);
-                                            call.setData(Uri.parse("tel:"
-                                                    + phone));
-                                            startActivity(call);
-                                            break;
-
-                                        case 4:// 清空列表
-                                            mDBHelper.delAllPeople();
-                                            update();
-                                            break;
-                                        }
+//                                        case 2:// 发送短信
+//                                            Uri uri = Uri.parse("smsto:"
+//                                                    + phone);
+//                                            Intent sms = new Intent(
+//                                                    Intent.ACTION_SENDTO, uri);
+//                                            startActivity(sms);
+//                                            break;
+//
+//                                        case 3:// 呼叫
+//                                            Intent call = new Intent(
+//                                                    Intent.ACTION_DIAL);
+//                                            call.setData(Uri.parse("tel:"
+//                                                    + phone));
+//                                            startActivity(call);
+//                                            break;
+//
+//                                        case 4:// 清空列表
+//                                            mDBHelper.delAllPeople();
+//                                            update();
+//                                            break;
+//                                        }
                                     }
                                 }).create().show();
             }
@@ -265,15 +265,6 @@ public class BlackListFragment extends Fragment {
                         String name = contact.getString(PHONES_DISPLAY_NAME);
                         String phone = contact.getString(PHONES_NUMBER);
 
-                        String strip1 = replacePattern(phone,
-                                "^((\\+{0,1}86){0,1})", ""); // strip +86
-                        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip
-                                                                             // -
-                        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip
-                                                                             // space
-
-                        phone = strip3;
-
                         save(name, phone, 0);
                     }
                 }
@@ -301,19 +292,7 @@ public class BlackListFragment extends Fragment {
         importContactDialog.show();
     }
 
-    private String replacePattern(String origin, String pattern, String replace) {
-        Log.i(TAG, "origin - " + origin);
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(origin);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, replace);
-        }
 
-        m.appendTail(sb);
-        Log.i(TAG, "sb.toString() - " + sb.toString());
-        return sb.toString();
-    }
 
     private void showNewRecordDialog(String name, String phone, int blockId,
             final boolean isExisted) {

@@ -1,11 +1,15 @@
 package edu.bupt.contacts.blacklist;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class WhiteListDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
@@ -39,30 +43,39 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-//    public void addPeople(String name, String phone, String blockContent,
-//            Integer blockId) {
-//        ContentValues values = new ContentValues();
-//        values.put(WhiteListDBHelper.NAME, name);
-//        values.put(WhiteListDBHelper.Phone, phone);
-//        values.put(WhiteListDBHelper.BlockContent, blockContent);
-//        values.put(WhiteListDBHelper.BlockId, blockId);
-//        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
-//                WhiteListDBHelper.ID, values);
-//    }
+    // public void addPeople(String name, String phone, String blockContent,
+    // Integer blockId) {
+    // ContentValues values = new ContentValues();
+    // values.put(WhiteListDBHelper.NAME, name);
+    // values.put(WhiteListDBHelper.Phone, phone);
+    // values.put(WhiteListDBHelper.BlockContent, blockContent);
+    // values.put(WhiteListDBHelper.BlockId, blockId);
+    // this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
+    // WhiteListDBHelper.ID, values);
+    // }
 
     public void addPeople(String name, String phone) {
-        String sql = "select * from "+ TB_NAME + " where phone = ?";
-        Cursor cursor = this.getWritableDatabase().rawQuery(
-                sql, new String[] { phone });
+        String sql = "select * from " + TB_NAME + " where phone = ?";
+        Cursor cursor = this.getWritableDatabase().rawQuery(sql,
+                new String[] { phone });
         if (!cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
+
+            String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                               // +86
+            String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
+            String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
+            phone = strip3;
+
             values.put(WhiteListDBHelper.NAME, name);
             values.put(WhiteListDBHelper.Phone, phone);
+
             // values.put(WhiteListDBHelper.BlockContent, blockContent);
             // values.put(WhiteListDBHelper.BlockId, blockId);
             this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
                     WhiteListDBHelper.ID, values);
         }
+        cursor.close();
     }
 
     public void delPeople(int id) {
@@ -74,7 +87,7 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         this.getWritableDatabase()
                 .delete(WhiteListDBHelper.TB_NAME, null, null);
     }
-    
+
     public int getCount() {
         int count = 0;
         Cursor cursor = this.getWritableDatabase().rawQuery(
@@ -83,5 +96,19 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
             count = cursor.getInt(0);
         }
         return count;
+    }
+
+    private String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
     }
 }

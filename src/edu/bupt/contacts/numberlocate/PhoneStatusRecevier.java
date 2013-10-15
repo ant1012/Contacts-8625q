@@ -7,7 +7,6 @@ import java.io.IOException;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.numberlocate.NumberLocateProvider.CityCode;
 import edu.bupt.contacts.numberlocate.NumberLocateProvider.NumberRegion;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -84,11 +83,11 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
                     //String city = new NumberLocate(mContext).getLocation(number);
                     
                     if(cardOneState==0&&cardTwoState==2){
-                    	showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1), "ȥ��");
-                	}
+                        showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1), mContext.getText(R.string.description_call_log_outgoing_call));
+                    }
                     if(cardOneState==2&&cardTwoState==0){
-                    	showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0), "ȥ��");
-                	}
+                        showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0), mContext.getText(R.string.description_call_log_outgoing_call));
+                    }
                     
                     break;
                 }
@@ -103,34 +102,34 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
                         saveAsCache(mContext,number,city);
                     }
                     if(cardOneState==0&&cardTwoState==1){
-                    	showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1), "����");
-                	}
+                        showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1), mContext.getText(R.string.description_call_log_incoming_call));
+                    }
                     if(cardOneState==1&&cardTwoState==0){
-                    	showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0), "����");
-                	}
+                        showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0), mContext.getText(R.string.description_call_log_incoming_call));
+                    }
                     break;
                 }
                 case CALL_STATE_OFFHOOK:
                 case CALL_STATE_IDLE:
-                	//Log.v("test","cc" + Setting.getSettingValue(mContext, Setting.AnimatFuncKey) );
-                	
-                	//if(cardOneState==0&&cardTwoState==0){
-                		clearToast(mContext);
-                	//}
-                	
+                    //Log.v("test","cc" + Setting.getSettingValue(mContext, Setting.AnimatFuncKey) );
+                    
+                    //if(cardOneState==0&&cardTwoState==0){
+                        clearToast(mContext);
+                    //}
+                    
 //                    if (!Setting.getSettingValue(mContext, Setting.AnimatFuncKey)) {
 //                        Log.v("test","aa");
-//                    	//clearToast(mContext);
+//                      //clearToast(mContext);
 //                    } else {
 //                        //startAnimation(mContext);
 //                        Log.v("test","bb");
 //                    }
                     break;
                 case NEW_OUTGOING_CALL_STATE_IDLE:              
-                		clearToast(mContext);               
-                	
+                        clearToast(mContext);               
+                    
 //                    if (!Setting.getSettingValue(mContext, Setting.AnimatFuncKey)) {
-//                    	//clearToast(mContext);
+//                      //clearToast(mContext);
 //                    } else {
 //                        //startAnimation(mContext);
 //                    }
@@ -158,7 +157,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             return sb.substring(0, 4);
         }
         if (sb.length()<7){
-        	return sb.toString();
+            return sb.toString();
         }
         return sb.substring(0, 7).toString();
     }
@@ -198,7 +197,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 //                cursor.close();
 //            }
 //        }
-    	if (!TextUtils.isEmpty(number) && number.length() >= 11) {
+        if (!TextUtils.isEmpty(number) && number.length() >= 11) {
             String formatNumber = PhoneStatusRecevier.formatNumber(number);
             String selection = null;
             String[] projection = null;
@@ -218,7 +217,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
                 city = cursor.getString(0);
                 cursor.close();
             }
-    	}
+        }
 
         return city;
     }
@@ -232,69 +231,69 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         if (intent == null)
             return;
         String action = intent.getAction();
-        if (Intent.ACTION_NEW_OUTGOING_CALL.equals(action)) {// �����绰
-        	isOutComingPhone = true;
+        if (Intent.ACTION_NEW_OUTGOING_CALL.equals(action)) {// 锟斤拷锟斤拷锟界话
+            isOutComingPhone = true;
             phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);          
             Log.v(TAG, "out going number:::" + phoneNumber);           
             cardOneState = MSimTelephonyManager.getDefault().getCallState(0);
             cardTwoState = MSimTelephonyManager.getDefault().getCallState(1);
             //mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
             Log.v("PhoneStatusRecevier1", "callOneState="+cardOneState+"callTwoState="+cardTwoState);
-        } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {// �绰״̬�ı�        	
-        	cardOneState = MSimTelephonyManager.getDefault().getCallState(0);
+        } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {// 锟界话状态锟侥憋拷            
+            cardOneState = MSimTelephonyManager.getDefault().getCallState(0);
             cardTwoState = MSimTelephonyManager.getDefault().getCallState(1);
             Log.v("PhoneStatusRecevier2", "callOneState="+cardOneState+"callTwoState="+cardTwoState);
             
             if(isOutComingPhone){
-            	//phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+                //phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
                 mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
                 if(cardOneState==0&&cardTwoState==0){
-                	isOutComingPhone = false;
-                	mHandler.obtainMessage(NEW_OUTGOING_CALL_STATE_IDLE).sendToTarget();
+                    isOutComingPhone = false;
+                    mHandler.obtainMessage(NEW_OUTGOING_CALL_STATE_IDLE).sendToTarget();
                 }
             }
             
             if(cardOneState == TelephonyManager.CALL_STATE_RINGING || cardTwoState == TelephonyManager.CALL_STATE_RINGING){
-            	isInComingPhone = true;
-            	phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            	mHandler.obtainMessage(CALL_STATE_RINGING, phoneNumber).sendToTarget();
+                isInComingPhone = true;
+                phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                mHandler.obtainMessage(CALL_STATE_RINGING, phoneNumber).sendToTarget();
             }
             
             if(isInComingPhone){
-            	if(cardOneState==0&&cardTwoState==0){
-            		isInComingPhone = false;
-            		mHandler.obtainMessage(CALL_STATE_IDLE).sendToTarget();
-            	}
-            	if(cardOneState==2&&cardTwoState==0){
-            		//mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
-            	}
+                if(cardOneState==0&&cardTwoState==0){
+                    isInComingPhone = false;
+                    mHandler.obtainMessage(CALL_STATE_IDLE).sendToTarget();
+                }
+                if(cardOneState==2&&cardTwoState==0){
+                    //mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
+                }
                 if(cardOneState==0&&cardTwoState==2){
-                	//mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
-            	}
+                    //mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
+                }
             }
 //            if(cardOneState==0){
-//            	switch (cardTwoState) {
-//                case TelephonyManager.CALL_STATE_RINGING://����״̬---1
+//              switch (cardTwoState) {
+//                case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
 //                    isInComingPhone = true;
 //                    phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 //                    mHandler.obtainMessage(CALL_STATE_RINGING, phoneNumber).sendToTarget();
 //                    break;
-//                case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
+//                case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone accept :" + phoneNumber);
 //                        mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
 //                    }
 //                    if (isOutComingPhone){
-//                    	mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
+//                      mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
 //                    }
 //                    break;
-//                case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
+//                case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone hangup");
 //                        isInComingPhone = false;
 //                    }
 //                    if (isOutComingPhone){
-//                    	isOutComingPhone = false;
+//                      isOutComingPhone = false;
 //                    }
 //                    mHandler.obtainMessage(CALL_STATE_IDLE).sendToTarget();
 //                    break;
@@ -302,56 +301,56 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 //            }
 //            
 //            if(cardOneState==1){
-//            	switch (cardTwoState) {
-//                case TelephonyManager.CALL_STATE_RINGING://����״̬---1
+//              switch (cardTwoState) {
+//                case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
 //                    isInComingPhone = true;
 //                    phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 //                    mHandler.obtainMessage(CALL_STATE_RINGING, phoneNumber).sendToTarget();
 //                    break;
-//                case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
+//                case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone accept :" + phoneNumber);
 //                        mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
 //                    }
 //                    if (isOutComingPhone){
-//                    	mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
+//                      mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
 //                    }
 //                    break;
-//                case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
+//                case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone hangup");
 //                        isInComingPhone = false;
 //                    }
 //                    if  (isOutComingPhone && cardOneState ==0){
-//                    	isOutComingPhone = false;
+//                      isOutComingPhone = false;
 //                    }
 //                    mHandler.obtainMessage(CALL_STATE_IDLE).sendToTarget();
 //                    break;
 //                }
 //            }
 //            if(cardOneState==2){
-//            	switch (cardTwoState) {
-//                case TelephonyManager.CALL_STATE_RINGING://����״̬---1
+//              switch (cardTwoState) {
+//                case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
 //                    isInComingPhone = true;
 //                    phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 //                    mHandler.obtainMessage(CALL_STATE_RINGING, phoneNumber).sendToTarget();
 //                    break;
-//                case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
+//                case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone accept :" + phoneNumber);
 //                        mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
 //                    }
 //                    if (isOutComingPhone){
-//                    	mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
+//                      mHandler.obtainMessage(NEW_OUTGOING_CALL, phoneNumber).sendToTarget();
 //                    }
 //                    break;
-//                case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
+//                case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
 //                    if (isInComingPhone) {
 //                        Log.i(TAG, "incoming phone hangup");
 //                        isInComingPhone = false;
 //                    }
 //                    if  (isOutComingPhone && cardOneState ==0){
-//                    	isOutComingPhone = false;
+//                      isOutComingPhone = false;
 //                    }
 //                    mHandler.obtainMessage(CALL_STATE_IDLE).sendToTarget();
 //                    break;
@@ -362,11 +361,10 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
     public static WindowManager.LayoutParams params = new WindowManager.LayoutParams();
     static {
-        // ��view�������ϲ�
+        // 锟斤拷view锟斤拷锟斤拷锟斤拷锟较诧拷
         params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        // �õ�ǰViewʧȥ���㣬�ú���Ľ����ý���
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        params.format = PixelFormat.RGBA_8888;// ����͸��
+        // 锟矫碉拷前View失去锟斤拷锟姐，锟矫猴拷锟斤拷慕锟斤拷锟斤拷媒锟斤拷锟�        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        params.format = PixelFormat.RGBA_8888;// 锟斤拷锟斤拷透锟斤拷
         params.gravity = Gravity.TOP | Gravity.CENTER_VERTICAL;
         params.x = 0;
         params.y = 170;
@@ -386,9 +384,9 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
                 case MotionEvent.ACTION_DOWN://0
                     downX = params.x;
                     downY = params.y;
-                    rawX = (int)event.getRawX();//�����������Ļ
+                    rawX = (int)event.getRawX();//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷幕
                     rawY = (int)event.getRawY();
-                    Log.i(TAG, "onTouch()--->down x="+(int)event.getX()+",y="+(int)event.getY());//������Լ����view
+                    Log.i(TAG, "onTouch()--->down x="+(int)event.getX()+",y="+(int)event.getY());//锟斤拷锟斤拷锟斤拷约锟斤拷锟斤拷view
                     break;
                 case MotionEvent.ACTION_MOVE://2
                     int x = (int)event.getRawX();
@@ -405,24 +403,24 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             return false;
         }
     };
-    private static void showToast(Context context, String code, int cardid, String operator, String call_type) {
+    private static void showToast(Context context, String code, int cardid, String operator, CharSequence charSequence) {
         if (TextUtils.isEmpty(code)) {
-            code = "δ֪";
-        	//return;
+            code = "未知";
+            //return;
         }
         if(toast==null){
-        	mWm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            mWm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
             LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             toast = (LinearLayout)layoutInflater.inflate(R.layout.toast_layout, null);
             toast.setOnTouchListener(listener);
             if(cardid == 1){
-            	((ImageView)toast.findViewById(R.id.imageView_cardid)).setImageResource(R.drawable.card1);
+                ((ImageView)toast.findViewById(R.id.imageView_cardid)).setImageResource(R.drawable.card1);
             }else{
-            	((ImageView)toast.findViewById(R.id.imageView_cardid)).setImageResource(R.drawable.card2);
+                ((ImageView)toast.findViewById(R.id.imageView_cardid)).setImageResource(R.drawable.card2);
             }           
             ((TextView)toast.findViewById(R.id.city)).setText(code);
             ((TextView)toast.findViewById(R.id.operater)).setText(operator);
-            ((TextView)toast.findViewById(R.id.call_type)).setText(call_type);
+            ((TextView)toast.findViewById(R.id.call_type)).setText(charSequence);
             mWm.addView(toast, params);
         }
         Log.v("test","showToast");

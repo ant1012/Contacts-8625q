@@ -200,6 +200,14 @@ public class GroupBrowseListFragment extends Fragment
         super.onStart();
     }
 
+    /** zzz */
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume");
+        mListView.setAdapter(mAdapter);
+        super.onResume();
+    }
+
     /**
      * The listener for the group meta data loader for all groups.
      */

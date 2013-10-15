@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contact"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
     <LinearLayout
-        android:id="@+id/contact_buttons"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/contact_save"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/save" />
+        <ListView
+            android:id="@id/android:list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:drawSelectorOnTop="false"
+            android:scrollingCache="false"
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/contact_cancle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/cancle" />
+        <LinearLayout
+            android:id="@+id/contact_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0" >
+
+            <Button
+                android:id="@+id/contact_save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/save" />
+
+            <Button
+                android:id="@+id/contact_cancle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancle" />
+        </LinearLayout>
     </LinearLayout>
-
-    <ListView
-        android:id="@id/android:list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/contact_buttons"
-        android:layout_alignParentTop="true"
-        android:cacheColorHint="#00000000"
-        android:drawSelectorOnTop="false"
-        android:scrollingCache="false" />
 
     <TextView
         android:id="@id/android:empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/empty_list"
-android:textColor="#33b5e5"
-android:textSize="18sp" />
+        android:textColor="#33b5e5"
+        android:textSize="18sp" />
 
 </RelativeLayout>

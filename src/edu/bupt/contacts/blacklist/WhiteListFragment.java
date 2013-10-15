@@ -148,39 +148,39 @@ public class WhiteListFragment extends Fragment {
                                     public void onClick(DialogInterface arg0,
                                             int arg1) {
                                         // TODO Auto-generated method stub
-                                        switch (arg1) {
+//                                        switch (arg1) {
+//
+//                                        case 0:// 编辑
+//                                            showNewRecordDialog(name, phone,
+//                                                    blockId, true);
+//                                            break;
 
-                                        case 0:// 编辑
-                                            showNewRecordDialog(name, phone,
-                                                    blockId, true);
-                                            break;
-
-                                        case 1:// 删除
+//                                        case 1:// 删除
                                             mDBHelper.delPeople(_ID);
                                             update();
-                                            break;
+//                                            break;
 
-                                        case 2:// 发送短信
-                                            Uri uri = Uri.parse("smsto:"
-                                                    + phone);
-                                            Intent sms = new Intent(
-                                                    Intent.ACTION_SENDTO, uri);
-                                            startActivity(sms);
-                                            break;
-
-                                        case 3:// 呼叫
-                                            Intent call = new Intent(
-                                                    Intent.ACTION_DIAL);
-                                            call.setData(Uri.parse("tel:"
-                                                    + phone));
-                                            startActivity(call);
-                                            break;
-
-                                        case 4:// 清空列表
-                                            mDBHelper.delAllPeople();
-                                            update();
-                                            break;
-                                        }
+//                                        case 2:// 发送短信
+//                                            Uri uri = Uri.parse("smsto:"
+//                                                    + phone);
+//                                            Intent sms = new Intent(
+//                                                    Intent.ACTION_SENDTO, uri);
+//                                            startActivity(sms);
+//                                            break;
+//
+//                                        case 3:// 呼叫
+//                                            Intent call = new Intent(
+//                                                    Intent.ACTION_DIAL);
+//                                            call.setData(Uri.parse("tel:"
+//                                                    + phone));
+//                                            startActivity(call);
+//                                            break;
+//
+//                                        case 4:// 清空列表
+//                                            mDBHelper.delAllPeople();
+//                                            update();
+//                                            break;
+//                                        }
                                     }
                                 }).create().show();
             }

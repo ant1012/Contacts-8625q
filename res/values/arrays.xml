@@ -677,12 +677,15 @@
         <item>@string/ringtone2</item>
     </array>
     
-    <array name="blacklist_item_click">
+    <!-- <array name="blacklist_item_click">
         <item>编辑</item>
         <item>删除</item>
         <item>发送短信</item>
         <item>呼叫</item>
         <item>清空列表</item>
+    </array> -->
+    <array name="blacklist_item_click">
+        <item>删除</item>
     </array>
     
     <array name="sms_item_click">
