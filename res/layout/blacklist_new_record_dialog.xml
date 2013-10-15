@@ -52,7 +52,8 @@
         android:gravity="center|left"
         android:text="@string/name"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+       />
 
     <EditText
         android:id="@+id/contact_name_et"
@@ -60,7 +61,8 @@
         android:layout_height="50dp"
         android:layout_below="@+id/contact_name"
         android:hint="@string/willfully"
-        android:inputType="text" />
+        android:inputType="text"
+      />
 
     <TextView
         android:id="@+id/block_content"
@@ -70,12 +72,14 @@
         android:gravity="center|left"
         android:text="@string/block_content"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:visibility="gone" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/block_content" />
+        android:layout_below="@+id/block_content" 
+        android:visibility="gone"/>
 
 </RelativeLayout>

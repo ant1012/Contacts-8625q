@@ -53,7 +53,9 @@ public class BlacklistMainActivity extends FragmentActivity implements
             if (savedInstanceState != null) {
                 return;
             }
-            msgBlock = new MsgBlockFragment(this);
+     //ddd
+            msgBlock = new BlackListFragment(this);
+     //ddd-end       
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().add(R.id.main_view, msgBlock)
                     .commit();

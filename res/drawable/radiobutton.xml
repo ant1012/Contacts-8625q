@@ -4,9 +4,9 @@
    <item
          android:state_enabled="true"
          android:state_checked="true"
-         android:drawable="@drawable/recommend_left_cell_selected" />
+android:drawable="@drawable/ab_stacked_opaque_dark_holo" />
 　　<item 
          android:state_enabled="true"
          android:state_checked="false"
-         android:drawable="@drawable/recommend_left_cell_background2"/>
+android:drawable="@drawable/ab_stacked_solid_inverse_holo"/>
 </selector>

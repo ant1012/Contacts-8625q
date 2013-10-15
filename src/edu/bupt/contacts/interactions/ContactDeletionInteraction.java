@@ -22,6 +22,10 @@ import edu.bupt.contacts.activities.MultiSelectExport;
 import edu.bupt.contacts.activities.PersonInfo;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
+import edu.bupt.contacts.model.EntityDelta;
+import edu.bupt.contacts.model.EntityDeltaList;
+import edu.bupt.contacts.model.EntityDelta.ValuesDelta;
+
 import com.google.android.collect.Sets;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -31,15 +35,19 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.Contacts.People;
+import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts.Entity;
@@ -76,12 +84,14 @@ public class ContactDeletionInteraction extends Fragment
     private static final int COLUMN_INDEX_CONTACT_ID = 3;
     private static final int COLUMN_INDEX_LOOKUP_KEY = 4;
 
+	private static final String TAG = null;
+
     private boolean mActive;
     private Uri mContactUri;
     private boolean mFinishActivityWhenDone;
     private Context mContext;
     private AlertDialog mDialog;
-
+    
     /** This is a wrapper around the fragment's loader manager to be used only during testing. */
     private TestLoaderManager mTestLoaderManager;
 
@@ -95,6 +105,10 @@ public class ContactDeletionInteraction extends Fragment
     long rawContactId;
     String display_name = null;
     String display_number = null;
+   //ddd
+    String account_name=null;
+   //ddd_end 
+    
     		
     /**
      * Starts the interaction.
@@ -249,7 +263,12 @@ public class ContactDeletionInteraction extends Fragment
         cursor.moveToPosition(-1);
         while (cursor.moveToNext()) {
             rawContactId = cursor.getLong(COLUMN_INDEX_RAW_CONTACT_ID);
+            
+            
+            
+            
             final String accountType = cursor.getString(COLUMN_INDEX_ACCOUNT_TYPE);
+    
             final String dataSet = cursor.getString(COLUMN_INDEX_DATA_SET);
             contactId = cursor.getLong(COLUMN_INDEX_CONTACT_ID);
             lookupKey = cursor.getString(COLUMN_INDEX_LOOKUP_KEY);
@@ -307,17 +326,52 @@ public class ContactDeletionInteraction extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int whichButton) {
                         	doDeleteContact(contactUri);                  	
-//                        	if (readOnlyCount > 0 && writableCount == 0) {
-//                        		getContactInfo(); 
-//                        		doDeleteContact(contactUri);
-//                        		SimDelete(1);
-//                        	}else{
-//                        		doDeleteContact(contactUri);
-//                        	}
+             	
+/*                        	if (readOnlyCount > 0 && writableCount == 0) {
+                        		getContactInfo(); 
+                        		doDeleteContact(contactUri);
+                        		SimDelete(1);
+                        	}else{
+                        		doDeleteContact(contactUri);
+                        	}
+                        	*/
+//ddd 
+                        	
+                        	if ( writableCount > 0 && readOnlyCount== 0) {
+                        	getContactInfo(); 
+                        	doDeleteContact(contactUri);
+                            Log.i(TAG, "this is sim delete function call");
+                            Log.i(TAG, "rawContactID "+rawContactId);
+                         
+                            
+                            Cursor p =  mContext.getContentResolver().query(
+                                 ContactsContract.RawContacts.CONTENT_URI, //
+                                 new String[] { ContactsContract.RawContacts.ACCOUNT_NAME},
+                                 ContactsContract.RawContacts._ID+" =? ", //
+                                 new String[] { String.valueOf(rawContactId) }, //
+                                 null);
+                            if (p.moveToNext()) {
+
+                             try {
+                                 account_name = p.getString(0);
+                               Log.i(TAG, "account_name - " + account_name);
+                             } catch (Exception e) {
+                                 Log.w(TAG, e.toString());
+                             }
+                             
+                            }
+                            p.close();
+                    		
+                            SimDelete(account_name);
+//ddd_end                            
+                        	}
+                        	else{
+                    		doDeleteContact(contactUri);
+                     	}
                             
                             
-                        }
-                    }
+                     }
+                   }
                 )
                 .create();
 
@@ -356,7 +410,7 @@ public class ContactDeletionInteraction extends Fragment
         }
     }
     
-    public void SimDelete(int subNum) {
+/*    public void SimDelete(int subNum) {
     	Uri uri = null;
     	if(subNum == 1){
     		  uri= Uri.parse("content://iccmsim/adn");
@@ -375,8 +429,55 @@ public class ContactDeletionInteraction extends Fragment
             String where = "tag='" + name + "'";
             where += " AND number='" + phoneNumber + "'";
             mContext.getContentResolver().delete(uri, where, null);
+            Log.i(TAG, "this is sim delete inside");
         }
     }
+    */
+    
+
+//ddd
+    public void SimDelete(String account_name) {
+    	Uri simUri = null;
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
+            simUri = Uri.parse("content://iccmsim/adn");
+            Log.i(TAG, "content://iccmsim/adn");
+        } else if(account_name.equals("SIM2")) {
+            simUri = Uri.parse("content://iccmsim/adn_sub2");
+            Log.i(TAG, "content://iccmsim/adn_sub2");
+        } else {
+            Log.d(TAG, "return");
+            return;
+        }
+
+       
+        Cursor cursor = mContext.getContentResolver().query(simUri, null, null,
+                null, null);
+        Log.d("delete account", ">>>>>> " + cursor.getCount());
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndex(People.NAME));
+            String phoneNumber = cursor.getString(cursor
+                    .getColumnIndex(People.NUMBER));
+            name = display_name;
+            phoneNumber = display_number;
+            String where = "tag='" + name + "'";
+            where += " AND number='" + phoneNumber + "'";
+            int deleteSimRow=mContext.getContentResolver().delete(simUri, where, null);
+            
+            Log.i(TAG, "delete_name - " + name);
+            Log.i(TAG, "delete_phoneNumber - " + phoneNumber);
+            Log.i(TAG, "deleteSimRow " + deleteSimRow);
+            Log.i(TAG, "where " + where);
+            Log.i(TAG, "Simuri " + simUri);
+            if (deleteSimRow !=0) {
+                Log.d(TAG, "delate sim card successfully");
+            }
+      
+            
+            
+        }
+    }
+    
+//ddd_end    
     
     private void getContactInfo() {	
     	

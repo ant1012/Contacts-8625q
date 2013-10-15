@@ -575,11 +575,12 @@
     <string name="stranger">陌生号码</string>
     <string name="no_name">未命名</string>
     <string name="record">拦截记录</string>
+
     <string name="new_record">手动添加</string>
     <string name="import_contact">从联系人列表导入…</string>
     <!-- radiobutton -->
     <string name="msg_block">短信拦截</string>
-    <string name="call_block">电话拦截</string>
+    <string name="call_block">拦截记录</string>
     <string name="black_list">黑名单</string>
     <string name="settings">拦截规则</string>
 	<string name="white_list">白名单</string>

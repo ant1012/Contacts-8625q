@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/img_list_background" >
-    
+android:background="#f9f9f9" >
+     <!--  android:background="@drawable/img_list_background" 整体背景-->
+
     <FrameLayout
         android:id="@+id/radio_buttons"
         android:layout_width="match_parent"
@@ -17,5 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/radio_buttons" />
+    
+
         
 </RelativeLayout>

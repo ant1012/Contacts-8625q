@@ -206,7 +206,7 @@ public class BlackListFragment extends Fragment {
         Button save = null;
         Button cancle = null;
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.contact, null);
+        view = inflater.inflate(R.layout.blacklist_contact, null);
         ListView listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         save = (Button) view.findViewById(R.id.contact_save);
@@ -223,7 +223,7 @@ public class BlackListFragment extends Fragment {
         String[] from = new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME };
         int[] to = new int[] { R.id.contact_checked_text_view };
         SimpleCursorAdapter adapter = new MyAdapter(context,
-                R.layout.contact_item, contact, from, to,
+                R.layout.blacklist_contact_item, contact, from, to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         listView.setAdapter(adapter);
@@ -287,7 +287,7 @@ public class BlackListFragment extends Fragment {
         Button save = null;
         Button cancle = null;
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.new_record_dialog, null);
+        view = inflater.inflate(R.layout.blacklist_new_record_dialog, null);
         save = (Button) view.findViewById(R.id.save);
         cancle = (Button) view.findViewById(R.id.cancle);
         contactName = (EditText) view.findViewById(R.id.contact_name_et);

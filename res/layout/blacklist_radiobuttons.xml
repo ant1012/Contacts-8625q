@@ -1,7 +1,7 @@
 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/radiogroup"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="48dp"
     android:orientation="horizontal" >
 
     <RadioButton
@@ -11,28 +11,19 @@
         android:layout_weight="1"
         android:background="@drawable/radiobutton"
         android:button="@null"
-        android:checked="true"
+
         android:gravity="center"
         android:text="@string/msg_block"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+android:visibility="gone" />
 
-    <RadioButton
-        android:id="@+id/call_block"
-        android:layout_width="0dp"
-        android:layout_height="60dip"
-        android:layout_weight="1"
-        android:background="@drawable/radiobutton"
-        android:button="@null"
-        android:gravity="center"
-        android:text="@string/call_block"
-        android:textColor="#FFFFFF" />
-
-    <RadioButton
+        <RadioButton
         android:id="@+id/black_list"
         android:layout_width="0dp"
-        android:layout_height="60dip"
+android:checked="true"
+android:layout_height="48dp"
         android:layout_weight="1"
-        android:background="@drawable/radiobutton"
+android:background="@drawable/radiobutton" 
         android:button="@null"
         android:gravity="center"
         android:text="@string/black_list"
@@ -40,13 +31,26 @@
     <RadioButton
         android:id="@+id/white_list"
         android:layout_width="0dp"
-        android:layout_height="60dip"
+android:layout_height="48dp"
         android:layout_weight="1"
-        android:background="@drawable/radiobutton"
+android:background="@drawable/radiobutton" 
         android:button="@null"
         android:gravity="center"
         android:text="@string/white_list"
         android:textColor="#FFFFFF" />
+    
+    <RadioButton
+        android:id="@+id/call_block"
+        android:layout_width="0dp"
+android:layout_height="48dp"
+        android:layout_weight="1"
+android:background="@drawable/radiobutton"   
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/call_block"
+        android:textColor="#FFFFFF" />
+
+
     <RadioButton
         android:id="@+id/settings"
         android:layout_width="0dp"
@@ -56,6 +60,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/settings"
+android:visibility="gone"
         android:textColor="#FFFFFF" />
 
 </RadioGroup>

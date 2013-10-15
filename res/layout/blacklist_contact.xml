@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/empty_list"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp" />
+android:textColor="#33b5e5"
+android:textSize="18sp" />
 
 </RelativeLayout>
