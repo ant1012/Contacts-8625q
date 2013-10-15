@@ -24,8 +24,10 @@ import android.content.EntityIterator;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Event;
+import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.provider.ContactsContract.CommonDataKinds.Nickname;
 import android.provider.ContactsContract.CommonDataKinds.Note;
@@ -39,6 +41,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
 import android.provider.ContactsContract.CommonDataKinds.Website;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.Groups;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.RawContactsEntity;
 import android.provider.ContactsContract;
@@ -561,10 +564,58 @@ public class VCardComposer {
         }
 
         /** zzz */
-        Log.i(LOG_TAG, "contentValuesListMap - " + contentValuesListMap.toString());
-        
-        
+        // group in vcard
+//        Log.i(LOG_TAG, "contentValuesListMap - " + contentValuesListMap.toString());
+        Log.i(LOG_TAG, "group - " + getGroupNameFor(getGroupIdFor(contactId)));
+        List<ContentValues> contentValuesList = new ArrayList<ContentValues>();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("groupData", getGroupNameFor(getGroupIdFor(contactId)));
+        contentValuesList.add(contentValues);
+        contentValuesListMap.put("groupData", contentValuesList);
+
         return buildVCard(contentValuesListMap);
+    }
+
+    /** zzz */
+    public long getGroupIdFor(String contactId) {
+        Uri uri = Data.CONTENT_URI;
+        String where = String.format("%s = ? AND %s = ?", Data.MIMETYPE,
+                GroupMembership.CONTACT_ID);
+
+        String[] whereParams = new String[] {
+                GroupMembership.CONTENT_ITEM_TYPE, contactId, };
+
+        String[] selectColumns = new String[] { GroupMembership.GROUP_ROW_ID, };
+
+        Cursor groupIdCursor = mContentResolver.query(uri,
+                selectColumns, where, whereParams, null);
+        try {
+            if (groupIdCursor.moveToFirst()) {
+                return groupIdCursor.getLong(0);
+            }
+            return Long.MIN_VALUE; // Has no group ...
+        } finally {
+            groupIdCursor.close();
+        }
+    }
+
+    /** zzz */
+    public String getGroupNameFor(long groupId) {
+        Uri uri = Groups.CONTENT_URI;
+        String where = String.format("%s = ?", Groups._ID);
+        String[] whereParams = new String[] { Long.toString(groupId) };
+        String[] selectColumns = { Groups.TITLE };
+        Cursor c = mContentResolver.query(uri, selectColumns,
+                where, whereParams, null);
+
+        try {
+            if (c.moveToFirst()) {
+                return c.getString(0);
+            }
+            return null;
+        } finally {
+            c.close();
+        }
     }
 
     private VCardPhoneNumberTranslationCallback mPhoneTranslationCallback;
@@ -613,7 +664,15 @@ public class VCardComposer {
                     .appendRelation(contentValuesListMap.get(Relation.CONTENT_ITEM_TYPE));
 
             /** zzz */
+//            Log.i(LOG_TAG, "====================================");
+//            Log.i(LOG_TAG, contentValuesListMap.get("groupData").get(0).get("groupData").toString());
+            Log.i(LOG_TAG, "====================================");
+
+            ArrayList<String> groupArrayList = new ArrayList<String>();
+            groupArrayList.add(contentValuesListMap.get("groupData").get(0).get("groupData").toString());
+            builder.appendLine("X-ESURFING-GROUP", groupArrayList);
             Log.i(LOG_TAG, builder.toString());
+            Log.i(LOG_TAG, "====================================");
 
             return builder.toString();
         }
