@@ -235,12 +235,19 @@ public class WhiteListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                     long arg3) {
+                Log.d(TAG, "onItemClick");
 
                 if (checkedMap.get(arg2) == null
                         || checkedMap.get(arg2) == false) {
+                    Log.d(TAG, "true");
                     checkedMap.put(arg2, true);
+                    CheckedTextView checkedTextView = (CheckedTextView)arg1.findViewById(R.id.contact_checked_text_view);
+                    checkedTextView.setChecked(true);
                 } else {
+                    Log.d(TAG, "false");
                     checkedMap.put(arg2, false);
+                    CheckedTextView checkedTextView = (CheckedTextView)arg1.findViewById(R.id.contact_checked_text_view);
+                    checkedTextView.setChecked(false);
                 }
             }
         });

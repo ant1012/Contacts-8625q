@@ -167,6 +167,11 @@ public class GroupBrowseListAdapter extends BaseAdapter {
     
     @Override
     public GroupListItem getItem(int position) {
+
+        /** zzz */
+        Log.d(TAG, "position - " + position);
+
+
         if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
 
             /** zzz */
@@ -208,6 +213,9 @@ public class GroupBrowseListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        /** zzz */
+        Log.d(TAG, "position - " + position);
+
         GroupListItem entry = getItem(position);
         View result;
         GroupListItemViewCache viewCache;
