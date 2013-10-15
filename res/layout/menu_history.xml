@@ -2,7 +2,8 @@
   xmlns:tools="http://schemas.android.com/tools"  
   android:layout_width="fill_parent"  
   android:layout_height="fill_parent"  
-  android:orientation="horizontal" >   
+  android:orientation="horizontal"
+  android:background="#f9f9f9">   
   
   <!-- 用于显示在列表中每一列的xml布局文件 -->   
   <ImageView android:id="@+id/img"

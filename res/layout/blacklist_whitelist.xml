@@ -3,6 +3,8 @@
     android:id="@+id/msg_block"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+ 
+    
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -32,6 +34,7 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:orientation="horizontal" >
+  
 
        
        <TextView
@@ -40,13 +43,11 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
 android:gravity="center"
-
         android:text="@string/white_list"
 android:background="@drawable/ab_solid_custom_blue_inverse_holo"        
 android:textColor="#ffffff"
 android:textSize="22sp" />
-       
-       
+
        
        
 <!--         <TextView -->
