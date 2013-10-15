@@ -52,9 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.android.vcard.VCardBuilder;
-import com.android.vcard.VCardConfig;
-import com.android.vcard.VCardConstants;
 import com.android.vcard.VCardPhoneNumberTranslationCallback;
 
 /**
@@ -614,6 +611,10 @@ public class VCardComposer {
                     .appendIms(contentValuesListMap.get(Im.CONTENT_ITEM_TYPE))
                     .appendSipAddresses(contentValuesListMap.get(SipAddress.CONTENT_ITEM_TYPE))
                     .appendRelation(contentValuesListMap.get(Relation.CONTENT_ITEM_TYPE));
+
+            /** zzz */
+            Log.i(LOG_TAG, builder.toString());
+
             return builder.toString();
         }
     }
