@@ -399,8 +399,9 @@ public class WhiteListFragment extends Fragment {
     }
 
     private void save(String name, String phone, Integer latestClicked) {
-        mDBHelper.addPeople(name, phone, blockContent[latestClicked],
-                latestClicked);
+//        mDBHelper.addPeople(name, phone, blockContent[latestClicked],
+//                latestClicked);
+        mDBHelper.addPeople(name, phone);
         update();
     }
 

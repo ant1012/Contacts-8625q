@@ -2,6 +2,7 @@ package edu.bupt.contacts.blacklist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -41,25 +42,30 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addPeople(String name, String phone, String blockContent,
-            Integer blockId) {
-        ContentValues values = new ContentValues();
-        values.put(BlacklistDBHelper.NAME, name);
-        values.put(BlacklistDBHelper.Phone, phone);
-        values.put(BlacklistDBHelper.BlockContent, blockContent);
-        values.put(BlacklistDBHelper.BlockId, blockId);
-        this.getWritableDatabase()
-                .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
-    }
-    
+//    public void addPeople(String name, String phone, String blockContent,
+//            Integer blockId) {
+//        ContentValues values = new ContentValues();
+//        values.put(BlacklistDBHelper.NAME, name);
+//        values.put(BlacklistDBHelper.Phone, phone);
+//        values.put(BlacklistDBHelper.BlockContent, blockContent);
+//        values.put(BlacklistDBHelper.BlockId, blockId);
+//        this.getWritableDatabase()
+//                .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
+//    }
+
     public void addPeople(String name, String phone) {
-        ContentValues values = new ContentValues();
-        values.put(BlacklistDBHelper.NAME, name);
-        values.put(BlacklistDBHelper.Phone, phone);
-//        values.put(BlacklistDBHelper.BlockContent, "");
-//        values.put(BlacklistDBHelper.BlockId, 0);
-        this.getWritableDatabase()
-                .insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
+        String sql = "select * from "+ TB_NAME + " where phone = ?";
+        Cursor cursor = this.getWritableDatabase().rawQuery(
+                sql, new String[] { phone });
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put(BlacklistDBHelper.NAME, name);
+            values.put(BlacklistDBHelper.Phone, phone);
+            // values.put(BlacklistDBHelper.BlockContent, "");
+            // values.put(BlacklistDBHelper.BlockId, 0);
+            this.getWritableDatabase().insert(BlacklistDBHelper.TB_NAME,
+                    BlacklistDBHelper.ID, values);
+        }
     }
 
     public void delPeople(int id) {

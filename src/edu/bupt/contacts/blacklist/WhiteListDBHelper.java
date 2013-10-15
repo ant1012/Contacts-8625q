@@ -39,25 +39,30 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addPeople(String name, String phone, String blockContent,
-            Integer blockId) {
-        ContentValues values = new ContentValues();
-        values.put(WhiteListDBHelper.NAME, name);
-        values.put(WhiteListDBHelper.Phone, phone);
-        values.put(WhiteListDBHelper.BlockContent, blockContent);
-        values.put(WhiteListDBHelper.BlockId, blockId);
-        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
-                WhiteListDBHelper.ID, values);
-    }
-
-    public void addPeople(String name, String phone) {
-        ContentValues values = new ContentValues();
-        values.put(WhiteListDBHelper.NAME, name);
-        values.put(WhiteListDBHelper.Phone, phone);
+//    public void addPeople(String name, String phone, String blockContent,
+//            Integer blockId) {
+//        ContentValues values = new ContentValues();
+//        values.put(WhiteListDBHelper.NAME, name);
+//        values.put(WhiteListDBHelper.Phone, phone);
 //        values.put(WhiteListDBHelper.BlockContent, blockContent);
 //        values.put(WhiteListDBHelper.BlockId, blockId);
-        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
-                WhiteListDBHelper.ID, values);
+//        this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
+//                WhiteListDBHelper.ID, values);
+//    }
+
+    public void addPeople(String name, String phone) {
+        String sql = "select * from "+ TB_NAME + " where phone = ?";
+        Cursor cursor = this.getWritableDatabase().rawQuery(
+                sql, new String[] { phone });
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put(WhiteListDBHelper.NAME, name);
+            values.put(WhiteListDBHelper.Phone, phone);
+            // values.put(WhiteListDBHelper.BlockContent, blockContent);
+            // values.put(WhiteListDBHelper.BlockId, blockId);
+            this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
+                    WhiteListDBHelper.ID, values);
+        }
     }
 
     public void delPeople(int id) {
