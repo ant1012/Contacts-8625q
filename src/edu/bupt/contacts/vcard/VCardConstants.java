@@ -185,4 +185,8 @@ public class VCardConstants {
 
     private VCardConstants() {
     }
+
+    /** zzz */
+    public static final String PROPERTY_X_ESURFING_GROUP = "X-ESURFING-GROUP";
+
 }

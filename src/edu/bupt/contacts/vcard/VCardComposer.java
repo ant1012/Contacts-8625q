@@ -675,7 +675,7 @@ public class VCardComposer {
                             .get("groupData") != null) {
                 groupArrayList.add(contentValuesListMap.get("groupData").get(0)
                         .get("groupData").toString());
-                builder.appendLine("X-ESURFING-GROUP", groupArrayList);
+                builder.appendLine(VCardConstants.PROPERTY_X_ESURFING_GROUP, groupArrayList);
             }
             Log.i(LOG_TAG, builder.toString());
             Log.i(LOG_TAG, "====================================");
