@@ -669,8 +669,14 @@ public class VCardComposer {
             Log.i(LOG_TAG, "====================================");
 
             ArrayList<String> groupArrayList = new ArrayList<String>();
-            groupArrayList.add(contentValuesListMap.get("groupData").get(0).get("groupData").toString());
-            builder.appendLine("X-ESURFING-GROUP", groupArrayList);
+
+            if (contentValuesListMap.containsKey("groupData")
+                    && contentValuesListMap.get("groupData").get(0)
+                            .get("groupData") != null) {
+                groupArrayList.add(contentValuesListMap.get("groupData").get(0)
+                        .get("groupData").toString());
+                builder.appendLine("X-ESURFING-GROUP", groupArrayList);
+            }
             Log.i(LOG_TAG, builder.toString());
             Log.i(LOG_TAG, "====================================");
 

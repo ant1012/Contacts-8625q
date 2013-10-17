@@ -17,9 +17,7 @@ package edu.bupt.contacts.vcard;
 
 import com.android.vcard.VCardEntry;
 import com.android.vcard.VCardEntryCommitter;
-import com.android.vcard.VCardEntryConstructor;
 import com.android.vcard.VCardEntryHandler;
-import com.android.vcard.VCardInterpreter;
 import com.android.vcard.exception.VCardException;
 import com.android.vcard.exception.VCardNestedException;
 import com.android.vcard.exception.VCardNotSupportedException;
@@ -237,6 +235,8 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
                     }
                 }
                 mVCardParser.parse(is, interpreter);
+
+                Log.i(LOG_TAG, "interpreter - " + interpreter);
 
                 successful = true;
                 break;

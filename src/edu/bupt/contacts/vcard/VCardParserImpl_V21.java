@@ -15,7 +15,6 @@
  */
 package edu.bupt.contacts.vcard;
 
-import com.android.vcard.VCardInterpreter;
 import com.android.vcard.VCardProperty;
 import com.android.vcard.VCardUtils;
 import com.android.vcard.exception.VCardAgentNotSupportedException;

@@ -15,8 +15,8 @@
  */
 package edu.bupt.contacts.vcard;
 
-import com.android.vcard.VCardInterpreter;
 import com.android.vcard.exception.VCardException;
+import com.android.vcard.VCardProperty;
 
 import java.io.IOException;
 import java.io.InputStream;

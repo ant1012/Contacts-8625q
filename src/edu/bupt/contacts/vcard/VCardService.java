@@ -54,7 +54,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class VCardService extends Service {
     private final static String LOG_TAG = "VCardService";
 
-    /* package */ final static boolean DEBUG = false;
+    /* package */ final static boolean DEBUG = true;
 
     /* package */ static final int MSG_IMPORT_REQUEST = 1;
     /* package */ static final int MSG_EXPORT_REQUEST = 2;
