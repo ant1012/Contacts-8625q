@@ -141,8 +141,13 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
         final int entryCount = request.entryCount;
         mTotalCount += entryCount;
 
+        /** zzz */
+//        final VCardEntryConstructor constructor =
+//                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset);
         final VCardEntryConstructor constructor =
-                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset);
+                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset, mService);
+
+
         final VCardEntryCommitter committer = new VCardEntryCommitter(mResolver);
         constructor.addEntryHandler(committer);
         constructor.addEntryHandler(this);

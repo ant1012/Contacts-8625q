@@ -23,6 +23,8 @@ import com.android.vcard.VCardUtils.PhoneNumberUtilsPort;
 import android.accounts.Account;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
@@ -40,6 +42,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
 import android.provider.ContactsContract.CommonDataKinds.Website;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.Groups;
 import android.provider.ContactsContract.RawContacts;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -1552,21 +1555,49 @@ public class VCardEntry {
         }
 
         public static EsurfingGroupData constructEsurfingGroupData(List<String> list) {
-            String mimeType;
-            List<String> dataList;
+//            String mimeType;
+//            List<String> dataList;
+//
+//            if (list == null) {
+//                mimeType = null;
+//                dataList = null;
+//            } else if (list.size() < 2) {
+//                mimeType = list.get(0);
+//                dataList = null;
+//            } else {
+//                final int max = (list.size() < VCardConstants.MAX_DATA_COLUMN + 1) ? list.size()
+//                        : VCardConstants.MAX_DATA_COLUMN + 1;
+//                mimeType = list.get(0);
+//                dataList = list.subList(1, max);
+//            }
 
-            if (list == null) {
-                mimeType = null;
-                dataList = null;
-            } else if (list.size() < 2) {
-                mimeType = list.get(0);
-                dataList = null;
-            } else {
-                final int max = (list.size() < VCardConstants.MAX_DATA_COLUMN + 1) ? list.size()
-                        : VCardConstants.MAX_DATA_COLUMN + 1;
-                mimeType = list.get(0);
-                dataList = list.subList(1, max);
+            /** zzz */
+            String mimeType = GroupMembership.CONTENT_ITEM_TYPE;
+            List<String> dataList = new ArrayList<String>();
+
+            for(String s : list) {
+
+                Log.d(LOG_TAG, "mContext - " + mContext);
+                Uri uri = Groups.CONTENT_URI;
+                String where = String.format("%s = ?", Groups.TITLE);
+                String[] whereParams = new String[]{s};
+                String[] selectColumns = {Groups._ID};
+                Cursor c = mContext.getContentResolver().query(
+                        uri, 
+                        selectColumns,
+                        where, 
+                        whereParams, 
+                        null);
+
+                try{
+                    if (c.moveToFirst()){
+                        dataList.add(c.getString(0));  
+                    }
+                }finally{
+                    c.close();
+                }
             }
+            Log.i(LOG_TAG, dataList.get(0));
 
             return new EsurfingGroupData(mimeType, dataList);
         }
@@ -1574,6 +1605,10 @@ public class VCardEntry {
         @Override
         public void constructInsertOperation(List<ContentProviderOperation> operationList,
                 int backReferenceIndex) {
+
+            /** zzz */
+            Log.d(LOG_TAG, "constructInsertOperation");
+
             final ContentProviderOperation.Builder builder = ContentProviderOperation
                     .newInsert(Data.CONTENT_URI);
             builder.withValueBackReference(GroupMembership.RAW_CONTACT_ID, backReferenceIndex);
@@ -1847,6 +1882,10 @@ public class VCardEntry {
 
         @Override
         public boolean onElement(EntryElement elem) {
+
+            /** zzz */
+            Log.i(LOG_TAG, "-------------- elem.toString() - " + elem.toString());
+
             if (!elem.isEmpty()) {
                 elem.constructInsertOperation(mOperationList, mBackReferenceIndex);
             }
@@ -1866,18 +1905,26 @@ public class VCardEntry {
         return iterator.toString();
     }
 
-    public VCardEntry() {
-        this(VCardConfig.VCARD_TYPE_V21_GENERIC);
-    }
-
-    public VCardEntry(int vcardType) {
-        this(vcardType, null);
-    }
-
-    public VCardEntry(int vcardType, Account account) {
+    /** zzz */
+//    public VCardEntry() {
+//        this(VCardConfig.VCARD_TYPE_V21_GENERIC);
+//    }
+//
+//    public VCardEntry(int vcardType) {
+//        this(vcardType, null);
+//    }
+//
+//    public VCardEntry(int vcardType, Account account) {
+//        mVCardType = vcardType;
+//        mAccount = account;
+//    }
+    public VCardEntry(int vcardType, Account account, Context context) {
         mVCardType = vcardType;
         mAccount = account;
+        mContext = context;
     }
+    private static Context mContext; // for querying group id
+
 
     private void addPhone(int type, String data, String label, boolean isPrimary) {
         if (mPhoneList == null) {
@@ -2523,7 +2570,7 @@ public class VCardEntry {
 //        } else {
 //        }
         // Be careful when adding some logic here, as some blocks above may use "return".
-            
+
             /** zzz */
         } else if (propertyName
                 .equals(VCardConstants.PROPERTY_X_ESURFING_GROUP)) {
@@ -2532,7 +2579,13 @@ public class VCardEntry {
 
             final List<String> customPropertyList = VCardUtils
                     .constructListFromValue(propValue, mVCardType);
+
+            Log.i(LOG_TAG, customPropertyList.get(0));
+
+
             handleEsurfingGroupProperty(customPropertyList);
+
+            Log.i(LOG_TAG, mEsurfingGroupDataList.get(0).toString());
         }
     }
 
@@ -2696,6 +2749,9 @@ public class VCardEntry {
         int start = operationList.size();
         iterateAllData(new InsertOperationConstrutor(operationList, backReferenceIndex));
         int end = operationList.size();
+        
+        /** zzz */
+        Log.i(LOG_TAG, operationList.toString());
 
         return operationList;
     }

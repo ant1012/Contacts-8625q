@@ -16,6 +16,7 @@
 package edu.bupt.contacts.vcard;
 
 import android.accounts.Account;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -57,28 +58,39 @@ public class VCardEntryConstructor implements VCardInterpreter {
 
     private final List<VCardEntryHandler> mEntryHandlers = new ArrayList<VCardEntryHandler>();
 
-    public VCardEntryConstructor() {
-        this(VCardConfig.VCARD_TYPE_V21_GENERIC, null, null);
-    }
-
-    public VCardEntryConstructor(final int vcardType) {
-        this(vcardType, null, null);
-    }
-
-    public VCardEntryConstructor(final int vcardType, final Account account) {
-        this(vcardType, account, null);
-    }
+    /** zzz */
+//    public VCardEntryConstructor() {
+//        this(VCardConfig.VCARD_TYPE_V21_GENERIC, null, null);
+//    }
+//
+//    public VCardEntryConstructor(final int vcardType) {
+//        this(vcardType, null, null);
+//    }
+//
+//    public VCardEntryConstructor(final int vcardType, final Account account) {
+//        this(vcardType, account, null);
+//    }
 
     /**
      * @deprecated targetCharset is not used anymore.
      * Use {@link #VCardEntryConstructor(int, Account)}
      */
+    /** zzz */
+//    @Deprecated
+//    public VCardEntryConstructor(final int vcardType, final Account account,
+//            String targetCharset) {
+//        mVCardType = vcardType;
+//        mAccount = account;
+//    }
     @Deprecated
     public VCardEntryConstructor(final int vcardType, final Account account,
-            String targetCharset) {
+            String targetCharset, Context context) {
         mVCardType = vcardType;
         mAccount = account;
+        mContext = context;
     }
+    private Context mContext; // for querying group id
+
 
     public void addEntryHandler(VCardEntryHandler entryHandler) {
         mEntryHandlers.add(entryHandler);
@@ -105,7 +117,10 @@ public class VCardEntryConstructor implements VCardInterpreter {
 
     @Override
     public void onEntryStarted() {
-        mCurrentEntry = new VCardEntry(mVCardType, mAccount);
+        /** zzz */
+//        mCurrentEntry = new VCardEntry(mVCardType, mAccount);
+        mCurrentEntry = new VCardEntry(mVCardType, mAccount, mContext);
+
         mEntryStack.add(mCurrentEntry);
     }
 
