@@ -1540,6 +1540,118 @@ public class VCardEntry {
         public List<String> getDataList() { return mDataList; }
     }
 
+    /** zzz */
+    public static class EsurfingGroupData implements EntryElement {
+        private final String mMimeType;
+
+        private final List<String> mDataList; // 1 .. VCardConstants.MAX_DATA_COLUMN
+
+        public EsurfingGroupData(String mimeType, List<String> dataList) {
+            mMimeType = mimeType;
+            mDataList = dataList;
+        }
+
+        public static EsurfingGroupData constructEsurfingGroupData(List<String> list) {
+            String mimeType;
+            List<String> dataList;
+
+            if (list == null) {
+                mimeType = null;
+                dataList = null;
+            } else if (list.size() < 2) {
+                mimeType = list.get(0);
+                dataList = null;
+            } else {
+                final int max = (list.size() < VCardConstants.MAX_DATA_COLUMN + 1) ? list.size()
+                        : VCardConstants.MAX_DATA_COLUMN + 1;
+                mimeType = list.get(0);
+                dataList = list.subList(1, max);
+            }
+
+            return new EsurfingGroupData(mimeType, dataList);
+        }
+
+        @Override
+        public void constructInsertOperation(List<ContentProviderOperation> operationList,
+                int backReferenceIndex) {
+            final ContentProviderOperation.Builder builder = ContentProviderOperation
+                    .newInsert(Data.CONTENT_URI);
+            builder.withValueBackReference(GroupMembership.RAW_CONTACT_ID, backReferenceIndex);
+            builder.withValue(Data.MIMETYPE, mMimeType);
+            for (int i = 0; i < mDataList.size(); i++) {
+                String value = mDataList.get(i);
+                if (!TextUtils.isEmpty(value)) {
+                    // 1-origin
+                    builder.withValue("data" + (i + 1), value);
+                }
+            }
+            operationList.add(builder.build());
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return TextUtils.isEmpty(mMimeType) || mDataList == null || mDataList.size() == 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof EsurfingGroupData)) {
+                return false;
+            }
+            EsurfingGroupData data = (EsurfingGroupData) obj;
+            if (!TextUtils.equals(mMimeType, data.mMimeType)) {
+                return false;
+            }
+            if (mDataList == null) {
+                return data.mDataList == null;
+            } else {
+                final int size = mDataList.size();
+                if (size != data.mDataList.size()) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (!TextUtils.equals(mDataList.get(i), data.mDataList.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = mMimeType != null ? mMimeType.hashCode() : 0;
+            if (mDataList != null) {
+                for (String data : mDataList) {
+                    hash = hash * 31 + (data != null ? data.hashCode() : 0);
+                }
+            }
+            return hash;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append("android-custom: " + mMimeType + ", data: ");
+            builder.append(mDataList == null ? "null" : Arrays.toString(mDataList.toArray()));
+            return builder.toString();
+        }
+
+        @Override
+        public EntryLabel getEntryLabel() {
+            return EntryLabel.ANDROID_CUSTOM;
+        }
+
+        public String getMimeType() { return mMimeType; }
+        public List<String> getDataList() { return mDataList; }
+    }
+
+    /** zzz */
+    private List<EsurfingGroupData> mEsurfingGroupDataList;
+
     private final NameData mNameData = new NameData();
     private List<PhoneData> mPhoneList;
     private List<EmailData> mEmailList;
@@ -1600,6 +1712,9 @@ public class VCardEntry {
         iterateOneList(mNicknameList, iterator);
         iterateOneList(mNoteList, iterator);
         iterateOneList(mAndroidCustomDataList, iterator);
+
+        /** zzz */
+        iterateOneList(mEsurfingGroupDataList, iterator);
 
         if (mBirthday != null) {
             iterator.onElementGroupStarted(mBirthday.getEntryLabel());
@@ -2405,9 +2520,20 @@ public class VCardEntry {
             final List<String> customPropertyList = VCardUtils.constructListFromValue(propValue,
                     mVCardType);
             handleAndroidCustomProperty(customPropertyList);
-        } else {
-        }
+//        } else {
+//        }
         // Be careful when adding some logic here, as some blocks above may use "return".
+            
+            /** zzz */
+        } else if (propertyName
+                .equals(VCardConstants.PROPERTY_X_ESURFING_GROUP)) {
+            Log.d(LOG_TAG, "propertyName - " + propertyName);
+            Log.i(LOG_TAG, "propValue - " + propValue);
+
+            final List<String> customPropertyList = VCardUtils
+                    .constructListFromValue(propValue, mVCardType);
+            handleEsurfingGroupProperty(customPropertyList);
+        }
     }
 
     /**
@@ -2466,6 +2592,15 @@ public class VCardEntry {
         }
         mAndroidCustomDataList
                 .add(AndroidCustomData.constructAndroidCustomData(customPropertyList));
+    }
+
+    /** zzz */
+    private void handleEsurfingGroupProperty(final List<String> customPropertyList) {
+        if (mEsurfingGroupDataList == null) {
+            mEsurfingGroupDataList = new ArrayList<EsurfingGroupData>();
+        }
+        mEsurfingGroupDataList
+                .add(EsurfingGroupData.constructEsurfingGroupData(customPropertyList));
     }
 
     /**

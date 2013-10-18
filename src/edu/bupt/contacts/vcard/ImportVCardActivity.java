@@ -848,8 +848,11 @@ public class ImportVCardActivity extends ContactsActivity {
             } else if (accountList.size() == 1) {
                 mAccount = accountList.get(0);
             } else {
-                startActivityForResult(new Intent(this, SelectAccountActivity.class),
-                        SELECT_ACCOUNT);
+
+                /** zzz */
+                startActivityForResult(new Intent(this,
+                        SelectAccountActivity.class), SELECT_ACCOUNT);
+
                 return;
             }
         }
