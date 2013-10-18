@@ -568,20 +568,16 @@ public class VCardComposer {
 //        Log.i(LOG_TAG, "contentValuesListMap - " + contentValuesListMap.toString());
         Log.i(LOG_TAG, "group - " + getGroupNameFor(getGroupIdFor(contactId)));
         List<ContentValues> contentValuesList = new ArrayList<ContentValues>();
-        
-        for (String s : getGroupNameFor(getGroupIdFor(contactId))) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("groupData", s);
-            contentValuesList.add(contentValues);
-        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("groupData", getGroupNameFor(getGroupIdFor(contactId)));
+        contentValuesList.add(contentValues);
         contentValuesListMap.put("groupData", contentValuesList);
 
         return buildVCard(contentValuesListMap);
     }
 
     /** zzz */
-    public List<Long> getGroupIdFor(String contactId) {
-        List<Long> ret = new ArrayList<Long>();
+    public long getGroupIdFor(String contactId) {
         Uri uri = Data.CONTENT_URI;
         String where = String.format("%s = ? AND %s = ?", Data.MIMETYPE,
                 GroupMembership.CONTACT_ID);
@@ -594,39 +590,32 @@ public class VCardComposer {
         Cursor groupIdCursor = mContentResolver.query(uri,
                 selectColumns, where, whereParams, null);
         try {
-            while (groupIdCursor.moveToNext()) {
-                ret.add(groupIdCursor.getLong(0));
-                Log.i(LOG_TAG, "groupId - " + groupIdCursor.getLong(0));
+            if (groupIdCursor.moveToFirst()) {
+                return groupIdCursor.getLong(0);
             }
+            return Long.MIN_VALUE; // Has no group ...
         } finally {
             groupIdCursor.close();
         }
-        return ret;
     }
 
     /** zzz */
-    public List<String> getGroupNameFor(List<Long> groupIdList) {
+    public String getGroupNameFor(long groupId) {
+        Uri uri = Groups.CONTENT_URI;
+        String where = String.format("%s = ?", Groups._ID);
+        String[] whereParams = new String[] { Long.toString(groupId) };
+        String[] selectColumns = { Groups.TITLE };
+        Cursor c = mContentResolver.query(uri, selectColumns,
+                where, whereParams, null);
 
-        List<String> ret = new ArrayList<String>();
-
-        for (long groupId : groupIdList) {
-            Uri uri = Groups.CONTENT_URI;
-            String where = String.format("%s = ?", Groups._ID);
-            String[] whereParams = new String[] { Long.toString(groupId) };
-            String[] selectColumns = { Groups.TITLE };
-            Cursor c = mContentResolver.query(uri, selectColumns, where,
-                    whereParams, null);
-
-            try {
-                while (c.moveToNext()) {
-                    ret.add(c.getString(0));
-                    Log.i(LOG_TAG, "c.getString(0) - " + c.getString(0));
-                }
-            } finally {
-                c.close();
+        try {
+            if (c.moveToFirst()) {
+                return c.getString(0);
             }
+            return null;
+        } finally {
+            c.close();
         }
-        return ret;
     }
 
     private VCardPhoneNumberTranslationCallback mPhoneTranslationCallback;
@@ -682,10 +671,10 @@ public class VCardComposer {
             ArrayList<String> groupArrayList = new ArrayList<String>();
 
             if (contentValuesListMap.containsKey("groupData")
-                    && contentValuesListMap.get("groupData").size() != 0) {
-                for (ContentValues cv : contentValuesListMap.get("groupData")) {
-                    groupArrayList.add(cv.get("groupData").toString());
-                }
+                    && contentValuesListMap.get("groupData").get(0)
+                            .get("groupData") != null) {
+                groupArrayList.add(contentValuesListMap.get("groupData").get(0)
+                        .get("groupData").toString());
                 builder.appendLine(VCardConstants.PROPERTY_X_ESURFING_GROUP, groupArrayList);
             }
             Log.i(LOG_TAG, builder.toString());

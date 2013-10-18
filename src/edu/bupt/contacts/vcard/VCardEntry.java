@@ -23,8 +23,6 @@ import com.android.vcard.VCardUtils.PhoneNumberUtilsPort;
 import android.accounts.Account;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -1580,33 +1578,20 @@ public class VCardEntry {
             for(String s : list) {
 
                 Log.d(LOG_TAG, "mContext - " + mContext);
-                Log.i(LOG_TAG, "s - " + s);
-
-
                 Uri uri = Groups.CONTENT_URI;
-                String where = String.format("%s = ? and %s = ?", Groups.TITLE, Groups.DELETED);
-                String[] whereParams = new String[]{s, "0"};
+                String where = String.format("%s = ?", Groups.TITLE);
+                String[] whereParams = new String[]{s};
                 String[] selectColumns = {Groups._ID};
-                Cursor c = mContext.getContentResolver().query(uri,
-                        selectColumns, where, whereParams, null);
+                Cursor c = mContext.getContentResolver().query(
+                        uri, 
+                        selectColumns,
+                        where, 
+                        whereParams, 
+                        null);
 
                 try{
                     if (c.moveToFirst()){
                         dataList.add(c.getString(0));  
-                    } else {
-                        Log.d(LOG_TAG, "no such group. creating");
-
-                        ContentValues values = new ContentValues();
-                        values.put(Groups.ACCOUNT_TYPE, mAccount.type);
-                        values.put(Groups.ACCOUNT_NAME, mAccount.name);
-                        values.put(Groups.DATA_SET, "");
-                        values.put(Groups.TITLE, s);
-
-                        final ContentResolver resolver = mContext.getContentResolver();
-
-                        // Create the new group
-                        final Uri groupUri = resolver.insert(Groups.CONTENT_URI, values);
-                        dataList.add(String.valueOf(ContentUris.parseId(groupUri)));
                     }
                 }finally{
                     c.close();
@@ -1909,10 +1894,7 @@ public class VCardEntry {
     }
 
     private final int mVCardType;
-    
-    /** zzz */
-//    private final Account mAccount;
-    private static Account mAccount;
+    private final Account mAccount;
 
     private List<VCardEntry> mChildren;
 
@@ -2600,13 +2582,8 @@ public class VCardEntry {
 
             Log.i(LOG_TAG, customPropertyList.get(0));
 
-            for (String s : customPropertyList) {
 
-                List<String> customPropertyListOne = new ArrayList<String>();
-                customPropertyListOne.add(s);
-                handleEsurfingGroupProperty(customPropertyListOne);
-            }
-
+            handleEsurfingGroupProperty(customPropertyList);
 
             Log.i(LOG_TAG, mEsurfingGroupDataList.get(0).toString());
         }
@@ -2772,7 +2749,7 @@ public class VCardEntry {
         int start = operationList.size();
         iterateAllData(new InsertOperationConstrutor(operationList, backReferenceIndex));
         int end = operationList.size();
-
+        
         /** zzz */
         Log.i(LOG_TAG, operationList.toString());
 
