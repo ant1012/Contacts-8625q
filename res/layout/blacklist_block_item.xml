@@ -16,7 +16,6 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="#000000"
-            android:paddingLeft="30dp"
             android:textSize="18sp" />
 
         <TextView
@@ -40,24 +39,20 @@
 
         <TextView
             android:id="@+id/block_item_text3"
-      
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:layout_width="0dp"
             android:ellipsize="end"
-            android:gravity="left"
-            android:paddingLeft="30dp"
+         
             android:textColor="#5a5a5a"
             android:textSize="14sp" />
         
         <TextView
             android:id="@+id/block_item_text4"
-
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
             android:layout_width="0dp"
-            android:layout_marginLeft="5dp"
-
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:paddingLeft="20dp"
             android:textColor="#5a5a5a"
 
             android:textSize="14sp" />

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/new_record_dialog"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -10,7 +10,7 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
-<!--         android:layout_alignParentBottom="true" -->
+
         <Button
             android:id="@+id/save"
             android:layout_width="0dp"
@@ -66,8 +66,8 @@
 
     <TextView
         android:id="@+id/block_content"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_below="@+id/contact_name_et"
         android:gravity="center|left"
         android:text="@string/block_content"
@@ -77,8 +77,8 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_below="@+id/block_content" 
         android:visibility="gone"/>
 

@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:text="@string/record"
 android:gravity="center"
+
+        android:text="@string/record"
 android:background="@drawable/ab_solid_custom_blue_inverse_holo"        
 android:textColor="#ffffff"
 android:textSize="22sp" />

@@ -33,7 +33,6 @@ public class MenuCalendar extends Activity{
 	String phoneNumber = null;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.calendar_activity);
 		calendarArrayList = new ArrayList<String>();
 		calendarEventArrayList = new ArrayList<String>();
 		list = new ArrayList<Map<String,Object>>();   
@@ -62,20 +61,12 @@ public class MenuCalendar extends Activity{
 //
 //        setContentView(listView);
         
-
+        listView = new ListView(this);   
         
-//        listView = new ListView(this);   
-//        
- //       SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.calendar_item, new String[]{"title","eventLocation","dtstart","dtend","description"}, new int[]{R.id.title,R.id.eventLocation,R.id.dtstart,R.id.dtend,R.id.description});   
-//        listView.setAdapter(adapter);   
-//           
-//        setContentView(listView);  
-//       SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.calendar_item,  new String[]{"img","typeIndex","date","duration","sub_id"}, new int[]{R.id.img,R.id.typeIndex,R.id.date,R.id.duration,R.id.sub_id});
-     	
         SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.calendar_item, new String[]{"title","eventLocation","dtstart","dtend","description"}, new int[]{R.id.title,R.id.eventLocation,R.id.dtstart,R.id.dtend,R.id.description});   
-     	ListView list =(ListView) findViewById(R.id.calendar_list);
-     	
-     	list.setAdapter(adapter);
+        listView.setAdapter(adapter);   
+           
+        setContentView(listView);  
         
         
 	}
