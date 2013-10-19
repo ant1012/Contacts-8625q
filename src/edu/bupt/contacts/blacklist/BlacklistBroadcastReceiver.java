@@ -56,8 +56,12 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         String incomingNumber = "";
         this.context = context;
-        sp = context.getSharedPreferences("blacklist", 0);
-        whiteMode = context.getSharedPreferences("whitelist", 0);
+
+        /** zzz */
+        // sp = context.getSharedPreferences("blacklist", 0);
+        // whiteMode = context.getSharedPreferences("whitelist", 0);
+        sp = context.getSharedPreferences("blacklist_pref", 0);
+
         Log.v(TAG, "action = " + action);
         if (ACTION_SMS.equals(action)) {
 
@@ -126,7 +130,9 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
                     }
 
-                    int ringtonePos = sp.getInt("ringtone", 0);
+                    /** zzz */
+                    // int ringtonePos = sp.getInt("ringtone", 0);
+                    int ringtonePos = 0;
 
                     if (ringtonePos == 1) {// 震动
                         long[] pattern = { 100, 400, 100, 400 };
@@ -184,7 +190,9 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                     || telMgr.getCallState(1) == TelephonyManager.CALL_STATE_RINGING) { // incoming
                                                                                         // call
                                                                                         // !
-                white_block_mode = whiteMode.getBoolean("white_mode", false);
+                /** zzz */
+                white_block_mode = sp.getBoolean("white_mode", false);
+
                 Log.d(TAG, "incoming call !");
                 Log.i("white_block_mode", "white_block_mode is "
                         + white_block_mode);
@@ -193,7 +201,10 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
                 if (white_block_mode) {
                     Log.i(TAG, incomingNumber + " is calling...");
-                    blockStranger = sp.getBoolean("blockStranger", false);
+
+                    /** zzz */
+                    // blockStranger = sp.getBoolean("blockStranger", false);
+                    blockStranger = false;
 
                     mWhiteDBHelper = new WhiteListDBHelper(context, 1);
                     String sql = "select * from WhiteListFragment where phone = ?";
@@ -277,7 +288,10 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                     // break;
                 } else {
                     Log.v(TAG, incomingNumber + " is calling...");
-                    blockStranger = sp.getBoolean("blockStranger", false);
+
+                    /** zzz */
+                    // blockStranger = sp.getBoolean("blockStranger", false);
+                    blockStranger = false;
 
                     mDBHelper = new BlacklistDBHelper(context, 1);
                     String sql = "select * from BlackListFragment where phone = ?";

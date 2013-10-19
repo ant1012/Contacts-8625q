@@ -625,6 +625,8 @@
     <string name="menu_add_to_whitelist">"添加到白名单"</string>
     <string name="menu_add_to_blacklist_check">"确定要将 %1$s 添加到黑名单？"</string>
     <string name="menu_add_to_whitelist_check">"确定要将 %1$s 添加到白名单？"</string>
+    <string name="pref_show_as_group">"将白名单显示到群组"</string>
+    <string name="pref_enable_whitelist">"启用白名单模式"</string>
     
     <!-- merge -->
     <!-- new string to show options -->

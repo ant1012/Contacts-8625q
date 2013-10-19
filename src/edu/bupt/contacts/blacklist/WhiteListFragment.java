@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +28,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -57,6 +60,11 @@ public class WhiteListFragment extends Fragment {
     private int _ID, blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
+
+    /** zzz */
+    private CheckBox cbWhiteMode;
+    private CheckBox cbShowAsGroup;
+    private SharedPreferences sp;
 
     public WhiteListFragment(Context context) {
         this.context = context;
@@ -148,39 +156,39 @@ public class WhiteListFragment extends Fragment {
                                     public void onClick(DialogInterface arg0,
                                             int arg1) {
                                         // TODO Auto-generated method stub
-//                                        switch (arg1) {
-//
-//                                        case 0:// 编辑
-//                                            showNewRecordDialog(name, phone,
-//                                                    blockId, true);
-//                                            break;
+                                        // switch (arg1) {
+                                        //
+                                        // case 0:// 编辑
+                                        // showNewRecordDialog(name, phone,
+                                        // blockId, true);
+                                        // break;
 
-//                                        case 1:// 删除
-                                            mDBHelper.delPeople(_ID);
-                                            update();
-//                                            break;
+                                        // case 1:// 删除
+                                        mDBHelper.delPeople(_ID);
+                                        update();
+                                        // break;
 
-//                                        case 2:// 发送短信
-//                                            Uri uri = Uri.parse("smsto:"
-//                                                    + phone);
-//                                            Intent sms = new Intent(
-//                                                    Intent.ACTION_SENDTO, uri);
-//                                            startActivity(sms);
-//                                            break;
-//
-//                                        case 3:// 呼叫
-//                                            Intent call = new Intent(
-//                                                    Intent.ACTION_DIAL);
-//                                            call.setData(Uri.parse("tel:"
-//                                                    + phone));
-//                                            startActivity(call);
-//                                            break;
-//
-//                                        case 4:// 清空列表
-//                                            mDBHelper.delAllPeople();
-//                                            update();
-//                                            break;
-//                                        }
+                                        // case 2:// 发送短信
+                                        // Uri uri = Uri.parse("smsto:"
+                                        // + phone);
+                                        // Intent sms = new Intent(
+                                        // Intent.ACTION_SENDTO, uri);
+                                        // startActivity(sms);
+                                        // break;
+                                        //
+                                        // case 3:// 呼叫
+                                        // Intent call = new Intent(
+                                        // Intent.ACTION_DIAL);
+                                        // call.setData(Uri.parse("tel:"
+                                        // + phone));
+                                        // startActivity(call);
+                                        // break;
+                                        //
+                                        // case 4:// 清空列表
+                                        // mDBHelper.delAllPeople();
+                                        // update();
+                                        // break;
+                                        // }
                                     }
                                 }).create().show();
             }
@@ -202,6 +210,37 @@ public class WhiteListFragment extends Fragment {
             }
 
         });
+
+        /** zzz */
+        sp = context.getSharedPreferences("blacklist_pref", 0);
+
+        cbWhiteMode = (CheckBox) view.findViewById(R.id.checkbox_white_mode);
+        cbWhiteMode.setChecked(sp.getBoolean("white_mode", false));
+        cbWhiteMode
+                .setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton arg0,
+                            boolean arg1) {
+                        sp.edit().putBoolean("white_mode", arg0.isChecked())
+                                .commit();
+                        Log.v(TAG, "arg0.isChecked() = " + arg0.isChecked());
+                    }
+                });
+
+        cbShowAsGroup = (CheckBox) view
+                .findViewById(R.id.checkbox_show_as_group);
+        cbShowAsGroup.setChecked(sp.getBoolean("show_as_group", false));
+        cbShowAsGroup
+                .setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton arg0,
+                            boolean arg1) {
+                        sp.edit().putBoolean("show_as_group", arg0.isChecked())
+                                .commit();
+                        Log.v(TAG, "arg0.isChecked() = " + arg0.isChecked());
+                    }
+                });
+
     }
 
     private void showImportContactDialog() {
@@ -399,8 +438,8 @@ public class WhiteListFragment extends Fragment {
     }
 
     private void save(String name, String phone, Integer latestClicked) {
-//        mDBHelper.addPeople(name, phone, blockContent[latestClicked],
-//                latestClicked);
+        // mDBHelper.addPeople(name, phone, blockContent[latestClicked],
+        // latestClicked);
         mDBHelper.addPeople(name, phone);
         update();
     }
