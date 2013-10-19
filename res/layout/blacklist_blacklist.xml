@@ -82,7 +82,8 @@ android:textSize="22sp" />
 <!-- android:textSize="22sp" -->
 <!-- android:gravity="center" /> -->
     </LinearLayout>
-
+    
+<!-- 列表为空 -->
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
