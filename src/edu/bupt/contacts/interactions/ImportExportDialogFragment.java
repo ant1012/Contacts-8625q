@@ -240,26 +240,33 @@ Log.i("share","\n"+uri);
         // - more than one accounts -> ask the user
         // - just one account -> use the account without asking the user
         // - no account -> use phone-local storage without asking the user
-        final AccountTypeManager accountTypes = AccountTypeManager.getInstance(getActivity());
-        final List<AccountWithDataSet> accountList = accountTypes.getAccounts(true);
-        final int size = accountList.size();
-        if (size > 1) {
-            // Send over to the account selector
-            final Bundle args = new Bundle();
-            args.putInt(KEY_RES_ID, resId);
-            SelectAccountDialogFragment.show(
-                    getFragmentManager(), this,
-                    R.string.dialog_new_contact_account,
-                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE, args);
+        
+        /** zzz */
+        /** force using PHONE account*/
+//        final AccountTypeManager accountTypes = AccountTypeManager.getInstance(getActivity());
+//        final List<AccountWithDataSet> accountList = accountTypes.getAccounts(true);
+//        final int size = accountList.size();
+//        if (size > 1) {
+//            // Send over to the account selector
+//            final Bundle args = new Bundle();
+//            args.putInt(KEY_RES_ID, resId);
+//            SelectAccountDialogFragment.show(
+//                    getFragmentManager(), this,
+//                    R.string.dialog_new_contact_account,
+//                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE, args);
+//
+//            // In this case, because this DialogFragment is used as a target fragment to
+//            // SelectAccountDialogFragment, we can't close it yet.  We close the dialog when
+//            // we get a callback from it.
+//            return false;
+//        }
+//
+//        AccountSelectionUtil.doImport(getActivity(), resId,
+//                (size == 1 ? accountList.get(0) : null));
+        AccountSelectionUtil
+                .doImport(getActivity(), resId, new AccountWithDataSet("PHONE",
+                        "com.android.localphone", null));
 
-            // In this case, because this DialogFragment is used as a target fragment to
-            // SelectAccountDialogFragment, we can't close it yet.  We close the dialog when
-            // we get a callback from it.
-            return false;
-        }
-
-        AccountSelectionUtil.doImport(getActivity(), resId,
-                (size == 1 ? accountList.get(0) : null));
         return true; // Close the dialog.
     }
 

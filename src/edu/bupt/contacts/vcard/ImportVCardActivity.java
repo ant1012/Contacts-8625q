@@ -850,10 +850,14 @@ public class ImportVCardActivity extends ContactsActivity {
             } else {
 
                 /** zzz */
-                startActivityForResult(new Intent(this,
-                        SelectAccountActivity.class), SELECT_ACCOUNT);
+                // startActivityForResult(new Intent(this,
+                // SelectAccountActivity.class), SELECT_ACCOUNT);
 
-                return;
+                accountName = "PHONE";
+                accountType = "com.android.localphone";
+                mAccount = new AccountWithDataSet(accountName, accountType,
+                        dataSet);
+                // return;
             }
         }
 
