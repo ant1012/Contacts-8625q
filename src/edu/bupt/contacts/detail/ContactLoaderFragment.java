@@ -46,6 +46,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -588,11 +589,327 @@ public class ContactLoaderFragment extends Fragment implements
         }
         case R.id.menu_share_as_text: {
             Log.v(TAG, "R.id.menu_share_as_text");
-            
+            shareAsText();
         }
         }
         return false;
     }
+
+    /** zzz */
+    // copied from qqq
+    private void shareAsText() {
+        ArrayList<String> number_selected = new ArrayList<String>();
+
+        Uri contactData2 = mLookupUri;
+
+        final Cursor c2 = mContext.getContentResolver().query(contactData2,
+                null, null, null, null);
+        if (c2.moveToFirst()) {
+
+            String id = c2.getString(c2
+                    .getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+            
+            String name = c2.getString(c2
+                    .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            if(name!=null){
+                number_selected.add("姓名： "+name);
+            }
+
+
+            Log.i(TAG, "id - " + id);
+
+            Cursor emailCur = mContext.getContentResolver().query(
+                    ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                    new String[] { id }, null);
+            while (emailCur.moveToNext()) {
+                // This would allow you get several email addresses
+                // if the email addresses were stored in an array
+                String email = emailCur
+                        .getString(emailCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                String emailType = emailCur
+                        .getString(emailCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+
+                number_selected.add("Email: " + email);
+                Log.i(TAG, "email: " + email + " type: " + emailType);
+
+            }
+            emailCur.close();
+
+            String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
+                    + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] addrWhereParams = new String[] {
+                    id,
+                    ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
+            Cursor addrCur = mContext.getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI, null, addrWhere,
+                    addrWhereParams, null);
+            while (addrCur.moveToNext()) {
+                String poBox = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
+                String street = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
+                String city = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
+                String state = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
+                String postalCode = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
+                String country = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
+                String type = addrCur
+                        .getString(addrCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
+
+                StringBuilder sb_location = new StringBuilder();
+
+                if (country != null) {
+                    sb_location.append(country);
+                }
+
+                if (state != null) {
+                    sb_location.append(state);
+                }
+
+                if (city != null) {
+                    sb_location.append(city);
+                }
+
+                if (street != null) {
+                    sb_location.append(street);
+                }
+
+                // if(!((String)poBox).equals("")){
+                // sb_location.append(poBox);
+                // }
+                //
+                if (!sb_location.toString().equals("")) {
+
+                    number_selected.add("地址： " + sb_location.toString());
+                }
+
+                Log.i(TAG, "street: " + street + " city: " + city + state
+                        + postalCode + country + type);
+
+            }
+            addrCur.close();
+
+            String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
+                    + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] imWhereParams = new String[] { id,
+                    ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE };
+            Cursor imCur = mContext.getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI, null, imWhere,
+                    imWhereParams, null);
+            if (imCur.moveToFirst()) {
+                String imName = imCur
+                        .getString(imCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+                String imType;
+                imType = imCur
+                        .getString(imCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
+
+                number_selected.add("即时消息： " + imName);
+
+                Log.i(TAG, "imName: " + imName + " imType: " + imType);
+
+            }
+            imCur.close();
+
+            String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
+                    + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] orgWhereParams = new String[] {
+                    id,
+                    ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
+            Cursor orgCur = mContext.getContentResolver().query(
+                    ContactsContract.Data.CONTENT_URI, null, orgWhere,
+                    orgWhereParams, null);
+            if (orgCur.moveToFirst()) {
+                String orgName = orgCur
+                        .getString(orgCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
+                String title = orgCur
+                        .getString(orgCur
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
+
+                number_selected.add("单位： " + orgName + " 职务：" + title);
+                Log.i(TAG, "orgName: " + orgName + " title: " + title);
+
+            }
+            orgCur.close();
+
+            String hasPhone = c2
+                    .getString(c2
+                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+            Log.i(TAG, "hasPhone - " + hasPhone);
+
+            if (hasPhone.equalsIgnoreCase("1")) {
+                Cursor phones = mContext.getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                                + " = " + id, null, null);
+                phones.moveToFirst();
+                // ArrayList<String> number_selected = new
+                // ArrayList<String>();
+
+                do {
+
+                    number_selected.add("电话： "
+                            + phones.getString(phones.getColumnIndex("data1")));
+
+                } while (phones.moveToNext());
+
+                Log.v("ComposeMessageActivity for test",
+                        number_selected.toString());
+
+                final String[] number_a = new String[number_selected.size()];
+                final boolean[] number_b = new boolean[number_selected.size()];
+                for (int i = 0; i < number_selected.size(); i++) {
+                    number_a[i] = number_selected.get(i) + "\n";
+                    number_b[i] = false;
+                }
+                // String[]number_array= (String[])
+                // number_selected.toArray();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                builder.setMultiChoiceItems(number_a, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0,
+                                    int which, boolean isChecked) {
+                                // TODO Auto-generated method stub
+
+                                Log.v("ComposeMessageActivity for test",
+                                        "before number_b[which]: "
+                                                + number_b[which]);
+
+                                number_b[which] = !number_b[which];
+                                Log.v("ComposeMessageActivity for test",
+                                        "after number_b[which]: "
+                                                + number_b[which]);
+
+                            }
+
+                        })
+                        .setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                            int which) {
+                                        // TODO Auto-generated method stub
+
+                                        StringBuilder sb_text = new StringBuilder();
+
+                                        for (int i = 0; i < number_b.length; i++) {
+
+                                            if (number_b[i]) {
+                                                Log.v("ComposeMessageActivity for test",
+                                                        "number_a[i]: "
+                                                                + number_a[i]);
+
+                                                sb_text.append(number_a[i]);
+                                                // number_a
+                                            }
+
+                                        }
+
+                                        /** zzz */
+                                        Log.i(TAG, sb_text.toString());
+
+                                        Uri uri = Uri.parse("smsto:");
+                                        Intent it = new Intent(
+                                                Intent.ACTION_SENDTO, uri);
+                                        it.putExtra("sms_body",
+                                                sb_text.toString());
+                                        startActivity(it);
+
+                                        dialog.dismiss();
+
+                                    }
+
+                                })
+                        .setNegativeButton("取消", new OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                // TODO Auto-generated method stub
+
+                                dialog.dismiss();
+
+                            }
+
+                        });
+
+                // builder.setSingleChoiceItems(number_a, 0, new
+                // OnClickListener(){
+                //
+                // @Override
+                // public void onClick(DialogInterface arg0, int position) {
+                // // TODO Auto-generated method stub
+                //
+                //
+                //
+                //
+                //
+                //
+                // String number_single =number_a[position];
+                //
+                // String name = c2
+                // .getString(c2
+                // .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //
+                //
+                // mTextEditor.setText("姓名： "+name+" 电话号码： "+number_single);
+                //
+                //
+                // arg0.dismiss();
+                // }
+                //
+                // });
+
+                builder.create().show();
+
+                // else{
+                //
+                //
+                // String number_single =phones.getString(phones
+                // .getColumnIndex("data1"));
+                //
+                // String name = c2
+                // .getString(c2
+                // .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //
+                //
+                // mTextEditor.setText("姓名： "+name+" 电话号码： "+number_single);
+                // }
+
+                // String numbers = phones.getString(phones
+                // .getColumnIndex("data1"));
+
+                // mRecipientsEditor.setText(numbers);
+                // mTextEditor.requestFocus();
+                // Log.i(TAG, "number - " + numbers);
+            }
+
+            // Log.i(TAG, "name - " + name);
+
+        }
+    }
+    
 
     /**
      * Creates a launcher shortcut with the current contact.
