@@ -586,6 +586,10 @@ public class ContactLoaderFragment extends Fragment implements
             return true;
 
         }
+        case R.id.menu_share_as_text: {
+            Log.v(TAG, "R.id.menu_share_as_text");
+            
+        }
         }
         return false;
     }

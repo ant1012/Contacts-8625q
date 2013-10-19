@@ -31,6 +31,13 @@
         android:id="@+id/menu_share"
         android:alphabeticShortcut="s"
         android:title="@string/menu_share"/>
+
+    <!-- zzz -->
+    <item
+        android:id="@+id/menu_share_as_text"
+        android:title="@string/menu_share_as_text"/>
+
+
     <item
         android:id="@+id/menu_delete"
         android:title="@string/menu_deleteContact"/>
