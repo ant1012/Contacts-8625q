@@ -30,22 +30,43 @@ public class MenuHistory extends Activity{
 	public ListView listView;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		list = new ArrayList<Map<String,Object>>(); 
+
+     	setContentView(R.layout.history_activity);
+     	
+	     list = new ArrayList<Map<String,Object>>(); 
 		
 		Bundle bundle = new Bundle();
         bundle = this.getIntent().getExtras();
         String phone_id = bundle.getString("check_history");
         getPhoneid(phone_id);
         getCallrecord();
+     	SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.menu_history,  new String[]{"img","typeIndex","date","duration","sub_id"}, new int[]{R.id.img,R.id.typeIndex,R.id.date,R.id.duration,R.id.sub_id});
+     	
+     	
+     	ListView list =(ListView) findViewById(R.id.mylist);
+     	
+     	list.setAdapter(adapter);
+     	
+//		Bundle bundle = new Bundle();
+//        bundle = this.getIntent().getExtras();
+//        String phone_id = bundle.getString("check_history");
+//        getPhoneid(phone_id);
+//        getCallrecord();
+//        
+//      //  listView = new ListView(this);   
+//        
+//        SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.history_activity, new String[]{"img","typeIndex","date","duration","sub_id"}, new int[]{R.id.img,R.id.typeIndex,R.id.date,R.id.duration,R.id.sub_id});   
+//        listView.setAdapter(adapter);   
+//           
+//       // setContentView(listView);  
+//        
         
-        listView = new ListView(this);   
-        
-        SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.menu_history, new String[]{"img","typeIndex","date","duration","sub_id"}, new int[]{R.id.img,R.id.typeIndex,R.id.date,R.id.duration,R.id.sub_id});   
-        listView.setAdapter(adapter);   
-           
-        setContentView(listView);  
-        
-        
+     	
+     	
+     	
+     	
+     	
+     	
 	}
 	
 	
