@@ -829,7 +829,7 @@
             android:theme="@style/ContactPickerTheme"
             android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
+                <action android:name="com.android.contacts.action.GET_MULTIPLE_PHONES" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 

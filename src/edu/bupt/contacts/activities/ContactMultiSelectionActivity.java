@@ -16,609 +16,260 @@
 
 package edu.bupt.contacts.activities;
 
-import edu.bupt.contacts.ContactsActivity;
-import edu.bupt.contacts.R;
-import edu.bupt.contacts.list.ContactEntryListFragment;
-import edu.bupt.contacts.list.ContactPickerFragment;
-import edu.bupt.contacts.list.ContactsIntentResolver;
-import edu.bupt.contacts.list.ContactsRequest;
-import edu.bupt.contacts.list.DirectoryListLoader;
-import edu.bupt.contacts.list.EmailAddressPickerFragment;
-import edu.bupt.contacts.list.OnContactPickerActionListener;
-import edu.bupt.contacts.list.OnEmailAddressPickerActionListener;
-import edu.bupt.contacts.list.OnPhoneNumberPickerActionListener;
-import edu.bupt.contacts.list.OnPostalAddressPickerActionListener;
-import edu.bupt.contacts.list.PhoneNumberPickerFragment;
-import edu.bupt.contacts.list.PostalAddressPickerFragment;
-import edu.bupt.contacts.widget.ContextMenuAdapter;
-import com.google.android.collect.Sets;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
-import android.app.ActionBar;
-import android.app.ActionBar.LayoutParams;
+import com.android.vcard.VCardConfig;
+
+import edu.bupt.contacts.R;
+import edu.bupt.contacts.vcard.VCardComposer;
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
+import android.app.ListActivity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Intents.Insert;
-import android.text.TextUtils;
+import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.SearchView;
-import android.widget.SearchView.OnCloseListener;
-import android.widget.SearchView.OnQueryTextListener;
-
-import java.util.Set;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Displays a list of contacts (or phone numbers or postal addresses) for the
  * purposes of selecting one.
  */
+public class ContactMultiSelectionActivity extends ListActivity {
+    private final String TAG = "ContactMultiSelectionActivity";
 
-/** zzz */
-/** moodified from ContactSelectionActivity */
+    public String dataSet;
+    private static final String[] ID_PROJECTION = new String[] { BaseColumns._ID };
+    private static final Uri RAW_CONTACTS_URI_LIMIT_1 = RawContacts.CONTENT_URI
+            .buildUpon().build();// .appendQueryParameter(ContactsContract.LIMIT_PARAM_KEY,
+                                 // "1")
 
-public class ContactMultiSelectionActivity extends ContactsActivity
-        implements View.OnCreateContextMenuListener, OnQueryTextListener, OnClickListener,
-                OnCloseListener, OnFocusChangeListener {
-    private static final String TAG = "ContactSelectionActivity";
+    public List<PersonInfo> contactList = null;
+    public List<String> contactArrayList;
+    public List<String> contactModArrayList;
+    public List<String> TestArrayList;
+    public String[] test = { "a", "b", "c", "d" };
+    public List<String> sim1ArrayList;
+    public List<String> contactNameArrayList;
+    public List<String> contactLookupArrayList;
+    public ListView listView;
+    private final String[] LOOKUP_PROJECTION = new String[] {
+            Contacts.LOOKUP_KEY, Contacts._ID };
+    public int[] pos;
 
-    private static final int SUBACTIVITY_ADD_TO_EXISTING_CONTACT = 0;
+    // public List<Integer> pos;
+    public void onCreate(Bundle savedInstanceState) {
 
-    private static final String KEY_ACTION_CODE = "actionCode";
-    private static final int DEFAULT_DIRECTORY_RESULT_LIMIT = 20;
+        super.onCreate(savedInstanceState);
+        // setContentView(R.layout.multiselectexp);
+        contactArrayList = new ArrayList<String>();
+        contactModArrayList = new ArrayList<String>();
+        sim1ArrayList = new ArrayList<String>();
+        contactNameArrayList = new ArrayList<String>();
+        contactLookupArrayList = new ArrayList<String>();
+        setContactList();
+        GetSimContact1("content://iccmsim/adn");
 
-    // Delay to allow the UI to settle before making search view visible
-    private static final int FOCUS_DELAY = 200;
+        TestArrayList = new ArrayList<String>();
+        // getTestList(0);
+        // SimDelete();
+        // pos = new ArrayList<Integer>();
 
-    private ContactsIntentResolver mIntentResolver;
-    protected ContactEntryListFragment<?> mListFragment;
-
-    private int mActionCode = -1;
-
-    private ContactsRequest mRequest;
-    private SearchView mSearchView;
-    /**
-     * Can be null. If null, the "Create New Contact" button should be on the menu.
-     */
-    private View mCreateNewContactButton;
-
-    public ContactMultiSelectionActivity() {
-        mIntentResolver = new ContactsIntentResolver(this);
-    }
-
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof ContactEntryListFragment<?>) {
-            mListFragment = (ContactEntryListFragment<?>) fragment;
-            setupActionListener();
+        getNameandNumber();
+        pos = new int[contactArrayList.size()];
+        for (int i = 0; i < contactArrayList.size(); i++) {
+            pos[i] = 0;
         }
-    }
+        setListAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                contactModArrayList));
+        listView = getListView();
+        listView.setItemsCanFocus(false);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                    long arg3) {
+                // TODO Auto-generated method stub
 
-    @Override
-    protected void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
+                // Log.i("Click",""+contactArrayList.get(arg2).toString());
+                String xx = "You had click those items: \n";
+                for (int i = 0; i < listView.getCount(); i++) {
+                    // 注意这里使用的getItemAtPosition()方法
+                    if (listView.isItemChecked(i)) {
 
-        if (savedState != null) {
-            mActionCode = savedState.getInt(KEY_ACTION_CODE);
-        }
+                        if (0 == pos[i]) {
+                            pos[i] = 1;
+                        }
+                        // else if(1 == pos[i]){
+                        // pos[i] = 0;
+                        // }
 
-        // Extract relevant information from the intent
-        mRequest = mIntentResolver.resolveIntent(getIntent());
-        if (!mRequest.isValid()) {
-            setResult(RESULT_CANCELED);
-            finish();
-            return;
-        }
-
-        Intent redirect = mRequest.getRedirectIntent();
-        if (redirect != null) {
-            // Need to start a different activity
-            startActivity(redirect);
-            finish();
-            return;
-        }
-
-        configureActivityTitle();
-
-        setContentView(R.layout.contact_picker);
-
-        if (mActionCode != mRequest.getActionCode()) {
-            mActionCode = mRequest.getActionCode();
-            configureListFragment();
-        }
-
-        prepareSearchViewAndActionBar();
-
-        mCreateNewContactButton = findViewById(R.id.new_contact);
-        if (mCreateNewContactButton != null) {
-            if (shouldShowCreateNewContactButton()) {
-                mCreateNewContactButton.setVisibility(View.VISIBLE);
-                mCreateNewContactButton.setOnClickListener(this);
-            } else {
-                mCreateNewContactButton.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private boolean shouldShowCreateNewContactButton() {
-        return (mActionCode == ContactsRequest.ACTION_INSERT_OR_EDIT_CONTACT
-                || (mActionCode == ContactsRequest.ACTION_PICK_OR_CREATE_CONTACT
-                        && !mRequest.isSearchMode()));
-    }
-
-    private void prepareSearchViewAndActionBar() {
-        // Postal address pickers (and legacy pickers) don't support search, so just show
-        // "HomeAsUp" button and title.
-        if (mRequest.getActionCode() == ContactsRequest.ACTION_PICK_POSTAL ||
-                mRequest.isLegacyCompatibilityMode()) {
-            findViewById(R.id.search_view).setVisibility(View.GONE);
-            final ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayShowHomeEnabled(true);
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setDisplayShowTitleEnabled(true);
-            }
-            return;
-        }
-
-        // If ActionBar is available, show SearchView on it. If not, show SearchView inside the
-        // Activity's layout.
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            final View searchViewOnLayout = findViewById(R.id.search_view);
-            if (searchViewOnLayout != null) {
-                searchViewOnLayout.setVisibility(View.GONE);
-            }
-
-            final View searchViewContainer = LayoutInflater.from(actionBar.getThemedContext())
-                    .inflate(R.layout.custom_action_bar, null);
-            mSearchView = (SearchView) searchViewContainer.findViewById(R.id.search_view);
-
-            // In order to make the SearchView look like "shown via search menu", we need to
-            // manually setup its state. See also DialtactsActivity.java and ActionBarAdapter.java.
-            mSearchView.setIconifiedByDefault(true);
-            mSearchView.setQueryHint(getString(R.string.hint_findContacts));
-            mSearchView.setIconified(false);
-
-            mSearchView.setOnQueryTextListener(this);
-            mSearchView.setOnCloseListener(this);
-            mSearchView.setOnQueryTextFocusChangeListener(this);
-
-            actionBar.setCustomView(searchViewContainer,
-                    new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            mSearchView = (SearchView) findViewById(R.id.search_view);
-            mSearchView.setQueryHint(getString(R.string.hint_findContacts));
-            mSearchView.setOnQueryTextListener(this);
-
-            // This is a hack to prevent the search view from grabbing focus
-            // at this point.  If search view were visible, it would always grabs focus
-            // because it is the first focusable widget in the window.
-            mSearchView.setVisibility(View.INVISIBLE);
-            mSearchView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSearchView.setVisibility(View.VISIBLE);
+                        xx += listView.getItemAtPosition(i) + "\n";
+                    } else {
+                        if (1 == pos[i]) {
+                            pos[i] = 0;
+                        }
+                    }
                 }
-            }, FOCUS_DELAY);
-        }
+                Log.i("Check", "" + xx);
+                for (int i = 0; i < listView.getCount(); i++) {
+                    Log.i("pos", "" + pos[i]);
+                }
 
-        // Clear focus and suppress keyboard show-up.
-        mSearchView.clearFocus();
+            }
+        });
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // If we want "Create New Contact" button but there's no such a button in the layout,
-        // try showing a menu for it.
-        if (shouldShowCreateNewContactButton() && mCreateNewContactButton == null) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.contact_picker_options, menu);
+    private void getNameandNumber() {
+        contactModArrayList.clear();
+        contactNameArrayList.clear();
+        contactLookupArrayList.clear();
+        for (int i = 0; i < contactArrayList.size(); i++) {
+
+            String str = contactArrayList.get(i).toString();
+            contactModArrayList.add(str.substring(str.indexOf("|") + 1,
+                    str.length()));
+            String[] a = str.split("\\|");
+            Log.i("a[0]", a[0]);
+            contactLookupArrayList.add(a[0]);
+            String[] b = a[1].split("\\\n");
+            Log.i("b[0]", b[0]);
+            contactNameArrayList.add(b[0]);
+
         }
-        return true;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        menu.add(0, 0, 0, R.string.ok);
+        menu.add(0, 1, 0, R.string.cancel);
+        menu.findItem(0).setShowAsAction(1);
+        menu.findItem(1).setShowAsAction(2);
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        // TODO Auto-generated method stub
+        // 获取联系人处理实例
+
         switch (item.getItemId()) {
-            case android.R.id.home:
-                // Go back to previous screen, intending "cancel"
-                setResult(RESULT_CANCELED);
-                finish();
-                return true;
-            case R.id.create_new_contact: {
-                startCreateNewContactActivity();
-                return true;
-            }
+        case 0:
+            pickContacts();
+            break;
+
+        case 1:
+
+            break;
+
         }
+
         return super.onOptionsItemSelected(item);
+
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_ACTION_CODE, mActionCode);
-    }
-
-    private void configureActivityTitle() {
-        if (mRequest.getActivityTitle() != null) {
-            setTitle(mRequest.getActivityTitle());
-            return;
-        }
-
-        int actionCode = mRequest.getActionCode();
-        switch (actionCode) {
-            case ContactsRequest.ACTION_INSERT_OR_EDIT_CONTACT: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_CONTACT: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_OR_CREATE_CONTACT: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_CONTACT: {
-                setTitle(R.string.shortcutActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_PHONE: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_EMAIL: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_CALL: {
-                setTitle(R.string.callShortcutActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_SMS: {
-                setTitle(R.string.messageShortcutActivityTitle);
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_POSTAL: {
-                setTitle(R.string.contactPickerActivityTitle);
-                break;
-            }
-        }
+    /** zzz */
+    private void pickContacts() {
+        Log.i(TAG, "pickContacts");
     }
 
     /**
-     * Creates the fragment based on the current request.
+     * 获取通讯录列表
      */
-    public void configureListFragment() {
-        switch (mActionCode) {
-            case ContactsRequest.ACTION_INSERT_OR_EDIT_CONTACT: {
-                ContactPickerFragment fragment = new ContactPickerFragment();
-                fragment.setEditMode(true);
-                fragment.setDirectorySearchMode(DirectoryListLoader.SEARCH_MODE_NONE);
-                mListFragment = fragment;
-                break;
-            }
+    private void setContactList() {
+        contactArrayList.clear();
+        String[] projection = { Phone.DISPLAY_NAME, Phone.NUMBER,
+                Phone.PHOTO_ID, Phone.RAW_CONTACT_ID };
+        Cursor cur = getContentResolver().query(Phone.CONTENT_URI, projection,
+                null, null, Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+        // Cursor cur = getContentResolver().query(Contacts.CONTENT_URI,
+        // LOOKUP_PROJECTION, Contacts.IN_VISIBLE_GROUP + "!=0", null, null);
+        cur.moveToFirst();
+        while (cur.getCount() > cur.getPosition()) {
+            PersonInfo person = new PersonInfo(ContactMultiSelectionActivity.this);
+            List<String> phone = new ArrayList<String>();
+            String id = cur.getString(cur.getColumnIndex(Phone.RAW_CONTACT_ID));
+            String number = cur.getString(cur.getColumnIndex(Phone.NUMBER));
+            String name = cur.getString(cur.getColumnIndex(Phone.DISPLAY_NAME));
+            String photo_id = cur.getString(cur.getColumnIndex(Phone.PHOTO_ID));
 
-            case ContactsRequest.ACTION_PICK_CONTACT: {
-                ContactPickerFragment fragment = new ContactPickerFragment();
-                fragment.setIncludeProfile(mRequest.shouldIncludeProfile());
-                mListFragment = fragment;
-                break;
-            }
+            contactArrayList.add(id + "|" + name + "\n" + number);
 
-            case ContactsRequest.ACTION_PICK_OR_CREATE_CONTACT: {
-                ContactPickerFragment fragment = new ContactPickerFragment();
-                mListFragment = fragment;
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_CONTACT: {
-                ContactPickerFragment fragment = new ContactPickerFragment();
-                fragment.setShortcutRequested(true);
-                mListFragment = fragment;
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_PHONE: {
-                PhoneNumberPickerFragment fragment = new PhoneNumberPickerFragment();
-                mListFragment = fragment;
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_EMAIL: {
-                mListFragment = new EmailAddressPickerFragment();
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_CALL: {
-                PhoneNumberPickerFragment fragment = new PhoneNumberPickerFragment();
-                fragment.setShortcutAction(Intent.ACTION_CALL);
-
-                mListFragment = fragment;
-                break;
-            }
-
-            case ContactsRequest.ACTION_CREATE_SHORTCUT_SMS: {
-                PhoneNumberPickerFragment fragment = new PhoneNumberPickerFragment();
-                fragment.setShortcutAction(Intent.ACTION_SENDTO);
-
-                mListFragment = fragment;
-                break;
-            }
-
-            case ContactsRequest.ACTION_PICK_POSTAL: {
-                PostalAddressPickerFragment fragment = new PostalAddressPickerFragment();
-                mListFragment = fragment;
-                break;
-            }
-
-            default:
-                throw new IllegalStateException("Invalid action code: " + mActionCode);
+            Log.i("contacts>>>", "id:" + id + "name:" + name + ";number:"
+                    + number);
+            cur.moveToNext();
         }
-
-        mListFragment.setLegacyCompatibilityMode(mRequest.isLegacyCompatibilityMode());
-        mListFragment.setDirectoryResultLimit(DEFAULT_DIRECTORY_RESULT_LIMIT);
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.list_container, mListFragment)
-                .commitAllowingStateLoss();
+        cur.close();
     }
 
-    public void setupActionListener() {
-        if (mListFragment instanceof ContactPickerFragment) {
-            ((ContactPickerFragment) mListFragment).setOnContactPickerActionListener(
-                    new ContactPickerActionListener());
-        } else if (mListFragment instanceof PhoneNumberPickerFragment) {
-            ((PhoneNumberPickerFragment) mListFragment).setOnPhoneNumberPickerActionListener(
-                    new PhoneNumberPickerActionListener());
-        } else if (mListFragment instanceof PostalAddressPickerFragment) {
-            ((PostalAddressPickerFragment) mListFragment).setOnPostalAddressPickerActionListener(
-                    new PostalAddressPickerActionListener());
-        } else if (mListFragment instanceof EmailAddressPickerFragment) {
-            ((EmailAddressPickerFragment) mListFragment).setOnEmailAddressPickerActionListener(
-                    new EmailAddressPickerActionListener());
-        } else {
-            throw new IllegalStateException("Unsupported list fragment type: " + mListFragment);
-        }
-    }
+    // //从SIM卡中取号
+    private void GetSimContact1(String add) {
+        // 读取SIM卡手机号,有两种可能:content://icc/adn与content://sim/adn
+        try {
 
-    private final class ContactPickerActionListener implements OnContactPickerActionListener {
-        @Override
-        public void onCreateNewContactAction() {
-            startCreateNewContactActivity();
-        }
+            Intent intent = new Intent();
+            intent.setData(Uri.parse(add));
+            Uri uri = intent.getData();
+            // String[] projection= {Phone.DISPLAY_NAME, Phone.NUMBER,
+            // Phone.PHOTO_ID,where_num};
+            Cursor mCursor = getContentResolver().query(uri, null, null, null,
+                    null);
+            if (mCursor != null) {
+                while (mCursor.moveToNext()) {
+                    // ContactInfo sci = new ContactInfo();
+                    // 取得联系人名字
+                    int nameFieldColumnIndex = mCursor.getColumnIndex("name");
+                    String name = mCursor.getString(nameFieldColumnIndex);
+                    // 取得电话号码
+                    int numberFieldColumnIndex = mCursor
+                            .getColumnIndex("number");
+                    String number = mCursor.getString(numberFieldColumnIndex);
 
-        @Override
-        public void onEditContactAction(Uri contactLookupUri) {
-            Bundle extras = getIntent().getExtras();
-            if (launchAddToContactDialog(extras)) {
-                // Show a confirmation dialog to add the value(s) to the existing contact.
-                Intent intent = new Intent(ContactMultiSelectionActivity.this,
-                        ConfirmAddDetailActivity.class);
-                intent.setData(contactLookupUri);
-                if (extras != null) {
-                    // First remove name key if present because the dialog does not support name
-                    // editing. This is fine because the user wants to add information to an
-                    // existing contact, who should already have a name and we wouldn't want to
-                    // override the name.
-                    extras.remove(Insert.NAME);
-                    intent.putExtras(extras);
+                    sim1ArrayList.add(name + "\n" + number);
+
+                }
+                mCursor.close();
+                for (int i = 0; i < sim1ArrayList.size(); i++) {
+                    Log.i("sim1ArrayList", "" + sim1ArrayList.get(i));
                 }
 
-                // Wait for the activity result because we want to keep the picker open (in case the
-                // user cancels adding the info to a contact and wants to pick someone else).
-                startActivityForResult(intent, SUBACTIVITY_ADD_TO_EXISTING_CONTACT);
-            } else {
-                // Otherwise launch the full contact editor.
-                startActivityAndForwardResult(new Intent(Intent.ACTION_EDIT, contactLookupUri));
             }
-        }
-
-        @Override
-        public void onPickContactAction(Uri contactUri) {
-            returnPickerResult(contactUri);
-        }
-
-        @Override
-        public void onShortcutIntentCreated(Intent intent) {
-            returnPickerResult(intent);
-        }
-
-        /**
-         * Returns true if is a single email or single phone number provided in the {@link Intent}
-         * extras bundle so that a pop-up confirmation dialog can be used to add the data to
-         * a contact. Otherwise return false if there are other intent extras that require launching
-         * the full contact editor. Ignore extras with the key {@link Insert.NAME} because names
-         * are a special case and we typically don't want to replace the name of an existing
-         * contact.
-         */
-        private boolean launchAddToContactDialog(Bundle extras) {
-            if (extras == null) {
-                return false;
-            }
-
-            // Copy extras because the set may be modified in the next step
-            Set<String> intentExtraKeys = Sets.newHashSet();
-            intentExtraKeys.addAll(extras.keySet());
-
-            // Ignore name key because this is an existing contact.
-            if (intentExtraKeys.contains(Insert.NAME)) {
-                intentExtraKeys.remove(Insert.NAME);
-            }
-
-            int numIntentExtraKeys = intentExtraKeys.size();
-            if (numIntentExtraKeys == 2) {
-                boolean hasPhone = intentExtraKeys.contains(Insert.PHONE) &&
-                        intentExtraKeys.contains(Insert.PHONE_TYPE);
-                boolean hasEmail = intentExtraKeys.contains(Insert.EMAIL) &&
-                        intentExtraKeys.contains(Insert.EMAIL_TYPE);
-                return hasPhone || hasEmail;
-            } else if (numIntentExtraKeys == 1) {
-                return intentExtraKeys.contains(Insert.PHONE) ||
-                        intentExtraKeys.contains(Insert.EMAIL);
-            }
-            // Having 0 or more than 2 intent extra keys means that we should launch
-            // the full contact editor to properly handle the intent extras.
-            return false;
+        } catch (Exception e) {
+            Log.i("eoe", e.toString());
         }
     }
 
-    private final class PhoneNumberPickerActionListener implements
-            OnPhoneNumberPickerActionListener {
-        @Override
-        public void onPickPhoneNumberAction(Uri dataUri) {
-            returnPickerResult(dataUri);
+    // 通讯社按中文拼音排序
+    public class Mycomparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            String c1 = (String) o1;
+            String c2 = (String) o2;
+            Comparator cmp = Collator.getInstance(java.util.Locale.CHINA);
+            return cmp.compare(c1, c2);
         }
 
-        @Override
-        public void onShortcutIntentCreated(Intent intent) {
-            returnPickerResult(intent);
-        }
-
-        public void onHomeInActionBarSelected() {
-            ContactMultiSelectionActivity.this.onBackPressed();
-        }
     }
 
-    private final class PostalAddressPickerActionListener implements
-            OnPostalAddressPickerActionListener {
-        @Override
-        public void onPickPostalAddressAction(Uri dataUri) {
-            returnPickerResult(dataUri);
-        }
-    }
 
-    private final class EmailAddressPickerActionListener implements
-            OnEmailAddressPickerActionListener {
-        @Override
-        public void onPickEmailAddressAction(Uri dataUri) {
-            returnPickerResult(dataUri);
-        }
-    }
-
-    public void startActivityAndForwardResult(final Intent intent) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-
-        // Forward extras to the new activity
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            intent.putExtras(extras);
-        }
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        ContextMenuAdapter menuAdapter = mListFragment.getContextMenuAdapter();
-        if (menuAdapter != null) {
-            return menuAdapter.onContextItemSelected(item);
-        }
-
-        return super.onContextItemSelected(item);
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        mListFragment.setQueryString(newText, true);
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onClose() {
-        if (!TextUtils.isEmpty(mSearchView.getQuery())) {
-            mSearchView.setQuery(null, true);
-        }
-        return true;
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean hasFocus) {
-        switch (view.getId()) {
-            case R.id.search_view: {
-                if (hasFocus) {
-                    showInputMethod(mSearchView.findFocus());
-                }
-            }
-        }
-    }
-
-    public void returnPickerResult(Uri data) {
-        Intent intent = new Intent();
-        intent.setData(data);
-        returnPickerResult(intent);
-    }
-
-    public void returnPickerResult(Intent intent) {
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.new_contact: {
-                startCreateNewContactActivity();
-                break;
-            }
-        }
-    }
-
-    private void startCreateNewContactActivity() {
-        Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
-        intent.putExtra(ContactEditorActivity.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
-        startActivityAndForwardResult(intent);
-    }
-
-    private void showInputMethod(View view) {
-        final InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            if (!imm.showSoftInput(view, 0)) {
-                Log.w(TAG, "Failed to show soft input method.");
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SUBACTIVITY_ADD_TO_EXISTING_CONTACT) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    startActivity(data);
-                }
-                finish();
-            }
-        }
-    }
 }
