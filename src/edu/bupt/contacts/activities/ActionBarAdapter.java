@@ -257,7 +257,7 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
     private void addTab(int expectedTabIndex, int icon, int description) {
         final Tab tab = mActionBar.newTab();
         tab.setTabListener(mTabListener);
-
+//修改 actionbar加文字
         if (mShowTabsAsText) {
             tab.setText(description);
             

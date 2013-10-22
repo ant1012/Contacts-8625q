@@ -732,12 +732,15 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             setIntent(intent);
         }
     }
+    
+    //修改 添加文字说明
 
     private void setupDialer() {
         final Tab tab = getActionBar().newTab();
         tab.setContentDescription(R.string.dialerIconLabel);
         tab.setTabListener(mTabListener);
         tab.setIcon(R.drawable.ic_tab_dialer);
+        tab.setText(R.string.dialerIconLabel);
         getActionBar().addTab(tab);
     }
 
@@ -746,6 +749,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         tab.setContentDescription(R.string.recentCallsIconLabel);
         tab.setIcon(R.drawable.ic_tab_recent);
         tab.setTabListener(mTabListener);
+        tab.setText(R.string.recentCallsIconLabel);
         getActionBar().addTab(tab);
     }
 
@@ -754,6 +758,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         tab.setContentDescription(R.string.contactsFavoritesLabel);
         tab.setIcon(R.drawable.ic_tab_all);
         tab.setTabListener(mTabListener);
+        tab.setText(R.string.contactsFavoritesLabel);
         getActionBar().addTab(tab);
     }
 
