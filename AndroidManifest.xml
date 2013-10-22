@@ -140,6 +140,7 @@
 
 
         -->
+<!--                     android:theme="@style/DialtactsTheme" -->
         <activity
             android:name="edu.bupt.contacts.activities.DialtactsActivity"
             android:clearTaskOnLaunch="true"
@@ -150,6 +151,7 @@
             android:screenOrientation="portrait"
             android:taskAffinity="android.task.contacts.phone"
             android:theme="@style/DialtactsTheme"
+
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" >
             <intent-filter>
@@ -807,17 +809,22 @@
         <activity android:name="edu.bupt.contacts.settings.CalllogSettingActivity" >
         </activity>
 
-        
+<!--         ddd 去除历史记录actionbar-->
         <activity android:name="edu.bupt.contacts.activities.MenuHistory"  
                     android:configChanges="orientation|keyboardHidden"  
                     android:theme="@android:style/Theme.NoTitleBar" /> 
-        
+<!--  ddd 去除历史记录actionbar        -->
         <activity android:name="edu.bupt.contacts.activities.MenuCalendar"  
                     android:configChanges="orientation|keyboardHidden"  
                     android:theme="@android:style/Theme.NoTitleBar" />
+        
+<!--  ddd 修改多选导出的ui风格为默认holo。light      -->
+        <activity android:name="edu.bupt.contacts.activities.MultiSelectExport"  
+               
+                    android:theme="@android:style/Theme.Holo.Light" />
 
-        <!-- baoge -->
-        <activity android:name=".activities.MultiSelectExport" />
+<!--         baoge -->
+<!--         <activity android:name=".activities.MultiSelectExport" /> -->
 
         <!-- zzz -->
 

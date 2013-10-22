@@ -689,7 +689,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             mSearchFragment = (PhoneNumberPickerFragment) fragment;
             mSearchFragment.setOnPhoneNumberPickerActionListener(mPhoneNumberPickerActionListener);
             mSearchFragment.setQuickContactEnabled(true);
-            mSearchFragment.setDarkTheme(true);
+            //ddd 设置为false
+            mSearchFragment.setDarkTheme(false);
             mSearchFragment.setPhotoPosition(ContactListItemView.PhotoPosition.LEFT);
             mSearchFragment.setUseCallableUri(true);
             if (mContactListFilterController != null
