@@ -159,8 +159,8 @@ public class ContactMultiSelectionActivity extends ListActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(0, 0, 0, R.string.ok);
-        menu.add(0, 1, 0, R.string.cancel);
+        menu.add(0, 0, 0, R.string.cancel);
+        menu.add(0, 1, 0, R.string.ok);
         menu.findItem(0).setShowAsAction(1);
         menu.findItem(1).setShowAsAction(2);
 
@@ -176,11 +176,10 @@ public class ContactMultiSelectionActivity extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
-            pickContacts();
             break;
 
         case 1:
-
+            pickContacts();
             break;
 
         }
@@ -207,7 +206,8 @@ public class ContactMultiSelectionActivity extends ListActivity {
         // LOOKUP_PROJECTION, Contacts.IN_VISIBLE_GROUP + "!=0", null, null);
         cur.moveToFirst();
         while (cur.getCount() > cur.getPosition()) {
-            PersonInfo person = new PersonInfo(ContactMultiSelectionActivity.this);
+            PersonInfo person = new PersonInfo(
+                    ContactMultiSelectionActivity.this);
             List<String> phone = new ArrayList<String>();
             String id = cur.getString(cur.getColumnIndex(Phone.RAW_CONTACT_ID));
             String number = cur.getString(cur.getColumnIndex(Phone.NUMBER));
@@ -270,6 +270,5 @@ public class ContactMultiSelectionActivity extends ListActivity {
         }
 
     }
-
 
 }
