@@ -628,7 +628,9 @@
     <string name="menu_add_to_whitelist_check">"确定要将 %1$s 添加到白名单？"</string>
     <string name="pref_show_as_group">"将白名单显示到群组"</string>
     <string name="pref_enable_whitelist">"启用白名单模式"</string>
-    
+    <string name="vcard_share_filename_more">"等%1$s人"</string>
+
+
     <!-- merge -->
     <!-- new string to show options -->
     <string name="show_in_calls">仅显示来电记录</string>

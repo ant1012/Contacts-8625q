@@ -116,7 +116,9 @@ public class ImportExportDialogFragment extends DialogFragment
 //        boolean hasIccCard = true;
         if (hasIccCard
                 && res.getBoolean(R.bool.config_allow_sim_import)) {
-            adapter.add(R.string.manage_sim_contacts);
+            /** zzz */
+            // baoge
+//            adapter.add(R.string.manage_sim_contacts);
             adapter.add(R.string.export_to_sim);
         }
         if (res.getBoolean(R.bool.config_allow_import_from_sdcard)) {
@@ -127,11 +129,15 @@ public class ImportExportDialogFragment extends DialogFragment
                 adapter.add(R.string.export_to_sdcard);
             }
         }
-        if (res.getBoolean(R.bool.config_allow_share_visible_contacts)) {
-            if (contactsAreAvailable) {
-                adapter.add(R.string.share_visible_contacts);
-            }
-        }
+
+        /** zzz */
+//        if (res.getBoolean(R.bool.config_allow_share_visible_contacts)) {
+//            if (contactsAreAvailable) {
+//                adapter.add(R.string.share_visible_contacts);
+//            }
+//        }
+        /** zzz */
+        adapter.add(R.string.manage_sim_contacts);
 
         final DialogInterface.OnClickListener clickListener =
                 new DialogInterface.OnClickListener() {
@@ -140,6 +146,7 @@ public class ImportExportDialogFragment extends DialogFragment
                 boolean dismissDialog;
                 final int resId = adapter.getItem(which);
                 switch (resId) {
+                    // baoge
                     case R.string.manage_sim_contacts:{//����ɼ����ϵ��
                         dismissDialog = true;
                         Intent exportIntent = new Intent(getActivity(), MultiSelectExport.class);
@@ -156,11 +163,14 @@ public class ImportExportDialogFragment extends DialogFragment
                         getActivity().startActivity(exportIntent);
                         break;
                     }
-                    case R.string.share_visible_contacts: {//����ɼ����ϵ��
-                        dismissDialog = true;
-                        doShareVisibleContacts();
-                        break;
-                    }
+
+                    /** zzz */
+//                    case R.string.share_visible_contacts: {//����ɼ����ϵ��
+//                        dismissDialog = true;
+//                        doShareVisibleContacts();
+//                        break;
+//                    }
+
                     case R.string.export_to_sim: {//������SIM��
                         dismissDialog = true;
                         if (MultiSimConfig.isMultiSimEnabled()) {

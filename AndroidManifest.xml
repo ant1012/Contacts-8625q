@@ -356,7 +356,6 @@
                 <data android:mimeType="vnd.android.cursor.item/postal-address" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MultiSelectExport" />
 
 
 
@@ -815,9 +814,34 @@
         
         <activity android:name="edu.bupt.contacts.activities.MenuCalendar"  
                     android:configChanges="orientation|keyboardHidden"  
-                    android:theme="@android:style/Theme.NoTitleBar" />             
-        
-        
-    </application>
+                    android:theme="@android:style/Theme.NoTitleBar" />
+
+        <!-- baoge -->
+        <activity android:name=".activities.MultiSelectExport" />
+
+        <!-- zzz -->
+
+        <activity
+            android:name="edu.bupt.contacts.activities.ContactMultiSelectionActivity"
+            android:clearTaskOnLaunch="true"
+            android:label="@string/contactsList"
+            android:launchMode="singleTop"
+            android:theme="@style/ContactPickerTheme"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/contact" />
+                <data android:mimeType="vnd.android.cursor.dir/person" />
+                <data android:mimeType="vnd.android.cursor.dir/phone_v2" />
+                <data android:mimeType="vnd.android.cursor.dir/phone" />
+                <data android:mimeType="vnd.android.cursor.dir/postal-address_v2" />
+                <data android:mimeType="vnd.android.cursor.dir/postal-address" />
+                <data android:mimeType="vnd.android.cursor.dir/email_v2" />
+            </intent-filter>
+        </activity>
+</application>
 
 </manifest>
