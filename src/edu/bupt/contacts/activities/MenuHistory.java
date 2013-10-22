@@ -22,7 +22,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
+//修改 历史记录的页面 ddd
 public class MenuHistory extends Activity{
 	public static Uri ALL_INBOX = Uri.parse("content://sms/");
 	String phoneNumber = null;

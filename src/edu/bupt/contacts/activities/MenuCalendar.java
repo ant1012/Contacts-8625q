@@ -31,7 +31,7 @@ public class MenuCalendar extends Activity {
     public ArrayList<Map<String, Object>> list;
     public ListView listView;
     String phoneNumber = null;
-
+//修改日记界面 ddd
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_activity);

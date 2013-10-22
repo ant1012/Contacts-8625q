@@ -78,10 +78,13 @@ public class MultiSelectExport extends ListActivity {
     public int[] pos;
 
     // public List<Integer> pos;
+    
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.multiselectexp);
+        //ddd 
+        
+    //    setContentView(R.layout.multiselectexport_activity);
         contactArrayList = new ArrayList<String>();
         contactModArrayList = new ArrayList<String>();
         sim1ArrayList = new ArrayList<String>();
@@ -104,6 +107,8 @@ public class MultiSelectExport extends ListActivity {
                 android.R.layout.simple_list_item_multiple_choice,
                 contactModArrayList));
         listView = getListView();
+
+
         listView.setItemsCanFocus(false);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setOnItemClickListener(new OnItemClickListener() {

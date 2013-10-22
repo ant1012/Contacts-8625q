@@ -23,7 +23,9 @@
     android:paddingRight="@dimen/dialpad_horizontal_margin">
 
     <!-- Text field and possibly soft menu button above the keypad where
-         the digits are displayed. -->
+         the digits are displayed. 
+         ddd 1 删除输入数字        删除 android:background="@drawable/dialpad_background" 
+         -->
     <LinearLayout
         android:id="@+id/digits_container"
         android:layout_width="match_parent"
@@ -31,7 +33,7 @@
         android:layout_weight="@integer/dialpad_layout_weight_digits"
         android:layout_marginTop="@dimen/dialpad_vertical_margin"
         android:gravity="center"
-        android:background="@drawable/dialpad_background" >
+>
 
         <edu.bupt.contacts.dialpad.DigitsEditText
             android:id="@+id/digits"

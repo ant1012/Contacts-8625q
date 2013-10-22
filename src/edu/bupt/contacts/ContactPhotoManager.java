@@ -99,7 +99,8 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     public static int getDefaultAvatarResId(boolean hires, boolean darkTheme) {
         if (hires && darkTheme) return R.drawable.ic_contact_picture_180_holo_dark;
         if (hires) return R.drawable.ic_contact_picture_180_holo_light;
-        if (darkTheme) return R.drawable.ic_contact_picture_holo_dark;
+        //ddd 修改拨号盘 默认头像颜色
+        if (darkTheme) return R.drawable.ic_contact_picture_holo_light;
         return R.drawable.ic_contact_picture_holo_light;
     }
 
