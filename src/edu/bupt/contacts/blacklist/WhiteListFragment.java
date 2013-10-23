@@ -1,10 +1,13 @@
 package edu.bupt.contacts.blacklist;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.list.ContactMultiSelectAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -62,6 +65,7 @@ public class WhiteListFragment extends Fragment {
     private HashMap<Integer, Boolean> checkedMap;
 
     /** zzz */
+    private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
     private CheckBox cbWhiteMode;
     private CheckBox cbShowAsGroup;
     private SharedPreferences sp;
@@ -253,21 +257,25 @@ public class WhiteListFragment extends Fragment {
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         save = (Button) view.findViewById(R.id.contact_save);
         cancle = (Button) view.findViewById(R.id.contact_cancle);
+        //
+        // String[] projection = { ContactsContract.Contacts._ID,
+        // ContactsContract.PhoneLookup.DISPLAY_NAME,
+        // ContactsContract.CommonDataKinds.Phone.NUMBER };
+        // contact = context.getContentResolver().query(Phone.CONTENT_URI,
+        // projection, // Which columns to return.
+        // null, // WHERE clause.
+        // null, // WHERE clause value substitution
+        // ContactsContract.Contacts._ID); // Sort order.
+        // String[] from = new String[] {
+        // ContactsContract.PhoneLookup.DISPLAY_NAME };
+        // int[] to = new int[] { R.id.contact_checked_text_view };
+        // SimpleCursorAdapter adapter = new MyAdapter(context,
+        // R.layout.blacklist_contact_item, contact, from, to,
+        // CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-        String[] projection = { ContactsContract.Contacts._ID,
-                ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER };
-        contact = context.getContentResolver().query(Phone.CONTENT_URI,
-                projection, // Which columns to return.
-                null, // WHERE clause.
-                null, // WHERE clause value substitution
-                ContactsContract.Contacts._ID); // Sort order.
-        String[] from = new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME };
-        int[] to = new int[] { R.id.contact_checked_text_view };
-        SimpleCursorAdapter adapter = new MyAdapter(context,
-                R.layout.blacklist_contact_item, contact, from, to,
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
+        initData(list);
+        ContactMultiSelectAdapter adapter = new ContactMultiSelectAdapter(list,
+                context);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -277,20 +285,23 @@ public class WhiteListFragment extends Fragment {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                     long arg3) {
                 Log.d(TAG, "onItemClick");
+                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1
+                        .getTag();
+                holder.checkbox.toggle();
 
                 if (checkedMap.get(arg2) == null
                         || checkedMap.get(arg2) == false) {
                     Log.d(TAG, "true");
                     checkedMap.put(arg2, true);
-                    CheckedTextView checkedTextView = (CheckedTextView) arg1
-                            .findViewById(R.id.contact_checked_text_view);
-                    checkedTextView.setChecked(true);
+                    // CheckedTextView checkedTextView = (CheckedTextView) arg1
+                    // .findViewById(R.id.contact_checked_text_view);
+                    // checkedTextView.setChecked(true);
                 } else {
                     Log.d(TAG, "false");
                     checkedMap.put(arg2, false);
-                    CheckedTextView checkedTextView = (CheckedTextView) arg1
-                            .findViewById(R.id.contact_checked_text_view);
-                    checkedTextView.setChecked(false);
+                    // CheckedTextView checkedTextView = (CheckedTextView) arg1
+                    // .findViewById(R.id.contact_checked_text_view);
+                    // checkedTextView.setChecked(false);
                 }
             }
         });
@@ -302,19 +313,23 @@ public class WhiteListFragment extends Fragment {
                 importContactDialog.dismiss();
                 for (int position : checkedMap.keySet()) {
                     if (checkedMap.get(position)) {
-                        contact.moveToPosition(position);
-                        String name = contact.getString(PHONES_DISPLAY_NAME);
-                        String phone = contact.getString(PHONES_NUMBER);
+                        // contact.moveToPosition(position);
+                        // String name = contact.getString(PHONES_DISPLAY_NAME);
+                        // String phone = contact.getString(PHONES_NUMBER);
 
-                        String strip1 = replacePattern(phone,
-                                "^((\\+{0,1}86){0,1})", ""); // strip +86
-                        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip
-                                                                             // -
-                        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip
-                                                                             // space
+                        // String strip1 = replacePattern(phone,
+                        // "^((\\+{0,1}86){0,1})", ""); // strip +86
+                        // String strip2 = replacePattern(strip1, "(\\-)", "");
+                        // // strip
+                        // // -
+                        // String strip3 = replacePattern(strip2, "(\\ )", "");
+                        // // strip
+                        // // space
+                        //
+                        // phone = strip3;
 
-                        phone = strip3;
-
+                        String name = list.get(position).get("name");
+                        String phone = list.get(position).get("number");
                         save(name, phone, 0);
                     }
                 }
@@ -342,19 +357,83 @@ public class WhiteListFragment extends Fragment {
         importContactDialog.show();
     }
 
-    private String replacePattern(String origin, String pattern, String replace) {
-        Log.i(TAG, "origin - " + origin);
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(origin);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, replace);
-        }
+    private void initData(ArrayList<Map<String, String>> list) {
+        // contactLookupArrayList.clear();
+        list.clear();
+        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+        String[] projection = new String[] { ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.PHOTO_ID };
+        // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
+        // + " = '1'";
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
+                + " COLLATE LOCALIZED ASC";
+        Cursor cursor = context.getContentResolver().query(uri, projection,
+                selection, selectionArgs, sortOrder);
+        Cursor phonecur = null;
 
-        m.appendTail(sb);
-        Log.i(TAG, "sb.toString() - " + sb.toString());
-        return sb.toString();
+        while (cursor.moveToNext()) {
+
+            // get name
+            int nameFieldColumnIndex = cursor
+                    .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
+            String name = cursor.getString(nameFieldColumnIndex);
+            // get id
+            String contactId = cursor
+                    .getString(cursor
+                            .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
+            String strPhoneNumber = "";
+
+            phonecur = context
+                    .getContentResolver()
+                    .query(android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                                    + " = ?", new String[] { contactId }, null);
+            // get number
+            while (phonecur.moveToNext()) {
+                strPhoneNumber = phonecur
+                        .getString(phonecur
+                                .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+                // if (strPhoneNumber.length() > 4)
+                // contactsList.add("18610011001" + "\n测试");
+                // contactsList.add(strPhoneNumber+"\n"+name+"");
+                Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
+
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("id", contactId);
+                map.put("name", name);
+                map.put("number", strPhoneNumber);
+                list.add(map);
+            }
+            phonecur.close();
+
+        }
+        // if (phonecur != null)
+        cursor.close();
+
+        // Message msg1 = new Message();
+        // msg1.what = UPDATE_LIST;
+        // updateListHandler.sendMessage(msg1);
+
     }
+
+    // private String replacePattern(String origin, String pattern, String
+    // replace) {
+    // Log.i(TAG, "origin - " + origin);
+    // Pattern p = Pattern.compile(pattern);
+    // Matcher m = p.matcher(origin);
+    // StringBuffer sb = new StringBuffer();
+    // while (m.find()) {
+    // m.appendReplacement(sb, replace);
+    // }
+    //
+    // m.appendTail(sb);
+    // Log.i(TAG, "sb.toString() - " + sb.toString());
+    // return sb.toString();
+    // }
 
     private void showNewRecordDialog(String name, String phone, int blockId,
             final boolean isExisted) {

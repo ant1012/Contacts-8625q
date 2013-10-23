@@ -114,7 +114,7 @@ public class MultiSelectExport extends ListActivity {
         // contactModArrayList));
 
         list = new ArrayList<Map<String, String>>();
-        initData();
+        initData(list);
         mAdapter = new ContactMultiSelectAdapter(list, this);
         listView = getListView();
         listView.setAdapter(mAdapter);
@@ -137,35 +137,37 @@ public class MultiSelectExport extends ListActivity {
                 holder.checkbox.toggle();
                 // Log.i("Click",""+contactArrayList.get(arg2).toString());
                 // String xx = "You had click those items: \n";
-                for (int i = 0; i < listView.getCount(); i++) {
-                    // 注意这里使用的getItemAtPosition()方法
-                    if (listView.isItemChecked(i)) {
-
-                        if (0 == pos[i]) {
-                            pos[i] = 1;
-                        }
-                        // else if(1 == pos[i]){
-                        // pos[i] = 0;
-                        // }
-
-                        // xx += listView.getItemAtPosition(i) + "\n";
-                    } else {
-                        if (1 == pos[i]) {
-                            pos[i] = 0;
-                        }
-                    }
-                }
+                // for (int i = 0; i < listView.getCount(); i++) {
+                // // 注意这里使用的getItemAtPosition()方法
+                // if (listView.isItemChecked(i)) {
+                //
+                // if (0 == pos[i]) {
+                // pos[i] = 1;
+                // }
+                // // else if(1 == pos[i]){
+                // // pos[i] = 0;
+                // // }
+                //
+                // // xx += listView.getItemAtPosition(i) + "\n";
+                // } else {
+                // if (1 == pos[i]) {
+                // pos[i] = 0;
+                // }
+                // }
+                // }
                 // Log.i("Check", "" + xx);
                 // for (int i = 0; i < listView.getCount(); i++) {
                 // Log.i("pos", "" + pos[i]);
                 // }
 
+                ContactMultiSelectAdapter.getIsSelected().put(arg2,
+                        holder.checkbox.isChecked());
             }
         });
 
     }
 
-    private void initData() {
+    private void initData(ArrayList<Map<String, String>> list) {
         Log.d(TAG, "initData");
         list.clear();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
@@ -182,11 +184,9 @@ public class MultiSelectExport extends ListActivity {
                 selectionArgs, sortOrder);
         // Cursor phonecur = null;
 
-
         Log.d(TAG, "corsor - " + cursor.getCount());
 
         while (cursor.moveToNext()) {
-            Log.d(TAG, "corsor");
             // get name
             int nameFieldColumnIndex = cursor
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
@@ -343,7 +343,7 @@ public class MultiSelectExport extends ListActivity {
         List<String> argsList = new ArrayList<String>();
         boolean first = true;
         for (int i = 0; i < list.size(); i++) {
-            if (pos[i] != 0) {
+            if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 if (!first) {
                     sbwhere.append(" or _id = ? ");
                 } else {

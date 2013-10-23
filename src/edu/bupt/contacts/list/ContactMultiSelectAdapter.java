@@ -1,11 +1,18 @@
 package edu.bupt.contacts.list;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.bupt.contacts.R;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +24,9 @@ import android.widget.TextView;
 public class ContactMultiSelectAdapter extends BaseAdapter {
 
     private ArrayList<Map<String, String>> list;
-    private Context context;
+    private static Context context;
     private LayoutInflater inflater = null;
+    private static HashMap<Integer, Boolean> isSelected;
 
     // private TextView textViewName;
     // private TextView textViewNumber;
@@ -30,6 +38,10 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         this.context = context;
         this.list = list;
         inflater = LayoutInflater.from(context);
+        isSelected = new HashMap<Integer, Boolean>();
+        for (int i = 0; i < list.size(); i++) {
+            isSelected.put(i, false);
+        }
     }
 
     @Override
@@ -60,15 +72,22 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
                     .findViewById(R.id.multiselect_tv_number);
             holder.checkbox = (CheckBox) convertView
                     .findViewById(R.id.multiselect_checkbox);
+            holder.imageView = (ImageView) convertView
+                    .findViewById(R.id.multiselect_imageview);
             convertView.setTag(holder);
+
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.textViewName.setText(list.get(position).get("name"));
         holder.textViewNumber.setText(list.get(position).get("number"));
-        // 根据isSelected来设置checkbox的选中状况
-//        holder.checkbox.setChecked(getIsSelected().get(position));
+        holder.checkbox.setChecked(isSelected.get(position));
+
+        String id = list.get(position).get("id");
+        holder.imageView.setImageBitmap(loadContactPhoto(
+                context.getContentResolver(), Long.valueOf(id)));
+
         return convertView;
     }
 
@@ -76,5 +95,25 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         TextView textViewName;
         TextView textViewNumber;
         public CheckBox checkbox;
+        ImageView imageView;
+    }
+
+    public static Bitmap loadContactPhoto(ContentResolver cr, long id) {
+        Uri uri = ContentUris.withAppendedId(
+                ContactsContract.Contacts.CONTENT_URI, id);
+        InputStream input = ContactsContract.Contacts
+                .openContactPhotoInputStream(cr, uri);
+        if (input == null) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_contact_picture_holo_light);
+        }
+        return BitmapFactory.decodeStream(input);
+    }
+
+    public static HashMap<Integer, Boolean> getIsSelected() {
+        return isSelected;
+    }
+
+    public static void setIsSelected(HashMap<Integer, Boolean> isSelected) {
+        ContactMultiSelectAdapter.isSelected = isSelected;
     }
 }

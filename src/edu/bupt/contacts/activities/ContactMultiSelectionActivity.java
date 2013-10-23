@@ -59,7 +59,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
     private final String TAG = "ContactMultiSelectionActivity";
 
     public ListView listView;
-    public int[] pos;
+    // public int[] pos;
     private ArrayList<Map<String, String>> list;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -67,15 +67,15 @@ public class ContactMultiSelectionActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         list = new ArrayList<Map<String, String>>();
-        initData();
+        initData(list);
         mAdapter = new ContactMultiSelectAdapter(list, this);
         listView = getListView();
         listView.setAdapter(mAdapter);
 
-        pos = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            pos[i] = 0;
-        }
+        // pos = new int[list.size()];
+        // for (int i = 0; i < list.size(); i++) {
+        // pos[i] = 0;
+        // }
 
         listView.setItemsCanFocus(false);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -87,22 +87,24 @@ public class ContactMultiSelectionActivity extends ListActivity {
                 ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1
                         .getTag();
                 holder.checkbox.toggle();
-                for (int i = 0; i < listView.getCount(); i++) {
-                    if (listView.isItemChecked(i)) {
-                        if (0 == pos[i]) {
-                            pos[i] = 1;
-                        }
-                    } else {
-                        if (1 == pos[i]) {
-                            pos[i] = 0;
-                        }
-                    }
-                }
+                // for (int i = 0; i < listView.getCount(); i++) {
+                // if (listView.isItemChecked(i)) {
+                // if (0 == pos[i]) {
+                // pos[i] = 1;
+                // }
+                // } else {
+                // if (1 == pos[i]) {
+                // pos[i] = 0;
+                // }
+                // }
+                // }
+                ContactMultiSelectAdapter.getIsSelected().put(arg2,
+                        holder.checkbox.isChecked());
             }
         });
     }
 
-    private void initData() {
+    private void initData(ArrayList<Map<String, String>> list) {
         // contactLookupArrayList.clear();
         list.clear();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
@@ -207,7 +209,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
         List<String> argsList = new ArrayList<String>();
         boolean first = true;
         for (int i = 0; i < list.size(); i++) {
-            if (pos[i] != 0) {
+            if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 if (!first) {
                     sbwhere.append(" or _id = ? ");
                 }
