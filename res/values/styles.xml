@@ -15,6 +15,8 @@
 -->
 
 <!-- ddd 删除 windowBackground actionBarStyle-->
+<!--         <item name="android:actionBarStyle">@style/DialtactsActionBarStyle</item> -->
+<!--         <item name="activated_background">@drawable/list_item_activated_background</item> -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="DialtactsTheme"
            parent="android:Theme.Holo.Light">
@@ -22,9 +24,9 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/DialtactsActionBarStyle</item>
         <item name="android:windowContentOverlay">@null</item>
-
+        
         <item name="android:listViewStyle">@style/ListViewStyle</item>
-        <item name="activated_background">@drawable/list_item_activated_background</item>
+
         <item name="section_header_background">@drawable/list_title_holo</item>
         <item name="list_section_header_height">32dip</item>
         <item name="list_item_divider">?android:attr/listDivider</item>
