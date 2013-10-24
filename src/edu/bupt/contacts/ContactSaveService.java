@@ -221,6 +221,7 @@ public class ContactSaveService extends IntentService {
         } else if (ACTION_SET_RINGTONE.equals(action)) {
             setRingtone(intent);
             CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
+        /** baoge */
         } else if (ACTION_SET_MSGRING.equals(action)) {
             setMsgRing(intent);
             CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
@@ -1060,8 +1061,9 @@ public class ContactSaveService extends IntentService {
         values.put(Contacts.CUSTOM_RINGTONE, value);
         getContentResolver().update(contactUri, values, null, null);
     }
-    
-    
+
+
+    /** baoge */
     public static Intent createSetMsgRing(Context context, Uri contactUri,
             String value) {
         Intent serviceIntent = new Intent(context, ContactSaveService.class);
@@ -1072,6 +1074,7 @@ public class ContactSaveService extends IntentService {
         return serviceIntent;
     }
 
+    /** baoge */
     private void setMsgRing(Intent intent) {
         Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
         String value = intent.getStringExtra(EXTRA_CUSTOM_MSGRING);
@@ -1083,7 +1086,7 @@ public class ContactSaveService extends IntentService {
         values.put(RawContacts.SOURCE_ID, value);
         getContentResolver().update(contactUri, values, null, null);
     }
-    
+
 
     /**
      * Creates an intent that sets the selected data item as super primary (default)

@@ -65,12 +65,12 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
         Log.v(TAG, "action = " + action);
         if (ACTION_SMS.equals(action)) {
 
-            Bundle bundle = intent.getExtras();
-            if (bundle == null) {
-                return;
-            }
-
-            mMediaPlayer = new MediaPlayer();
+            // Bundle bundle = intent.getExtras();
+            // if (bundle == null) {
+            // return;
+            // }
+            //
+            // mMediaPlayer = new MediaPlayer();
 
             // if
             // (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
@@ -83,79 +83,80 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
             // // TODO Auto-generated catch block
             // e.printStackTrace();
             // }
-            String mediaPath = "content://media/internal/audio/media/31";
 
-            Uri audioUrl = Uri.parse(mediaPath);
-            mMediaPlayer = MediaPlayer.create(this.context, audioUrl);
-            mMediaPlayer.start();
+            // String mediaPath = "content://media/internal/audio/media/31";
+            //
+            // Uri audioUrl = Uri.parse(mediaPath);
+            // mMediaPlayer = MediaPlayer.create(this.context, audioUrl);
+            // mMediaPlayer.start();
+            //
+            // Object[] pdus = (Object[]) bundle.get("pdus");
+            // SmsMessage[] messages = new SmsMessage[pdus.length];
+            //
+            // int i = 0;
+            // for (i = 0; i < messages.length; i++) {
+            // byte[] pdu = (byte[]) pdus[i];
+            // messages[i] = SmsMessage.createFromPdu(pdu);
+            // Log.i("messages" + i, "" + messages[i]);
+            // }
+            // if (i == 0) {
+            // return;
+            // }
 
-            Object[] pdus = (Object[]) bundle.get("pdus");
-            SmsMessage[] messages = new SmsMessage[pdus.length];
-
-            int i = 0;
-            for (i = 0; i < messages.length; i++) {
-                byte[] pdu = (byte[]) pdus[i];
-                messages[i] = SmsMessage.createFromPdu(pdu);
-                Log.i("messages" + i, "" + messages[i]);
-            }
-            if (i == 0) {
-                return;
-            }
-
-            incomingNumber = messages[0].getOriginatingAddress();
-            mDBHelper = new BlacklistDBHelper(context, 1);
-            String sql = "select * from BlackListFragment where phone = ?";
-            Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
-                    new String[] { incomingNumber });
-
-            if (cursor.moveToFirst()) {
-
-                int blockId = cursor.getInt(4);
-                String name = cursor.getString(1);
-
-                if (blockId != 3) {
-
-                    String content = "";
-                    for (SmsMessage msg : messages) {
-                        content += msg.getMessageBody();
-
-                    }
-
-                    for (i = 0; i < messages.length; i++) {
-                        byte[] pdu = (byte[]) pdus[i];
-                        messages[i] = SmsMessage.createFromPdu(pdu);
-                    }
-                    for (SmsMessage msg : messages) {
-                        content += msg.getMessageBody();
-
-                    }
-
-                    /** zzz */
-                    // int ringtonePos = sp.getInt("ringtone", 0);
-                    int ringtonePos = 0;
-
-                    if (ringtonePos == 1) {// 震动
-                        long[] pattern = { 100, 400, 100, 400 };
-                        mVibrator = (Vibrator) context
-                                .getSystemService(Context.VIBRATOR_SERVICE);
-                        mVibrator.vibrate(pattern, -1);
-                        // mVibrator.cancel();
-                    }
-
-                    formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
-                    String time = formatter.format(new Date());
-                    msgDBHelper = new MsgBlockDBHelper(context, 1);
-                    msgDBHelper.addRecord(name, incomingNumber, content, time);
-                    msgDBHelper.close();
-
-                    context.sendBroadcast(new Intent(
-                            MsgBlockFragment.ACTION_SMS_UPDATE));
-                    abortBroadcast();
-                }
-                cursor.close();
-            }
-            mDBHelper.close();
-            return;
+            // incomingNumber = messages[0].getOriginatingAddress();
+            // mDBHelper = new BlacklistDBHelper(context, 1);
+            // String sql = "select * from BlackListFragment where phone = ?";
+            // Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
+            // new String[] { incomingNumber });
+            //
+            // if (cursor.moveToFirst()) {
+            //
+            // int blockId = cursor.getInt(4);
+            // String name = cursor.getString(1);
+            //
+            // if (blockId != 3) {
+            //
+            // String content = "";
+            // for (SmsMessage msg : messages) {
+            // content += msg.getMessageBody();
+            //
+            // }
+            //
+            // for (i = 0; i < messages.length; i++) {
+            // byte[] pdu = (byte[]) pdus[i];
+            // messages[i] = SmsMessage.createFromPdu(pdu);
+            // }
+            // for (SmsMessage msg : messages) {
+            // content += msg.getMessageBody();
+            //
+            // }
+            //
+            // /** zzz */
+            // // int ringtonePos = sp.getInt("ringtone", 0);
+            // int ringtonePos = 0;
+            //
+            // if (ringtonePos == 1) {// 震动
+            // long[] pattern = { 100, 400, 100, 400 };
+            // mVibrator = (Vibrator) context
+            // .getSystemService(Context.VIBRATOR_SERVICE);
+            // mVibrator.vibrate(pattern, -1);
+            // // mVibrator.cancel();
+            // }
+            //
+            // formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
+            // String time = formatter.format(new Date());
+            // msgDBHelper = new MsgBlockDBHelper(context, 1);
+            // msgDBHelper.addRecord(name, incomingNumber, content, time);
+            // msgDBHelper.close();
+            //
+            // context.sendBroadcast(new Intent(
+            // MsgBlockFragment.ACTION_SMS_UPDATE));
+            // abortBroadcast();
+            // }
+            // cursor.close();
+            // }
+            // mDBHelper.close();
+            // return;
         }
 
         if (ACTION_CALL.equals(action)) {

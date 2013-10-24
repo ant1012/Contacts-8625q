@@ -1108,13 +1108,14 @@ public class ContactLoaderFragment extends Fragment implements
                     .getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);// fetchMsgUri()
             Log.i("RingtoneManager", pickedUri + ";");
             handleMsgRingPicked(pickedUri);
-            String msg = "" + mLookupUri;
-            String shortmsg[] = msg.split("/");
-            Log.i("update", "" + shortmsg[6]);
-            ContentValues values = new ContentValues();
-            values.put(RawContacts.SOURCE_ID, "" + pickedUri); // "content://media/internal/audio/media/31"
-            mContext.getContentResolver().update(RawContacts.CONTENT_URI,
-                    values, "_id=" + shortmsg[6], null);
+            // String msg = "" + mLookupUri;
+            // String shortmsg[] = msg.split("/");
+            // Log.i("update", "" + shortmsg[6]);
+            // ContentValues values = new ContentValues();
+            // values.put(RawContacts.SOURCE_ID, "" + pickedUri); //
+            // "content://media/internal/audio/media/31"
+            // mContext.getContentResolver().update(RawContacts.CONTENT_URI,
+            // values, "_id=" + shortmsg[6], null);
             break;
         }
         }

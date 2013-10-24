@@ -196,38 +196,46 @@ public class ContactMultiSelectionActivity extends ListActivity {
     private void pickContacts() {
         Log.i(TAG, "pickContacts");
 
-        // projection
-        String[] projection = new String[] { Contacts._ID,
-                Contacts.DISPLAY_NAME };
-
-        // selection
-        StringBuilder sbwhere = new StringBuilder();
-        sbwhere.append("_id = ? ");
-
-        // selectionArgs
-        String[] args = new String[] {};
-        List<String> argsList = new ArrayList<String>();
-        boolean first = true;
+        ArrayList<String> ret = new ArrayList<String>();
+        // // projection
+        // String[] projection = new String[] { Contacts._ID,
+        // Contacts.DISPLAY_NAME };
+        //
+        // // selection
+        // StringBuilder sbwhere = new StringBuilder();
+        // sbwhere.append("_id = ? ");
+        //
+        // // selectionArgs
+        // String[] args = new String[] {};
+        // List<String> argsList = new ArrayList<String>();
+        // boolean first = true;
         for (int i = 0; i < list.size(); i++) {
             if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
-                if (!first) {
-                    sbwhere.append(" or _id = ? ");
-                }
+                // if (!first) {
+                // sbwhere.append(" or _id = ? ");
+                // }
                 Log.i(TAG,
                         "list.get(i).get(\"name\") - "
                                 + list.get(i).get("name"));
-                argsList.add(list.get(i).get("id"));
-                first = false;
+                // argsList.add(list.get(i).get("id"));
+                // first = false;
+                ret.add(list.get(i).get("number"));
             }
         }
-        args = argsList.toArray(new String[argsList.size()]);
-        Log.i(TAG, "sbwhere - " + sbwhere.toString());
-        Log.i(TAG, "args - " + args.length);
+        // args = argsList.toArray(new String[argsList.size()]);
+        // Log.i(TAG, "sbwhere - " + sbwhere.toString());
+        // Log.i(TAG, "args - " + args.length);
 
         // do query
-        Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
-                projection, sbwhere.toString(), args, null);
-        cursor.close();
+        // Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
+        // projection, sbwhere.toString(), args, null);
+        // cursor.close();
+
+        Intent intent = new Intent();
+        
+        intent.putExtra("ret", ret);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
 }
