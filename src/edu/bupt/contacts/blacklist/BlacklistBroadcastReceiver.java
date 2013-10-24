@@ -64,6 +64,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
         Log.v(TAG, "action = " + action);
         if (ACTION_SMS.equals(action)) {
+            Log.v(TAG, "incoming msg !");
 
             // Bundle bundle = intent.getExtras();
             // if (bundle == null) {
@@ -164,8 +165,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
             MSimTelephonyManager telMgr = (MSimTelephonyManager) context
                     .getSystemService("phone");
 
-            Log.i(TAG, "telMgr - " + telMgr.toString());
-            Log.i(TAG, "telMgr - " + telMgr.getCallState(0));
+            Log.i(TAG, "telMgr.getCallState(0) - " + telMgr.getCallState(0));
+            Log.i(TAG, "telMgr.getCallState(1) - " + telMgr.getCallState(1));
             //
             // switch (telMgr.getCallState()) {
             //
@@ -194,7 +195,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                 /** zzz */
                 white_block_mode = sp.getBoolean("white_mode", false);
 
-                Log.d(TAG, "incoming call !");
+                Log.v(TAG, "incoming call !");
                 Log.i("white_block_mode", "white_block_mode is "
                         + white_block_mode);
 
@@ -288,7 +289,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                             MsgBlockFragment.ACTION_SMS_UPDATE));
                     // break;
                 } else {
-                    Log.v(TAG, incomingNumber + " is calling...");
+                    Log.i(TAG, incomingNumber + " is calling...");
 
                     /** zzz */
                     // blockStranger = sp.getBoolean("blockStranger", false);

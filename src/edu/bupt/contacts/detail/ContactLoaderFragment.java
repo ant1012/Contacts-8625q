@@ -31,6 +31,7 @@ import edu.bupt.contacts.blacklist.BlacklistDBHelper;
 import edu.bupt.contacts.blacklist.WhiteListDBHelper;
 import edu.bupt.contacts.list.ShortcutIntentBuilder;
 import edu.bupt.contacts.list.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+import edu.bupt.contacts.msgring.MsgRingDBHelper;
 import edu.bupt.contacts.util.PhoneCapabilityTester;
 
 import com.android.internal.util.Objects;
@@ -376,6 +377,7 @@ public class ContactLoaderFragment extends Fragment implements
             doPickRingtone();
             return true;
         }
+        /** baoge */
         case R.id.menu_set_msgring: {
             if (mContactData == null)
                 return false;
@@ -445,7 +447,7 @@ public class ContactLoaderFragment extends Fragment implements
             // final String phone = mContactData.getContentValues().get(2)
             // .getAsString("data1");
 
-            //get phone number
+            // get phone number
             Uri uri = mContactData.getLookupUri();
             String phone = null;
             long contactId;
@@ -560,8 +562,7 @@ public class ContactLoaderFragment extends Fragment implements
             }
 
             final String phoneFinal = phone;
-            
-            
+
             new AlertDialog.Builder(mContext)
                     .setTitle(R.string.menu_add_to_whitelist)
                     .setMessage(
@@ -608,13 +609,13 @@ public class ContactLoaderFragment extends Fragment implements
 
             String id = c2.getString(c2
                     .getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-            
-            String name = c2.getString(c2
-                    .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
-            if(name!=null){
-                number_selected.add("姓名： "+name);
-            }
 
+            String name = c2
+                    .getString(c2
+                            .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            if (name != null) {
+                number_selected.add("姓名： " + name);
+            }
 
             Log.i(TAG, "id - " + id);
 
@@ -909,7 +910,6 @@ public class ContactLoaderFragment extends Fragment implements
 
         }
     }
-    
 
     /**
      * Creates a launcher shortcut with the current contact.
@@ -1005,6 +1005,7 @@ public class ContactLoaderFragment extends Fragment implements
         startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE);
     }
 
+    /** baoge */
     private void doPickMsgRing() {
 
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
@@ -1132,15 +1133,28 @@ public class ContactLoaderFragment extends Fragment implements
         mContext.startService(intent);
     }
 
+    /** baoge */
+    // modified by zzz
     private void handleMsgRingPicked(Uri pickedUri) {
         if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
             mCustomMsgRing = null;
         } else {
             mCustomMsgRing = pickedUri.toString();
         }
-        Intent intent = ContactSaveService.createSetMsgRing(mContext,
-                mLookupUri, mCustomMsgRing);
-        mContext.startService(intent);
+        // Intent intent = ContactSaveService.createSetMsgRing(mContext,
+        // mLookupUri, mCustomMsgRing);
+        // mContext.startService(intent);
+
+        Log.i(TAG, "handleMsgRingPicked - " + pickedUri);
+        Cursor c = mContext.getContentResolver().query(mLookupUri, null, null, null,
+                null);
+        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+
+        c.moveToNext();
+        long contactId = c.getLong(idIdx);
+
+        MsgRingDBHelper dbhelper = new MsgRingDBHelper(mContext, 1);
+        dbhelper.setRing(String.valueOf(contactId), mCustomMsgRing);
     }
 
     /** Toggles whether to load stream items. Just for debugging */

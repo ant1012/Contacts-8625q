@@ -12,14 +12,13 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
-
-
-
+     limitations under the License.
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.bupt.contacts" android:versionName="0.5" android:versionCode="2">
+    package="edu.bupt.contacts"
+    android:versionCode="2"
+    android:versionName="0.5" >
 
     <uses-sdk android:minSdkVersion="16" />
 
@@ -62,6 +61,9 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
+    <!-- for msg ringtone -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
     <application
         android:name="edu.bupt.contacts.ContactsApplication"
         android:hardwareAccelerated="true"
@@ -74,8 +76,7 @@
         This activity should have the same intent filters as the DialtactsActivity,
         so that its capturing the same events. Omit android.intent.category.LAUNCHER, because we
         don't want this to show up in the Launcher. The priorities of the intent-filters
-        are set lower, so that the user does not see a disambig dialog
-
+        are set lower, so that the user does not see a disambig dialog
         -->
         <activity
             android:name="edu.bupt.contacts.activities.NonPhoneActivity"
@@ -136,11 +137,9 @@
         <!--
              The entrance point for Phone UI.
              stateAlwaysHidden is set to suppress keyboard show up on
-             dialpad screen.
-
-
+             dialpad screen.
         -->
-<!--                     android:theme="@style/DialtactsTheme" -->
+        <!-- android:theme="@style/DialtactsTheme" -->
         <activity
             android:name="edu.bupt.contacts.activities.DialtactsActivity"
             android:clearTaskOnLaunch="true"
@@ -151,7 +150,6 @@
             android:screenOrientation="portrait"
             android:taskAffinity="android.task.contacts.phone"
             android:theme="@style/DialtactsTheme"
-
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing" >
             <intent-filter>
@@ -208,9 +206,7 @@
             </intent-filter>
             <!--
                  This was never intended to be public, but is here for backward
-                 compatibility.  Use Intent.ACTION_DIAL instead.
-
-
+                 compatibility.  Use Intent.ACTION_DIAL instead.
             -->
             <intent-filter>
                 <action android:name="com.android.phone.action.TOUCH_DIALER" />
@@ -359,8 +355,6 @@
             </intent-filter>
         </activity>
 
-
-
         <!-- Backwards compatibility: somebody may have hard coded this activity name -->
         <activity-alias
             android:name="edu.bupt.contacts.ContactsListActivity"
@@ -461,9 +455,7 @@
 
         <!--
              Used to show QuickContact window over a translucent activity, which is a
-             temporary hack until we add better framework support.
-
-
+             temporary hack until we add better framework support.
         -->
         <activity
             android:name="edu.bupt.contacts.quickcontact.QuickContactActivity"
@@ -604,9 +596,7 @@
 
         <!--
              Stub service used to keep our process alive long enough for
-             background threads to finish their operations.
-
-
+             background threads to finish their operations.
         -->
         <service
             android:name="edu.bupt.contacts.util.EmptyService"
@@ -633,10 +623,7 @@
 
         <!--
             Internal photo selection activity.  This activity handles all configuration changes by
-            itself.
-
-
-
+            itself.
         -->
         <activity
             android:name="edu.bupt.contacts.activities.PhotoSelectionActivity"
@@ -703,7 +690,11 @@
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
+        <!-- zzz -->
         <receiver android:name="edu.bupt.contacts.blacklist.BlacklistBroadcastReceiver" >
+
+            <!-- android:permission="android.permission.BROADCAST_SMS" -->
+
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -761,9 +752,7 @@
 
         <!--
              Service that is exclusively for the Phone application that sends out a view
-             notification. This service might be removed in future versions of the app
-
-
+             notification. This service might be removed in future versions of the app
         -->
         <service
             android:name="edu.bupt.contacts.ViewNotificationService"
@@ -809,22 +798,30 @@
         <activity android:name="edu.bupt.contacts.settings.CalllogSettingActivity" >
         </activity>
 
-<!--         ddd 去除历史记录actionbar-->
-        <activity android:name="edu.bupt.contacts.activities.MenuHistory"  
-                    android:configChanges="orientation|keyboardHidden"  
-                    android:theme="@android:style/Theme.NoTitleBar" /> 
-<!--  ddd 去除历史记录actionbar        -->
-        <activity android:name="edu.bupt.contacts.activities.MenuCalendar"  
-                    android:configChanges="orientation|keyboardHidden"  
-                    android:theme="@android:style/Theme.NoTitleBar" />
-        
-<!--  ddd 修改多选导出的ui风格为默认holo。light      -->
-        <activity android:name="edu.bupt.contacts.activities.MultiSelectExport"  
-               
-                    android:theme="@android:style/Theme.Holo.Light" />
+        <!-- ddd 去除历史记录actionbar -->
+        <activity
+            android:name="edu.bupt.contacts.activities.MenuHistory"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <!-- ddd 去除历史记录actionbar -->
+        <activity
+            android:name="edu.bupt.contacts.activities.MenuCalendar"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar" />
 
-<!--         baoge -->
-<!--         <activity android:name=".activities.MultiSelectExport" /> -->
+        <!-- ddd 修改多选导出的ui风格为默认holo。light -->
+        <activity
+            android:name="edu.bupt.contacts.activities.MultiSelectExport"
+            android:clearTaskOnLaunch="true"
+            android:icon="@mipmap/ic_launcher_contacts"
+            android:label="@string/contactPickerActivityTitle"
+            android:launchMode="singleTop"
+            android:theme="@style/ContactPickerTheme"
+            android:uiOptions="splitActionBarWhenNarrow" />
+
+        <!-- baoge -->
+        <!-- <activity android:name=".activities.MultiSelectExport" /> -->
+
 
         <!-- zzz -->
 
@@ -849,6 +846,16 @@
                 <data android:mimeType="vnd.android.cursor.dir/email_v2" />
             </intent-filter>
         </activity>
-</application>
+
+        <!-- zzz -->
+        <receiver android:name="edu.bupt.contacts.msgring.MsgRingBroadcastReceiver" >
+
+            <!-- android:permission="android.permission.BROADCAST_SMS" -->
+
+            <intent-filter android:priority="900" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
 
 </manifest>

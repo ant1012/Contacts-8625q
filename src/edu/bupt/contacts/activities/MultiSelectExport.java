@@ -423,7 +423,7 @@ public class MultiSelectExport extends ListActivity {
         Log.i(TAG, sb.toString());
         File tempFile = null;
         try {
-            tempFile = File.createTempFile(sbName.toString(), ".vcf",
+            tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf",
                     this.getExternalCacheDir());
             FileOutputStream fos = new FileOutputStream(tempFile);
             byte[] bytes = sb.toString().getBytes();
@@ -444,8 +444,8 @@ public class MultiSelectExport extends ListActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(0, 0, 0, R.string.cancel);
-        menu.add(0, 1, 0, R.string.ok);
+        menu.add(0, 0, 0, R.string.menu_share_as_text);
+        menu.add(0, 1, 0, R.string.menu_share_as_vcard);
         menu.findItem(0).setShowAsAction(1);
         menu.findItem(1).setShowAsAction(2);
 
