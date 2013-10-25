@@ -129,7 +129,7 @@
         android:layout_weight="@integer/dialpad_layout_weight_additional_buttons"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/dialpad_background">
-<!-- ddd 拨打按钮，改为蓝色 -->
+<!-- ddd 拨打电话按钮，改为蓝色 -->
         <ImageButton
             android:id="@+id/dialButton"
             android:layout_width="match_parent"

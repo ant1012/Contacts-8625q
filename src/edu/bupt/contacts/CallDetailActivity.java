@@ -467,7 +467,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     mainActionIntent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
                     mainActionIntent.setType(Contacts.CONTENT_ITEM_TYPE);
                     mainActionIntent.putExtra(Insert.PHONE, mNumber);
-                    mainActionIcon = R.drawable.ic_add_contact_holo_dark;
+              //通话记录详情界面的联系人图标
+                    mainActionIcon = R.drawable.ic_add_contact_holo_dark_white;
                     mainActionDescription = getString(R.string.description_add_contact);
                 } else {
                     // If we cannot call the number, when we probably cannot add it as a contact either.
@@ -521,7 +522,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     // call.
                     if (mPhoneNumberHelper.canSendSmsTo(mNumber)) {
                         entry.setSecondaryAction(
-                                R.drawable.ic_text_holo_dark,
+                                R.drawable.badge_action_sms,
                                 new Intent(Intent.ACTION_SENDTO,
                                            Uri.fromParts("sms", mNumber, null)),
                                 getString(R.string.description_send_text_message, nameOrNumber));
