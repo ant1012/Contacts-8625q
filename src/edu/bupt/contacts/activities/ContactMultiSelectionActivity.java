@@ -61,10 +61,16 @@ public class ContactMultiSelectionActivity extends ListActivity {
     public ListView listView;
     // public int[] pos;
     private ArrayList<Map<String, String>> list;
+    private int flagPackageVcard = 0; // when 0 returns arraylist
+                                      // when 1 returns vcard file uri
 
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // for mms
+        Intent i = getIntent();
+        flagPackageVcard = i.getIntExtra("package_vcard", 0);
 
         list = new ArrayList<Map<String, String>>();
         initData(list);
@@ -81,11 +87,9 @@ public class ContactMultiSelectionActivity extends ListActivity {
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1
-                        .getTag();
+                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
                 holder.checkbox.toggle();
                 // for (int i = 0; i < listView.getCount(); i++) {
                 // if (listView.isItemChecked(i)) {
@@ -98,8 +102,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
                 // }
                 // }
                 // }
-                ContactMultiSelectAdapter.getIsSelected().put(arg2,
-                        holder.checkbox.isChecked());
+                ContactMultiSelectAdapter.getIsSelected().put(arg2, holder.checkbox.isChecked());
             }
         });
     }
@@ -108,17 +111,14 @@ public class ContactMultiSelectionActivity extends ListActivity {
         // contactLookupArrayList.clear();
         list.clear();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        String[] projection = new String[] { ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
+        String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
         // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
         // + " = '1'";
         String selection = null;
         String[] selectionArgs = null;
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-                + " COLLATE LOCALIZED ASC";
-        Cursor cursor = getContentResolver().query(uri, projection, selection,
-                selectionArgs, sortOrder);
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+        Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         Cursor phonecur = null;
 
         while (cursor.moveToNext()) {
@@ -128,21 +128,16 @@ public class ContactMultiSelectionActivity extends ListActivity {
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
             String name = cursor.getString(nameFieldColumnIndex);
             // get id
-            String contactId = cursor
-                    .getString(cursor
-                            .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
+            String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             String strPhoneNumber = "";
 
-            phonecur = getContentResolver()
-                    .query(android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-                                    + " = ?", new String[] { contactId }, null);
+            phonecur = getContentResolver().query(android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    null, android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    new String[] { contactId }, null);
             // get number
             while (phonecur.moveToNext()) {
-                strPhoneNumber = phonecur
-                        .getString(phonecur
-                                .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+                strPhoneNumber = phonecur.getString(phonecur
+                        .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
                 // if (strPhoneNumber.length() > 4)
                 // contactsList.add("18610011001" + "\n测试");
                 // contactsList.add(strPhoneNumber+"\n"+name+"");
@@ -185,9 +180,12 @@ public class ContactMultiSelectionActivity extends ListActivity {
             break;
 
         case 1:
-            pickContacts();
+            if (flagPackageVcard == 0) {
+                pickContacts();
+            } else if (flagPackageVcard == 1) {
+                doShareCheckedContacts();
+            }
             break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -214,9 +212,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
                 // if (!first) {
                 // sbwhere.append(" or _id = ? ");
                 // }
-                Log.i(TAG,
-                        "list.get(i).get(\"name\") - "
-                                + list.get(i).get("name"));
+                Log.i(TAG, "list.get(i).get(\"name\") - " + list.get(i).get("name"));
                 // argsList.add(list.get(i).get("id"));
                 // first = false;
                 ret.add(list.get(i).get("number"));
@@ -232,10 +228,101 @@ public class ContactMultiSelectionActivity extends ListActivity {
         // cursor.close();
 
         Intent intent = new Intent();
-        
+
         intent.putExtra("ret", ret);
         setResult(RESULT_OK, intent);
         finish();
+
     }
 
+    /** zzz */
+    private void doShareCheckedContacts() {
+        final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
+
+        VCardComposer composer = null;
+        composer = new VCardComposer(this, vcardType, true);
+
+        // for file name
+        StringBuilder sbName = new StringBuilder();
+
+        // projection
+        String[] projection = new String[] { Contacts._ID, Contacts.DISPLAY_NAME };
+
+        // selection
+        StringBuilder sbwhere = new StringBuilder();
+        sbwhere.append("_id = ? ");
+
+        // selectionArgs
+        String[] args = new String[] {};
+        List<String> argsList = new ArrayList<String>();
+        boolean first = true;
+        for (int i = 0; i < list.size(); i++) {
+            if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
+                if (!first) {
+                    sbwhere.append(" or _id = ? ");
+                } else {
+                    sbName.append(list.get(i).get("name"));
+                    Log.i(TAG, "sbName - " + sbName.toString());
+                }
+                Log.i(TAG, "list.get(i).get(\"name\") - " + list.get(i).get("name"));
+                argsList.add(list.get(i).get("id"));
+                first = false;
+            }
+        }
+        args = argsList.toArray(new String[argsList.size()]);
+        Log.i(TAG, "sbwhere - " + sbwhere.toString());
+        Log.i(TAG, "args - " + args.length);
+
+        // do query
+        Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, projection, sbwhere.toString(), args, null);
+
+        // init
+        if (!composer.init(cursor)) {
+            final String errorReason = composer.getErrorReason();
+            Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
+            return;
+        }
+
+        final int total = composer.getCount();
+        if (total == 0) {
+            Toast.makeText(this, R.string.share_error, Toast.LENGTH_SHORT).show();
+            ;
+            return;
+        } else if (total > 1) {
+            sbName.append(getString(R.string.vcard_share_filename_more, total));
+        }
+        Log.i(TAG, "composer.getCount() - " + total);
+
+        // compose
+        StringBuilder sb = new StringBuilder();
+        while (!composer.isAfterLast()) {
+            sb.append(composer.createOneEntry());
+        }
+        Log.i(TAG, sb.toString());
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf", this.getExternalCacheDir());
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            byte[] bytes = sb.toString().getBytes();
+            fos.write(bytes);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // send
+        // Intent i = new Intent(Intent.ACTION_SEND);
+        // i.setType("text/x-vcard");
+        // // i.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
+        // // uris);
+        // i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempFile));
+        // startActivity(Intent.createChooser(i, getText(R.string.menu_share)));
+
+        // return
+        Intent intent = new Intent();
+
+        intent.putExtra("ret", Uri.fromFile(tempFile));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 }
