@@ -113,16 +113,19 @@ public class MultiSelectExport extends ListActivity {
         // android.R.layout.simple_list_item_multiple_choice,
         // contactModArrayList));
 
+
         list = new ArrayList<Map<String, String>>();
         initData(list);
         mAdapter = new ContactMultiSelectAdapter(list, this);
         listView = getListView();
         listView.setAdapter(mAdapter);
 
-        pos = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            pos[i] = 0;
-        }
+//        pos = new int[list.size()];
+//        for (int i = 0; i < list.size(); i++) {
+//            pos[i] = 0;
+//        }
+
+
 
         listView.setItemsCanFocus(false);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -165,6 +168,13 @@ public class MultiSelectExport extends ListActivity {
             }
         });
 
+        Intent intent = getIntent();
+        int positionSelected = intent.getIntExtra("selected", -1);
+        if (positionSelected > 0) {
+            HashMap<Integer, Boolean> isSelected = ContactMultiSelectAdapter.getIsSelected();
+            isSelected.put(positionSelected, true);
+            ContactMultiSelectAdapter.setIsSelected(isSelected);
+        }
     }
 
     private void initData(ArrayList<Map<String, String>> list) {

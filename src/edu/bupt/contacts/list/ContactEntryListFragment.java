@@ -17,12 +17,12 @@
 package edu.bupt.contacts.list;
 
 import com.android.common.widget.CompositeCursorAdapter.Partition;
+
 import edu.bupt.contacts.ContactListEmptyView;
 import edu.bupt.contacts.ContactPhotoManager;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.preference.ContactsPreferences;
 import edu.bupt.contacts.widget.ContextMenuAdapter;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -57,6 +57,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -65,8 +66,10 @@ import android.widget.TextView;
  */
 public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter>
         extends Fragment
-        implements OnItemClickListener, OnScrollListener, OnFocusChangeListener, OnTouchListener,
-                LoaderCallbacks<Cursor> {
+ implements OnItemClickListener, OnScrollListener,
+        OnFocusChangeListener, OnTouchListener, LoaderCallbacks<Cursor>
+        /** zzz */
+        , OnItemLongClickListener {
     private static final String TAG = "ContactEntryListFragment";
 
     // TODO: Make this protected. This should not be used from the PeopleActivity but
@@ -756,6 +759,9 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
         mListView.setOnFocusChangeListener(this);
         mListView.setOnTouchListener(this);
         mListView.setFastScrollEnabled(!isSearchMode());
+        
+        /** zzz */
+        mListView.setOnItemLongClickListener(this);
 
         // Tell list view to not show dividers. We'll do it ourself so that we can *not* show
         // them when an A-Z headers is visible.
@@ -930,4 +936,19 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
             reloadData();
         }
     };
+
+    /** zzz  */
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        hideSoftKeyboard();
+
+        int adjPosition = position - mListView.getHeaderViewsCount();
+        if (adjPosition >= 0) {
+            onItemLongClick(adjPosition, id);
+        }
+        return false;
+    }
+
+    protected void onItemLongClick(int position, long id) {
+    }
 }

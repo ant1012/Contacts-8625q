@@ -414,16 +414,17 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
     }
 
     private boolean isStranger(String phoneNumber) {
-        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER };
-        Cursor cursor = context.getContentResolver().query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection, // Which columns to return.
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " = '"
-                        + phoneNumber + "'", // WHERE clause.
-                null, // WHERE clause value substitution
-                null); // Sort order.
-        return (!cursor.moveToFirst());// 不能以cursor是否为null判断
+//        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
+//                ContactsContract.CommonDataKinds.Phone.NUMBER };
+//        Cursor cursor = context.getContentResolver().query(
+//                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                projection, // Which columns to return.
+//                ContactsContract.CommonDataKinds.Phone.NUMBER + " = '"
+//                        + phoneNumber + "'", // WHERE clause.
+//                null, // WHERE clause value substitution
+//                null); // Sort order.
+//        return (!cursor.moveToFirst());// 不能以cursor是否为null判断
+        return false;
     }
 
 }

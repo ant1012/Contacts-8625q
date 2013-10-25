@@ -27,6 +27,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
     private static Context context;
     private LayoutInflater inflater = null;
     private static HashMap<Integer, Boolean> isSelected;
+    public ViewHolder holder = null;
 
     // private TextView textViewName;
     // private TextView textViewNumber;
@@ -61,7 +62,6 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(
