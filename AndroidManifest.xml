@@ -68,6 +68,9 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
+    <!-- zzz -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
     <application
         android:name="edu.bupt.contacts.ContactsApplication"
         android:hardwareAccelerated="true"

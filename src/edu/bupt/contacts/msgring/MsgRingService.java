@@ -1,5 +1,6 @@
 package edu.bupt.contacts.msgring;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Service;
@@ -8,7 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.telephony.SmsMessage;
@@ -17,7 +21,7 @@ import android.util.Log;
 /** zzz */
 public class MsgRingService extends Service {
     private final String TAG = "MsgRingService";
-    private final boolean OFFLINEDEBUG = true;
+    private final boolean OFFLINEDEBUG = false;
     private static Context receiverContext;
     private static Intent receiverIntent;
 
@@ -41,6 +45,7 @@ public class MsgRingService extends Service {
                     incomingNumber = getIncomingNumber(receiverIntent);
                 } else {
                     incomingNumber = "18911227942";
+                    // incomingNumber = "10086";
                 }
                 Log.i(TAG, "Msg from " + incomingNumber);
                 Log.i(TAG, "formatted " + fomatNumber(incomingNumber));
@@ -50,7 +55,13 @@ public class MsgRingService extends Service {
                 for (String s : contactidList) {
                     Log.i(TAG, "contatcid - " + s);
                 }
-                Log.i(TAG, "ring - " + dbhelper.queryRing(contactidList));
+
+                Uri ringUri = dbhelper.queryRing(contactidList);
+                Log.i(TAG, "ring - " + ringUri);
+
+                MediaPlayer mMediaPlayer = new MediaPlayer();
+                mMediaPlayer = MediaPlayer.create(MsgRingService.this, ringUri);
+                mMediaPlayer.start();
             }
         }).start();
     }
@@ -93,10 +104,21 @@ public class MsgRingService extends Service {
         ArrayList<String> contactidList = new ArrayList<String>();
         Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
-        while (pCur.moveToFirst()) {
-            contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
+        while (pCur.moveToNext()) {
+            contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
         }
         pCur.close();
+
+        Cursor pCurFormat = getContentResolver()
+                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+                        new String[] { fomatNumber(phoneNumber) }, null);
+        while (pCurFormat.moveToNext()) {
+            contactidList.add(pCurFormat.getString(pCurFormat
+                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+        }
+        pCurFormat.close();
+
         return contactidList;
     }
 
