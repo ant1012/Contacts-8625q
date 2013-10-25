@@ -1,5 +1,7 @@
 package edu.bupt.contacts.msgring;
 
+import java.util.ArrayList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,32 +9,17 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+/** zzz */
 public class MsgRingBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG = "MsgRingBroadcastReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        Log.v(TAG, "action = " + action);
-        Bundle bundle = intent.getExtras();
-        if (bundle == null) {
-            return;
-        }
+        Log.v(TAG, "action = " + intent.getAction());
 
-        Object[] pdus = (Object[]) bundle.get("pdus");
-        SmsMessage[] messages = new SmsMessage[pdus.length];
+        MsgRingService.setFromReveiver(context, intent);
 
-        int i = 0;
-        for (i = 0; i < messages.length; i++) {
-            byte[] pdu = (byte[]) pdus[i];
-            messages[i] = SmsMessage.createFromPdu(pdu);
-        }
-        if (i == 0) {
-            return;
-        }
-
-        String incomingNumber = messages[0].getOriginatingAddress();
-        Log.i(TAG, "Msg from " + incomingNumber);
+        Intent serviceIntent = new Intent(context, MsgRingService.class);
+        context.startService(serviceIntent);
     }
-
 }

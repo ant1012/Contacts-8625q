@@ -1,12 +1,18 @@
 package edu.bupt.contacts.msgring;
 
+import java.util.ArrayList;
+
+import edu.bupt.contacts.blacklist.BlacklistDBHelper;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
+/** zzz */
 public class MsgRingDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "msgring.db";
@@ -23,8 +29,8 @@ public class MsgRingDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase arg0) {
         Log.d(TAG, "onCreate");
-        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID
-                + " INTEGER PRIMARY KEY," + MSG_RING + " VARCHAR" + ")");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + MSG_RING
+                + " VARCHAR" + ")");
     }
 
     @Override
@@ -35,21 +41,45 @@ public class MsgRingDBHelper extends SQLiteOpenHelper {
 
     private void addRing(String contactid, String ring) {
         Log.d(TAG, "new record");
+        ContentValues values = new ContentValues();
+        values.put(ID, contactid);
+        values.put(MSG_RING, ring);
+        this.getWritableDatabase().insert(TB_NAME, null, values);
     }
 
     private void updateRing(String contactid, String ring) {
         Log.d(TAG, "exist");
+        delRing(contactid);
+        addRing(contactid, ring);
+    }
+
+    public void delRing(String contactid) {
+        Log.d(TAG, "del record");
+        this.getWritableDatabase().delete(TB_NAME, ID + " = ?", new String[] { contactid });
     }
 
     public void setRing(String contactid, String ring) {
         String sql = "select * from " + TB_NAME + " where " + ID + " = ?";
-        Cursor cursor = this.getWritableDatabase().rawQuery(sql,
-                new String[] { contactid });
+        Cursor cursor = this.getWritableDatabase().rawQuery(sql, new String[] { contactid });
         if (!cursor.moveToFirst()) { // new record
             addRing(contactid, ring);
         } else { // exist
             updateRing(contactid, ring);
         }
         cursor.close();
+    }
+
+    public Uri queryRing(ArrayList<String> contactidList) {
+        for (String id : contactidList) {
+            Cursor cursor = this.getWritableDatabase().query(TB_NAME, null, ID + " = ?", new String[] { id }, null,
+                    null, null);
+            if (cursor.moveToFirst()) {
+                Uri uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MSG_RING)));
+                cursor.close();
+                return uri;
+            }
+            cursor.close();
+        }
+        return null;
     }
 }
