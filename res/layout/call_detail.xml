@@ -13,14 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
+<!-- ddd 修改历史记录详情界面背景为灰色 f9f9f9-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ex="http://schemas.android.com/apk/res/edu.bupt.contacts"
     android:id="@+id/call_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    android:background="@android:color/black"
+    android:background="#f9f9f9"
 >
     <!--
       The list view is under everything.
@@ -138,7 +138,7 @@
             android:layout_marginBottom="@dimen/call_detail_button_spacing"
             android:layout_below="@id/voicemail_container"
             android:gravity="center_vertical"
-            android:background="@drawable/dialpad_background"
+
         >
             <LinearLayout
                 android:id="@+id/call_and_sms_main_action"
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:paddingRight="@dimen/call_log_icon_margin"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="?attr/call_log_primary_text_color"
+                        android:textColor="?attr/call_log_secondary_text_color"
                         android:singleLine="true"
                         android:ellipsize="end"
                     />
@@ -173,7 +173,7 @@
                         android:layout_height="wrap_content"
                         android:paddingRight="@dimen/call_log_icon_margin"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="?attr/call_log_primary_text_color"
+                        android:textColor="?attr/call_log_secondary_text_color"
                         android:textAllCaps="true"
                         android:singleLine="true"
                         android:ellipsize="end"
