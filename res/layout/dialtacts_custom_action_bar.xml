@@ -36,7 +36,7 @@
         android:paddingRight="4dip"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_menu_overflow"
+        android:src="@drawable/ic_menu_overflow_brown"
         android:background="?android:attr/selectableItemBackground"
         android:visibility="gone" />
 
