@@ -642,6 +642,10 @@
     <string name="title_activity_clear_call_log">ClearCallLog</string>
     <string name="action_settings">Settings</string>
     
+<!--    ddd  -->
+    <string name="show_calls_option">要显示的通话记录</string>
+    
+    
     <string name="choose_all">全选</string>
     <string name="title_clear_calllog">删除通话记录</string>
     <string name="incoming">来电</string>

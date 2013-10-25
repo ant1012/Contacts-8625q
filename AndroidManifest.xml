@@ -832,6 +832,12 @@
             android:label="@string/title_activity_clear_call_log"
             android:theme="@android:style/Theme.Holo.Light" />
 
+<!--         ddd 新建通话记录多选菜单-radiobutton -->
+        <activity
+            android:name="edu.bupt.contacts.calllog.ShowCallsOptionsAcivity"
+            android:label="@string/show_calls_option"
+            android:theme="@android:style/Theme.Holo.Light" />        
+        
         <!-- baoge -->
         <!-- <activity android:name=".activities.MultiSelectExport" /> -->
 

@@ -332,7 +332,7 @@ public class CallLogFragment extends ListFragment
             menu.findItem(R.id.show_voicemails_only).setVisible(
                     mVoicemailSourcesAvailable && !mShowingVoicemailOnly);
             //menu.findItem(R.id.show_all_calls).setVisible(mVoicemailSourcesAvailable && mShowingVoicemailOnly);
-            menu.findItem(R.id.show_all_calls).setVisible(true);
+//ddd?        menu.findItem(R.id.show_all_calls).setVisible(true);
         }
     }
 
@@ -346,41 +346,46 @@ public class CallLogFragment extends ListFragment
             case R.id.delete_all:  // modified by yuan 
             	startActivity(new Intent (getActivity(), ClearCallLog.class) );
                 return true;
+                
+            case R.id.show_calls_options:  // modified by ddd
+            	startActivity(new Intent (getActivity(), ShowCallsOptionsAcivity.class) );
+                return true;
 
             case R.id.show_voicemails_only:
 //                mCallLogQueryHandler.fetchVoicemailOnly();
 //                mShowingVoicemailOnly = true;
                 return true;
-
-            case R.id.show_all_calls:
-                mCallLogQueryHandler.fetchAllCalls();
-                mShowingVoicemailOnly = false;
-                return true;
-                
-            case R.id.show_in_calls:  //by yuan
-            	mCallLogQueryHandler.fetchPartialCalls("1");
-                mShowingVoicemailOnly = false;
-                return true;
-                
-            case R.id.show_out_calls:  //by yuan
-            	mCallLogQueryHandler.fetchPartialCalls("2");
-                mShowingVoicemailOnly = false;
-                return true;
-            case R.id.show_missed_calls:  //by yuan
-            	mCallLogQueryHandler.fetchPartialCalls("3");
-                mShowingVoicemailOnly = false;
-                return true;
-                
-            case R.id.show_sim_calls:    //by yuan
-            	mCallLogQueryHandler.fetchSimCalls("1");
-                mShowingVoicemailOnly = false;
-            	return true;
-            	
-            case R.id.show_uim_calls:    //by yuan
-            	mCallLogQueryHandler.fetchSimCalls("0");
-                mShowingVoicemailOnly = false;
-            	return true;
-            	
+//ddd start
+//            case R.id.show_all_calls:
+//                mCallLogQueryHandler.fetchAllCalls();
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_in_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("1");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_out_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("2");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//            case R.id.show_missed_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("3");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_sim_calls:    //by yuan
+//            	mCallLogQueryHandler.fetchSimCalls("1");
+//                mShowingVoicemailOnly = false;
+//            	return true;
+//            	
+//            case R.id.show_uim_calls:    //by yuan
+//            	mCallLogQueryHandler.fetchSimCalls("0");
+//                mShowingVoicemailOnly = false;
+//            	return true;
+ //ddd end              
+       	
             case R.id.number_locate_setting:    //by yuan
                 Intent intent = new Intent(getActivity(),NumberLocateSetting.class);
                 startActivity(intent);

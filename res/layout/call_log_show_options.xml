@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <RadioGroup
+    	android:id="@+id/call_log_show_radioGroup"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical"
+
+    >
+    	<RadioButton
+    		android:id="@+id/radiobutton_show_all_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/menu_show_all_calls"
+    		android:textSize="22sp"
+    	/>
+    	<RadioButton
+    		android:id="@+id/radiobutton_show_uim_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/show_uim_calls"
+    		android:textSize="22sp"
+    	/>
+    	<RadioButton
+    		android:id="@+id/radiobutton_show_sim_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/show_sim_calls"
+    		android:textSize="22sp"
+    	/>
+    	<RadioButton
+    		android:id="@+id/radiobutton_show_in_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/show_in_calls"
+    		android:textSize="22sp"
+    	/>
+    	
+    	<RadioButton
+    		android:id="@+id/radiobutton_show_out_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/show_out_calls"
+    		android:textSize="22sp"
+    	/>
+     	<RadioButton
+    		android:id="@+id/radiobutton_show_missed_calls"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/show_missed_calls"
+    		android:textSize="22sp"
+    	
+    	/>   	    	
+    	
+    	
+    	
+    </RadioGroup>
+</LinearLayout>
