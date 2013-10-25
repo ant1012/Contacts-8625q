@@ -23,10 +23,13 @@
         <item name="android:textColorSecondary">@color/dialtacts_secondary_text_color</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:actionBarStyle">@style/DialtactsActionBarStyle</item>
-        <item name="android:windowContentOverlay">@null</item>
+    
+        <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="android:actionMenuTextColor">#ffffff</item>   
         
-        <item name="android:listViewStyle">@style/ListViewStyle</item>
-
+        <item name="android:windowContentOverlay">@null</item>
+		<item name="android:listViewStyle">@style/ListViewStyle</item>
         <item name="section_header_background">@drawable/list_title_holo</item>
         <item name="list_section_header_height">32dip</item>
         <item name="list_item_divider">?android:attr/listDivider</item>
@@ -288,14 +291,37 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">150dip</item>
     </style>
-<!-- call-white ddd-->
+<!-- call-white 修改字体 ddd -->
+
     <style name="DialtactsActionBarStyle" parent="android:Widget.Holo.ActionBar">
         <item name="android:backgroundSplit">@null</item>
         <item name="android:backgroundStacked">@drawable/ab_solid_custom_blue_inverse_holo</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
         <item name="android:displayOptions"></item>
     </style>
+    
+      <!-- ddd ActionBar title text text color on buttons-->
+    <style name="MyActionBarTitleText"
+           parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
+    </style>
 
+    <!-- ddd ActionBar tabs text styles tab color -->
+    <style name="MyActionBarTabText"
+           parent="@android:style/Widget.Holo.ActionBar.TabText">
+        <item name="android:textColor">#ffffff</item>
+    </style>  
+    
+        <!-- ActionBar tabs styles -->
+    <style name="MyActionBarTabs"
+           parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <!-- tab indicator -->
+        <item name="android:background">@drawable/action_bar_tab</item>
+    </style>
+
+
+    
+    
     <style name="QuickContactListItemStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -334,7 +360,7 @@
     <style name="GroupMembershipSizeTextAppearance" parent="@android:style/TextAppearance.Small"/>
 
     <!-- TextView style with blue underline. It is most suitable for headers.
-
+         经常呼叫的联系人
          This is similar to ?android:attr/listSeparatorTextView but uses different
          background and text color. See also android:style/Widget.Holo.TextView.ListSeparator
          (which is private, so we cannot specify it as a parent style).  -->
