@@ -92,27 +92,7 @@ public class ShowCallsOptionsAcivity extends Activity{
         buttonUim=(RadioButton)findViewById(R.id.radiobutton_show_uim_calls);
 
         
-//        radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//			
-//			@Override
-//			public void onCheckedChanged(RadioGroup group, int checkedId) {
-//				// TODO Auto-generated method stub
-//				if(checkedId==radio2.getId())
-//				{
-//					DisplayToast("正确答案："+radio2.getText()+"，恭喜你，回答正确！");
-//				}else
-//				{
-//					DisplayToast("请注意，回答错误！");
-//				}
-//			}
-//		});
-//    }
-//    public void DisplayToast(String str)
-//    {
-//    	Toast toast=Toast.makeText(this, str, Toast.LENGTH_LONG);
-//    	toast.setGravity(Gravity.TOP,0,220);
-//    	toast.show();
-//    }
+
 	}
 
 }

@@ -836,7 +836,13 @@
         <activity
             android:name="edu.bupt.contacts.calllog.ShowCallsOptionsAcivity"
             android:label="@string/show_calls_option"
-            android:theme="@android:style/Theme.Holo.Light" />        
+            android:theme="@android:style/Theme.Holo.Light" />
+        
+<!--         ddd         -->
+        <activity android:name="edu.bupt.contacts.calllog.CallLogSearch"
+           		  android:theme="@android:style/Theme.Holo.Light" 
+            
+            />
         
         <!-- baoge -->
         <!-- <activity android:name=".activities.MultiSelectExport" /> -->

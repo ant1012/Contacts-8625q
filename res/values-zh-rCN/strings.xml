@@ -279,7 +279,8 @@
     <string name="add_2sec_pause" msgid="9214012315201040129">"暂停时间延长 2 秒"</string>
     <string name="add_wait" msgid="3360818652790319634">"延长等待时间"</string>
     <string name="call_disambig_title" msgid="4392886850104795739">"选择号码"</string>
-    <string name="call_settings" msgid="7666474782093693667">"设置"</string>
+<!--     ddd -->
+    <string name="call_settings" msgid="7666474782093693667">"系统通话设置"</string>
     <string name="sms_disambig_title" msgid="5846266399240630846">"选择号码"</string>
     <string name="make_primary" msgid="5829291915305113983">"记住此选择"</string>
     <string name="quickcontact_missing_app" msgid="358168575340921552">"未找到可处理此操作的应用。"</string>
@@ -670,8 +671,8 @@
     <string name="cdma_ip_setting">CDMA IP电话设置</string>
     <string name="gsm_ip_setting">GSM IP电话设置</string>
     <string name="default_ip_setting">修改IP电话前缀</string>
-    
-    <string name="call_setting">通话设置</string>
+<!-- ddd     -->
+    <string name="call_setting">IP通话设置</string>
     <string name="call_ip_setting_dialog_title">IP电话设置</string>
     <string name="call_ip_dialog_title">IP电话选择</string>
     

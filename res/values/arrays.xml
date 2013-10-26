@@ -702,4 +702,16 @@
         <item>呼叫</item>
         <item>清空列表</item>
     </array>
+    
+<!-- ddd -->
+    <array name="call_log_show_options">
+        <item>@string/menu_show_all_calls</item>
+        <item>@string/show_uim_calls</item>
+        <item>@string/show_sim_calls</item>
+        <item>@string/show_in_calls</item>
+        <item>@string/show_out_calls</item>
+        <item>@string/show_missed_calls</item>
+    </array>
+
+	
 </resources>

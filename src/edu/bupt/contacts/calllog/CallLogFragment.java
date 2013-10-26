@@ -17,6 +17,10 @@
 package edu.bupt.contacts.calllog;
 
 import com.android.common.io.MoreCloseables;
+import com.android.common.widget.GroupingListAdapter;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
 
 import edu.bupt.contacts.CallDetailActivity;
 import edu.bupt.contacts.ContactsUtils;
@@ -29,9 +33,12 @@ import com.android.internal.telephony.ITelephony;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -61,7 +68,8 @@ import java.util.List;
  * Displays a list of call log entries.
  */
 public class CallLogFragment extends ListFragment
-        implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher {
+        implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher
+         {
     private static final String TAG = "CallLogFragment";
 
     /**
@@ -348,8 +356,25 @@ public class CallLogFragment extends ListFragment
                 return true;
                 
             case R.id.show_calls_options:  // modified by ddd
-            	startActivity(new Intent (getActivity(), ShowCallsOptionsAcivity.class) );
-                return true;
+            	// ddd startActivity(new Intent (getActivity(), ShowCallsOptionsAcivity.class) );
+            	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            	builder.setTitle("要显示的通话记录");
+            	builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
+            	builder.setSingleChoiceItems(R.array.call_log_show_options,0, new OnClickListener(){
+            		@Override
+            		public void onClick(DialogInterface dialog,int which){
+            			
+            			choose_show_calls_options(which);
+            			mShowingVoicemailOnly = false;
+            			dialog.dismiss();
+            			
+            		}
+
+            	});
+                builder.create();
+                builder.show();
+                
+            	return true;
 
             case R.id.show_voicemails_only:
 //                mCallLogQueryHandler.fetchVoicemailOnly();
@@ -376,7 +401,7 @@ public class CallLogFragment extends ListFragment
 //                return true;
 //                
 //            case R.id.show_sim_calls:    //by yuan
-//            	mCallLogQueryHandler.fetchSimCalls("1");
+//          	mCallLogQueryHandler.fetchSimCalls("1");
 //                mShowingVoicemailOnly = false;
 //            	return true;
 //            	
@@ -519,4 +544,42 @@ public class CallLogFragment extends ListFragment
 //        getActivity().startService(serviceIntent);
 //    }
 
+    
+//    public void singleChoice(View source){
+//    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//    	builder.setTitle("要显示的通话记录");
+//    	builder.setIcon(R.drawable.ic_launcher_shortcut_directdial);
+//      MenuItem item;
+//
+//
+//    	
+//    	
+//    	
+//    }
+    
+// ddd   <array name="call_log_show_options">
+//    <item>@string/menu_show_all_calls</item>  which=0
+//    <item>@string/show_uim_calls</item>       which=1
+//    <item>@string/show_sim_calls</item>       ...
+//    <item>@string/show_in_calls</item>
+//    <item>@string/show_out_calls</item>
+//    <item>@string/show_missed_calls</item>
+////</array>
+    private void choose_show_calls_options(int which){
+    	if(which==0){
+    		mCallLogQueryHandler.fetchAllCalls();
+    		}
+    	else if(which<=2){
+    		mCallLogQueryHandler.fetchSimCalls(String.valueOf(which-1));
+    		
+    	}
+    	else{
+    		mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which-2));
+    		
+    	}
+		
+		Log.i(TAG, "which "+ which);
+		mShowingVoicemailOnly = false;
+    
+    }
 }
