@@ -950,6 +950,8 @@ public class ImportVCardActivity extends ContactsActivity {
                     mProgressDialogForCachingVCard.setMessage(message);
                     mProgressDialogForCachingVCard.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     mProgressDialogForCachingVCard.setOnCancelListener(mVCardCacheThread);
+                    
+                    /** zzz */
                     startVCardService();
                 }
                 return mProgressDialogForCachingVCard;

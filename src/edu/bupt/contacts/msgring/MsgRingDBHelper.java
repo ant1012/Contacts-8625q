@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 
@@ -20,9 +21,11 @@ public class MsgRingDBHelper extends SQLiteOpenHelper {
     private static final String TB_NAME = "msgring";
     public static final String ID = "_id";
     public static final String MSG_RING = "msgring";
+    private Context context;
 
     public MsgRingDBHelper(Context context, int version) {
         super(context, DATABASE_NAME, null, version);
+        this.context = context;
         this.getWritableDatabase();
     }
 
@@ -41,16 +44,19 @@ public class MsgRingDBHelper extends SQLiteOpenHelper {
 
     private void addRing(String contactid, String ring) {
         Log.d(TAG, "new record");
+
+        Uri RingUri = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
+        Log.i(TAG, "ringtone - " + RingUri);
+        Log.i(TAG, "ring - " + ring);
+        if (ring == null || ring.equals(RingUri.toString())) {
+            delRing(contactid);
+            return;
+        }
+
         ContentValues values = new ContentValues();
         values.put(ID, contactid);
         values.put(MSG_RING, ring);
         this.getWritableDatabase().insert(TB_NAME, null, values);
-    }
-
-    private void updateRing(String contactid, String ring) {
-        Log.d(TAG, "exist");
-        delRing(contactid);
-        addRing(contactid, ring);
     }
 
     public void delRing(String contactid) {
@@ -64,7 +70,9 @@ public class MsgRingDBHelper extends SQLiteOpenHelper {
         if (!cursor.moveToFirst()) { // new record
             addRing(contactid, ring);
         } else { // exist
-            updateRing(contactid, ring);
+            Log.d(TAG, "exist");
+            delRing(contactid);
+            addRing(contactid, ring);
         }
         cursor.close();
     }

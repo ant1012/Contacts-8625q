@@ -2,6 +2,8 @@ package edu.bupt.contacts.msgring;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -51,17 +53,19 @@ public class MsgRingService extends Service {
                 Log.i(TAG, "formatted " + fomatNumber(incomingNumber));
 
                 ArrayList<String> contactidList = getContactidFromNumber(incomingNumber);
-                MsgRingDBHelper dbhelper = new MsgRingDBHelper(MsgRingService.this, 1);
                 for (String s : contactidList) {
                     Log.i(TAG, "contatcid - " + s);
                 }
 
+                MsgRingDBHelper dbhelper = new MsgRingDBHelper(MsgRingService.this, 1);
                 Uri ringUri = dbhelper.queryRing(contactidList);
                 Log.i(TAG, "ring - " + ringUri);
 
-                MediaPlayer mMediaPlayer = new MediaPlayer();
-                mMediaPlayer = MediaPlayer.create(MsgRingService.this, ringUri);
-                mMediaPlayer.start();
+                if (ringUri != null) {
+                    MediaPlayer mMediaPlayer = new MediaPlayer();
+                    mMediaPlayer = MediaPlayer.create(MsgRingService.this, ringUri);
+                    mMediaPlayer.start();
+                }
             }
         }).start();
     }
@@ -109,6 +113,7 @@ public class MsgRingService extends Service {
         }
         pCur.close();
 
+        // -
         Cursor pCurFormat = getContentResolver()
                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                         ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
@@ -119,6 +124,27 @@ public class MsgRingService extends Service {
         }
         pCurFormat.close();
 
+        // +86
+        phoneNumber = replacePattern(phoneNumber, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                               // +86
+        Cursor pCur86 = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
+        while (pCur86.moveToNext()) {
+            contactidList
+                    .add(pCur86.getString(pCur86.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+        }
+        pCur86.close();
+
+        // -
+        Cursor pCur86Format = getContentResolver()
+                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+                        new String[] { fomatNumber(phoneNumber) }, null);
+        while (pCur86Format.moveToNext()) {
+            contactidList.add(pCur86Format.getString(pCur86Format
+                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+        }
+        pCur86Format.close();
         return contactidList;
     }
 
@@ -144,5 +170,19 @@ public class MsgRingService extends Service {
             }
         }
         return "";
+    }
+
+    private String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
     }
 }

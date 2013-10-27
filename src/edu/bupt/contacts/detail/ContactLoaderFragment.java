@@ -1009,13 +1009,18 @@ public class ContactLoaderFragment extends Fragment implements
     private void doPickMsgRing() {
 
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        // Allow user to pick 'Default'
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        // // Allow user to pick 'Default'
+        // intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
         // Show only ringtones
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,
                 RingtoneManager.TYPE_NOTIFICATION);
         // Don't show 'Silent'
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+
+        /** zzz */
+        Uri selectedRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
+                RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, selectedRingtoneUri);
 
         // Uri msgringUri;
         // Log.i("mCustomMsgRing",""+mCustomMsgRing);

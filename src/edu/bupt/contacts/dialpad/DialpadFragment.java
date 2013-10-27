@@ -205,18 +205,18 @@ public class DialpadFragment extends Fragment
     /*
      * added by yuan
      */
-	private List<CallResearchModel> allContactList,totalMatchedList;	
-	
-	
-	private List<CallResearchModel> rawThreeDaysList, rawThirtyDaysList, rawHistoryList;
-	
-	private initQueryDataThread rawThreeDaysListThread;
-	private initQueryDataThread rawThirtyDaysListThread;
-	private initQueryDataThread rawHistoryListThread;
-	
-	private Button mMatchMore,mMatchAddNew;
-	
-	ArrayList<String> numbers;
+    private List<CallResearchModel> allContactList,totalMatchedList;    
+    
+    
+    private List<CallResearchModel> rawThreeDaysList, rawThirtyDaysList, rawHistoryList;
+    
+    private initQueryDataThread rawThreeDaysListThread;
+    private initQueryDataThread rawThirtyDaysListThread;
+    private initQueryDataThread rawHistoryListThread;
+    
+    private Button mMatchMore,mMatchAddNew;
+    
+    ArrayList<String> numbers;
 
     private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
         /**
@@ -297,14 +297,14 @@ public class DialpadFragment extends Fragment
         
         //added by yuan        
         
-    	allContactList = new ArrayList<CallResearchModel>();
-    	totalMatchedList = new ArrayList<CallResearchModel>();
-    	
-    	rawThreeDaysList = new ArrayList<CallResearchModel>();
-    	rawThirtyDaysList = new ArrayList<CallResearchModel>();
-    	rawHistoryList = new ArrayList<CallResearchModel>();
-    	numbers = new ArrayList<String>();
-    	
+        allContactList = new ArrayList<CallResearchModel>();
+        totalMatchedList = new ArrayList<CallResearchModel>();
+        
+        rawThreeDaysList = new ArrayList<CallResearchModel>();
+        rawThirtyDaysList = new ArrayList<CallResearchModel>();
+        rawHistoryList = new ArrayList<CallResearchModel>();
+        numbers = new ArrayList<String>();
+        
         adapter = new CallResearchAdapter(getActivity());
         
         initQueryData();
@@ -348,36 +348,36 @@ public class DialpadFragment extends Fragment
         mMatchedPhones.setClickable(true);
         mMatchedPhones.setOnClickListener(new OnClickListener(){
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				mDigits.getText().clear();
-								
-			    if(mMatchList.isShown()){
-			    	mMatchList.setVisibility(View.GONE);
-			    	mDialpad.setVisibility(View.VISIBLE);
-			    }
-			    
-			    if(numbers!=null&&numbers.size()>1){
-			    	final String sequence[] = (String[])numbers.toArray(new String[numbers.size()]);
-			    	Builder dialog = new AlertDialog.Builder(getActivity()).setTitle("ºÅÂëÑ¡Ôñ").setItems(sequence, new DialogInterface.OnClickListener() {                  
-				    	public void onClick(DialogInterface dialog, int which) {          
-				    		// TODO Auto-generated method stub          
-				    		mDigits.getText().append(sequence[which]);				          
-				    		}        
-				    	}).setNegativeButton("È¡Ïû", new DialogInterface.OnClickListener() {                  
-				    		public void onClick(DialogInterface dialog, int which) {}        
-				    		} 
-				    	);
-				    dialog.create().show();
-				    return;
-			    }
-			    
-			    if(numbers!=null&&numbers.size()==1){
-			    	mDigits.getText().append(numbers.get(0).toString());	
-			    }
-			}
-        	
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                mDigits.getText().clear();
+                                
+                if(mMatchList.isShown()){
+                    mMatchList.setVisibility(View.GONE);
+                    mDialpad.setVisibility(View.VISIBLE);
+                }
+                
+                if(numbers!=null&&numbers.size()>1){
+                    final String sequence[] = (String[])numbers.toArray(new String[numbers.size()]);
+                    Builder dialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.call_disambig_title).setItems(sequence, new DialogInterface.OnClickListener() {                  
+                        public void onClick(DialogInterface dialog, int which) {          
+                            // TODO Auto-generated method stub          
+                            mDigits.getText().append(sequence[which]);                        
+                            }        
+                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {                  
+                            public void onClick(DialogInterface dialog, int which) {}        
+                            } 
+                        );
+                    dialog.create().show();
+                    return;
+                }
+                
+                if(numbers!=null&&numbers.size()==1){
+                    mDigits.getText().append(numbers.get(0).toString());    
+                }
+            }
+            
         });
 
 
@@ -425,63 +425,63 @@ public class DialpadFragment extends Fragment
         mMatchAddNew = (Button) fragmentView.findViewById(R.id.button_add_new);
         mMatchAddNew.setVisibility(View.GONE);
         mMatchAddNew.setOnClickListener(new OnClickListener(){
-        	@Override
-			public void onClick(View arg0) {
-        		final CharSequence digits = mDigits.getText();
-        		startActivity(getAddToContactIntent(digits));
-        		Log.v("mMatchAddNew","mMatchAddNew");
-			}
+            @Override
+            public void onClick(View arg0) {
+                final CharSequence digits = mDigits.getText();
+                startActivity(getAddToContactIntent(digits));
+                Log.v("mMatchAddNew","mMatchAddNew");
+            }
         });
         
         mMatchMore = (Button) fragmentView.findViewById(R.id.button_more);
         mMatchMore.setVisibility(View.GONE);
         mMatchMore.setOnClickListener(new OnClickListener(){
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if(mMatchList.isShown()){
-					mMatchList.setVisibility(View.GONE);
-					mDialpad.setVisibility(View.VISIBLE);
-				}else{
-					mMatchList.setVisibility(View.VISIBLE);
-					mDialpad.setVisibility(View.GONE);
-				}
-				
-//				Intent intent = new Intent(getActivity(), MultiSimSettings.class);
-//				startActivity(intent);
-			}     	 
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                if(mMatchList.isShown()){
+                    mMatchList.setVisibility(View.GONE);
+                    mDialpad.setVisibility(View.VISIBLE);
+                }else{
+                    mMatchList.setVisibility(View.VISIBLE);
+                    mDialpad.setVisibility(View.GONE);
+                }
+                
+//              Intent intent = new Intent(getActivity(), MultiSimSettings.class);
+//              startActivity(intent);
+            }        
         });
         
         // by yuan 
         matchListView.setOnItemClickListener(new OnItemClickListener(){
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				//Log.v("yuanyetao",""+adapter.getAdapterList().get(arg2).telnum);
-				mDigits.getText().clear();
-				mDigits.getText().append(adapter.getAdapterList().get(arg2).telnum);
-				
-				mMatchedName.setText(adapter.getAdapterList().get(arg2).name); 
-			    mMatchList.setVisibility(View.GONE);
-			    mDialpad.setVisibility(View.VISIBLE);
-			    
-			    StringBuffer sb = new StringBuffer();
-			    numbers = getPhonenumbersFromName(totalMatchedList,adapter.getAdapterList().get(arg2).name.toString());
-				if(numbers!=null&&numbers.size()>1){
-					for(int i=0;i<numbers.size();i++){
-						sb.append(numbers.get(i).toString()).append('/');							
-					}
-					sb.deleteCharAt(sb.length()-1);
-				}else if(numbers!=null&&numbers.size()==1){
-					sb.append(numbers.get(0).toString());
-				}
-				mMatchedPhones.setText(sb.toString());
-				
-			}
-        	
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                    long arg3) {
+                // TODO Auto-generated method stub
+                //Log.v("yuanyetao",""+adapter.getAdapterList().get(arg2).telnum);
+                mDigits.getText().clear();
+                mDigits.getText().append(adapter.getAdapterList().get(arg2).telnum);
+                
+                mMatchedName.setText(adapter.getAdapterList().get(arg2).name); 
+                mMatchList.setVisibility(View.GONE);
+                mDialpad.setVisibility(View.VISIBLE);
+                
+                StringBuffer sb = new StringBuffer();
+                numbers = getPhonenumbersFromName(totalMatchedList,adapter.getAdapterList().get(arg2).name.toString());
+                if(numbers!=null&&numbers.size()>1){
+                    for(int i=0;i<numbers.size();i++){
+                        sb.append(numbers.get(i).toString()).append('/');                           
+                    }
+                    sb.deleteCharAt(sb.length()-1);
+                }else if(numbers!=null&&numbers.size()==1){
+                    sb.append(numbers.get(0).toString());
+                }
+                mMatchedPhones.setText(sb.toString());
+                
+            }
+            
         });
 
         // In landscape we put the keyboard in phone mode.
@@ -752,14 +752,14 @@ public class DialpadFragment extends Fragment
         
         //added by yuan
 
-    	mDigits.getText().clear();
-		mMatchedPhones.setText("");
-		mMatchedName.setText(""); 
-	    mMatchList.setVisibility(View.GONE);
-	    mDialpad.setVisibility(View.VISIBLE);
-	    mMatchMore.setVisibility(View.GONE);	  
-	    mMatchAddNew.setVisibility(View.GONE);
-	    
+        mDigits.getText().clear();
+        mMatchedPhones.setText("");
+        mMatchedName.setText(""); 
+        mMatchList.setVisibility(View.GONE);
+        mDialpad.setVisibility(View.VISIBLE);
+        mMatchMore.setVisibility(View.GONE);      
+        mMatchAddNew.setVisibility(View.GONE);
+        
     }
 
     @Override
@@ -838,31 +838,31 @@ public class DialpadFragment extends Fragment
         
         callIPOneMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
 
-			@Override
-			public boolean onMenuItemClick(MenuItem arg0) {
-				// TODO Auto-generated method stub
-				final String number = mDigits.getText().toString();
-	            if (number != null){	               
-	            	((DialtactsActivity)getActivity()).call(ipcall.getCDMAIPCode()+number); 
-	            }
-				return false;
-			}
-        	
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+                // TODO Auto-generated method stub
+                final String number = mDigits.getText().toString();
+                if (number != null){                   
+                    ((DialtactsActivity)getActivity()).call(ipcall.getCDMAIPCode()+number); 
+                }
+                return false;
+            }
+            
         });
         
         
         callIPTwoMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
 
-			@Override
-			public boolean onMenuItemClick(MenuItem arg0) {
-				// TODO Auto-generated method stub
-				final String number = mDigits.getText().toString();
-	            if (number != null){	               
-	            	((DialtactsActivity)getActivity()).call(ipcall.getGSMIPCode()+number); 
-	            }
-				return false;
-			}
-        	
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+                // TODO Auto-generated method stub
+                final String number = mDigits.getText().toString();
+                if (number != null){                   
+                    ((DialtactsActivity)getActivity()).call(ipcall.getGSMIPCode()+number); 
+                }
+                return false;
+            }
+            
         });
         
 
@@ -886,14 +886,14 @@ public class DialpadFragment extends Fragment
         callLogSettingMenuItem.setVisible(true);
         callLogSettingMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener(){
 
-			@Override
-			public boolean onMenuItemClick(MenuItem arg0) {
-				// TODO Auto-generated method stub
-				final Intent intent = new Intent(getActivity(),CalllogSettingActivity.class);
-				startActivity(intent);
-				return false;
-			}
-        	
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+                // TODO Auto-generated method stub
+                final Intent intent = new Intent(getActivity(),CalllogSettingActivity.class);
+                startActivity(intent);
+                return false;
+            }
+            
         });
         
         
@@ -909,18 +909,18 @@ public class DialpadFragment extends Fragment
             callIPOneMenuItem.setVisible(false);
             callIPTwoMenuItem.setVisible(false);
         } else {
-        	
-        	if(ipcall.isCDMAIPEnabled()){
-            	callIPOneMenuItem.setVisible(true);
+            
+            if(ipcall.isCDMAIPEnabled()){
+                callIPOneMenuItem.setVisible(true);
             }else{
-            	callIPOneMenuItem.setVisible(false);
+                callIPOneMenuItem.setVisible(false);
             }
-        	if(ipcall.isGSMIPEnabled()){
-            	callIPTwoMenuItem.setVisible(true);
+            if(ipcall.isGSMIPEnabled()){
+                callIPTwoMenuItem.setVisible(true);
             }else{
-            	callIPTwoMenuItem.setVisible(false);
-            }            	
-        	
+                callIPTwoMenuItem.setVisible(false);
+            }               
+            
             final CharSequence digits = mDigits.getText();
 
             // Put the current digits string into an intent
@@ -973,12 +973,12 @@ public class DialpadFragment extends Fragment
         return intent;
     }
     
-    private static Intent getSendSMSIntent(CharSequence digits){	
-    	Uri uri = Uri.parse("smsto:"+digits);
-    	final Intent intent = new Intent(Intent.ACTION_SENDTO,uri);
+    private static Intent getSendSMSIntent(CharSequence digits){    
+        Uri uri = Uri.parse("smsto:"+digits);
+        final Intent intent = new Intent(Intent.ACTION_SENDTO,uri);
 //        intent.putExtra(Insert.PHONE, digits);
 //        intent.setType(People.CONTENT_ITEM_TYPE);
-        return intent;   	
+        return intent;      
     }
 
     private void keyPressed(int keyCode) {
@@ -1038,7 +1038,7 @@ public class DialpadFragment extends Fragment
     }
     
     private Handler myHandler = new Handler(){
-    	public void handleMessage(Message msg) {
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
             matchPhoneNumber(mDigits.getText().toString());                    
         }
@@ -1049,58 +1049,58 @@ public class DialpadFragment extends Fragment
      * added by yuan
      */
     private void matchPhoneNumber(String phonenumber) {
-		// TODO Auto-generated method stub
-    	if(phonenumber.length()<1){
-    		mMatchedPhones.setText("");
-    		mMatchedName.setText("");
-    		adapter.refresh(allContactList, true);
-    		mMatchMore.setVisibility(View.GONE);
-    		mMatchList.setVisibility(View.GONE);
-    		mMatchAddNew.setVisibility(View.GONE);
-    	    mDialpad.setVisibility(View.VISIBLE);
-    	}else{ 
-    		totalMatchedList.clear();
-    		mMatchAddNew.setVisibility(View.GONE);
-    		//Log.v("aaaa",""+rawThreeDaysListThread.get_state());
-    		if(rawThreeDaysListThread!=null&&rawThreeDaysListThread.get_state()&&rawThreeDaysList.size()>0){
-    			search(totalMatchedList,rawThreeDaysList,phonenumber.replace(" ", ""));
-    			//Log.v("aa1","bb");
-    		}
-    		if(rawThirtyDaysListThread!=null&&rawThirtyDaysListThread.get_state()&&rawThirtyDaysList.size()>0){
-    			search(totalMatchedList,rawThirtyDaysList,phonenumber.replace(" ", ""));
-    			//Log.v("aa2","bb");
-    		}
-    		if(rawHistoryListThread!=null&&rawHistoryListThread.get_state()&&rawHistoryList.size()>0){
-    			search(totalMatchedList,rawHistoryList,phonenumber.replace(" ", ""));
-    			//Log.v("aa3","bb");
-    		}
-    		if(totalMatchedList.size()<1){
-    			mMatchAddNew.setVisibility(View.VISIBLE);
-    		}
-    	}  	
-	}
+        // TODO Auto-generated method stub
+        if(phonenumber.length()<1){
+            mMatchedPhones.setText("");
+            mMatchedName.setText("");
+            adapter.refresh(allContactList, true);
+            mMatchMore.setVisibility(View.GONE);
+            mMatchList.setVisibility(View.GONE);
+            mMatchAddNew.setVisibility(View.GONE);
+            mDialpad.setVisibility(View.VISIBLE);
+        }else{ 
+            totalMatchedList.clear();
+            mMatchAddNew.setVisibility(View.GONE);
+            //Log.v("aaaa",""+rawThreeDaysListThread.get_state());
+            if(rawThreeDaysListThread!=null&&rawThreeDaysListThread.get_state()&&rawThreeDaysList.size()>0){
+                search(totalMatchedList,rawThreeDaysList,phonenumber.replace(" ", ""));
+                //Log.v("aa1","bb");
+            }
+            if(rawThirtyDaysListThread!=null&&rawThirtyDaysListThread.get_state()&&rawThirtyDaysList.size()>0){
+                search(totalMatchedList,rawThirtyDaysList,phonenumber.replace(" ", ""));
+                //Log.v("aa2","bb");
+            }
+            if(rawHistoryListThread!=null&&rawHistoryListThread.get_state()&&rawHistoryList.size()>0){
+                search(totalMatchedList,rawHistoryList,phonenumber.replace(" ", ""));
+                //Log.v("aa3","bb");
+            }
+            if(totalMatchedList.size()<1){
+                mMatchAddNew.setVisibility(View.VISIBLE);
+            }
+        }   
+    }
     
     /**
-     * ¸ù¾İÃû×ÖÖĞµÄÄ³Ò»¸ö×Ö½øĞĞÄ£ºı²éÑ¯
+     * æ ¹æ®åå­—ä¸­çš„æŸä¸€ä¸ªå­—è¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
      * @param key
      */
     private boolean getFuzzyQuery(List<CallResearchModel> dataList,long startTime,long endTime){
-    	  	
-    	StringBuilder sb = new StringBuilder();
-    	ContentResolver cr = getActivity().getContentResolver();   	
-    	//Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/"+key);  
-    	Uri uri = Uri.parse("content://com.android.contacts/data/phones/"); 
-    	String selection = "(( last_time_contacted  >= ?) AND ( last_time_contacted < ?))";
+            
+        StringBuilder sb = new StringBuilder();
+        ContentResolver cr = getActivity().getContentResolver();    
+        //Uri uri = Uri.parse("content://com.android.contacts/data/phones/filter/"+key);  
+        Uri uri = Uri.parse("content://com.android.contacts/data/phones/"); 
+        String selection = "(( last_time_contacted  >= ?) AND ( last_time_contacted < ?))";
         String[] selectionArgs = new String[] {String.valueOf(startTime), String.valueOf(endTime)};
         Cursor cursor = cr.query(uri, new String[] {ContactsContract.Contacts.DISPLAY_NAME,
-        		ContactsContract.CommonDataKinds.Phone.NUMBER,"last_time_contacted","times_contacted"},selection, selectionArgs, "times_contacted DESC"); 
-		for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
-			CallResearchModel m = new CallResearchModel(cursor.getString(0), cursor.getString(1));
-			//Log.v("dddd",""+cursor.getString(0)+":"+cursor.getString(1)+":"+cursor.getString(2)+":"+cursor.getString(3));
-			dataList.add(m);
-		}
-		cursor.close();
-		return true;
+                ContactsContract.CommonDataKinds.Phone.NUMBER,"last_time_contacted","times_contacted"},selection, selectionArgs, "times_contacted DESC"); 
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            CallResearchModel m = new CallResearchModel(cursor.getString(0), cursor.getString(1));
+            //Log.v("dddd",""+cursor.getString(0)+":"+cursor.getString(1)+":"+cursor.getString(2)+":"+cursor.getString(3));
+            dataList.add(m);
+        }
+        cursor.close();
+        return true;
     }
     
     /*
@@ -1109,181 +1109,181 @@ public class DialpadFragment extends Fragment
      */
     
     public void initQueryData(){
-    	long currentTime = System.currentTimeMillis();
-		long threeDaysBeforeTime = System.currentTimeMillis() - 3*24*3600*1000L;
-		long thirtyDaysBeforeTime = System.currentTimeMillis() - 2592000000L;
-		//Log.v("dddd",new Date((long) currentTime).toLocaleString()+currentTime);
-		//Log.v("dddd",new Date((long) threeDaysBeforeTime).toLocaleString()+threeDaysBeforeTime);
-		//Log.v("dddd",new Date((long) thirtyDaysBeforeTime).toLocaleString()+thirtyDaysBeforeTime);
+        long currentTime = System.currentTimeMillis();
+        long threeDaysBeforeTime = System.currentTimeMillis() - 3*24*3600*1000L;
+        long thirtyDaysBeforeTime = System.currentTimeMillis() - 2592000000L;
+        //Log.v("dddd",new Date((long) currentTime).toLocaleString()+currentTime);
+        //Log.v("dddd",new Date((long) threeDaysBeforeTime).toLocaleString()+threeDaysBeforeTime);
+        //Log.v("dddd",new Date((long) thirtyDaysBeforeTime).toLocaleString()+thirtyDaysBeforeTime);
 
-		rawThreeDaysListThread = new initQueryDataThread(rawThreeDaysList,threeDaysBeforeTime,currentTime);
-		rawThreeDaysListThread.start();
-		rawThirtyDaysListThread = new initQueryDataThread(rawThirtyDaysList,thirtyDaysBeforeTime,threeDaysBeforeTime);
-		rawThirtyDaysListThread.start();
-		rawHistoryListThread = new initQueryDataThread(rawHistoryList,0,thirtyDaysBeforeTime);
-		rawHistoryListThread.start();
-		   			
+        rawThreeDaysListThread = new initQueryDataThread(rawThreeDaysList,threeDaysBeforeTime,currentTime);
+        rawThreeDaysListThread.start();
+        rawThirtyDaysListThread = new initQueryDataThread(rawThirtyDaysList,thirtyDaysBeforeTime,threeDaysBeforeTime);
+        rawThirtyDaysListThread.start();
+        rawHistoryListThread = new initQueryDataThread(rawHistoryList,0,thirtyDaysBeforeTime);
+        rawHistoryListThread.start();
+                    
     }
     
     public class initQueryDataThread extends Thread {
-    	
-    	List<CallResearchModel> dataList;
-    	long startTime,endTime;
-    	public boolean state;
-    	public initQueryDataThread(List<CallResearchModel> dataList,long startTime,long endTime){
-    		this.dataList = dataList;
-    		this.startTime = startTime;
-    		this.endTime = endTime;
-    		this.state = false;
-    	}
-    	
-    	public void run(){  	    	   		   		
-    		state = getFuzzyQuery(dataList,startTime,endTime);  
-    		Log.v("yuantest","¼ÓÔØÍê³É"+dataList.size());
-    	}
-    	
-    	public boolean get_state(){
-    		return state;
-    	}
+        
+        List<CallResearchModel> dataList;
+        long startTime,endTime;
+        public boolean state;
+        public initQueryDataThread(List<CallResearchModel> dataList,long startTime,long endTime){
+            this.dataList = dataList;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.state = false;
+        }
+        
+        public void run(){                              
+            state = getFuzzyQuery(dataList,startTime,endTime);  
+            Log.v("yuantest","åŠ è½½å®Œæˆ"+dataList.size());
+        }
+        
+        public boolean get_state(){
+            return state;
+        }
     }
     
     /**
-	 * °´ºÅÂë-Æ´ÒôËÑË÷ÁªÏµÈË
-	 * @param str
-	 */
-	public void search(List<CallResearchModel> totalMatchedList,List<CallResearchModel> rawDataList,String str){
-		       	
-		List<CallResearchModel> headPinyinMatchedList = new ArrayList<CallResearchModel>();
-		List<CallResearchModel> partPinyinMatchedList = new ArrayList<CallResearchModel>();
-		List<CallResearchModel> phoneNumberMatchedList = new ArrayList<CallResearchModel>();
-    	String strForMatch = str;
-    	
-    	if(str.toString().contains("+")){
-			//Log.v("aaa1",""+str.length());
-			strForMatch = str.replace("+", "");
-			Log.v("aaa2",strForMatch+":"+strForMatch.length());
-		}
-    	
-		StringBuffer T9pinyin = new StringBuffer();
-		//»ñÈ¡Ã¿Ò»¸öÊı×Ö¶ÔÓ¦µÄ×ÖÄ¸ÁĞ±í²¢ÒÔ'-'¸ô¿ª
-		for(int i = 0; i < strForMatch.length(); i++){
-			T9pinyin.append((strForMatch.charAt(i) <= '9' && strForMatch.charAt(i) >= '0')? BaseUtil.STRS[strForMatch.charAt(i) - '0'] : strForMatch.charAt(i));
-			if(i != strForMatch.length() - 1){
-				T9pinyin.append("-");
-			}
-		}
-		
-		//Èç¹ûËÑË÷Ìõ¼şÒÔ0 1 +¿ªÍ·Ôò°´ºÅÂëËÑË÷
-		//if(str.toString().startsWith("0") || str.toString().startsWith("1")|| str.toString().startsWith("+")){
-		
-		
-		if(rawDataList.size()>0&&strForMatch.length()>0){
-			for(CallResearchModel model : rawDataList){
-				if(pinyinMatched(T9pinyin.toString(),model,strForMatch,headPinyinMatchedList,partPinyinMatchedList)){				
-					continue;				
-				}
-				else if(model.searchnum.contains(strForMatch)){ 
-					model.group = strForMatch;
-					phoneNumberMatchedList.add(model);
-				}
-			}
-			totalMatchedList.addAll(headPinyinMatchedList);
-			totalMatchedList.addAll(partPinyinMatchedList);
-			totalMatchedList.addAll(phoneNumberMatchedList);
-			if(totalMatchedList.size()>0){
-				
-				if(totalMatchedList.get(0).name!=""){
-					mMatchedName.setText(totalMatchedList.get(0).name.toString());
-					StringBuffer sb = new StringBuffer();
-					sb.append("");
-					numbers = getPhonenumbersFromName(totalMatchedList,totalMatchedList.get(0).name.toString());
-					if(numbers!=null&&numbers.size()>1){
-						for(int i=0;i<numbers.size();i++){
-							sb.append(numbers.get(i).toString()).append('/');							
-						}
-						sb.deleteCharAt(sb.length()-1);
-					}else if(numbers!=null&&numbers.size()==1){
-						sb.append(numbers.get(0).toString());
-					}
-					mMatchedPhones.setText(sb.toString());
-					
-				}else{
-					mMatchedName.setText(totalMatchedList.get(0).telnum.toString());
-					mMatchedPhones.setText(totalMatchedList.get(0).telnum.toString());
-				}				
-			}else{
-				mMatchedPhones.setText("");
-				mMatchedName.setText("");
-			}
-			if(totalMatchedList.size()>1){
-				mMatchMore.setVisibility(View.VISIBLE);
-			}else{
-			    mMatchMore.setVisibility(View.GONE);
+     * æŒ‰å·ç -æ‹¼éŸ³æœç´¢è”ç³»äºº
+     * @param str
+     */
+    public void search(List<CallResearchModel> totalMatchedList,List<CallResearchModel> rawDataList,String str){
+                
+        List<CallResearchModel> headPinyinMatchedList = new ArrayList<CallResearchModel>();
+        List<CallResearchModel> partPinyinMatchedList = new ArrayList<CallResearchModel>();
+        List<CallResearchModel> phoneNumberMatchedList = new ArrayList<CallResearchModel>();
+        String strForMatch = str;
+        
+        if(str.toString().contains("+")){
+            //Log.v("aaa1",""+str.length());
+            strForMatch = str.replace("+", "");
+            Log.v("aaa2",strForMatch+":"+strForMatch.length());
+        }
+        
+        StringBuffer T9pinyin = new StringBuffer();
+        //è·å–æ¯ä¸€ä¸ªæ•°å­—å¯¹åº”çš„å­—æ¯åˆ—è¡¨å¹¶ä»¥'-'éš”å¼€
+        for(int i = 0; i < strForMatch.length(); i++){
+            T9pinyin.append((strForMatch.charAt(i) <= '9' && strForMatch.charAt(i) >= '0')? BaseUtil.STRS[strForMatch.charAt(i) - '0'] : strForMatch.charAt(i));
+            if(i != strForMatch.length() - 1){
+                T9pinyin.append("-");
             }
-			adapter.refresh(totalMatchedList, false);
-			return;
-		}
+        }
+        
+        //å¦‚æœæœç´¢æ¡ä»¶ä»¥0 1 +å¼€å¤´åˆ™æŒ‰å·ç æœç´¢
+        //if(str.toString().startsWith("0") || str.toString().startsWith("1")|| str.toString().startsWith("+")){
+        
+        
+        if(rawDataList.size()>0&&strForMatch.length()>0){
+            for(CallResearchModel model : rawDataList){
+                if(pinyinMatched(T9pinyin.toString(),model,strForMatch,headPinyinMatchedList,partPinyinMatchedList)){               
+                    continue;               
+                }
+                else if(model.searchnum.contains(strForMatch)){ 
+                    model.group = strForMatch;
+                    phoneNumberMatchedList.add(model);
+                }
+            }
+            totalMatchedList.addAll(headPinyinMatchedList);
+            totalMatchedList.addAll(partPinyinMatchedList);
+            totalMatchedList.addAll(phoneNumberMatchedList);
+            if(totalMatchedList.size()>0){
+                
+                if(totalMatchedList.get(0).name!=""){
+                    mMatchedName.setText(totalMatchedList.get(0).name.toString());
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("");
+                    numbers = getPhonenumbersFromName(totalMatchedList,totalMatchedList.get(0).name.toString());
+                    if(numbers!=null&&numbers.size()>1){
+                        for(int i=0;i<numbers.size();i++){
+                            sb.append(numbers.get(i).toString()).append('/');                           
+                        }
+                        sb.deleteCharAt(sb.length()-1);
+                    }else if(numbers!=null&&numbers.size()==1){
+                        sb.append(numbers.get(0).toString());
+                    }
+                    mMatchedPhones.setText(sb.toString());
+                    
+                }else{
+                    mMatchedName.setText(totalMatchedList.get(0).telnum.toString());
+                    mMatchedPhones.setText(totalMatchedList.get(0).telnum.toString());
+                }               
+            }else{
+                mMatchedPhones.setText("");
+                mMatchedName.setText("");
+            }
+            if(totalMatchedList.size()>1){
+                mMatchMore.setVisibility(View.VISIBLE);
+            }else{
+                mMatchMore.setVisibility(View.GONE);
+            }
+            adapter.refresh(totalMatchedList, false);
+            return;
+        }
     }
-	
-	/**
-	 * ¸ù¾İÃû×Ö²éÑ¯ËùÓĞºÅÂë
-	 */
-	
-	public ArrayList<String> getPhonenumbersFromName(List<CallResearchModel> totalMatchedList,String name){
-		ArrayList<String> numbers = new ArrayList<String>();
-		for(CallResearchModel model : totalMatchedList){
-			if(model.name.equals(name)){ 
-				numbers.add(model.telnum);
-			}
-		}
-		return numbers;
-	}
-	
-	/**
-	 * ¸ù¾İÆ´ÒôËÑË÷
-	 * @param str			ÕıÔò±í´ïÊ½
-	 * @param pyName		Æ´Òô
-	 * @param isIncludsive	ËÑË÷Ìõ¼şÊÇ·ñ´óÓÚ6¸ö×Ö·û
-	 * @return
-	 */
-	public boolean pinyinMatched(String str, CallResearchModel model, String search,List<CallResearchModel> headPinyinMatchedList,List<CallResearchModel> partPinyinMatchedList){
-		if(TextUtils.isEmpty(model.pyname)){
-			return false;
-		}
-		
-		String tempStr1 = str;
-		model.group = "";
-		//ËÑË÷Ìõ¼ş´óÓÚ6¸ö×Ö·û½«²»°´Æ´ÒôÊ××ÖÄ¸²éÑ¯
-		if(search.length() < 6&&tempStr1.length()>0){
-			//¸ù¾İÊ××ÖÄ¸½øĞĞÄ£ºı²éÑ¯
-			//Pattern pattern = Pattern.compile("^" + tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));
-			Pattern pattern = Pattern.compile(tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));			
-			Matcher matcher = pattern.matcher(model.pyname);
-			
-			if(matcher.find()){
-				String tempStr = matcher.group();
-				for(int i = 0; i < tempStr.length(); i++){
-					if(tempStr.charAt(i) >= 'A' && tempStr.charAt(i) <= 'Z'){
-						model.group += tempStr.charAt(i);						
-					}
-				}
-				headPinyinMatchedList.add(model);
-				return true;
-			}		
-		}
-		
-		//¸ù¾İÈ«Æ´²éÑ¯
-		Pattern pattern = Pattern.compile(str.replace("-", ""), Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(model.pyname);
-		boolean flag = matcher.find();
-		if(flag){
-			model.group = matcher.group();
-			partPinyinMatchedList.add(model);
-		}
-		return flag;
-	}
+    
+    /**
+     * æ ¹æ®åå­—æŸ¥è¯¢æ‰€æœ‰å·ç 
+     */
+    
+    public ArrayList<String> getPhonenumbersFromName(List<CallResearchModel> totalMatchedList,String name){
+        ArrayList<String> numbers = new ArrayList<String>();
+        for(CallResearchModel model : totalMatchedList){
+            if(model.name.equals(name)){ 
+                numbers.add(model.telnum);
+            }
+        }
+        return numbers;
+    }
+    
+    /**
+     * æ ¹æ®æ‹¼éŸ³æœç´¢
+     * @param str           æ­£åˆ™è¡¨è¾¾å¼
+     * @param pyName        æ‹¼éŸ³
+     * @param isIncludsive  æœç´¢æ¡ä»¶æ˜¯å¦å¤§äº6ä¸ªå­—ç¬¦
+     * @return
+     */
+    public boolean pinyinMatched(String str, CallResearchModel model, String search,List<CallResearchModel> headPinyinMatchedList,List<CallResearchModel> partPinyinMatchedList){
+        if(TextUtils.isEmpty(model.pyname)){
+            return false;
+        }
+        
+        String tempStr1 = str;
+        model.group = "";
+        //æœç´¢æ¡ä»¶å¤§äº6ä¸ªå­—ç¬¦å°†ä¸æŒ‰æ‹¼éŸ³é¦–å­—æ¯æŸ¥è¯¢
+        if(search.length() < 6&&tempStr1.length()>0){
+            //æ ¹æ®é¦–å­—æ¯è¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
+            //Pattern pattern = Pattern.compile("^" + tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));
+            Pattern pattern = Pattern.compile(tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));            
+            Matcher matcher = pattern.matcher(model.pyname);
+            
+            if(matcher.find()){
+                String tempStr = matcher.group();
+                for(int i = 0; i < tempStr.length(); i++){
+                    if(tempStr.charAt(i) >= 'A' && tempStr.charAt(i) <= 'Z'){
+                        model.group += tempStr.charAt(i);                       
+                    }
+                }
+                headPinyinMatchedList.add(model);
+                return true;
+            }       
+        }
+        
+        //æ ¹æ®å…¨æ‹¼æŸ¥è¯¢
+        Pattern pattern = Pattern.compile(str.replace("-", ""), Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(model.pyname);
+        boolean flag = matcher.find();
+        if(flag){
+            model.group = matcher.group();
+            partPinyinMatchedList.add(model);
+        }
+        return flag;
+    }
 
-	@Override
+    @Override
     public boolean onKey(View view, int keyCode, KeyEvent event) {
         switch (view.getId()) {
             case R.id.digits:
@@ -1608,7 +1608,7 @@ public class DialpadFragment extends Fragment
 //                startActivity(intent);
 //                mClearDigitsOnStop = true;
 //                getActivity().finish();
-            	((DialtactsActivity)getActivity()).call(number); //by yuan
+                ((DialtactsActivity)getActivity()).call(number); //by yuan
             }
         }
     }
