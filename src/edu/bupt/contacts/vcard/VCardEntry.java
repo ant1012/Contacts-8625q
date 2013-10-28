@@ -1579,8 +1579,8 @@ public class VCardEntry {
 
             for(String s : list) {
 
-                Log.d(LOG_TAG, "mContext - " + mContext);
-                Log.i(LOG_TAG, "s - " + s);
+//                Log.d(LOG_TAG, "mContext - " + mContext);
+//                Log.i(LOG_TAG, "s - " + s);
 
 
                 Uri uri = Groups.CONTENT_URI;
@@ -1612,7 +1612,7 @@ public class VCardEntry {
                     c.close();
                 }
             }
-            Log.i(LOG_TAG, dataList.get(0));
+//            Log.i(LOG_TAG, dataList.get(0));
 
             return new EsurfingGroupData(mimeType, dataList);
         }
@@ -1899,7 +1899,7 @@ public class VCardEntry {
         public boolean onElement(EntryElement elem) {
 
             /** zzz */
-            Log.i(LOG_TAG, "-------------- elem.toString() - " + elem.toString());
+//            Log.i(LOG_TAG, "-------------- elem.toString() - " + elem.toString());
 
             if (!elem.isEmpty()) {
                 elem.constructInsertOperation(mOperationList, mBackReferenceIndex);
@@ -2774,7 +2774,7 @@ public class VCardEntry {
         int end = operationList.size();
 
         /** zzz */
-        Log.i(LOG_TAG, operationList.toString());
+//        Log.i(LOG_TAG, operationList.toString());
 
         return operationList;
     }

@@ -883,11 +883,15 @@
             </intent-filter>
         </receiver>
 
-        <!-- zzz -->
+        <!-- zzz -->PreviewVCardActivity
         <service
             android:name="edu.bupt.contacts.msgring.MsgRingService"
             android:exported="false" />
-        <!-- conflict? -->
+        <!-- zzz -->
+        <activity
+            android:name="edu.bupt.contacts.vcard.PreviewVCardActivity"
+            android:theme="@android:style/Theme.Holo.Light" />
+
     </application>
 
 </manifest>

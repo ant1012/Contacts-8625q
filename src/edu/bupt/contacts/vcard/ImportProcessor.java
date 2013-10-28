@@ -22,6 +22,8 @@ import com.android.vcard.exception.VCardVersionException;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
@@ -202,6 +204,21 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
                         mListener.onImportFinished(mImportRequest, mJobId, null);
                     }
                 }
+
+//                /** zzz */
+//                // for(Uri u : uris) {
+//                Cursor c = mService.getContentResolver().query(uris.get(0), new String[] { "_id" }, null, null, null);
+//                c.moveToFirst();
+//                Log.i(LOG_TAG, "imported : " + c.getLong(0));
+////                mService.importedVCardId = c.getLong(0);
+//                long importedVCardId = c.getLong(0);
+//                c.close();
+//                // }
+//
+//                Intent i = new Intent(mService, PreviewVCardActivity.class);
+//                i.putExtra("importedVCard", uris.get(0).toString());
+//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mService.startActivity(i);
             }
         } else {
             Log.w(LOG_TAG, "Failed to read one vCard file: " + uri);
