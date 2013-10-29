@@ -336,14 +336,23 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     private Uri[] getCallLogEntryUris() {
         Uri uri = getIntent().getData();
         if (uri != null) {
-            // If there is a data on the intent, it takes precedence over the extra.
-            return new Uri[]{ uri };
+            // If there is a data on the intent, it takes precedence over the
+            // extra.
+
+            /** zzz */
+            Log.i(TAG, "uri - " + uri);
+
+            return new Uri[] { uri };
         }
         long[] ids = getIntent().getLongArrayExtra(EXTRA_CALL_LOG_IDS);
         Uri[] uris = new Uri[ids.length];
         for (int index = 0; index < ids.length; ++index) {
-            uris[index] = ContentUris.withAppendedId(Calls.CONTENT_URI, ids[index]);          
-        }     
+            uris[index] = ContentUris.withAppendedId(Calls.CONTENT_URI, ids[index]);
+        }
+        /** zzz */
+        for (Uri u : uris) {
+            Log.i(TAG, "uris - " + u.toString());
+        }
         return uris;
     }
 
@@ -380,22 +389,38 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
             public PhoneCallDetails[] doInBackground(Void... params) {
                 // TODO: All phone calls correspond to the same person, so we can make a single
                 // lookup.
-                int numCalls = callUris.length;
-                Log.v("numCalls",numCalls+"");
-                if(numCalls>10){
-                	numCalls = 10;
+
+                /** zzz */
+//                int numCalls = callUris.length;
+//                Log.v("numCalls",numCalls+"");
+//                if(numCalls>10){
+//                	numCalls = 10;
+//                }
+//                PhoneCallDetails[] details = new PhoneCallDetails[numCalls];
+//                try {
+//                    for (int index = 0; index < numCalls; ++index) {                   	
+//                        details[index] = getPhoneCallDetailsForUri(callUris[index]);                       
+//                    }
+//                    return details;
+//                } catch (IllegalArgumentException e) {
+//                    // Something went wrong reading in our primary data.
+//                    Log.w(TAG, "invalid URI starting call details", e);
+//                    return null;
+//                }
+
+                PhoneCallDetails firstdetails = getPhoneCallDetailsForUri(callUris[0]);
+                Log.v(TAG, "firstdetails - " + firstdetails.number.toString());
+
+                Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null,
+                        CallLog.Calls.NUMBER + " = ?", new String[]{ firstdetails.number.toString() }, null);
+                Log.v(TAG, "cursor.getCount() - " + cursor.getCount());
+                PhoneCallDetails[] details = new PhoneCallDetails[cursor.getCount()];
+                for (int index = 0; cursor.moveToNext(); index++) {
+                    long id = cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID));
+                    Uri uri = ContentUris.withAppendedId(Calls.CONTENT_URI, id);
+                    details[index] = getPhoneCallDetailsForUri(uri);
                 }
-                PhoneCallDetails[] details = new PhoneCallDetails[numCalls];
-                try {
-                    for (int index = 0; index < numCalls; ++index) {                   	
-                        details[index] = getPhoneCallDetailsForUri(callUris[index]);                       
-                    }
-                    return details;
-                } catch (IllegalArgumentException e) {
-                    // Something went wrong reading in our primary data.
-                    Log.w(TAG, "invalid URI starting call details", e);
-                    return null;
-                }
+                return details;
             }
 
             @Override
