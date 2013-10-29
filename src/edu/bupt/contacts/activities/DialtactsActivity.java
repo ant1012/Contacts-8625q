@@ -1313,14 +1313,15 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             	 mSearchButton.setVisibility(View.GONE);
             } else {
                // ddd 隐藏搜索按钮 mSearchButton.setVisibility(View.INVISIBLE);
-            	 mSearchButton.setVisibility(View.GONE);
+
             }
         }
         if (mMenuButton != null) {
             if (visible && !ViewConfiguration.get(this).hasPermanentMenuKey()) {
                 mMenuButton.setVisibility(View.VISIBLE);
             } else {
-                mMenuButton.setVisibility(View.INVISIBLE);
+              // 显示menubutton适配机型需要  mMenuButton.setVisibility(View.INVISIBLE);
+            	mMenuButton.setVisibility(View.GONE);
             }
         }
     }

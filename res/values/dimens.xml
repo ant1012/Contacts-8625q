@@ -245,7 +245,7 @@
     <integer name="dialpad_layout_weight_digits">20</integer>
     <integer name="dialpad_layout_weight_dialpad">65</integer>
 <!--     ddd 修改从15变8 -->
-    <integer name="dialpad_layout_weight_additional_buttons">8</integer>
+    <integer name="dialpad_layout_weight_additional_buttons">15</integer>
 
     <!--
          Minimum height used with @drawable/list_section_divider_holo_custom.
