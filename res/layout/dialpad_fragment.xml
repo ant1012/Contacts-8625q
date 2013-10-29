@@ -122,25 +122,61 @@
        android:background="#66000000"/>
 
     <!-- left and right paddings will be modified by the code. See DialpadFragment. -->
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/dialButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="@integer/dialpad_layout_weight_additional_buttons"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/dialpad_background">
-<!-- ddd 拨打电话按钮，改为蓝色 -->
+<!-- ddd 拨打电话按钮，改为蓝色        android:background="@drawable/btn_call"-->
         <ImageButton
             android:id="@+id/dialButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+           
+ 			android:layout_height="match_parent"
+			android:layout_weight="1"
+            android:layout_gravity="left"
             android:state_enabled="false"
-            android:background="@drawable/btn_call"
+       		android:background="@drawable/btn_call"
             android:contentDescription="@string/description_dial_button"
-            android:src="@drawable/ic_dial_action_call_blue" />
+            android:src="@drawable/ic_dial_action_call_blue" />  
+            
+<!--         ddd 添加imagebutton 发送短信 -->
 
-    </FrameLayout>
+      <ImageButton
+          android:id="@+id/smsButton"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:layout_gravity="right"
+          android:background="@drawable/btn_call"
+          android:src="@drawable/dialpad_sms_button" />
+        
+    </LinearLayout>
+    
+    
+<!--      <FrameLayout -->
+<!--         android:id="@+id/smsButtonContainer" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="0px" -->
+<!--         android:layout_weight="@integer/dialpad_layout_weight_additional_buttons" -->
+<!--         android:layout_gravity="center_horizontal" -->
+<!--         android:background="@drawable/dialpad_background"> -->
+ <!-- ddd 拨打电话按钮，改为蓝色 --> 
+<!--         <ImageButton -->
+<!--          android:id="@+id/smsButton" -->
+<!--          android:layout_width="wrap_content" -->
+<!--          android:layout_height="?android:attr/actionBarSize" -->
+<!--          android:layout_gravity="center" -->
+<!--          android:state_enabled="false" -->
+<!--          android:background="?android:attr/selectableItemBackground" -->
+<!--          android:contentDescription="@string/description_search_button" -->
+<!--          android:src="@drawable/ic_dial_action_call_blue"/>      -->
+<!--     </FrameLayout>    -->
+    
+    
+
 
     <!-- "Dialpad chooser" UI, shown only when the user brings up the
          Dialer while a call is already in progress.

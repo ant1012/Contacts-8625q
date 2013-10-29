@@ -59,6 +59,7 @@ import android.provider.Settings;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -141,6 +142,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private EditText mDigits;
     private TextView mMatchedPhones;
     private TextView mMatchedName;
+   
 
     /**
      * Remembers if we need to clear digits field when the screen is completely
@@ -167,7 +169,8 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private View mDialButton;
     private ListView mDialpadChooser;
     private DialpadChooserAdapter mDialpadChooserAdapter;
-
+    //ddd
+    private View mSmsButton;
     /**
      * Regular expression prohibiting manual phone call. Can be empty, which
      * means "no rule".
@@ -338,7 +341,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         // Load up the resources for the text field.
         Resources r = getResources();
-
+       
         mDigitsContainer = fragmentView.findViewById(R.id.digits_container);
         mDigits = (EditText) fragmentView.findViewById(R.id.digits);
         mDigits.setKeyListener(DialerKeyListener.getInstance());
@@ -405,12 +408,33 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                     mDialButtonContainer.getPaddingBottom());
         }
         mDialButton = fragmentView.findViewById(R.id.dialButton);
+      
+        //ddd start
+        mSmsButton=fragmentView.findViewById(R.id.smsButton);
+        if (mSmsButton != null) {
+            mSmsButton.setOnClickListener(new View.OnClickListener() {
+            	
+            	public void onClick(View v) {  
+            		// 输入的获取手机号码  
+                 String sendNumber = mDigits.getText().toString();  
+                 Uri uri = Uri.parse("smsto:"+sendNumber);            
+                 Intent smsIntent = new Intent(Intent.ACTION_SENDTO, uri);            
+                 startActivity(smsIntent); 
+                    
+                    
+                }  
+            	
+            	
+            });
+        }
+        //ddd end
         if (r.getBoolean(R.bool.config_show_onscreen_dial_button)) {
             mDialButton.setOnClickListener(this);
             mDialButton.setOnLongClickListener(this);
         } else {
             mDialButton.setVisibility(View.GONE); // It's VISIBLE by default
-            mDialButton = null;
+    
+            mDialButton= null;
         }
 
         mDelete = fragmentView.findViewById(R.id.deleteButton);
@@ -838,6 +862,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         final MenuItem twoSecPauseMenuItem = menu.findItem(R.id.menu_2s_pause);
         final MenuItem waitMenuItem = menu.findItem(R.id.menu_add_wait);
         final MenuItem sendSMSMenuItem = menu.findItem(R.id.menu_send_sms);
+       
         final MenuItem callLogSettingMenuItem = menu.findItem(R.id.menu_call_setting);
 
         final MenuItem callIPOneMenuItem = menu.findItem(R.id.menu_ip_call_one);
@@ -933,9 +958,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
             // Put the current digits string into an intent
             addToContactMenuItem.setIntent(getAddToContactIntent(digits));
+            
             addToContactMenuItem.setVisible(true);
 
             sendSMSMenuItem.setIntent(getSendSMSIntent(digits));
+
             sendSMSMenuItem.setVisible(true);
 
             // Check out whether to show Pause & Wait option menu items
@@ -1451,7 +1478,8 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public boolean onLongClick(View view) {
-        final Editable digits = mDigits.getText();
+        
+    	final Editable digits = mDigits.getText();
         final int id = view.getId();
         switch (id) {
         case R.id.deleteButton: {

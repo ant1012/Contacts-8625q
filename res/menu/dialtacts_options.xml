@@ -14,11 +14,14 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- ddd 搜索 通话记录  搜索收藏-->
     <item
         android:id="@+id/search_on_action_bar"
         android:title="@string/menu_search"
+       
         android:icon="@drawable/ic_dial_action_search"
         android:showAsAction="ifRoom" />
+
 
     <!-- This should come after the other menus in CallLog and Dialpad -->
     <item
@@ -45,8 +48,9 @@
          a null icon.
 
          TODO: look for better idea. -->
-    <item
-        android:id="@+id/empty_right_menu_item"
-        android:actionLayout="@layout/empty2"
-        android:showAsAction="ifRoom" />
+<!--          ddd 删除了此处-->
+<!--     <item -->
+<!--         android:id="@+id/empty_right_menu_item" -->
+<!--         android:actionLayout="@layout/empty2" -->
+<!--         android:showAsAction="ifRoom" /> -->
 </menu>

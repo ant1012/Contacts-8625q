@@ -993,11 +993,13 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         // set up intents and onClick listeners
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
+
         final MenuItem searchMenuItem = menu.findItem(R.id.search_on_action_bar);
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
 
         callSettingsMenuItem.setIntent(DialtactsActivity.getCallSettingsIntent());
+      
         searchMenuItem.setOnMenuItemClickListener(mSearchMenuItemClickListener);
         filterOptionMenuItem.setOnMenuItemClickListener(mFilterOptionsMenuItemClickListener);
         addContactOptionMenuItem.setIntent(
@@ -1034,17 +1036,20 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     private void prepareOptionsMenuInSearchMode(Menu menu) {
         // get references to menu items
         final MenuItem searchMenuItem = menu.findItem(R.id.search_on_action_bar);
+
+        
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-        final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+     //ddd   final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
+        
         searchMenuItem.setVisible(false);
         filterOptionMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
         addContactOptionMenuItem.setVisible(false);
         callSettingsMenuItem.setVisible(false);
-        emptyRightMenuItem.setVisible(false);
+ //ddd       emptyRightMenuItem.setVisible(false);
     }
 
     private void prepareOptionsMenuForDialerTab(Menu menu) {
@@ -1058,7 +1063,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-        final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+    //ddd    final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+        
 
         // prepare the menu items
         filterOptionMenuItem.setVisible(false);
@@ -1070,7 +1076,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             // When there is a permanent menu key, there is no overflow icon on the right of
             // the action bar which would force the search menu item (if it is visible) to the
             // left.  This is the purpose of showing the emptyRightMenuItem.
-            emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
+    //ddd        emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
         } else {
             // This is when the user is looking at the dialer pad.  In this case, the real
             // ActionBar is hidden and fake menu items are shown.
@@ -1078,7 +1084,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             // If a permanent menu key is available, then we need to show the call settings item
             // so that the call settings item can be invoked by the permanent menu key.
             callSettingsMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
-            emptyRightMenuItem.setVisible(false);
+            //ddd
+   //ddd         emptyRightMenuItem.setVisible(true);
         }
     }
 
@@ -1088,14 +1095,14 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-        final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+   //ddd     final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
         searchMenuItem.setVisible(true);
         filterOptionMenuItem.setVisible(false);
         addContactOptionMenuItem.setVisible(false);
         callSettingsMenuItem.setVisible(true);
-        emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
+    // ddd   emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
     }
 
     private void prepareOptionsMenuForFavoritesTab(Menu menu) {
@@ -1104,14 +1111,14 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-        final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+    //ddd    final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
         searchMenuItem.setVisible(true);
         filterOptionMenuItem.setVisible(true);
         addContactOptionMenuItem.setVisible(true);
         callSettingsMenuItem.setVisible(true);
-        emptyRightMenuItem.setVisible(false);
+    //ddd    emptyRightMenuItem.setVisible(false);
     }
 
     @Override
@@ -1283,9 +1290,11 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         if (mSearchButton != null) {
             if (visible) {
-                mSearchButton.setVisibility(View.VISIBLE);
+               // ddd 隐藏搜索按钮mSearchButton.setVisibility(View.VISIBLE);
+            	 mSearchButton.setVisibility(View.GONE);
             } else {
-                mSearchButton.setVisibility(View.INVISIBLE);
+               // ddd 隐藏搜索按钮 mSearchButton.setVisibility(View.INVISIBLE);
+            	 mSearchButton.setVisibility(View.GONE);
             }
         }
         if (mMenuButton != null) {
