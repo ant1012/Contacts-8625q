@@ -35,7 +35,6 @@ import edu.bupt.contacts.list.PhoneNumberPickerFragment;
 import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.Constants;
-
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.Tab;
@@ -982,7 +981,27 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         @Override
         public void onCallNumberDirectly(String phoneNumber) {
             Intent intent = ContactsUtils.getCallIntent(phoneNumber, getCallOrigin());
-            startActivity(intent);
+
+            /** zzz */
+            // startActivity(intent);
+            Log.v(TAG, "dial here?");
+            Log.v(TAG, "intent - " + intent.toString());
+            Log.v(TAG, "intent - " + intent.getDataString());
+
+            if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
+                String number = intent.getDataString().substring(
+                        intent.getDataString().indexOf(':'));
+                try {
+                    ITelephonyMSim telephony = ITelephonyMSim.Stub
+                            .asInterface(ServiceManager
+                                    .getService(Context.MSIM_TELEPHONY_SERVICE));
+                    telephony.call(number, 0);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                startActivity(intent);
+            }
         }
     };
 

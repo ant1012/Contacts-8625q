@@ -883,13 +883,25 @@
             </intent-filter>
         </receiver>
 
-        <!-- zzz -->PreviewVCardActivity
+        <!-- zzz -->
         <service
             android:name="edu.bupt.contacts.msgring.MsgRingService"
             android:exported="false" />
         <!-- zzz -->
         <activity
             android:name="edu.bupt.contacts.vcard.PreviewVCardActivity"
+            android:theme="@android:style/Theme.Holo.Light" />
+
+        <!-- zzz -->
+        <receiver android:name="edu.bupt.contacts.callinfo.CallstateBroadcastReceiver" >
+            <intent-filter android:priority="-1000" >
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- zzz -->
+        <activity
+            android:name="edu.bupt.contacts.callinfo.CallinfoActivity"
             android:theme="@android:style/Theme.Holo.Light" />
 
     </application>

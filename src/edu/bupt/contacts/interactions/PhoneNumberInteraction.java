@@ -26,6 +26,8 @@ import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountType.StringInflater;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.DataKind;
+
+import com.android.internal.telephony.msim.ITelephonyMSim;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.Activity;
@@ -46,11 +48,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.SipAddress;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -334,7 +339,27 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
                 intent = ContactsUtils.getCallIntent(phoneNumber, callOrigin);
                 break;
         }
-        context.startActivity(intent);
+
+        /** zzz */
+        // context.startActivity(intent);
+        Log.v(TAG, "dial here?");
+        Log.v(TAG, "intent - " + intent.toString());
+        Log.v(TAG, "intent - " + intent.getDataString());
+
+        if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
+            String number = intent.getDataString().substring(
+                    intent.getDataString().indexOf(':'));
+            try {
+                ITelephonyMSim telephony = ITelephonyMSim.Stub
+                        .asInterface(ServiceManager
+                                .getService(Context.MSIM_TELEPHONY_SERVICE));
+                telephony.call(number, 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     /**

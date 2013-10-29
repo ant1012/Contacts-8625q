@@ -82,4 +82,10 @@
      <color name="white">#ffffffff</color>
      <color name="black">#00000000</color>
 
+    <!-- zzz -->
+    <color name="on_hold_dim_effect">#cc000000</color>
+    <color name="incall_call_banner_background">#A0000000</color> <!-- semitransparent black -->
+    <color name="incall_call_banner_text_color">#FFFFFF</color> <!-- white -->
+    <color name="incall_secondary_info_background">#8033b5e5</color> <!-- semitransparent blueish grey -->
+
 </resources>
