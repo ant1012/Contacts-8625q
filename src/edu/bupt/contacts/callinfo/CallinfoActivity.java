@@ -21,7 +21,10 @@ import android.widget.TextView;
 
 public class CallinfoActivity extends Activity {
     private final String TAG = "CallinfoActivity";
-    private TextView textviewText;
+    private TextView textviewName;
+    private TextView textviewPhoneNumber;
+    private TextView textviewLabel;
+    
     private Button buttonMsg;
     private Button buttonDial;
     String number = "";
@@ -34,7 +37,9 @@ public class CallinfoActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_call_info);
 
-        textviewText = (TextView) findViewById(R.id.tv_text);
+        textviewName = (TextView) findViewById(R.id.name);
+        textviewPhoneNumber = (TextView) findViewById(R.id.phoneNumber);
+        textviewLabel = (TextView) findViewById(R.id.label);
         buttonMsg = (Button) findViewById(R.id.bt_msg);
         buttonDial = (Button) findViewById(R.id.bt_dial);
 
@@ -50,9 +55,10 @@ public class CallinfoActivity extends Activity {
                 .getColumnIndex(CallLog.Calls.CACHED_NAME));
         Log.v(TAG, "name - " + name);
         cursor.close();
-
-        textviewText.setText("id : " + id + "\nnumber :" + number + "\nname : "
-                + name);
+        
+        textviewName.setText(name);
+        textviewPhoneNumber.setText(number);
+        
         buttonMsg.setOnClickListener(clickListener);
         buttonDial.setOnClickListener(clickListener);
     }
