@@ -1211,6 +1211,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             Log.v("aaa2", strForMatch + ":" + strForMatch.length());
         }
 
+        /** zzz */
+        if (str.toString().contains("*")) {
+            // Log.v("aaa1",""+str.length());
+            strForMatch = str.replace("*", "");
+            Log.v(TAG, strForMatch + ":" + strForMatch.length());
+        }
+
         StringBuffer T9pinyin = new StringBuffer();
         // 获取每一个数字对应的字母列表并以'-'隔开
         for (int i = 0; i < strForMatch.length(); i++) {
