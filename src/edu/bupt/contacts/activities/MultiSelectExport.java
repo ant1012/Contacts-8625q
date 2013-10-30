@@ -522,18 +522,18 @@ public class MultiSelectExport extends ListActivity {
                     sb.append(phones.getString(phones.getColumnIndex("data1")));
                 }
             }
-            cursor.close();
             sb.append('\n');
-            Log.v(TAG, sb.toString());
-
-            // send
-            Uri uri = Uri.parse("smsto:");
-            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-            it.putExtra("sms_body", sb.toString());
-            startActivity(it);
-
-            finish();
         }
+        cursor.close();
+        Log.v(TAG, sb.toString());
+
+        // send
+        Uri uri = Uri.parse("smsto:");
+        Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+        it.putExtra("sms_body", sb.toString());
+        startActivity(it);
+
+        finish();
     }
 
     // /**
