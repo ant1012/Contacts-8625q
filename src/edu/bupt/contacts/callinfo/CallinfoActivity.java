@@ -18,6 +18,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.provider.CallLog;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,9 +42,9 @@ public class CallinfoActivity extends Activity {
     private TextView textviewPhoneNumber;
     private TextView textviewLabel;
 
-    private Button buttonMsg;
-    private Button buttonDial;
-    private Button buttonAdd;
+    private ImageButton buttonMsg;
+    private ImageButton buttonDial;
+    private ImageButton buttonAdd;
     String number = "";
     String name = "";
     static public boolean exist = false;
@@ -56,9 +59,9 @@ public class CallinfoActivity extends Activity {
         textviewName = (TextView) findViewById(R.id.name);
         textviewPhoneNumber = (TextView) findViewById(R.id.phoneNumber);
         textviewLabel = (TextView) findViewById(R.id.label);
-        buttonMsg = (Button) findViewById(R.id.bt_msg);
-        buttonDial = (Button) findViewById(R.id.bt_dial);
-        buttonAdd = (Button) findViewById(R.id.bt_add);
+        buttonMsg = (ImageButton) findViewById(R.id.bt_msg);
+        buttonDial = (ImageButton) findViewById(R.id.bt_dial);
+        buttonAdd = (ImageButton) findViewById(R.id.bt_add);
 
         Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI,
                 null, null, null, "date desc limit 1");
@@ -92,7 +95,6 @@ public class CallinfoActivity extends Activity {
             Log.v(TAG, "name != null");
             buttonAdd.setClickable(false);
         }
-
     }
 
     private OnClickListener clickListener = new OnClickListener() {
@@ -241,6 +243,23 @@ public class CallinfoActivity extends Activity {
     public void onResume() {
         exist = true;
         super.onResume();
+        // dismiss in 5 secs
+        final Handler mHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                finish();
+            }
+        };
+
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mHandler.sendEmptyMessage(0);
+            }
+        }.start();
     }
 
     @Override
