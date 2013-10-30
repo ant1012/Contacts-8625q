@@ -983,9 +983,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             Intent intent = ContactsUtils.getCallIntent(phoneNumber, getCallOrigin());
 
             /** zzz */
-            // startActivity(intent);Log.d(TAG, "dial here?");
-            Log.i(TAG, "intent - " + intent.toString());
-            Log.i(TAG, "intent - " + intent.getDataString());
+            // startActivity(intent);
+            Log.v(TAG, "dial here?");
+            Log.v(TAG, "intent - " + intent.toString());
+            Log.v(TAG, "intent - " + intent.getDataString());
 
             if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
                 String number = intent.getDataString().substring(

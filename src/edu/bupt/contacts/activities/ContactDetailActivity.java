@@ -309,9 +309,9 @@ public class ContactDetailActivity extends ContactsActivity {
             try {
                 /** zzz */
                 // startActivity(intent);
-                Log.d(TAG, "dial here?");
-                Log.i(TAG, "intent - " + intent.toString());
-                Log.i(TAG, "intent - " + intent.getDataString());
+                Log.v(TAG, "dial here?");
+                Log.v(TAG, "intent - " + intent.toString());
+                Log.v(TAG, "intent - " + intent.getDataString());
 
                 if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
                     String number = intent.getDataString().substring(
