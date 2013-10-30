@@ -21,8 +21,8 @@
 
     <color name="quickcontact_list_divider">#ffcdcdcd</color>
     <color name="quickcontact_list_background">#ffe2e2e2</color>
-    <color name="quickcontact_tab_indicator">#ff33b5e6</color>
 
+    <color name="quickcontact_tab_indicator">#ff33b5e6</color>
     <!-- Color of the background of the contact detail and editor pages -->
     <color name="background_primary">#FFFFFF</color>
 
@@ -78,5 +78,8 @@
 
     <!-- Standard color for selected items. -->
     <color name="item_selected">#660099cc</color>
+    
+     <color name="white">#ffffffff</color>
+     <color name="black">#00000000</color>
 
 </resources>

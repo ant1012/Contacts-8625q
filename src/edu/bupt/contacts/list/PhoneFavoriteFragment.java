@@ -286,7 +286,9 @@ public class PhoneFavoriteFragment extends Fragment implements OnItemClickListen
         mAllContactsAdapter.setSearchMode(false);
         mAllContactsAdapter.setIncludeProfile(false);
         mAllContactsAdapter.setSelectionVisible(false);
-        mAllContactsAdapter.setDarkTheme(true);
+        //ddd 设置darktheme、为false、
+        
+        mAllContactsAdapter.setDarkTheme(false);
         mAllContactsAdapter.setPhotoLoader(ContactPhotoManager.getInstance(activity));
         // Disable directory header.
         mAllContactsAdapter.setHasHeader(0, false);

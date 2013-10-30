@@ -19,12 +19,6 @@ package edu.bupt.contacts.vcard;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
-import com.android.vcard.VCardEntry;
-import com.android.vcard.VCardEntryCounter;
-import com.android.vcard.VCardParser;
-import com.android.vcard.VCardParser_V21;
-import com.android.vcard.VCardParser_V30;
-import com.android.vcard.VCardSourceDetector;
 import com.android.vcard.exception.VCardException;
 import com.android.vcard.exception.VCardNestedException;
 import com.android.vcard.exception.VCardVersionException;
@@ -176,7 +170,10 @@ public class NfcImportVCardActivity extends Activity implements ServiceConnectio
         } else if (accountList.size() == 1) {
             mAccount = accountList.get(0);
         } else {
-            startActivityForResult(new Intent(this, SelectAccountActivity.class), SELECT_ACCOUNT);
+            /** zzz */
+//            startActivityForResult(new Intent(this, SelectAccountActivity.class), SELECT_ACCOUNT);
+            mAccount = new AccountWithDataSet("PHONE", "com.android.localphone", null);
+
             return;
         }
 

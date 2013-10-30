@@ -16,6 +16,8 @@
 
 package edu.bupt.contacts.dialog;
 
+
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;

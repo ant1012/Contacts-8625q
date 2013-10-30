@@ -23,4 +23,7 @@
     <item
         android:id="@+id/menu_delete_group"
         android:title="@string/menu_deleteGroup" />
+    <item
+        android:id="@+id/menu_add_group_to_whitelist"
+        android:title="@string/menu_add_to_whitelist" />
 </menu>

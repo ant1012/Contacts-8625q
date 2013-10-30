@@ -16,5 +16,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_ab_history_holo_dark" />
+    <item android:drawable="@drawable/ic_ab_history_holo_dark" />
 </selector>
 

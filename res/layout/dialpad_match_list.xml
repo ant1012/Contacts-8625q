@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/dialpad_match_list"
+    android:layout_height="0px"
+    android:layout_weight="@integer/dialpad_layout_weight_dialpad"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="@dimen/dialpad_vertical_margin"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingBottom="10dip"
+    android:background="@drawable/dialpad_background"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/listView_match_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+</LinearLayout>

@@ -16,9 +16,9 @@
 package edu.bupt.contacts.list;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.activities.MultiSelectExport;
 import edu.bupt.contacts.editor.ContactEditorFragment;
 import edu.bupt.contacts.util.AccountFilterUtil;
-
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
@@ -81,6 +81,15 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
     @Override
     protected void onItemClick(int position, long id) {
         viewContact(getAdapter().getContactUri(position));
+    }
+
+    /** zzz */
+    @Override
+    protected void onItemLongClick(int position, long id) {
+        Log.v(TAG, "onItemLongClick");
+        Intent exportIntent = new Intent(getActivity(), MultiSelectExport.class);
+        exportIntent.putExtra("selected", position);
+        getActivity().startActivity(exportIntent);
     }
 
     @Override

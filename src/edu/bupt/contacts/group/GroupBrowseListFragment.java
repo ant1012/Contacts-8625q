@@ -19,9 +19,9 @@ package edu.bupt.contacts.group;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.GroupListLoader;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.blacklist.BlacklistMainActivity;
 import edu.bupt.contacts.group.GroupBrowseListAdapter.GroupListItemViewCache;
 import edu.bupt.contacts.widget.AutoScrollListView;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -37,6 +37,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,8 +85,8 @@ public class GroupBrowseListFragment extends Fragment
     private View mRootView;
     private AutoScrollListView mListView;
     private TextView mEmptyView;
-    private View mAddAccountsView;
-    private View mAddAccountButton;
+//    private View mAddAccountsView;
+//    private View mAddAccountButton;
 
     private GroupBrowseListAdapter mAdapter;
     private boolean mSelectionVisible;
@@ -125,25 +126,34 @@ public class GroupBrowseListFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GroupListItemViewCache groupListItem = (GroupListItemViewCache) view.getTag();
-                if (groupListItem != null) {
+
+                /** zzz */
+                if (position == mListView.getCount() - 1) {
+                    Log.d(TAG, "white list entry clicked");
+                    Intent i = new Intent(mContext, BlacklistMainActivity.class);
+                    i.putExtra("fragment_display_whitelist", true);
+                    startActivity(i);
+                }
+
+                else if (groupListItem != null) {
                     viewGroup(groupListItem.getUri());
                 }
             }
         });
 
         mListView.setEmptyView(mEmptyView);
-        mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
-        mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
-        mAddAccountButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                intent.putExtra(Settings.EXTRA_AUTHORITIES,
-                        new String[] { ContactsContract.AUTHORITY });
-                startActivity(intent);
-            }
-        });
+//        mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
+//        mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
+//        mAddAccountButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SettingsFragment.ACTION_ADD_ACCOUNT);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//                intent.putExtra(SettingsFragment.EXTRA_AUTHORITIES,
+//                        new String[] { ContactsContract.AUTHORITY });
+//                startActivity(intent);
+//            }
+//        });
         setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
 
         return mRootView;
@@ -188,6 +198,14 @@ public class GroupBrowseListFragment extends Fragment
     public void onStart() {
         getLoaderManager().initLoader(LOADER_GROUPS, null, mGroupLoaderListener);
         super.onStart();
+    }
+
+    /** zzz */
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume");
+        mListView.setAdapter(mAdapter);
+        super.onResume();
     }
 
     /**
@@ -307,8 +325,8 @@ public class GroupBrowseListFragment extends Fragment
     }
 
     public void setAddAccountsVisibility(boolean visible) {
-        if (mAddAccountsView != null) {
-            mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
+//        if (mAddAccountsView != null) {
+//            mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        }
     }
 }

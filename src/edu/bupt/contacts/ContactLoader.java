@@ -153,6 +153,8 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
 
         private final Status mStatus;
         private final Exception mException;
+        
+        private final String mCustomMsgRing;
 
         /**
          * Constructor for special results, namely "no contact found" and "error".
@@ -185,6 +187,9 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
             mSendToVoicemail = false;
             mCustomRingtone = null;
             mIsUserProfile = false;
+            
+            mCustomMsgRing = null;
+            
         }
 
         private static Result forError(Uri requestedUri, Exception exception) {
@@ -202,7 +207,7 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
                 long id, long nameRawContactId, int displayNameSource, long photoId,
                 String photoUri, String displayName, String altDisplayName, String phoneticName,
                 boolean starred, Integer presence, boolean sendToVoicemail, String customRingtone,
-                boolean isUserProfile) {
+                boolean isUserProfile,String mCustomMsgring) {
             mStatus = Status.LOADED;
             mException = null;
             mRequestedUri = requestedUri;
@@ -227,6 +232,8 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
             mSendToVoicemail = sendToVoicemail;
             mCustomRingtone = customRingtone;
             mIsUserProfile = isUserProfile;
+            mCustomMsgRing = mCustomMsgring;
+            
         }
 
         private Result(Uri requestedUri, Result from) {
@@ -265,6 +272,8 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
             mSendToVoicemail = from.mSendToVoicemail;
             mCustomRingtone = from.mCustomRingtone;
             mIsUserProfile = from.mIsUserProfile;
+            mCustomMsgRing = from.mCustomMsgRing;
+            
         }
 
         /**
@@ -520,10 +529,16 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
         public String getCustomRingtone() {
             return mCustomRingtone;
         }
+        
+        public String getCustomMsgRing() {
+            return mCustomMsgRing;
+        }
 
         public boolean isUserProfile() {
             return mIsUserProfile;
         }
+        
+        
 
         @Override
         public String toString() {
@@ -935,6 +950,9 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
         final String customRingtone = cursor.getString(ContactQuery.CUSTOM_RINGTONE);
         final boolean isUserProfile = cursor.getInt(ContactQuery.IS_USER_PROFILE) == 1;
 
+        final String mCustomMsgRing = cursor.getString(ContactQuery.SOURCE_ID);
+        Log.i("ContactLoader msg",""+mCustomMsgRing);
+        
         Uri lookupUri;
         if (directoryId == Directory.DEFAULT || directoryId == Directory.LOCAL_INVISIBLE) {
             lookupUri = ContentUris.withAppendedId(
@@ -946,7 +964,7 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
         return new Result(mRequestedUri, contactUri, lookupUri, directoryId, lookupKey,
                 contactId, nameRawContactId, displayNameSource, photoId, photoUri, displayName,
                 altDisplayName, phoneticName, starred, presence, sendToVoicemail,
-                customRingtone, isUserProfile);
+                customRingtone, isUserProfile,mCustomMsgRing);
     }
 
     /**
@@ -972,7 +990,6 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
         cursorColumnToContentValues(cursor, cv, ContactQuery.CONTACT_ID);
         cursorColumnToContentValues(cursor, cv, ContactQuery.STARRED);
         cursorColumnToContentValues(cursor, cv, ContactQuery.NAME_VERIFIED);
-
         return cv;
     }
 

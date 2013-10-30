@@ -17,21 +17,28 @@
 package edu.bupt.contacts.calllog;
 
 import com.android.common.io.MoreCloseables;
+import com.android.common.widget.GroupingListAdapter;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+
+import edu.bupt.contacts.CallDetailActivity;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.numberlocate.NumberLocateSetting;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.EmptyLoader;
-import edu.bupt.contacts.voicemail.VoicemailStatusHelper;
-import edu.bupt.contacts.voicemail.VoicemailStatusHelper.StatusMessage;
-import edu.bupt.contacts.voicemail.VoicemailStatusHelperImpl;
 import com.android.internal.telephony.CallerInfo;
 import com.android.internal.telephony.ITelephony;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -61,7 +68,8 @@ import java.util.List;
  * Displays a list of call log entries.
  */
 public class CallLogFragment extends ListFragment
-        implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher {
+        implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher
+         {
     private static final String TAG = "CallLogFragment";
 
     /**
@@ -78,7 +86,6 @@ public class CallLogFragment extends ListFragment
     /** Whether we are currently filtering over voicemail. */
     private boolean mShowingVoicemailOnly = false;
 
-    private VoicemailStatusHelper mVoicemailStatusHelper;
     private View mStatusMessageView;
     private TextView mStatusMessageText;
     private TextView mStatusMessageAction;
@@ -162,19 +169,19 @@ public class CallLogFragment extends ListFragment
     /**
      * Called by {@link CallLogQueryHandler} after a successful query to voicemail status provider.
      */
-    @Override
-    public void onVoicemailStatusFetched(Cursor statusCursor) {
-        if (getActivity() == null || getActivity().isFinishing()) {
-            return;
-        }
-        updateVoicemailStatusMessage(statusCursor);
-
-        int activeSources = mVoicemailStatusHelper.getNumberActivityVoicemailSources(statusCursor);
-        setVoicemailSourcesAvailable(activeSources != 0);
-        MoreCloseables.closeQuietly(statusCursor);
-        mVoicemailStatusFetched = true;
-        destroyEmptyLoaderIfAllDataFetched();
-    }
+//    @Override
+//    public void onVoicemailStatusFetched(Cursor statusCursor) {
+//        if (getActivity() == null || getActivity().isFinishing()) {
+//            return;
+//        }
+//        updateVoicemailStatusMessage(statusCursor);
+//
+//        int activeSources = mVoicemailStatusHelper.getNumberActivityVoicemailSources(statusCursor);
+//        setVoicemailSourcesAvailable(activeSources != 0);
+//        MoreCloseables.closeQuietly(statusCursor);
+//        mVoicemailStatusFetched = true;
+//        destroyEmptyLoaderIfAllDataFetched();
+//    }
 
     private void destroyEmptyLoaderIfAllDataFetched() {
         if (mCallLogFetched && mVoicemailStatusFetched && mEmptyLoaderRunning) {
@@ -183,22 +190,22 @@ public class CallLogFragment extends ListFragment
         }
     }
 
-    /** Sets whether there are any voicemail sources available in the platform. */
-    private void setVoicemailSourcesAvailable(boolean voicemailSourcesAvailable) {
-        if (mVoicemailSourcesAvailable == voicemailSourcesAvailable) return;
-        mVoicemailSourcesAvailable = voicemailSourcesAvailable;
-
-        Activity activity = getActivity();
-        if (activity != null) {
-            // This is so that the options menu content is updated.
-            activity.invalidateOptionsMenu();
-        }
-    }
+//    /** Sets whether there are any voicemail sources available in the platform. */
+//    private void setVoicemailSourcesAvailable(boolean voicemailSourcesAvailable) {
+//        if (mVoicemailSourcesAvailable == voicemailSourcesAvailable) return;
+//        mVoicemailSourcesAvailable = voicemailSourcesAvailable;
+//
+//        Activity activity = getActivity();
+//        if (activity != null) {
+//            // This is so that the options menu content is updated.
+//            activity.invalidateOptionsMenu();
+//        }
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View view = inflater.inflate(R.layout.call_log_fragment, container, false);
-        mVoicemailStatusHelper = new VoicemailStatusHelperImpl();
+        //mVoicemailStatusHelper = new VoicemailStatusHelperImpl();
         mStatusMessageView = view.findViewById(R.id.voicemail_status);
         mStatusMessageText = (TextView) view.findViewById(R.id.voicemail_status_message);
         mStatusMessageAction = (TextView) view.findViewById(R.id.voicemail_status_action);
@@ -233,8 +240,7 @@ public class CallLogFragment extends ListFragment
     public void onStart() {
         // Start the empty loader now to defer other fragments.  We destroy it when both calllog
         // and the voicemail status are fetched.
-        getLoaderManager().initLoader(EMPTY_LOADER_ID, null,
-                new EmptyLoader.Callback(getActivity()));
+        getLoaderManager().initLoader(EMPTY_LOADER_ID, null,new EmptyLoader.Callback(getActivity()));
         mEmptyLoaderRunning = true;
         super.onStart();
     }
@@ -245,34 +251,34 @@ public class CallLogFragment extends ListFragment
         refreshData();
     }
 
-    private void updateVoicemailStatusMessage(Cursor statusCursor) {
-        List<StatusMessage> messages = mVoicemailStatusHelper.getStatusMessages(statusCursor);
-        if (messages.size() == 0) {
-            mStatusMessageView.setVisibility(View.GONE);
-        } else {
-            mStatusMessageView.setVisibility(View.VISIBLE);
-            // TODO: Change the code to show all messages. For now just pick the first message.
-            final StatusMessage message = messages.get(0);
-            if (message.showInCallLog()) {
-                mStatusMessageText.setText(message.callLogMessageId);
-            }
-            if (message.actionMessageId != -1) {
-                mStatusMessageAction.setText(message.actionMessageId);
-            }
-            if (message.actionUri != null) {
-                mStatusMessageAction.setVisibility(View.VISIBLE);
-                mStatusMessageAction.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().startActivity(
-                                new Intent(Intent.ACTION_VIEW, message.actionUri));
-                    }
-                });
-            } else {
-                mStatusMessageAction.setVisibility(View.GONE);
-            }
-        }
-    }
+//    private void updateVoicemailStatusMessage(Cursor statusCursor) {
+//        List<StatusMessage> messages = mVoicemailStatusHelper.getStatusMessages(statusCursor);
+//        if (messages.size() == 0) {
+//            mStatusMessageView.setVisibility(View.GONE);
+//        } else {
+//            mStatusMessageView.setVisibility(View.VISIBLE);
+//            // TODO: Change the code to show all messages. For now just pick the first message.
+//            final StatusMessage message = messages.get(0);
+//            if (message.showInCallLog()) {
+//                mStatusMessageText.setText(message.callLogMessageId);
+//            }
+//            if (message.actionMessageId != -1) {
+//                mStatusMessageAction.setText(message.actionMessageId);
+//            }
+//            if (message.actionUri != null) {
+//                mStatusMessageAction.setVisibility(View.VISIBLE);
+//                mStatusMessageAction.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        getActivity().startActivity(
+//                                new Intent(Intent.ACTION_VIEW, message.actionUri));
+//                    }
+//                });
+//            } else {
+//                mStatusMessageAction.setVisibility(View.GONE);
+//            }
+//        }
+//    }
 
     @Override
     public void onPause() {
@@ -298,25 +304,25 @@ public class CallLogFragment extends ListFragment
 
     @Override
     public void fetchCalls() {
-        if (mShowingVoicemailOnly) {
-            mCallLogQueryHandler.fetchVoicemailOnly();
-        } else {
+//        if (mShowingVoicemailOnly) {
+//            mCallLogQueryHandler.fetchVoicemailOnly();
+//        } else {
             mCallLogQueryHandler.fetchAllCalls();
-        }
+        //}
     }
 
     public void startCallsQuery() {
         mAdapter.setLoading(true);
         mCallLogQueryHandler.fetchAllCalls();
-        if (mShowingVoicemailOnly) {
-            mShowingVoicemailOnly = false;
+//        if (mShowingVoicemailOnly) {
+//            mShowingVoicemailOnly = false;
             getActivity().invalidateOptionsMenu();
-        }
+        //}
     }
 
-    private void startVoicemailStatusQuery() {
-        mCallLogQueryHandler.fetchVoicemailStatus();
-    }
+//    private void startVoicemailStatusQuery() {
+//        mCallLogQueryHandler.fetchVoicemailStatus();
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -333,28 +339,83 @@ public class CallLogFragment extends ListFragment
             itemDeleteAll.setEnabled(mAdapter != null && !mAdapter.isEmpty());
             menu.findItem(R.id.show_voicemails_only).setVisible(
                     mVoicemailSourcesAvailable && !mShowingVoicemailOnly);
-            menu.findItem(R.id.show_all_calls).setVisible(
-                    mVoicemailSourcesAvailable && mShowingVoicemailOnly);
+            //menu.findItem(R.id.show_all_calls).setVisible(mVoicemailSourcesAvailable && mShowingVoicemailOnly);
+//ddd?        menu.findItem(R.id.show_all_calls).setVisible(true);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete_all:
-                ClearCallLogDialog.show(getFragmentManager());
+            case R.id.search_calls:
+        	    startActivity(new Intent (getActivity(), CallLogSearch.class) );
+        	    return true;
+        
+            case R.id.delete_all:  // modified by yuan 
+            	startActivity(new Intent (getActivity(), ClearCallLog.class) );
                 return true;
+                
+            case R.id.show_calls_options:  // modified by ddd
+            	// ddd startActivity(new Intent (getActivity(), ShowCallsOptionsAcivity.class) );
+            	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            	builder.setTitle("要显示的通话记录");
+            	builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
+            	builder.setSingleChoiceItems(R.array.call_log_show_options,0, new OnClickListener(){
+            		@Override
+            		public void onClick(DialogInterface dialog,int which){
+            			
+            			choose_show_calls_options(which);
+            			mShowingVoicemailOnly = false;
+            			dialog.dismiss();
+            			
+            		}
+
+            	});
+                builder.create();
+                builder.show();
+                
+            	return true;
 
             case R.id.show_voicemails_only:
-                mCallLogQueryHandler.fetchVoicemailOnly();
-                mShowingVoicemailOnly = true;
+//                mCallLogQueryHandler.fetchVoicemailOnly();
+//                mShowingVoicemailOnly = true;
                 return true;
-
-            case R.id.show_all_calls:
-                mCallLogQueryHandler.fetchAllCalls();
-                mShowingVoicemailOnly = false;
-                return true;
-
+//ddd start
+//            case R.id.show_all_calls:
+//                mCallLogQueryHandler.fetchAllCalls();
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_in_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("1");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_out_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("2");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//            case R.id.show_missed_calls:  //by yuan
+//            	mCallLogQueryHandler.fetchPartialCalls("3");
+//                mShowingVoicemailOnly = false;
+//                return true;
+//                
+//            case R.id.show_sim_calls:    //by yuan
+//          	mCallLogQueryHandler.fetchSimCalls("1");
+//                mShowingVoicemailOnly = false;
+//            	return true;
+//            	
+//            case R.id.show_uim_calls:    //by yuan
+//            	mCallLogQueryHandler.fetchSimCalls("0");
+//                mShowingVoicemailOnly = false;
+//            	return true;
+ //ddd end              
+       	
+            case R.id.number_locate_setting:    //by yuan
+                Intent intent = new Intent(getActivity(),NumberLocateSetting.class);
+                startActivity(intent);
+            	return true;
+          
             default:
                 return false;
         }
@@ -394,8 +455,7 @@ public class CallLogFragment extends ListFragment
                     String countryIso = cursor.getString(CallLogQuery.COUNTRY_ISO);
                     number = mAdapter.getBetterNumberFromContacts(number, countryIso);
                 }
-                intent = ContactsUtils.getCallIntent(
-                        Uri.fromParts(Constants.SCHEME_TEL, number, null));
+                intent = ContactsUtils.getCallIntent(Uri.fromParts(Constants.SCHEME_TEL, number, null));
             }
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -425,31 +485,31 @@ public class CallLogFragment extends ListFragment
     private void refreshData() {
         // Prevent unnecessary refresh.
         if (mRefreshDataRequired) {
+        	
             // Mark all entries in the contact info cache as out of date, so they will be looked up
             // again once being shown.
             mAdapter.invalidateCache();
             startCallsQuery();
-            startVoicemailStatusQuery();
+            //startVoicemailStatusQuery();
             updateOnEntry();
             mRefreshDataRequired = false;
         }
     }
 
-    /** Removes the missed call notifications. */
-    private void removeMissedCallNotifications() {
-        try {
-            ITelephony telephony =
-                    ITelephony.Stub.asInterface(ServiceManager.getService("phone"));
-            if (telephony != null) {
-                telephony.cancelMissedCallsNotification();
-            } else {
-                Log.w(TAG, "Telephony service is null, can't call " +
-                        "cancelMissedCallsNotification");
-            }
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to clear missed calls notification due to remote exception");
-        }
-    }
+//    /** Removes the missed call notifications. */
+//    private void removeMissedCallNotifications() {
+//        try {
+//            ITelephony telephony = ITelephony.Stub.asInterface(ServiceManager.getService("phone"));
+//            if (telephony != null) {
+//                telephony.cancelMissedCallsNotification();
+//            } else {
+//                Log.w(TAG, "Telephony service is null, can't call " +
+//                        "cancelMissedCallsNotification");
+//            }
+//        } catch (RemoteException e) {
+//            Log.e(TAG, "Failed to clear missed calls notification due to remote exception");
+//        }
+//    }
 
     /** Updates call data and notification state while leaving the call log tab. */
     private void updateOnExit() {
@@ -473,14 +533,53 @@ public class CallLogFragment extends ListFragment
             if (!onEntry) {
                 mCallLogQueryHandler.markMissedCallsAsRead();
             }
-            removeMissedCallNotifications();
-            updateVoicemailNotifications();
+            //removeMissedCallNotifications();
+            //updateVoicemailNotifications();
         }
     }
 
-    private void updateVoicemailNotifications() {
-        Intent serviceIntent = new Intent(getActivity(), CallLogNotificationsService.class);
-        serviceIntent.setAction(CallLogNotificationsService.ACTION_UPDATE_NOTIFICATIONS);
-        getActivity().startService(serviceIntent);
+//    private void updateVoicemailNotifications() {
+//        Intent serviceIntent = new Intent(getActivity(), CallLogNotificationsService.class);
+//        serviceIntent.setAction(CallLogNotificationsService.ACTION_UPDATE_NOTIFICATIONS);
+//        getActivity().startService(serviceIntent);
+//    }
+
+    
+//    public void singleChoice(View source){
+//    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//    	builder.setTitle("要显示的通话记录");
+//    	builder.setIcon(R.drawable.ic_launcher_shortcut_directdial);
+//      MenuItem item;
+//
+//
+//    	
+//    	
+//    	
+//    }
+    
+// ddd   <array name="call_log_show_options">
+//    <item>@string/menu_show_all_calls</item>  which=0
+//    <item>@string/show_uim_calls</item>       which=1
+//    <item>@string/show_sim_calls</item>       ...
+//    <item>@string/show_in_calls</item>
+//    <item>@string/show_out_calls</item>
+//    <item>@string/show_missed_calls</item>
+////</array>
+    private void choose_show_calls_options(int which){
+    	if(which==0){
+    		mCallLogQueryHandler.fetchAllCalls();
+    		}
+    	else if(which<=2){
+    		mCallLogQueryHandler.fetchSimCalls(String.valueOf(which-1));
+    		
+    	}
+    	else{
+    		mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which-2));
+    		
+    	}
+		
+		Log.i(TAG, "which "+ which);
+		mShowingVoicemailOnly = false;
+    
     }
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/new_record_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+<!--         android:layout_alignParentBottom="true" -->
+        <Button
+            android:id="@+id/save"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/cancle"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/cancle" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center|left"
+        android:text="@string/phone_number"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/phone_number_et"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/phone_number"
+        android:hint="@string/must"
+        android:inputType="phone" />
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/phone_number_et"
+        android:gravity="center|left"
+        android:text="@string/name"
+        android:textColor="#000000"
+        android:textSize="20sp"
+       />
+
+    <EditText
+        android:id="@+id/contact_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/contact_name"
+        android:hint="@string/willfully"
+        android:inputType="text"
+      />
+
+    <TextView
+        android:id="@+id/block_content"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_below="@+id/contact_name_et"
+        android:gravity="center|left"
+        android:text="@string/block_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_below="@+id/block_content" 
+        android:visibility="gone"/>
+
+</RelativeLayout>

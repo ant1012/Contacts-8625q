@@ -54,7 +54,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class VCardService extends Service {
     private final static String LOG_TAG = "VCardService";
 
-    /* package */ final static boolean DEBUG = false;
+    /* package */ final static boolean DEBUG = true;
 
     /* package */ static final int MSG_IMPORT_REQUEST = 1;
     /* package */ static final int MSG_EXPORT_REQUEST = 2;
@@ -203,6 +203,10 @@ public class VCardService extends Service {
                             uris.toString(), displayNames.toString()));
         }
         final int size = requests.size();
+
+        /** zzz */
+        Log.i(LOG_TAG, "size - " + size);
+
         for (int i = 0; i < size; i++) {
             ImportRequest request = requests.get(i);
 
@@ -528,4 +532,8 @@ public class VCardService extends Service {
         mErrorReason = getString(R.string.fail_reason_too_many_vcard);
         return null;
     }
+
+//
+//    /** zzz */
+//    public long importedVCardId = 0;
 }

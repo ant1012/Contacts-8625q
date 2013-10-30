@@ -40,7 +40,7 @@
          android:layout_width="wrap_content"
          android:layout_height="?android:attr/actionBarSize"
          android:layout_gravity="bottom|right"
-         android:src="@drawable/ic_menu_overflow"
+         android:src="@drawable/ic_menu_overflow_brown"
          android:contentDescription="@string/action_menu_overflow_description"
          android:nextFocusLeft="@id/digits"
          android:background="?android:attr/selectableItemBackground"/>

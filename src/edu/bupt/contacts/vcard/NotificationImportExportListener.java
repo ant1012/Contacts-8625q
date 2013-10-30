@@ -17,7 +17,6 @@
 package edu.bupt.contacts.vcard;
 
 import edu.bupt.contacts.R;
-import com.android.vcard.VCardEntry;
 
 import android.app.Activity;
 import android.app.Notification;

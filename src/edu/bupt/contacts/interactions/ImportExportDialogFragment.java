@@ -17,9 +17,11 @@
 package edu.bupt.contacts.interactions;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.activities.MultiSelectExport;
 import edu.bupt.contacts.editor.SelectAccountDialogFragment;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
+import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.AccountSelectionUtil;
 import edu.bupt.contacts.util.AccountsListAdapter.AccountListFilter;
 import edu.bupt.contacts.vcard.ExportVCardActivity;
@@ -37,6 +39,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -100,7 +103,7 @@ public class ImportExportDialogFragment extends DialogFragment
 
         boolean hasIccCard = false;
 
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+        if (MultiSimConfig.isMultiSimEnabled()) {
             for (int i = 0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
                 hasIccCard = MSimTelephonyManager.getDefault().hasIccCard(i);
                 if (hasIccCard) {
@@ -110,10 +113,12 @@ public class ImportExportDialogFragment extends DialogFragment
         } else {
             hasIccCard = TelephonyManager.getDefault().hasIccCard();
         }
-
+//        boolean hasIccCard = true;
         if (hasIccCard
                 && res.getBoolean(R.bool.config_allow_sim_import)) {
-            adapter.add(R.string.manage_sim_contacts);
+            /** zzz */
+            // baoge
+//            adapter.add(R.string.manage_sim_contacts);
             adapter.add(R.string.export_to_sim);
         }
         if (res.getBoolean(R.bool.config_allow_import_from_sdcard)) {
@@ -124,11 +129,15 @@ public class ImportExportDialogFragment extends DialogFragment
                 adapter.add(R.string.export_to_sdcard);
             }
         }
-        if (res.getBoolean(R.bool.config_allow_share_visible_contacts)) {
-            if (contactsAreAvailable) {
-                adapter.add(R.string.share_visible_contacts);
-            }
-        }
+
+        /** zzz */
+//        if (res.getBoolean(R.bool.config_allow_share_visible_contacts)) {
+//            if (contactsAreAvailable) {
+//                adapter.add(R.string.share_visible_contacts);
+//            }
+//        }
+        /** zzz */
+        adapter.add(R.string.manage_sim_contacts);
 
         final DialogInterface.OnClickListener clickListener =
                 new DialogInterface.OnClickListener() {
@@ -137,25 +146,34 @@ public class ImportExportDialogFragment extends DialogFragment
                 boolean dismissDialog;
                 final int resId = adapter.getItem(which);
                 switch (resId) {
-                    case R.string.manage_sim_contacts:
-                    case R.string.import_from_sdcard: {
+                    // baoge
+                    case R.string.manage_sim_contacts:{//����ɼ����ϵ��
+                        dismissDialog = true;
+                        Intent exportIntent = new Intent(getActivity(), MultiSelectExport.class);
+                        getActivity().startActivity(exportIntent);
+                        break;
+                    }
+                    case R.string.import_from_sdcard: {//�Ӵ洢�豸����
                         dismissDialog = handleImportRequest(resId);
                         break;
                     }
-                    case R.string.export_to_sdcard: {
+                    case R.string.export_to_sdcard: {//�������洢�豸
                         dismissDialog = true;
                         Intent exportIntent = new Intent(getActivity(), ExportVCardActivity.class);
                         getActivity().startActivity(exportIntent);
                         break;
                     }
-                    case R.string.share_visible_contacts: {
+
+                    /** zzz */
+//                    case R.string.share_visible_contacts: {//����ɼ����ϵ��
+//                        dismissDialog = true;
+//                        doShareVisibleContacts();
+//                        break;
+//                    }
+
+                    case R.string.export_to_sim: {//������SIM��
                         dismissDialog = true;
-                        doShareVisibleContacts();
-                        break;
-                    }
-                    case R.string.export_to_sim: {
-                        dismissDialog = true;
-                        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                        if (MultiSimConfig.isMultiSimEnabled()) {
                             displaySIMSelection();
                         } else {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -165,6 +183,10 @@ public class ImportExportDialogFragment extends DialogFragment
                         }
                         break;
                     }
+//                    case R.string.multiSelectExport:{
+//                    	dismissDialog = true;
+//                    	break;
+//                    }
                     default: {
                         dismissDialog = true;
                         Log.e(TAG, "Unexpected resource: "
@@ -185,19 +207,20 @@ public class ImportExportDialogFragment extends DialogFragment
     }
 
     private void doShareVisibleContacts() {
-        // TODO move the query into a loader and do this in a background thread
+        // TODO move the query into a loader and do this in a background thread//Contacts.CONTENT_URI
         final Cursor cursor = getActivity().getContentResolver().query(Contacts.CONTENT_URI,
                 LOOKUP_PROJECTION, Contacts.IN_VISIBLE_GROUP + "!=0", null, null);
+        Log.i("Contacts.CONTENT_URI",""+Contacts.CONTENT_URI);
         if (cursor != null) {
             try {
                 if (!cursor.moveToFirst()) {
                     Toast.makeText(getActivity(), R.string.share_error, Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                Log.i("cursor","\n"+cursor.getString(0));
                 StringBuilder uriListBuilder = new StringBuilder();
                 int index = 0;
-                do {
+                do {               	
                     if (index != 0)
                         uriListBuilder.append(':');
                     uriListBuilder.append(cursor.getString(0));
@@ -206,7 +229,7 @@ public class ImportExportDialogFragment extends DialogFragment
                 Uri uri = Uri.withAppendedPath(
                         Contacts.CONTENT_MULTI_VCARD_URI,
                         Uri.encode(uriListBuilder.toString()));
-
+Log.i("share","\n"+uri);
                 final Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType(Contacts.CONTENT_VCARD_TYPE);
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -227,26 +250,33 @@ public class ImportExportDialogFragment extends DialogFragment
         // - more than one accounts -> ask the user
         // - just one account -> use the account without asking the user
         // - no account -> use phone-local storage without asking the user
-        final AccountTypeManager accountTypes = AccountTypeManager.getInstance(getActivity());
-        final List<AccountWithDataSet> accountList = accountTypes.getAccounts(true);
-        final int size = accountList.size();
-        if (size > 1) {
-            // Send over to the account selector
-            final Bundle args = new Bundle();
-            args.putInt(KEY_RES_ID, resId);
-            SelectAccountDialogFragment.show(
-                    getFragmentManager(), this,
-                    R.string.dialog_new_contact_account,
-                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE, args);
+        
+        /** zzz */
+        /** force using PHONE account*/
+//        final AccountTypeManager accountTypes = AccountTypeManager.getInstance(getActivity());
+//        final List<AccountWithDataSet> accountList = accountTypes.getAccounts(true);
+//        final int size = accountList.size();
+//        if (size > 1) {
+//            // Send over to the account selector
+//            final Bundle args = new Bundle();
+//            args.putInt(KEY_RES_ID, resId);
+//            SelectAccountDialogFragment.show(
+//                    getFragmentManager(), this,
+//                    R.string.dialog_new_contact_account,
+//                    AccountListFilter.ACCOUNTS_CONTACT_WRITABLE, args);
+//
+//            // In this case, because this DialogFragment is used as a target fragment to
+//            // SelectAccountDialogFragment, we can't close it yet.  We close the dialog when
+//            // we get a callback from it.
+//            return false;
+//        }
+//
+//        AccountSelectionUtil.doImport(getActivity(), resId,
+//                (size == 1 ? accountList.get(0) : null));
+        AccountSelectionUtil
+                .doImport(getActivity(), resId, new AccountWithDataSet("PHONE",
+                        "com.android.localphone", null));
 
-            // In this case, because this DialogFragment is used as a target fragment to
-            // SelectAccountDialogFragment, we can't close it yet.  We close the dialog when
-            // we get a callback from it.
-            return false;
-        }
-
-        AccountSelectionUtil.doImport(getActivity(), resId,
-                (size == 1 ? accountList.get(0) : null));
         return true; // Close the dialog.
     }
 

@@ -191,6 +191,10 @@ public class ImportVCardActivity extends ContactsActivity {
         public void sendImportRequest(final List<ImportRequest> requests) {
             Log.i(LOG_TAG, "Send an import request");
             mService.handleImportRequest(requests, mListener);
+//
+//            /** zzz */
+//            Log.v(LOG_TAG, "finished importing");
+//            Log.i(LOG_TAG, "mService.importedVCardId - " + mService.importedVCardId);
         }
 
         @Override
@@ -848,9 +852,16 @@ public class ImportVCardActivity extends ContactsActivity {
             } else if (accountList.size() == 1) {
                 mAccount = accountList.get(0);
             } else {
-                startActivityForResult(new Intent(this, SelectAccountActivity.class),
-                        SELECT_ACCOUNT);
-                return;
+
+                /** zzz */
+                // startActivityForResult(new Intent(this,
+                // SelectAccountActivity.class), SELECT_ACCOUNT);
+
+                accountName = "PHONE";
+                accountType = "com.android.localphone";
+                mAccount = new AccountWithDataSet(accountName, accountType,
+                        dataSet);
+                // return;
             }
         }
 
@@ -943,6 +954,8 @@ public class ImportVCardActivity extends ContactsActivity {
                     mProgressDialogForCachingVCard.setMessage(message);
                     mProgressDialogForCachingVCard.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     mProgressDialogForCachingVCard.setOnCancelListener(mVCardCacheThread);
+
+                    /** zzz */ //?
                     startVCardService();
                 }
                 return mProgressDialogForCachingVCard;

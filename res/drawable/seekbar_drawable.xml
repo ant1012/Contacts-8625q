@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
+<!-- ddd -->
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/quickcon_background_texture"
     android:tileMode="repeat" />

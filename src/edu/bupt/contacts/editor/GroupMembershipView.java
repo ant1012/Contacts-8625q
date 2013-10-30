@@ -215,7 +215,7 @@ public class GroupMembershipView extends LinearLayout
             return;
         }
 
-        boolean accountHasGroups = false;
+        boolean accountHasGroups = false;//true
         mFavoritesGroupId = 0;
         mDefaultGroupId = 0;
 

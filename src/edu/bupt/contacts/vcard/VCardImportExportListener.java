@@ -16,8 +16,6 @@
 
 package edu.bupt.contacts.vcard;
 
-import com.android.vcard.VCardEntry;
-
 import android.net.Uri;
 
 interface VCardImportExportListener {

@@ -21,7 +21,9 @@ import edu.bupt.contacts.model.AccountWithDataSet;
 import edu.bupt.contacts.model.EntityDelta;
 import edu.bupt.contacts.model.EntityDeltaList;
 import edu.bupt.contacts.model.EntityModifier;
+import edu.bupt.contacts.model.EntityDelta.ValuesDelta;
 import edu.bupt.contacts.util.CallerInfoCacheUtils;
+
 import com.google.android.collect.Lists;
 import com.google.android.collect.Sets;
 
@@ -45,10 +47,13 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.AggregationExceptions;
+import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Groups;
+import android.provider.ContactsContract.PhoneLookup;
 import android.provider.ContactsContract.Profile;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.RawContactsEntity;
@@ -116,6 +121,9 @@ public class ContactSaveService extends IntentService {
 
     public static final String ACTION_SET_RINGTONE = "setRingtone";
     public static final String EXTRA_CUSTOM_RINGTONE = "customRingtone";
+    
+    public static final String ACTION_SET_MSGRING = "setMsgRing";
+    public static final String EXTRA_CUSTOM_MSGRING = "customMsgRing";
 
     private static final HashSet<String> ALLOWED_DATA_COLUMNS = Sets.newHashSet(
         Data.MIMETYPE,
@@ -213,7 +221,11 @@ public class ContactSaveService extends IntentService {
         } else if (ACTION_SET_RINGTONE.equals(action)) {
             setRingtone(intent);
             CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
-        }
+        /** baoge */
+        } else if (ACTION_SET_MSGRING.equals(action)) {
+            setMsgRing(intent);
+            CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
+        } 
     }
 
     /**
@@ -345,6 +357,39 @@ public class ContactSaveService extends IntentService {
         final ContentResolver resolver = getContentResolver();
         boolean succeeded = false;
 
+        /** zzz */
+        //get info
+        String ori_name = null;
+        String ori_phone = null;
+        final EntityDelta entity = state.get(0);
+        final ValuesDelta values = entity.getValues();
+        String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
+        Log.i(TAG, "account_name - " + account_name);
+        long contact_id = values.getAsLong(RawContacts._ID);
+        Log.i(TAG, state.toString());
+        Log.i(TAG, "_id - " + contact_id);
+
+        Cursor p = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, //
+                new String[] { CommonDataKinds.Phone.DISPLAY_NAME,
+                        CommonDataKinds.Phone.NUMBER }, //
+                CommonDataKinds.Phone.CONTACT_ID + " =? ", //
+                new String[] { String.valueOf(contact_id) }, //
+                null);
+        if (p.moveToNext()) {
+
+            try {
+                ori_name = p.getString(0);
+                ori_phone = p.getString(1);
+            } catch (Exception e) {
+                Log.w(TAG, e.toString());
+            }
+            Log.i(TAG, "ori_name - " + ori_name + "\nori_phone - " + ori_phone);
+        }
+        p.close();
+
+
+
         // Keep track of the id of a newly raw-contact (if any... there can be at most one).
         long insertedRawContactId = -1;
 
@@ -475,6 +520,136 @@ public class ContactSaveService extends IntentService {
             }
             callbackIntent.setData(lookupUri);
             deliverCallback(callbackIntent);
+        }
+
+        /** zzz */
+        // write to sim card
+        
+        if (state.get(0).isContactInsert()) {
+            Log.d(TAG, "Insert");
+            saveToSimcard(lookupUri, account_name);
+        } else {
+            Log.d(TAG, "Modify");
+            saveToSimcard(lookupUri, account_name, ori_name, ori_phone);
+        }
+    }
+
+    /** zzz */
+    private void saveToSimcard(Uri lookupUri, String account_name) {
+        Uri simUri = null;
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
+            simUri = Uri.parse("content://iccmsim/adn");
+            Log.i(TAG, "content://iccmsim/adn");
+        } else if(account_name.equals("SIM2")) {
+            simUri = Uri.parse("content://iccmsim/adn_sub2");
+            Log.i(TAG, "content://iccmsim/adn_sub2");
+        } else {
+            Log.d(TAG, "return");
+            return;
+        }
+
+        Log.d(TAG, "write to sim card here?");
+        Log.i(TAG, "lookupUri - " + lookupUri.toString());
+        String name = null;
+        String phone = null;
+        long contactId = 0;
+
+        Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
+        int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
+        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        int phoneIdx = 0;
+
+        c.moveToNext();
+        name = c.getString(nameIdx);
+//        phone = c.getString(phoneIdx);
+        contactId = c.getLong(idIdx);
+        
+        if (Integer.parseInt(c.getString(c
+                .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+            Cursor p = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                    new String[] { String.valueOf(contactId) }, null);
+            p.moveToNext();
+            phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+            phone = p.getString(phoneIdx);
+            p.close();
+        }
+        c.close();
+
+        Log.i(TAG, "name - " + name);
+        Log.i(TAG, "contactId - " + contactId);
+        Log.i(TAG, "phone - " + phone);
+
+
+        // add it on the SIM card
+        ContentValues newSimValues = new ContentValues();
+        newSimValues.put("tag", name);
+        newSimValues.put("number", phone);
+        Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
+        if (newSimRow != null) {
+            Log.d(TAG, "insert to sim card successfully");
+        }
+    }
+    
+
+    /** zzz */
+    private void saveToSimcard(Uri lookupUri, String account_name, String ori_name, String ori_phone) {
+        Uri simUri = null;
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
+            simUri = Uri.parse("content://iccmsim/adn");
+            Log.i(TAG, "content://iccmsim/adn");
+        } else if(account_name.equals("SIM2")) {
+            simUri = Uri.parse("content://iccmsim/adn_sub2");
+            Log.i(TAG, "content://iccmsim/adn_sub2");
+        } else {
+            Log.d(TAG, "return");
+            return;
+        }
+
+        Log.d(TAG, "write to sim card here?");
+        Log.i(TAG, "lookupUri - " + lookupUri.toString());
+        String name = null;
+        String phone = null;
+        long contactId = 0;
+
+        Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
+        int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
+        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        int phoneIdx = 0;
+
+        c.moveToNext();
+        name = c.getString(nameIdx);
+//        phone = c.getString(phoneIdx);
+        contactId = c.getLong(idIdx);
+        
+        if (Integer.parseInt(c.getString(c
+                .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+            Cursor p = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                    new String[] { String.valueOf(contactId) }, null);
+            p.moveToNext();
+            phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+            phone = p.getString(phoneIdx);
+            p.close();
+        }
+        c.close();
+
+        Log.i(TAG, "name - " + name);
+        Log.i(TAG, "contactId - " + contactId);
+        Log.i(TAG, "phone - " + phone);
+
+
+        // add it on the SIM card
+        ContentValues newSimValues = new ContentValues();
+
+        newSimValues.put("tag", ori_name);
+        newSimValues.put("number", ori_phone);
+        newSimValues.put("newTag", name);
+        newSimValues.put("newNumber", phone);
+        int newSimRow = getContentResolver().update(simUri, newSimValues, null, null);
+//        Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
+        if (newSimRow > 0) {
+            Log.d(TAG, "insert to sim card successfully");
         }
     }
 
@@ -876,6 +1051,7 @@ public class ContactSaveService extends IntentService {
 
     private void setRingtone(Intent intent) {
         Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+        Log.i("contactUri",""+contactUri);
         String value = intent.getStringExtra(EXTRA_CUSTOM_RINGTONE);
         if (contactUri == null) {
             Log.e(TAG, "Invalid arguments for setRingtone");
@@ -885,6 +1061,32 @@ public class ContactSaveService extends IntentService {
         values.put(Contacts.CUSTOM_RINGTONE, value);
         getContentResolver().update(contactUri, values, null, null);
     }
+
+
+    /** baoge */
+    public static Intent createSetMsgRing(Context context, Uri contactUri,
+            String value) {
+        Intent serviceIntent = new Intent(context, ContactSaveService.class);
+        serviceIntent.setAction(ContactSaveService.ACTION_SET_MSGRING);
+        serviceIntent.putExtra(ContactSaveService.EXTRA_CONTACT_URI, contactUri);
+        serviceIntent.putExtra(ContactSaveService.EXTRA_CUSTOM_MSGRING, value);
+
+        return serviceIntent;
+    }
+
+    /** baoge */
+    private void setMsgRing(Intent intent) {
+        Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+        String value = intent.getStringExtra(EXTRA_CUSTOM_MSGRING);
+        if (contactUri == null) {
+            Log.e(TAG, "Invalid arguments for setMsgRing");
+            return;
+        }
+        ContentValues values = new ContentValues(1);
+        values.put(RawContacts.SOURCE_ID, value);
+        getContentResolver().update(contactUri, values, null, null);
+    }
+
 
     /**
      * Creates an intent that sets the selected data item as super primary (default)

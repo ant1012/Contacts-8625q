@@ -58,8 +58,7 @@ import android.view.View;
      */
     public void setPhoneCallDetails(CallLogListItemViews views, PhoneCallDetails details,
             boolean isHighlighted) {
-        mPhoneCallDetailsHelper.setPhoneCallDetails(views.phoneCallDetailsViews, details,
-                isHighlighted);
+        mPhoneCallDetailsHelper.setPhoneCallDetails(views.phoneCallDetailsViews, details,isHighlighted);
         boolean canCall = mPhoneNumberHelper.canPlaceCallsTo(details.number);
         boolean canPlay = details.callTypes[0] == Calls.VOICEMAIL_TYPE;
 
@@ -82,7 +81,7 @@ import android.view.View;
     private void configureCallSecondaryAction(CallLogListItemViews views,
             PhoneCallDetails details) {
         views.secondaryActionView.setVisibility(View.VISIBLE);
-        views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_dark);
+        views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_blue);
         views.secondaryActionView.setContentDescription(getCallActionDescription(details));
     }
 

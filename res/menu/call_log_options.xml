@@ -16,20 +16,71 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/search_calls"
+        android:title="@string/calllog_search"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+    
+    <item
         android:id="@+id/show_voicemails_only"
         android:title="@string/menu_show_voicemails_only"
         android:showAsAction="withText"
         android:orderInCategory="1" />
 
-    <item
-        android:id="@+id/show_all_calls"
-        android:title="@string/menu_show_all_calls"
-        android:showAsAction="withText"
-        android:orderInCategory="1" />
+<!--     <item -->
+<!--         android:id="@+id/show_all_calls" -->
+<!--         android:title="@string/menu_show_all_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
 
     <item
         android:id="@+id/delete_all"
         android:title="@string/recentCalls_deleteAll"
         android:showAsAction="withText"
         android:orderInCategory="1" />
+    
+<!--     <item -->
+<!--         android:id="@+id/show_uim_calls" -->
+<!--         android:title="@string/show_uim_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
+    
+<!--     <item -->
+<!--         android:id="@+id/show_sim_calls" -->
+<!--         android:title="@string/show_sim_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
+    
+<!--     <item -->
+<!--         android:id="@+id/show_in_calls" -->
+<!--         android:title="@string/show_in_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
+    
+<!--     <item -->
+<!--         android:id="@+id/show_out_calls" -->
+<!--         android:title="@string/show_out_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
+
+
+<!--     <item -->
+<!--         android:id="@+id/show_missed_calls" -->
+<!--         android:title="@string/show_missed_calls" -->
+<!--         android:showAsAction="withText" -->
+<!--         android:orderInCategory="1" /> -->
+
+<!-- ddd start -->
+    <item
+        android:id="@+id/show_calls_options"
+        android:title="@string/show_calls_option"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />
+<!-- ddd end     -->
+    <item
+        android:id="@+id/number_locate_setting"
+        android:title="@string/number_locate_setting"
+        android:showAsAction="withText"
+        android:orderInCategory="1" />  
+    
 </menu>

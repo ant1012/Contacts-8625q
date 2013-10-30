@@ -17,7 +17,6 @@
 package edu.bupt.contacts;
 
 import com.android.common.io.MoreCloseables;
-import edu.bupt.contacts.voicemail.VoicemailStatusHelperImpl;
 
 import android.content.AsyncQueryHandler;
 import android.database.Cursor;
@@ -62,28 +61,26 @@ public class CallDetailActivityQueryHandler extends AsyncQueryHandler {
                 null, null, null);
     }
 
-    @Override
-    protected synchronized void onQueryComplete(int token, Object cookie, Cursor cursor) {
-        try {
-            if (token == QUERY_VOICEMAIL_CONTENT_TOKEN) {
-                // Query voicemail status only if this voicemail record does not have audio.
-                if (moveToFirst(cursor) && hasNoAudio(cursor)) {
-                    startQuery(QUERY_VOICEMAIL_STATUS_TOKEN, null,
-                            Status.buildSourceUri(getSourcePackage(cursor)),
-                            VoicemailStatusHelperImpl.PROJECTION, null, null, null);
-                } else {
-                    // nothing to show in status
-                    mCallDetailActivity.updateVoicemailStatusMessage(null);
-                }
-            } else if (token == QUERY_VOICEMAIL_STATUS_TOKEN) {
-                mCallDetailActivity.updateVoicemailStatusMessage(cursor);
-            } else {
-                Log.w(TAG, "Unknown query completed: ignoring: " + token);
-            }
-        } finally {
-            MoreCloseables.closeQuietly(cursor);
-        }
-    }
+//    @Override
+//    protected synchronized void onQueryComplete(int token, Object cookie, Cursor cursor) {
+//        try {
+//            if (token == QUERY_VOICEMAIL_CONTENT_TOKEN) {
+//                // Query voicemail status only if this voicemail record does not have audio.
+//                if (moveToFirst(cursor) && hasNoAudio(cursor)) {
+//                    startQuery(QUERY_VOICEMAIL_STATUS_TOKEN, null,Status.buildSourceUri(getSourcePackage(cursor)),VoicemailStatusHelperImpl.PROJECTION, null, null, null);
+//                } else {
+//                    // nothing to show in status
+//                    mCallDetailActivity.updateVoicemailStatusMessage(null);
+//                }
+//            } else if (token == QUERY_VOICEMAIL_STATUS_TOKEN) {
+//                mCallDetailActivity.updateVoicemailStatusMessage(cursor);
+//            } else {
+//                Log.w(TAG, "Unknown query completed: ignoring: " + token);
+//            }
+//        } finally {
+//            MoreCloseables.closeQuietly(cursor);
+//        }
+//    }
 
     /** Check that the cursor is non-null and can be moved to first. */
     private boolean moveToFirst(Cursor cursor) {

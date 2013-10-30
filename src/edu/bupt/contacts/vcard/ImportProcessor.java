@@ -15,14 +15,6 @@
  */
 package edu.bupt.contacts.vcard;
 
-import com.android.vcard.VCardEntry;
-import com.android.vcard.VCardEntryCommitter;
-import com.android.vcard.VCardEntryConstructor;
-import com.android.vcard.VCardEntryHandler;
-import com.android.vcard.VCardInterpreter;
-import com.android.vcard.VCardParser;
-import com.android.vcard.VCardParser_V21;
-import com.android.vcard.VCardParser_V30;
 import com.android.vcard.exception.VCardException;
 import com.android.vcard.exception.VCardNestedException;
 import com.android.vcard.exception.VCardNotSupportedException;
@@ -30,6 +22,8 @@ import com.android.vcard.exception.VCardVersionException;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
@@ -149,8 +143,13 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
         final int entryCount = request.entryCount;
         mTotalCount += entryCount;
 
+        /** zzz */
+//        final VCardEntryConstructor constructor =
+//                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset);
         final VCardEntryConstructor constructor =
-                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset);
+                new VCardEntryConstructor(estimatedVCardType, account, estimatedCharset, mService);
+
+
         final VCardEntryCommitter committer = new VCardEntryCommitter(mResolver);
         constructor.addEntryHandler(committer);
         constructor.addEntryHandler(this);
@@ -205,6 +204,21 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
                         mListener.onImportFinished(mImportRequest, mJobId, null);
                     }
                 }
+
+//                /** zzz */
+//                // for(Uri u : uris) {
+//                Cursor c = mService.getContentResolver().query(uris.get(0), new String[] { "_id" }, null, null, null);
+//                c.moveToFirst();
+//                Log.i(LOG_TAG, "imported : " + c.getLong(0));
+////                mService.importedVCardId = c.getLong(0);
+//                long importedVCardId = c.getLong(0);
+//                c.close();
+//                // }
+//
+//                Intent i = new Intent(mService, PreviewVCardActivity.class);
+//                i.putExtra("importedVCard", uris.get(0).toString());
+//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mService.startActivity(i);
             }
         } else {
             Log.w(LOG_TAG, "Failed to read one vCard file: " + uri);
@@ -240,6 +254,8 @@ public class ImportProcessor extends ProcessorBase implements VCardEntryHandler 
                     }
                 }
                 mVCardParser.parse(is, interpreter);
+
+                Log.i(LOG_TAG, "interpreter - " + interpreter);
 
                 successful = true;
                 break;

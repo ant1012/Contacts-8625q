@@ -22,6 +22,7 @@ import edu.bupt.contacts.ContactsActivity;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.ActionBarAdapter.TabState;
+import edu.bupt.contacts.blacklist.BlacklistMainActivity;
 import edu.bupt.contacts.detail.ContactDetailFragment;
 import edu.bupt.contacts.detail.ContactDetailLayoutController;
 import edu.bupt.contacts.detail.ContactDetailUpdatesFragment;
@@ -61,13 +62,13 @@ import edu.bupt.contacts.util.HelpUtils;
 import edu.bupt.contacts.util.PhoneCapabilityTester;
 import edu.bupt.contacts.util.UriUtils;
 import edu.bupt.contacts.widget.TransitionAnimationView;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -78,6 +79,7 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.ProviderStatus;
 import android.provider.ContactsContract.QuickContact;
+import android.provider.ContactsContract.RawContacts;
 import android.provider.Settings;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -211,11 +213,18 @@ public class PeopleActivity extends ContactsActivity
     }
 
     private boolean areContactWritableAccountsAvailable() {
+//    	return true;
         return ContactsUtils.areContactWritableAccountsAvailable(this);
     }
 
+    /** zzz */
+//    private boolean areGroupWritableAccountsAvailable() {
+////      return true;
+//        return ContactsUtils.areGroupWritableAccountsAvailable(this);
+//    }
     private boolean areGroupWritableAccountsAvailable() {
-        return ContactsUtils.areGroupWritableAccountsAvailable(this);
+        return true;
+        // return ContactsUtils.areGroupWritableAccountsAvailable(this);
     }
 
     /**
@@ -304,7 +313,7 @@ public class PeopleActivity extends ContactsActivity
             setResult(RESULT_CANCELED);
             return false;
         }
-
+        Log.i("mRequest","q");
         Intent redirect = mRequest.getRedirectIntent();
         if (redirect != null) {
             // Need to start a different activity
@@ -314,8 +323,8 @@ public class PeopleActivity extends ContactsActivity
 
         if (mRequest.getActionCode() == ContactsRequest.ACTION_VIEW_CONTACT
                 && !PhoneCapabilityTester.isUsingTwoPanes(this)) {
-            redirect = new Intent(this, ContactDetailActivity.class);
-            redirect.setAction(Intent.ACTION_VIEW);
+            redirect = new Intent(this, edu.bupt.contacts.activities.ContactDetailActivity.class);
+            redirect.setAction(Intent.ACTION_VIEW);            
             redirect.setData(mRequest.getContactUri());
             startActivity(redirect);
             return false;
@@ -678,6 +687,7 @@ public class PeopleActivity extends ContactsActivity
         }
         switch (tab) {
             case TabState.FAVORITES:
+            	
                 mFavoritesView.setVisibility(View.VISIBLE);
                 mBrowserView.setVisibility(View.GONE);
                 mGroupDetailsView.setVisibility(View.GONE);
@@ -790,7 +800,7 @@ public class PeopleActivity extends ContactsActivity
                 mActionBarAdapter.setCurrentTab(position, false);
                 showEmptyStateForTab(position);
                 if (position == TabState.GROUPS) {
-                    mGroupsFragment.setAddAccountsVisibility(!areGroupWritableAccountsAvailable());
+                    mGroupsFragment.setAddAccountsVisibility(!areGroupWritableAccountsAvailable());//
                 }
                 invalidateOptionsMenu();
             }
@@ -1443,11 +1453,12 @@ public class PeopleActivity extends ContactsActivity
             HelpUtils.prepareHelpMenuItem(this, helpMenu, R.string.help_url_people_main);
         }
         final boolean showMiscOptions = !isSearchMode;
+//        makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_import_export, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_accounts, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_settings,
-                showMiscOptions && !ContactsPreferenceActivity.isEmpty(this));
+                showMiscOptions && !ContactsPreferenceActivity.isEmpty(this));// 
 
         return true;
     }
@@ -1470,7 +1481,7 @@ public class PeopleActivity extends ContactsActivity
             item.setVisible(visible);
         }
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -1509,7 +1520,7 @@ public class PeopleActivity extends ContactsActivity
                 return true;
             }
             case R.id.menu_add_contact: {
-                final Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+                final Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);//
                 // On 2-pane UI, we can let the editor activity finish itself and return
                 // to this activity to display the new contact.
                 if (PhoneCapabilityTester.isUsingTwoPanes(this)) {
@@ -1545,8 +1556,35 @@ public class PeopleActivity extends ContactsActivity
                 startActivity(intent);
                 return true;
             }
+            case R.id.menu_heibai:{
+            	Intent intent = new Intent(PeopleActivity.this,BlacklistMainActivity.class);
+            	startActivity(intent);
+//            	msgUri();
+            	return true;
+            	
+            }
         }
         return false;
+    }
+    
+    private void msgUri() {	    
+    	String msg = null;
+    	ContentValues values = new ContentValues();  
+    	values.put(RawContacts.SOURCE_ID, "content://media/internal/audio/media/31");  
+    	getContentResolver().update(RawContacts.CONTENT_URI, values, "_id=" + 2176, null);
+    	Log.i("RawContacts.CONTENT_URI",""+RawContacts.CONTENT_URI);
+//    	cur.moveToFirst();
+//    	while(cur.getCount() > cur.getPosition()) {   		
+//    		String raw_id = cur.getString(cur.getColumnIndex(RawContacts._ID));	
+//    		
+////    		if(id.equals("2176")){
+////    			 ;		//msg = cur.getString(cur.getColumnIndex(RawContacts.SOURCE_ID))
+////    		}
+//    		 
+//    		cur.moveToNext();
+//    	}
+//    	cur.close();
+//    	return msg;
     }
 
     private void createNewGroup() {

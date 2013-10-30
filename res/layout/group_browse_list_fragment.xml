@@ -45,6 +45,8 @@
         android:textColor="?android:attr/textColorSecondary"
         android:text="@string/noGroups" />
 
+    <!-- zzz -->
+    <!-- 
     <LinearLayout
       android:id="@+id/add_accounts"
       android:layout_width="wrap_content"
@@ -66,9 +68,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        
         android:layout_gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/contacts_unavailable_add_account" />
-
     </LinearLayout>
+         -->
+    
 </LinearLayout>
