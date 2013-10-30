@@ -19,15 +19,18 @@ public class CallstateBroadcastReceiver extends BroadcastReceiver {
 
         if (ACTION_CALL.equals(action)) {
             Log.v(TAG, "action = " + action);
-            MSimTelephonyManager telMgr = (MSimTelephonyManager) context.getSystemService("phone");
+            MSimTelephonyManager telMgr = (MSimTelephonyManager) context
+                    .getSystemService("phone");
             Log.v(TAG, "telMgr.getCallState(0) - " + telMgr.getCallState(0));
             Log.v(TAG, "telMgr.getCallState(1) - " + telMgr.getCallState(1));
             if (telMgr.getCallState(0) == TelephonyManager.CALL_STATE_IDLE
                     && telMgr.getCallState(1) == TelephonyManager.CALL_STATE_IDLE) {
                 Log.d(TAG, "------------------------------------call hang up");
-                Intent i = new Intent(context, CallinfoActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
+                if (!CallinfoActivity.exist) {
+                    Intent i = new Intent(context, CallinfoActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(i);
+                }
             }
         }
 

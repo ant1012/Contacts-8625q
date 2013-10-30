@@ -26,6 +26,7 @@ public class CallinfoActivity extends Activity {
     private Button buttonDial;
     String number = "";
     String name = "";
+    static public boolean exist = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,18 +38,21 @@ public class CallinfoActivity extends Activity {
         buttonMsg = (Button) findViewById(R.id.bt_msg);
         buttonDial = (Button) findViewById(R.id.bt_dial);
 
-        Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, "date desc limit 1");
+        Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI,
+                null, null, null, "date desc limit 1");
         cursor.moveToFirst();
 
         long id = cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID));
         Log.v(TAG, "id - " + id);
         number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
         Log.v(TAG, "number - " + number);
-        name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
+        name = cursor.getString(cursor
+                .getColumnIndex(CallLog.Calls.CACHED_NAME));
         Log.v(TAG, "name - " + name);
         cursor.close();
 
-        textviewText.setText("id : " + id + "\nnumber :" + number + "\nname : " + name);
+        textviewText.setText("id : " + id + "\nnumber :" + number + "\nname : "
+                + name);
         buttonMsg.setOnClickListener(clickListener);
         buttonDial.setOnClickListener(clickListener);
     }
@@ -68,8 +72,9 @@ public class CallinfoActivity extends Activity {
                 // Intent i = new Intent(Intent.ACTION_DIAL, uri);
                 // startActivity(i);
                 try {
-                    ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                            .getService(Context.MSIM_TELEPHONY_SERVICE));
+                    ITelephonyMSim telephony = ITelephonyMSim.Stub
+                            .asInterface(ServiceManager
+                                    .getService(Context.MSIM_TELEPHONY_SERVICE));
                     telephony.call(number, 0);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -77,4 +82,21 @@ public class CallinfoActivity extends Activity {
             }
         }
     };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        exist = true;
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        exist = false;
+        super.onDestroy();
+    }
 }
