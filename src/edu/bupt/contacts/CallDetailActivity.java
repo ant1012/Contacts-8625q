@@ -18,6 +18,8 @@ package edu.bupt.contacts;
 
 import edu.bupt.contacts.BackScrollManager.ScrollableHeader;
 import edu.bupt.contacts.activities.DialtactsActivity;
+import edu.bupt.contacts.blacklist.BlacklistDBHelper;
+import edu.bupt.contacts.blacklist.WhiteListDBHelper;
 import edu.bupt.contacts.calllog.CallDetailHistoryAdapter;
 import edu.bupt.contacts.calllog.CallTypeHelper;
 import edu.bupt.contacts.calllog.ContactInfo;
@@ -34,10 +36,12 @@ import edu.bupt.contacts.util.Constants;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -53,6 +57,7 @@ import android.provider.ContactsContract;
 import android.provider.CallLog.Calls;
 import android.provider.Contacts.Intents.Insert;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.provider.VoicemailContract.Voicemails;
 import android.telephony.PhoneNumberUtils;
@@ -152,7 +157,11 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     private CharSequence mPhoneNumberToCopy;
     
     private Context mContext;
-
+    
+    //ddd 添加到黑白名单的姓名
+    private CharSequence mContactName;
+    
+    
     /** Listener to changes in the proximity sensor state. */
     private class ProximitySensorListener implements ProximitySensorManager.Listener {
         /** Used to show a blank view and hide the action bar. */
@@ -458,10 +467,15 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                 final CharSequence nameOrNumber;
                 if (!TextUtils.isEmpty(firstDetails.name)) {
                     nameOrNumber = firstDetails.name;
+                    Log.i(TAG, "name - " + nameOrNumber);
                 } else {
                     nameOrNumber = firstDetails.number;
+                    Log.i(TAG, "number - " + nameOrNumber);
                 }
-
+                
+                //ddd 获取联系人姓名          
+                mContactName=nameOrNumber;
+                
                 if (contactUri != null) {
                     mainActionIntent = new Intent(Intent.ACTION_VIEW, contactUri);
                     // This will launch People's detail contact screen, so we probably want to
@@ -773,6 +787,12 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
         // We don't have this action for voicemails, because you can just use the trash button.
         menu.findItem(R.id.menu_remove_from_call_log).setVisible(mHasRemoveFromCallLogOption);
         menu.findItem(R.id.menu_edit_number_before_call).setVisible(mHasEditNumberBeforeCallOption);
+        
+        //ddd 
+        menu.findItem(R.id.menu_calllog_add_to_blacklist).setVisible(true);
+        menu.findItem(R.id.menu_calllog_add_to_whitelist).setVisible(true);
+        //ddd end
+       
         IPCall ipcall = new IPCall(this);
         if(ipcall.isCDMAIPEnabled()){
         	 menu.findItem(R.id.menu_call_from_card_one).setVisible(true);
@@ -866,8 +886,83 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 
     public void onMenuEditNumberBeforeCall(MenuItem menuItem) {
         startActivity(new Intent(Intent.ACTION_DIAL, ContactsUtils.getCallUri(mNumber)));
+        
+        
     }
 
+    //ddd start 添加到黑名单
+    public void onMenucallogAddToBlacklist(MenuItem menuItem) {
+     //   startActivity(new Intent(Intent.ACTION_DIAL, ContactsUtils.getCallUri(mNumber)));
+    	Log.d(TAG, "call_log_menu_add_to_blacklist");
+        Uri[] callUris = getCallLogEntryUris();
+    	final String phoneNumber = getPhoneCallDetailsForUri(callUris[0]).number.toString();
+    	 Log.i(TAG, "blacklist-phone - " + phoneNumber);
+    	 Log.i(TAG, "blacklist-name - " + mContactName);
+        new AlertDialog.Builder(mContext)
+                .setTitle(R.string.menu_add_to_blacklist)
+                .setMessage(
+                        mContext.getString(
+                                R.string.menu_add_to_blacklist_check, mContactName))
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setPositiveButton(android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0,
+                                    int arg1) {
+                                BlacklistDBHelper mDBHelper;
+                                mDBHelper = new BlacklistDBHelper(mContext,
+                                        1);
+                                mDBHelper.addPeople((String) mContactName, phoneNumber);
+                                Toast.makeText(mContext,
+                                        R.string.menu_add_to_blacklist,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }).setNegativeButton(android.R.string.cancel, null)
+                .show();
+
+        return;
+        
+        
+    }
+    
+    
+    //添加到白名单 ddd
+    public void onMenucallogAddToWhitelist(MenuItem menuItem) {
+  
+       	Log.d(TAG, "call_log_menu_add_to_blacklist");
+           Uri[] callUris = getCallLogEntryUris();
+       	final String phoneNumber = getPhoneCallDetailsForUri(callUris[0]).number.toString();
+       	 Log.i(TAG, "blacklist-phone - " + phoneNumber);
+       	 Log.i(TAG, "blacklist-name - " + mContactName);
+       	 new AlertDialog.Builder(mContext)
+         .setTitle(R.string.menu_add_to_whitelist)
+         .setMessage(
+                 mContext.getString(
+                         R.string.menu_add_to_whitelist_check, mContactName))
+         .setIconAttribute(android.R.attr.alertDialogIcon)
+         .setPositiveButton(android.R.string.ok,
+                 new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface arg0,
+                             int arg1) {
+                         WhiteListDBHelper mDBHelper;
+                         mDBHelper = new WhiteListDBHelper(mContext,
+                                 1);
+                         mDBHelper.addPeople((String) mContactName, phoneNumber);
+                         Toast.makeText(mContext,
+                                 R.string.menu_add_to_whitelist,
+                                 Toast.LENGTH_SHORT).show();
+                     }
+                 }).setNegativeButton(android.R.string.cancel, null)
+         .show();
+           return;
+           
+           
+       }
+  
+    //ddd end
+    
+    
 //    public void onMenuTrashVoicemail(MenuItem menuItem) {
 //        final Uri voicemailUri = getVoicemailUri();
 //        mAsyncTaskExecutor.submit(Tasks.DELETE_VOICEMAIL_AND_FINISH,
@@ -884,7 +979,12 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 //                });
 //    }
 
-    private void configureActionBar() {
+    private String toString(long contactId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private void configureActionBar() {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);

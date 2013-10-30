@@ -45,11 +45,19 @@
         android:title="@string/recentCalls_editNumberBeforeCall"
         android:onClick="onMenuEditNumberBeforeCall"
     />
-    
-        <item
+<!--     ddd 历史记录添加到黑名单 -->
+   
+   <item
         android:id="@+id/menu_calllog_add_to_blacklist"
         android:title="@string/menu_add_to_blacklist"
         android:onClick="onMenucallogAddToBlacklist"
+    />
+   
+<!--    ddd 历史记录添加到白名单 -->
+   <item
+        android:id="@+id/menu_calllog_add_to_whitelist"
+        android:title="@string/menu_add_to_whitelist"
+        android:onClick="onMenucallogAddToWhitelist"
     />
     
 </menu>
