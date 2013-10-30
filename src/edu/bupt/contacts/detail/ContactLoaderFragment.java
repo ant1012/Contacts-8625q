@@ -16,6 +16,8 @@
 
 package edu.bupt.contacts.detail;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +31,15 @@ import edu.bupt.contacts.activities.PersonInfo;
 import edu.bupt.contacts.activities.ContactDetailActivity.FragmentKeyListener;
 import edu.bupt.contacts.blacklist.BlacklistDBHelper;
 import edu.bupt.contacts.blacklist.WhiteListDBHelper;
+import edu.bupt.contacts.list.ContactMultiSelectAdapter;
 import edu.bupt.contacts.list.ShortcutIntentBuilder;
 import edu.bupt.contacts.list.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import edu.bupt.contacts.msgring.MsgRingDBHelper;
 import edu.bupt.contacts.util.PhoneCapabilityTester;
+import edu.bupt.contacts.vcard.VCardComposer;
 
 import com.android.internal.util.Objects;
+import com.android.vcard.VCardConfig;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -392,31 +397,87 @@ public class ContactLoaderFragment extends Fragment implements
             final String lookupKey = mContactData.getLookupKey();
             Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI,
                     lookupKey);
-            if (mContactData.isUserProfile()) {
-                // User is sharing the profile. We don't want to force the
-                // receiver to have
-                // the highly-privileged READ_PROFILE permission, so we need to
-                // request a
-                // pre-authorized URI from the provider.
-                shareUri = getPreAuthorizedUri(shareUri);
+
+            /** zzz */
+            // if (mContactData.isUserProfile()) {
+            // // User is sharing the profile. We don't want to force the
+            // // receiver to have
+            // // the highly-privileged READ_PROFILE permission, so we need to
+            // // request a
+            // // pre-authorized URI from the provider.
+            // shareUri = getPreAuthorizedUri(shareUri);
+            // }
+            //
+            // final Intent intent = new Intent(Intent.ACTION_SEND);
+            // intent.setType(Contacts.CONTENT_VCARD_TYPE);
+            // intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+
+            final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
+
+            VCardComposer composer = null;
+            composer = new VCardComposer(mContext, vcardType, true);
+
+            // do query
+            Cursor cursor = mContext.getContentResolver().query(mLookupUri, null, null, null, null);
+
+            // init
+            if (!composer.init(cursor)) {
+                final String errorReason = composer.getErrorReason();
+                Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
+                return false;
             }
 
-            final Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType(Contacts.CONTENT_VCARD_TYPE);
-            intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+            final int total = composer.getCount();
+            if (total == 0) {
+                Toast.makeText(mContext, R.string.share_error, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            Log.i(TAG, "composer.getCount() - " + total);
+
+            StringBuilder sb = new StringBuilder();
+            while (!composer.isAfterLast()) {
+                sb.append(composer.createOneEntry());
+            }
+            Log.i(TAG, sb.toString());
+            File tempFile = null;
+            try {
+                tempFile = File.createTempFile("VCard-" + mContactData.getDisplayName(), ".vcf",
+                        mContext.getExternalCacheDir());
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                byte[] bytes = sb.toString().getBytes();
+                fos.write(bytes);
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // send
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/x-vcard");
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempFile));
 
             // Launch chooser to share contact via
-            final CharSequence chooseTitle = mContext
-                    .getText(R.string.share_via);
-            final Intent chooseIntent = Intent.createChooser(intent,
-                    chooseTitle);
+            final CharSequence chooseTitle = mContext.getText(R.string.share_via);
+            final Intent chooseIntent = Intent.createChooser(i, chooseTitle);
 
             try {
                 mContext.startActivity(chooseIntent);
             } catch (ActivityNotFoundException ex) {
-                Toast.makeText(mContext, R.string.share_error,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.share_error, Toast.LENGTH_SHORT).show();
             }
+
+            // // Launch chooser to share contact via
+            // final CharSequence chooseTitle = mContext
+            // .getText(R.string.share_via);
+            // final Intent chooseIntent = Intent.createChooser(intent,
+            // chooseTitle);
+            //
+            // try {
+            // mContext.startActivity(chooseIntent);
+            // } catch (ActivityNotFoundException ex) {
+            // Toast.makeText(mContext, R.string.share_error,
+            // Toast.LENGTH_SHORT).show();
+            // }
             return true;
         }
         case R.id.menu_send_to_voicemail: {
