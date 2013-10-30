@@ -38,6 +38,10 @@ public class MsgRingService extends Service {
         Log.v(TAG, "onStart");
         super.onStart(intent, startId);
 
+        if (intent == null) {
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
