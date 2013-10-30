@@ -812,7 +812,11 @@
         <!-- ddd 修改多选导出的ui风格为默认holo。light -->
         <activity
             android:name="edu.bupt.contacts.activities.MultiSelectExport"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:clearTaskOnLaunch="true"
+            android:label="@string/contactsList"
+            android:launchMode="singleTop"
+            android:theme="@style/ContactPickerTheme"
+            android:uiOptions="splitActionBarWhenNarrow"  />
 
         <!-- ddd 修改拨号盘 通话设置为默认holo。light，并且去除actionbar -->
         <activity

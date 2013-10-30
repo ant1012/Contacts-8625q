@@ -113,30 +113,25 @@ public class MultiSelectExport extends ListActivity {
         // android.R.layout.simple_list_item_multiple_choice,
         // contactModArrayList));
 
-
         list = new ArrayList<Map<String, String>>();
         initData(list);
         mAdapter = new ContactMultiSelectAdapter(list, this);
         listView = getListView();
         listView.setAdapter(mAdapter);
 
-//        pos = new int[list.size()];
-//        for (int i = 0; i < list.size(); i++) {
-//            pos[i] = 0;
-//        }
-
-
+        // pos = new int[list.size()];
+        // for (int i = 0; i < list.size(); i++) {
+        // pos[i] = 0;
+        // }
 
         listView.setItemsCanFocus(false);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
 
-                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1
-                        .getTag();
+                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
                 holder.checkbox.toggle();
                 // Log.i("Click",""+contactArrayList.get(arg2).toString());
                 // String xx = "You had click those items: \n";
@@ -163,8 +158,7 @@ public class MultiSelectExport extends ListActivity {
                 // Log.i("pos", "" + pos[i]);
                 // }
 
-                ContactMultiSelectAdapter.getIsSelected().put(arg2,
-                        holder.checkbox.isChecked());
+                ContactMultiSelectAdapter.getIsSelected().put(arg2, holder.checkbox.isChecked());
             }
         });
 
@@ -181,17 +175,14 @@ public class MultiSelectExport extends ListActivity {
         Log.d(TAG, "initData");
         list.clear();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        String[] projection = new String[] { ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
+        String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
         // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
         // + " = '1'";
         String selection = null;
         String[] selectionArgs = null;
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-                + " COLLATE LOCALIZED ASC";
-        Cursor cursor = getContentResolver().query(uri, projection, selection,
-                selectionArgs, sortOrder);
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+        Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         // Cursor phonecur = null;
 
         Log.d(TAG, "corsor - " + cursor.getCount());
@@ -202,9 +193,7 @@ public class MultiSelectExport extends ListActivity {
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
             String name = cursor.getString(nameFieldColumnIndex);
             // get id
-            String contactId = cursor
-                    .getString(cursor
-                            .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
+            String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             // phonecur = getContentResolver().query(
             // android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             // null,
@@ -316,8 +305,7 @@ public class MultiSelectExport extends ListActivity {
         // }
         // }
 
-        final int vcardType = VCardConfig
-                .getVCardTypeFromString(getString(R.string.config_export_vcard_type));
+        final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
 
         VCardComposer composer = null;
         composer = new VCardComposer(this, vcardType, true);
@@ -341,8 +329,7 @@ public class MultiSelectExport extends ListActivity {
         StringBuilder sbName = new StringBuilder();
 
         // projection
-        String[] projection = new String[] { Contacts._ID,
-                Contacts.DISPLAY_NAME };
+        String[] projection = new String[] { Contacts._ID, Contacts.DISPLAY_NAME };
 
         // selection
         StringBuilder sbwhere = new StringBuilder();
@@ -360,9 +347,7 @@ public class MultiSelectExport extends ListActivity {
                     sbName.append(list.get(i).get("name"));
                     Log.i(TAG, "sbName - " + sbName.toString());
                 }
-                Log.i(TAG,
-                        "list.get(i).get(\"name\") - "
-                                + list.get(i).get("name"));
+                Log.i(TAG, "list.get(i).get(\"name\") - " + list.get(i).get("name"));
                 argsList.add(list.get(i).get("id"));
                 first = false;
             }
@@ -372,21 +357,18 @@ public class MultiSelectExport extends ListActivity {
         Log.i(TAG, "args - " + args.length);
 
         // do query
-        Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
-                projection, sbwhere.toString(), args, null);
+        Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, projection, sbwhere.toString(), args, null);
 
         // init
         if (!composer.init(cursor)) {
             final String errorReason = composer.getErrorReason();
-            Log.e(TAG, "initialization of vCard composer failed: "
-                    + errorReason);
+            Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
             return;
         }
 
         final int total = composer.getCount();
         if (total == 0) {
-            Toast.makeText(this, R.string.share_error, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.share_error, Toast.LENGTH_SHORT).show();
             ;
             return;
         } else if (total > 1) {
@@ -433,8 +415,7 @@ public class MultiSelectExport extends ListActivity {
         Log.i(TAG, sb.toString());
         File tempFile = null;
         try {
-            tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf",
-                    this.getExternalCacheDir());
+            tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf", this.getExternalCacheDir());
             FileOutputStream fos = new FileOutputStream(tempFile);
             byte[] bytes = sb.toString().getBytes();
             fos.write(bytes);
@@ -471,6 +452,7 @@ public class MultiSelectExport extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
+            doShareCheckedContactsText();
             break;
 
         case 1:
@@ -481,6 +463,105 @@ public class MultiSelectExport extends ListActivity {
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    private void doShareCheckedContactsText() {
+        // // projection
+        // String[] projection = new String[] { Contacts._ID,
+        // Contacts.DISPLAY_NAME };
+
+        // selection
+        StringBuilder sbwhere = new StringBuilder();
+        sbwhere.append("_id = ? ");
+
+        // selectionArgs
+        String[] args = new String[] {};
+        List<String> argsList = new ArrayList<String>();
+        boolean first = true;
+        for (int i = 0; i < list.size(); i++) {
+            if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
+                if (!first) {
+                    sbwhere.append(" or _id = ? ");
+                    // } else {
+                    // sbName.append(list.get(i).get("name"));
+                    // Log.i(TAG, "sbName - " + sbName.toString());
+                }
+                Log.i(TAG, "list.get(i).get(\"name\") - " + list.get(i).get("name"));
+                argsList.add(list.get(i).get("id"));
+                first = false;
+            }
+        }
+        args = argsList.toArray(new String[argsList.size()]);
+        Log.i(TAG, "sbwhere - " + sbwhere.toString());
+        Log.i(TAG, "args - " + args.length);
+
+        // do query
+        Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, null, sbwhere.toString(), args, null);
+
+        StringBuilder sb = new StringBuilder();
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+            Log.i(TAG, "id - " + id);
+
+            // name
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            if (name != null) {
+                sb.append("姓名: ");
+                sb.append(name);
+                sb.append('\n');
+            }
+
+            // email
+            // Cursor emailCur =
+            // getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+            // null,
+            // ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new
+            // String[] { id }, null);
+            // while (emailCur.moveToNext()) {
+            // // This would allow you get several email addresses
+            // // if the email addresses were stored in an array
+            // String email =
+            // emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            // String emailType = emailCur.getString(emailCur
+            // .getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+            //
+            // sb.append("Email: ");
+            // sb.append(email);
+            // sb.append('\n');
+            // Log.i(TAG, "email: " + email + " type: " + emailType);
+            //
+            // }
+            // emailCur.close();
+
+            // phone
+            String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+            Log.i(TAG, "hasPhone - " + hasPhone);
+
+            if (hasPhone.equalsIgnoreCase("1")) {
+                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
+                phones.moveToFirst();
+
+                sb.append("电话: ");
+                sb.append(phones.getString(phones.getColumnIndex("data1")));
+                while (phones.moveToNext()) {
+                    sb.append('/');
+                    sb.append(phones.getString(phones.getColumnIndex("data1")));
+                }
+            }
+
+            sb.append('\n');
+            Log.v(TAG, sb.toString());
+
+            // send
+            Uri uri = Uri.parse("smsto:");
+            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+            it.putExtra("sms_body", sb.toString());
+            startActivity(it);
+
+            finish();
+        }
     }
 
     // /**
