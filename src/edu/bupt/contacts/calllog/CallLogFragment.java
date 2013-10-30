@@ -356,19 +356,20 @@ public class CallLogFragment extends ListFragment
                 return true;
                 
             case R.id.show_calls_options:  // modified by ddd
+                                           // modified by zzz
             	// ddd startActivity(new Intent (getActivity(), ShowCallsOptionsAcivity.class) );
             	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            	builder.setTitle("要显示的通话记录");
+            	builder.setTitle(R.string.show_calls_option);
             	builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
-            	builder.setSingleChoiceItems(R.array.call_log_show_options,0, new OnClickListener(){
-            		@Override
-            		public void onClick(DialogInterface dialog,int which){
-            			
-            			choose_show_calls_options(which);
-            			mShowingVoicemailOnly = false;
-            			dialog.dismiss();
-            			
-            		}
+                builder.setSingleChoiceItems(R.array.call_log_show_options, 0, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+    
+                        choose_show_calls_options(which);
+                        mShowingVoicemailOnly = false;
+                        dialog.dismiss();
+    
+                    }
 
             	});
                 builder.create();
@@ -565,21 +566,21 @@ public class CallLogFragment extends ListFragment
 //    <item>@string/show_out_calls</item>
 //    <item>@string/show_missed_calls</item>
 ////</array>
-    private void choose_show_calls_options(int which){
-    	if(which==0){
-    		mCallLogQueryHandler.fetchAllCalls();
-    		}
-    	else if(which<=2){
-    		mCallLogQueryHandler.fetchSimCalls(String.valueOf(which-1));
-    		
-    	}
-    	else{
-    		mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which-2));
-    		
-    	}
-		
-		Log.i(TAG, "which "+ which);
-		mShowingVoicemailOnly = false;
-    
+
+    // modified by zzz
+    private void choose_show_calls_options(int which) {
+        if (which == 0) {
+            mCallLogQueryHandler.fetchAllCalls();
+        } else if (which <= 2) {
+            mCallLogQueryHandler.fetchSimCalls(String.valueOf(which - 1));
+
+        } else {
+            mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which - 2));
+
+        }
+
+        Log.i(TAG, "which " + which);
+        mShowingVoicemailOnly = false;
+
     }
 }

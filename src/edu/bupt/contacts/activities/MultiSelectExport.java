@@ -466,9 +466,6 @@ public class MultiSelectExport extends ListActivity {
     }
 
     private void doShareCheckedContactsText() {
-        // // projection
-        // String[] projection = new String[] { Contacts._ID,
-        // Contacts.DISPLAY_NAME };
 
         // selection
         StringBuilder sbwhere = new StringBuilder();
@@ -482,9 +479,6 @@ public class MultiSelectExport extends ListActivity {
             if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 if (!first) {
                     sbwhere.append(" or _id = ? ");
-                    // } else {
-                    // sbName.append(list.get(i).get("name"));
-                    // Log.i(TAG, "sbName - " + sbName.toString());
                 }
                 Log.i(TAG, "list.get(i).get(\"name\") - " + list.get(i).get("name"));
                 argsList.add(list.get(i).get("id"));
@@ -511,28 +505,6 @@ public class MultiSelectExport extends ListActivity {
                 sb.append('\n');
             }
 
-            // email
-            // Cursor emailCur =
-            // getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-            // null,
-            // ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new
-            // String[] { id }, null);
-            // while (emailCur.moveToNext()) {
-            // // This would allow you get several email addresses
-            // // if the email addresses were stored in an array
-            // String email =
-            // emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-            // String emailType = emailCur.getString(emailCur
-            // .getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-            //
-            // sb.append("Email: ");
-            // sb.append(email);
-            // sb.append('\n');
-            // Log.i(TAG, "email: " + email + " type: " + emailType);
-            //
-            // }
-            // emailCur.close();
-
             // phone
             String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
@@ -550,7 +522,7 @@ public class MultiSelectExport extends ListActivity {
                     sb.append(phones.getString(phones.getColumnIndex("data1")));
                 }
             }
-
+            cursor.close();
             sb.append('\n');
             Log.v(TAG, sb.toString());
 
