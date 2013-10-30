@@ -1310,6 +1310,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             // 根据首字母进行模糊查询
             // Pattern pattern = Pattern.compile("^" +
             // tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));
+            // modified by zzz
             Pattern pattern = Pattern.compile(tempStr1.toUpperCase().replace("-", "[*+#a-z]*"));
             Matcher matcher = pattern.matcher(model.pyname);
 
