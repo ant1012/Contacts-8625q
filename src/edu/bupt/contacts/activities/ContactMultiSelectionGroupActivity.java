@@ -22,6 +22,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -68,6 +70,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
     private ArrayList<String> groupName = new ArrayList<String>();
     private ArrayList<String> groupId = new ArrayList<String>();
+    private String SelectedGrouId = null;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -138,6 +141,8 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.v(TAG, "clicked group " + groupId.get(item));
+                SelectedGrouId = groupId.get(item);
+                setListView();
             }
         }).create().show();
 
@@ -182,15 +187,75 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     private void initData(ArrayList<Map<String, String>> list) {
         // contactLookupArrayList.clear();
         list.clear();
+        // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
+        // + " = '1'";
+        // String selection = null;
+        // String[] selectionArgs = null;
+
+        /** zzz */
+        // for group selection
+        // query raw contact id using group id
+        Cursor rawcontactCursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                new String[] { ContactsContract.Data.RAW_CONTACT_ID },
+                ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.Data.DATA1 + " = ?",
+                new String[] { GroupMembership.CONTENT_ITEM_TYPE, SelectedGrouId }, null);
+        long[] rawcontacts = new long[rawcontactCursor.getCount()];
+        for (int i = 0; i < rawcontactCursor.getCount(); i++) {
+            rawcontactCursor.moveToNext();
+            rawcontacts[i] = rawcontactCursor.getLong(0);
+            Log.v(TAG, "rawcontacts[i] - " + rawcontacts[i]);
+        }
+        rawcontactCursor.close();
+
+        // query contact id using raw contact id
+        StringBuilder rawcontactIdSelection = new StringBuilder(RawContacts._ID).append(" IN ( 0");
+        for (long id : rawcontacts) {
+            rawcontactIdSelection.append(',').append(id);
+        }
+        rawcontactIdSelection.append(')');
+        Cursor contactIdCursor = getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
+                new String[] { ContactsContract.RawContacts.CONTACT_ID }, rawcontactIdSelection.toString(), null, null);
+        long[] contactsid = new long[contactIdCursor.getCount()];
+        for (int i = 0; i < contactIdCursor.getCount(); i++) {
+            contactIdCursor.moveToNext();
+            contactsid[i] = contactIdCursor.getLong(0);
+            Log.v(TAG, "contactsid[i] - " + contactsid[i]);
+        }
+        contactIdCursor.close();
+
+        // Cursor contactIdCursor =
+        // getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
+        // new String[] { ContactsContract.RawContacts.CONTACT_ID },
+        // inSelectionBff.toString(), null, null);
+        // Map m = new HashMap();
+        // while (contactIdCursor.moveToNext()) {
+        // m.put(contactIdCursor.getLong(0), 1);
+        // }
+        // contactIdCursor.close();
+        // long[] contacts = new long[m.size()];
+        // Iterator it = m.entrySet().iterator();
+        // int i = 0;
+        // while (it.hasNext()) {
+        // Map.Entry entry = (Map.Entry) it.next();
+        // long key = (Long) entry.getKey();
+        // contacts[i] = key;
+        // i++;
+        // }rawcontactIdSelection
+
+        // query contact using contact id
+        StringBuilder contactIdSelection = new StringBuilder(ContactsContract.Contacts._ID).append(" IN ( 0");
+        for (long id : contactsid) {
+            contactIdSelection.append(',').append(id);
+        }
+        contactIdSelection.append(')');
+
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
-        // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
-        // + " = '1'";
-        String selection = null;
-        String[] selectionArgs = null;
         String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
-        Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        // Cursor cursor = getContentResolver().query(uri, projection,
+        // selection, selectionArgs, sortOrder);
+        Cursor cursor = getContentResolver().query(uri, projection, contactIdSelection.toString(), null, sortOrder);
         Cursor phonecur = null;
 
         while (cursor.moveToNext()) {

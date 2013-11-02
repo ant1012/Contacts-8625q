@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,18 +55,18 @@ import android.widget.TextView;
 /**
  * Fragment to display the list of groups.
  */
-public class GroupBrowseListFragment extends Fragment
-        implements OnFocusChangeListener, OnTouchListener {
+public class GroupBrowseListFragment extends Fragment implements OnFocusChangeListener, OnTouchListener {
 
     /**
      * Action callbacks that can be sent by a group list.
      */
-    public interface OnGroupBrowserActionListener  {
+    public interface OnGroupBrowserActionListener {
 
         /**
          * Opens the specified group for viewing.
-         *
-         * @param groupUri for the group that the user wishes to view.
+         * 
+         * @param groupUri
+         *            for the group that the user wishes to view.
          */
         void onViewGroupAction(Uri groupUri);
 
@@ -85,8 +86,8 @@ public class GroupBrowseListFragment extends Fragment
     private View mRootView;
     private AutoScrollListView mListView;
     private TextView mEmptyView;
-//    private View mAddAccountsView;
-//    private View mAddAccountButton;
+    // private View mAddAccountsView;
+    // private View mAddAccountButton;
 
     private GroupBrowseListAdapter mAdapter;
     private boolean mSelectionVisible;
@@ -100,19 +101,19 @@ public class GroupBrowseListFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mSelectedGroupUri = savedInstanceState.getParcelable(EXTRA_KEY_GROUP_URI);
             if (mSelectedGroupUri != null) {
-                // The selection may be out of screen, if rotated from portrait to landscape,
+                // The selection may be out of screen, if rotated from portrait
+                // to landscape,
                 // so ensure it's visible.
                 mSelectionToScreenRequested = true;
             }
         }
 
         mRootView = inflater.inflate(R.layout.group_browse_list_fragment, null);
-        mEmptyView = (TextView)mRootView.findViewById(R.id.empty);
+        mEmptyView = (TextView) mRootView.findViewById(R.id.empty);
 
         mAdapter = new GroupBrowseListAdapter(mContext);
         mAdapter.setSelectionVisible(mSelectionVisible);
@@ -128,7 +129,8 @@ public class GroupBrowseListFragment extends Fragment
                 GroupListItemViewCache groupListItem = (GroupListItemViewCache) view.getTag();
 
                 /** zzz */
-                if (position == mListView.getCount() - 1) {
+                SharedPreferences sp = mContext.getSharedPreferences("blacklist_pref", 0);
+                if (sp.getBoolean("show_as_group", false) && position == mListView.getCount() - 1) {
                     Log.d(TAG, "white list entry clicked");
                     Intent i = new Intent(mContext, BlacklistMainActivity.class);
                     i.putExtra("fragment_display_whitelist", true);
@@ -142,18 +144,18 @@ public class GroupBrowseListFragment extends Fragment
         });
 
         mListView.setEmptyView(mEmptyView);
-//        mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
-//        mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
-//        mAddAccountButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(SettingsFragment.ACTION_ADD_ACCOUNT);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//                intent.putExtra(SettingsFragment.EXTRA_AUTHORITIES,
-//                        new String[] { ContactsContract.AUTHORITY });
-//                startActivity(intent);
-//            }
-//        });
+        // mAddAccountsView = mRootView.findViewById(R.id.add_accounts);
+        // mAddAccountButton = mRootView.findViewById(R.id.add_account_button);
+        // mAddAccountButton.setOnClickListener(new OnClickListener() {
+        // @Override
+        // public void onClick(View v) {
+        // Intent intent = new Intent(SettingsFragment.ACTION_ADD_ACCOUNT);
+        // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        // intent.putExtra(SettingsFragment.EXTRA_AUTHORITIES,
+        // new String[] { ContactsContract.AUTHORITY });
+        // startActivity(intent);
+        // }
+        // });
         setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
 
         return mRootView;
@@ -172,14 +174,11 @@ public class GroupBrowseListFragment extends Fragment
         int leftPadding = 0;
         int rightPadding = 0;
         if (mVerticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT) {
-            leftPadding = mContext.getResources().getDimensionPixelOffset(
-                    R.dimen.list_visible_scrollbar_padding);
+            leftPadding = mContext.getResources().getDimensionPixelOffset(R.dimen.list_visible_scrollbar_padding);
         } else {
-            rightPadding = mContext.getResources().getDimensionPixelOffset(
-                    R.dimen.list_visible_scrollbar_padding);
+            rightPadding = mContext.getResources().getDimensionPixelOffset(R.dimen.list_visible_scrollbar_padding);
         }
-        mListView.setPadding(leftPadding, mListView.getPaddingTop(),
-                rightPadding, mListView.getPaddingBottom());
+        mListView.setPadding(leftPadding, mListView.getPaddingTop(), rightPadding, mListView.getPaddingBottom());
     }
 
     @Override
@@ -211,8 +210,7 @@ public class GroupBrowseListFragment extends Fragment
     /**
      * The listener for the group meta data loader for all groups.
      */
-    private final LoaderManager.LoaderCallbacks<Cursor> mGroupLoaderListener =
-            new LoaderCallbacks<Cursor>() {
+    private final LoaderManager.LoaderCallbacks<Cursor> mGroupLoaderListener = new LoaderCallbacks<Cursor>() {
 
         @Override
         public CursorLoader onCreateLoader(int id, Bundle args) {
@@ -268,7 +266,8 @@ public class GroupBrowseListFragment extends Fragment
 
     private void viewGroup(Uri groupUri) {
         setSelectedGroup(groupUri);
-        if (mListener != null) mListener.onViewGroupAction(groupUri);
+        if (mListener != null)
+            mListener.onViewGroupAction(groupUri);
     }
 
     public void setSelectedUri(Uri groupUri) {
@@ -282,8 +281,11 @@ public class GroupBrowseListFragment extends Fragment
         }
         int selectedPosition = mAdapter.getSelectedGroupPosition();
         if (selectedPosition != -1) {
-            mListView.requestPositionToScreen(selectedPosition,
-                    true /* smooth scroll requested */);
+            mListView.requestPositionToScreen(selectedPosition, true /*
+                                                                      * smooth
+                                                                      * scroll
+                                                                      * requested
+                                                                      */);
         }
     }
 
@@ -292,8 +294,8 @@ public class GroupBrowseListFragment extends Fragment
             return;
         }
         // Hide soft keyboard, if visible
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(mListView.getWindowToken(), 0);
     }
 
@@ -325,8 +327,8 @@ public class GroupBrowseListFragment extends Fragment
     }
 
     public void setAddAccountsVisibility(boolean visible) {
-//        if (mAddAccountsView != null) {
-//            mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-//        }
+        // if (mAddAccountsView != null) {
+        // mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        // }
     }
 }
