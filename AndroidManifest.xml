@@ -19,7 +19,7 @@
 
 
 
->>>>>>> c204be99ff85d1e3ac645f8b447971f8e6b9556f
+>>>>>>> c204be99ff85d1e3ac645f8b447971f8e6b9556f
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -83,7 +83,7 @@
         This activity should have the same intent filters as the DialtactsActivity,
         so that its capturing the same events. Omit android.intent.category.LAUNCHER, because we
         don't want this to show up in the Launcher. The priorities of the intent-filters
-        are set lower, so that the user does not see a disambig dialog
+        are set lower, so that the user does not see a disambig dialog
         -->
         <activity
             android:name="edu.bupt.contacts.activities.NonPhoneActivity"
@@ -144,7 +144,7 @@
         <!--
              The entrance point for Phone UI.
              stateAlwaysHidden is set to suppress keyboard show up on
-             dialpad screen.
+             dialpad screen.
         -->
         <!-- android:theme="@style/DialtactsTheme" -->
         <activity
@@ -213,7 +213,7 @@
             </intent-filter>
             <!--
                  This was never intended to be public, but is here for backward
-                 compatibility.  Use Intent.ACTION_DIAL instead.
+                 compatibility.  Use Intent.ACTION_DIAL instead.
             -->
             <intent-filter>
                 <action android:name="com.android.phone.action.TOUCH_DIALER" />
@@ -462,7 +462,7 @@
 
         <!--
              Used to show QuickContact window over a translucent activity, which is a
-             temporary hack until we add better framework support.
+             temporary hack until we add better framework support.
         -->
         <activity
             android:name="edu.bupt.contacts.quickcontact.QuickContactActivity"
@@ -603,7 +603,7 @@
 
         <!--
              Stub service used to keep our process alive long enough for
-             background threads to finish their operations.
+             background threads to finish their operations.
         -->
         <service
             android:name="edu.bupt.contacts.util.EmptyService"
@@ -630,7 +630,7 @@
 
         <!--
             Internal photo selection activity.  This activity handles all configuration changes by
-            itself.
+            itself.
         -->
         <activity
             android:name="edu.bupt.contacts.activities.PhotoSelectionActivity"
@@ -755,7 +755,7 @@
 
         <!--
              Service that is exclusively for the Phone application that sends out a view
-             notification. This service might be removed in future versions of the app
+             notification. This service might be removed in future versions of the app
         -->
         <service
             android:name="edu.bupt.contacts.ViewNotificationService"
@@ -816,7 +816,7 @@
             android:label="@string/contactsList"
             android:launchMode="singleTop"
             android:theme="@style/ContactPickerTheme"
-            android:uiOptions="splitActionBarWhenNarrow"  />
+            android:uiOptions="splitActionBarWhenNarrow" />
 
         <!-- ddd 修改拨号盘 通话设置为默认holo。light，并且去除actionbar -->
         <activity
@@ -836,18 +836,17 @@
             android:label="@string/title_activity_clear_call_log"
             android:theme="@android:style/Theme.Holo.Light" />
 
-<!--         ddd 新建通话记录多选菜单-radiobutton -->
+        <!-- ddd 新建通话记录多选菜单-radiobutton -->
         <activity
             android:name="edu.bupt.contacts.calllog.ShowCallsOptionsAcivity"
             android:label="@string/show_calls_option"
             android:theme="@android:style/Theme.Holo.Light" />
-        
-<!--         ddd         -->
-        <activity android:name="edu.bupt.contacts.calllog.CallLogSearch"
-           		  android:theme="@android:style/Theme.Holo.Light" 
-            
-            />
-        
+
+        <!-- ddd -->
+        <activity
+            android:name="edu.bupt.contacts.calllog.CallLogSearch"
+            android:theme="@android:style/Theme.Holo.Light" />
+
         <!-- baoge -->
         <!-- <activity android:name=".activities.MultiSelectExport" /> -->
 
@@ -908,6 +907,28 @@
             android:name="edu.bupt.contacts.callinfo.CallinfoActivity"
             android:theme="@android:style/Theme.Holo.Light" />
 
+        <!-- zzz -->
+        <activity
+            android:name="edu.bupt.contacts.activities.ContactMultiSelectionGroupActivity"
+            android:clearTaskOnLaunch="true"
+            android:label="@string/contactsList"
+            android:launchMode="singleTop"
+            android:theme="@style/ContactPickerTheme"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="edu.bupt.action.GET_MULTIPLE_PHONES_GROUP" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/contact" />
+                <data android:mimeType="vnd.android.cursor.dir/person" />
+                <data android:mimeType="vnd.android.cursor.dir/phone_v2" />
+                <data android:mimeType="vnd.android.cursor.dir/phone" />
+                <data android:mimeType="vnd.android.cursor.dir/postal-address_v2" />
+                <data android:mimeType="vnd.android.cursor.dir/postal-address" />
+                <data android:mimeType="vnd.android.cursor.dir/email_v2" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
