@@ -177,6 +177,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
+            finish();
             break;
 
         case 1:

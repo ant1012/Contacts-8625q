@@ -314,6 +314,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
+            finish();
             break;
 
         case 1:

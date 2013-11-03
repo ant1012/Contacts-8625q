@@ -634,6 +634,13 @@
     <string name="call_info_msg">发送短信</string>
     <string name="call_info_dial">拨打电话</string>
     <string name="call_info_state">通话结束</string>
+    <string name="vcard_preview_name">姓名</string>
+    <string name="vcard_preview_tel">电话</string>
+    <string name="vcard_preview_email">邮箱</string>
+    <string name="vcard_preview_adr">住址</string>
+    <string name="vcard_preview_org">单位</string>
+    <string name="vcard_preview_url">网址</string>
+    
 
 
     <!-- merge -->
