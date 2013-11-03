@@ -56,6 +56,7 @@ public class CallResearchAdapter extends BaseAdapter{
 		convertView = View.inflate(context, R.layout.call_contact_search_item, null);
 		TextView tvname = (TextView) convertView.findViewById(R.id.textView_contact_name);
 		TextView tvtel = (TextView) convertView.findViewById(R.id.textView_contact_num);
+//	ddd 删除拨号盘匹配字符	
 		TextView tvGroup = (TextView) convertView.findViewById(R.id.textView_contact_group);
 		model = contactList.get(position);
 		tvname.setText(model.name);
@@ -63,6 +64,8 @@ public class CallResearchAdapter extends BaseAdapter{
 		if(isShowAll){
 			model.group = "";
 		}
+		
+	//	ddd 删除 拨号盘匹配 字符 
 		tvGroup.setText(model.group);
 		return convertView;
 	}

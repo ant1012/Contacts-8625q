@@ -9,12 +9,15 @@
     android:paddingRight="5dip"
     android:paddingBottom="10dip"
     android:background="@drawable/dialpad_background"
-    android:orientation="vertical" >
-
+    android:orientation="vertical"
+>
+<!-- ddd  拨号盘搜索结果 增加padding-->
     <ListView
         android:id="@+id/listView_match_list"
         android:layout_width="match_parent"
+        android:padding="24dip"
+        android:textSize="18sp"
         android:layout_height="wrap_content" >
     </ListView>
-
+    
 </LinearLayout>
