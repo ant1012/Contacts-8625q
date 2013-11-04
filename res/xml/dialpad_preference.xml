@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/preference_category_edial" >
+
+        <ListPreference
+            android:dialogTitle="ListPreference"
+            android:entries="@array/edial_list_preference"
+            android:entryValues="@array/edial_list_preference_values"
+            android:key="EDialPreference"
+            android:defaultValue="0"
+            android:title="@string/preference_edial" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/preference_category_ipcall" >
+
+        <EditTextPreference
+            android:dialogTitle="@string/cdma_ip_setting"
+            android:key="CDMAIPPreference"
+            android:summary="@string/default_ip_setting"
+            android:defaultValue=""
+            android:title="@string/cdma_ip_setting" />
+
+        <EditTextPreference
+            android:dialogTitle="@string/gsm_ip_setting"
+            android:key="GSMIPPreference"
+            android:summary="@string/default_ip_setting"
+            android:defaultValue=""
+            android:title="@string/gsm_ip_setting" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -36,6 +36,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -50,6 +51,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
+import android.preference.PreferenceManager;
 import android.provider.Contacts.Intents.Insert;
 import android.provider.Contacts.People;
 import android.provider.Contacts.Phones;
@@ -93,7 +95,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.SpecialCharSequenceMgr;
@@ -102,6 +103,7 @@ import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.PhoneNumberFormatter;
 import edu.bupt.contacts.util.StopWatch;
+
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.telephony.TelephonyProperties;
 
@@ -109,7 +111,6 @@ import edu.bupt.contacts.ipcall.IPCall;
 import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.phone.CallLogAsync;
 import edu.bupt.contacts.phone.HapticFeedback;
-
 import edu.bupt.contacts.settings.*;
 
 /**
@@ -146,7 +147,6 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private EditText mDigits;
     private TextView mMatchedPhones;
     private TextView mMatchedName;
-   
 
     /**
      * Remembers if we need to clear digits field when the screen is completely
@@ -173,7 +173,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private View mDialButton;
     private ListView mDialpadChooser;
     private DialpadChooserAdapter mDialpadChooserAdapter;
-    //ddd
+    // ddd
     private View mSmsButton;
     /**
      * Regular expression prohibiting manual phone call. Can be empty, which
@@ -345,7 +345,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         // Load up the resources for the text field.
         Resources r = getResources();
-       
+
         mDigitsContainer = fragmentView.findViewById(R.id.digits_container);
         mDigits = (EditText) fragmentView.findViewById(R.id.digits);
         mDigits.setKeyListener(DialerKeyListener.getInstance());
@@ -412,33 +412,31 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                     mDialButtonContainer.getPaddingBottom());
         }
         mDialButton = fragmentView.findViewById(R.id.dialButton);
-      
-        //ddd start
-        mSmsButton=fragmentView.findViewById(R.id.smsButton);
+
+        // ddd start
+        mSmsButton = fragmentView.findViewById(R.id.smsButton);
         if (mSmsButton != null) {
             mSmsButton.setOnClickListener(new View.OnClickListener() {
-            	
-            	public void onClick(View v) {  
-            		// 输入的获取手机号码  
-                 String sendNumber = mDigits.getText().toString();  
-                 Uri uri = Uri.parse("smsto:"+sendNumber);            
-                 Intent smsIntent = new Intent(Intent.ACTION_SENDTO, uri);            
-                 startActivity(smsIntent); 
-                    
-                    
-                }  
-            	
-            	
+
+                public void onClick(View v) {
+                    // 输入的获取手机号码
+                    String sendNumber = mDigits.getText().toString();
+                    Uri uri = Uri.parse("smsto:" + sendNumber);
+                    Intent smsIntent = new Intent(Intent.ACTION_SENDTO, uri);
+                    startActivity(smsIntent);
+
+                }
+
             });
         }
-        //ddd end
+        // ddd end
         if (r.getBoolean(R.bool.config_show_onscreen_dial_button)) {
             mDialButton.setOnClickListener(this);
             mDialButton.setOnLongClickListener(this);
         } else {
             mDialButton.setVisibility(View.GONE); // It's VISIBLE by default
-    
-            mDialButton= null;
+
+            mDialButton = null;
         }
 
         mDelete = fragmentView.findViewById(R.id.deleteButton);
@@ -866,9 +864,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         final MenuItem twoSecPauseMenuItem = menu.findItem(R.id.menu_2s_pause);
         final MenuItem waitMenuItem = menu.findItem(R.id.menu_add_wait);
         final MenuItem sendSMSMenuItem = menu.findItem(R.id.menu_send_sms);
-       //ddd
-        final MenuItem esurfingDialItem = menu.findItem(R.id.menu_esurfing_dial);
-        
+        // ddd
+        // modified by zzz
+        // final MenuItem esurfingDialItem =
+        // menu.findItem(R.id.menu_esurfing_dial);
+
         final MenuItem callLogSettingMenuItem = menu.findItem(R.id.menu_call_setting);
 
         final MenuItem callIPOneMenuItem = menu.findItem(R.id.menu_ip_call_one);
@@ -877,103 +877,92 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         final IPCall ipcall = new IPCall(getActivity());
         // ddd start
-        esurfingDialItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            
-            @Override
-            public boolean onMenuItemClick(MenuItem arg0) {
-                // TODO Auto-generated method stub
-         	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-//            	builder.setTitle("翼拨号");
-//            	builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
-//            	builder.setPositiveButton("拨号",null);
-//            	builder.setSingleChoiceItems(R.array.esurfing_options,0,new android.content.DialogInterface.OnClickListener(){
-//
-//					@Override
-//					public void onClick(DialogInterface arg0, int arg1) {
-//						// TODO Auto-generated method stub
-//						
-//					}});
-//                builder.create();
-//                builder.show();
-//                return false;
-            	//Context mContext = getActivity(); 
-            
-                Context context = getActivity();
-                if (context == null) {
-                	return false;
+        /*
+         * esurfingDialItem.setOnMenuItemClickListener(new
+         * OnMenuItemClickListener() {
+         * 
+         * @Override public boolean onMenuItemClick(MenuItem arg0) { // TODO
+         * Auto-generated method stub AlertDialog.Builder builder = new
+         * AlertDialog.Builder(getActivity());
+         * 
+         * // builder.setTitle("翼拨号"); //
+         * builder.setIcon(R.drawable.ic_ab_dialer_holo_blue); //
+         * builder.setPositiveButton("拨号",null); //
+         * builder.setSingleChoiceItems(R.array.esurfing_options,0,new //
+         * android.content.DialogInterface.OnClickListener(){ // // @Override //
+         * public void onClick(DialogInterface arg0, int arg1) { // // TODO
+         * Auto-generated method stub // // }}); // builder.create(); //
+         * builder.show(); // return false; // Context mContext = getActivity();
+         * 
+         * Context context = getActivity(); if (context == null) { return false;
+         * 
+         * }
+         * 
+         * String sendNumber = mDigits.getText().toString(); Dialog dialog = new
+         * Dialog(context); dialog.setContentView(R.layout.dialpad_esurfing);
+         * 
+         * RadioGroup radioGroupEsurfing = (RadioGroup)
+         * dialog.findViewById(R.id.radioGroupEsurfing); final RadioButton
+         * callBackChinaButton = (RadioButton) dialog
+         * .findViewById(R.id.radioButton_callBackChina); final RadioButton
+         * internationalButton = (RadioButton) dialog
+         * .findViewById(R.id.radioButton_international); final RadioButton
+         * call133Button = (RadioButton)
+         * dialog.findViewById(R.id.radioButton_133); final RadioButton
+         * callOtherButton = (RadioButton)
+         * dialog.findViewById(R.id.radioButton_callOther); final RadioButton
+         * callLocalButton = (RadioButton)
+         * dialog.findViewById(R.id.radioButton_callLocal);
+         * 
+         * final TextView title = (TextView)
+         * dialog.findViewById(R.id.textView_title); final TextView pre =
+         * (TextView) dialog.findViewById(R.id.textView_pre); final StringBuffer
+         * stringPre = new StringBuffer(); stringPre.append("+86"); final
+         * StringBuffer stringTitle = new StringBuffer();
+         * stringTitle.append("中国+86");
+         * 
+         * EditText EditTextNumber = (EditText)
+         * dialog.findViewById(R.id.editTextInputNumber);
+         * EditTextNumber.setText(sendNumber); dialog.setTitle("翼拨号");
+         * dialog.show();
+         * 
+         * radioGroupEsurfing.setOnCheckedChangeListener(new
+         * OnCheckedChangeListener() {
+         * 
+         * @Override public void onCheckedChanged(RadioGroup group, int
+         * checkedId) { // TODO Auto-generated method stub switch (checkedId) {
+         * 
+         * case R.id.radioButton_international: stringTitle.replace(0,
+         * stringTitle.length(), "中国+86"); stringPre.replace(0,
+         * stringPre.length(), "+86"); callBackChinaButton.setChecked(true);
+         * break;
+         * 
+         * case R.id.radioButton_133: stringTitle.replace(0,
+         * stringTitle.length(), "中国+86"); stringPre.replace(0,
+         * stringPre.length(), "**133*86");
+         * callBackChinaButton.setChecked(true); break;
+         * 
+         * case R.id.radioButton_callOther: stringTitle.replace(0,
+         * stringTitle.length(), "美国+1"); stringPre.replace(0,
+         * stringPre.length(), "+1"); callBackChinaButton.setChecked(false);
+         * break;
+         * 
+         * case R.id.radioButton_callLocal: stringTitle.replace(0,
+         * stringTitle.length(), "中国+86"); stringPre.replace(0,
+         * stringPre.length(), ""); callBackChinaButton.setChecked(false);
+         * break;
+         * 
+         * } title.setText(stringTitle); pre.setText(stringPre);
+         * 
+         * } });
+         * 
+         * return false; }
+         * 
+         * });
+         */
 
-                }
-
-                String sendNumber = mDigits.getText().toString(); 
-                Dialog dialog = new Dialog(context);
-            	dialog.setContentView(R.layout.dialpad_esurfing);
-            	
-            	RadioGroup radioGroupEsurfing = (RadioGroup) dialog.findViewById(R.id.radioGroupEsurfing);
-            	final RadioButton callBackChinaButton = (RadioButton) dialog.findViewById(R.id.radioButton_callBackChina);
-            	final RadioButton internationalButton = (RadioButton) dialog.findViewById(R.id.radioButton_international);
-            	final RadioButton call133Button = (RadioButton) dialog.findViewById(R.id.radioButton_133);
-            	final RadioButton callOtherButton = (RadioButton) dialog.findViewById(R.id.radioButton_callOther);
-            	final RadioButton callLocalButton = (RadioButton) dialog.findViewById(R.id.radioButton_callLocal);
-            	
-            	final TextView title = (TextView) dialog.findViewById(R.id.textView_title);
-            	final TextView pre =(TextView) dialog.findViewById(R.id.textView_pre);
-                final StringBuffer stringPre=new StringBuffer();
-                stringPre.append("+86");
-                final StringBuffer stringTitle=new StringBuffer();
-                stringTitle.append("中国+86");
-                
-            	EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
-            	EditTextNumber.setText(sendNumber);
-            	dialog.setTitle("翼拨号");
-            	dialog.show();
-            	
-            	radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					
-					@Override
-					public void onCheckedChanged(RadioGroup group, int checkedId) {
-						// TODO Auto-generated method stub
-						switch(checkedId){
-						
-						case R.id.radioButton_international:
-							stringTitle.replace(0,stringTitle.length(), "中国+86");
-							stringPre.replace(0, stringPre.length(), "+86");
-							callBackChinaButton.setChecked(true);
-							break;
-						
-						case R.id.radioButton_133:
-							stringTitle.replace(0,stringTitle.length(), "中国+86");
-							stringPre.replace(0, stringPre.length(), "**133*86");
-							callBackChinaButton.setChecked(true);
-							break;
-						
-						case R.id.radioButton_callOther:
-							stringTitle.replace(0,stringTitle.length(), "美国+1");
-							stringPre.replace(0, stringPre.length(), "+1");
-							callBackChinaButton.setChecked(false);
-							break;
-						
-						case R.id.radioButton_callLocal:
-							stringTitle.replace(0,stringTitle.length(), "中国+86");
-							stringPre.replace(0, stringPre.length(), "");
-							callBackChinaButton.setChecked(false);
-							break;
-						
-						
-						}
-						title.setText(stringTitle);
-						pre.setText(stringPre);
-						
-					}
-				});
-
-				return false; 
-            }
-
-        });
-
-
-        //ddd end
+        // ddd end
         callIPOneMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             @Override
@@ -1026,7 +1015,12 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             @Override
             public boolean onMenuItemClick(MenuItem arg0) {
                 // TODO Auto-generated method stub
-                final Intent intent = new Intent(getActivity(), CalllogSettingActivity.class);
+
+                /** zzz */
+                // final Intent intent = new Intent(getActivity(),
+                // CalllogSettingActivity.class);
+                final Intent intent = new Intent(getActivity(), DialpadPreferenceActivity.class);
+
                 startActivity(intent);
                 return false;
             }
@@ -1038,8 +1032,9 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // seeing usual dialpads and has typed at least one digit.
         // We never show a menu if the "choose dialpad" UI is up.
         if (dialpadChooserVisible() || isDigitsEmpty()) {
-        	//ddd
-        	esurfingDialItem.setVisible(false);
+            // ddd
+            // modified by zzz
+            // esurfingDialItem.setVisible(false);
             addToContactMenuItem.setVisible(false);
             sendSMSMenuItem.setVisible(false);
             twoSecPauseMenuItem.setVisible(false);
@@ -1063,14 +1058,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
             // Put the current digits string into an intent
             addToContactMenuItem.setIntent(getAddToContactIntent(digits));
-            
+
             addToContactMenuItem.setVisible(true);
 
             sendSMSMenuItem.setIntent(getSendSMSIntent(digits));
 
             sendSMSMenuItem.setVisible(true);
 
-            
             // Check out whether to show Pause & Wait option menu items
             int selectionStart;
             int selectionEnd;
@@ -1592,8 +1586,8 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public boolean onLongClick(View view) {
-        
-    	final Editable digits = mDigits.getText();
+
+        final Editable digits = mDigits.getText();
         final int id = view.getId();
         switch (id) {
         case R.id.deleteButton: {
@@ -1793,7 +1787,116 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 // startActivity(intent);
                 // mClearDigitsOnStop = true;
                 // getActivity().finish();
-                ((DialtactsActivity) getActivity()).call(number); // by yuan
+
+                // ((DialtactsActivity) getActivity()).call(number); // by yuan
+
+                /** zzz */
+
+                // ddd start
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                // builder.setTitle("翼拨号");
+                // builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
+                // builder.setPositiveButton("拨号",null);
+                // builder.setSingleChoiceItems(R.array.esurfing_options,0,new
+                // android.content.DialogInterface.OnClickListener(){
+                //
+                // @Override
+                // public void onClick(DialogInterface arg0, int arg1) {
+                // // TODO Auto-generated method stub
+                //
+                // }});
+                // builder.create();
+                // builder.show();
+                // return false;
+                // Context mContext = getActivity();
+
+                Context context = getActivity();
+
+                String sendNumber = mDigits.getText().toString();
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.dialpad_esurfing);
+
+                RadioGroup radioGroupEsurfing = (RadioGroup) dialog.findViewById(R.id.radioGroupEsurfing);
+                final RadioButton callBackChinaButton = (RadioButton) dialog
+                        .findViewById(R.id.radioButton_callBackChina);
+                final RadioButton internationalButton = (RadioButton) dialog
+                        .findViewById(R.id.radioButton_international);
+                final RadioButton call133Button = (RadioButton) dialog.findViewById(R.id.radioButton_133);
+                final RadioButton callOtherButton = (RadioButton) dialog.findViewById(R.id.radioButton_callOther);
+                final RadioButton callLocalButton = (RadioButton) dialog.findViewById(R.id.radioButton_callLocal);
+
+                final TextView title = (TextView) dialog.findViewById(R.id.textView_title);
+                final TextView pre = (TextView) dialog.findViewById(R.id.textView_pre);
+                final StringBuffer stringPre = new StringBuffer();
+                stringPre.append("+86");
+                final StringBuffer stringTitle = new StringBuffer();
+                stringTitle.append("中国+86");
+
+                EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
+                EditTextNumber.setText(sendNumber);
+                dialog.setTitle("翼拨号");
+                // dialog.show();
+
+                radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        // TODO Auto-generated method stub
+                        switch (checkedId) {
+
+                        case R.id.radioButton_international:
+                            stringTitle.replace(0, stringTitle.length(), "中国+86");
+                            stringPre.replace(0, stringPre.length(), "+86");
+                            callBackChinaButton.setChecked(true);
+                            break;
+
+                        case R.id.radioButton_133:
+                            stringTitle.replace(0, stringTitle.length(), "中国+86");
+                            stringPre.replace(0, stringPre.length(), "**133*86");
+                            callBackChinaButton.setChecked(true);
+                            break;
+
+                        case R.id.radioButton_callOther:
+                            stringTitle.replace(0, stringTitle.length(), "美国+1");
+                            stringPre.replace(0, stringPre.length(), "+1");
+                            callBackChinaButton.setChecked(false);
+                            break;
+
+                        case R.id.radioButton_callLocal:
+                            stringTitle.replace(0, stringTitle.length(), "中国+86");
+                            stringPre.replace(0, stringPre.length(), "");
+                            callBackChinaButton.setChecked(false);
+                            break;
+
+                        }
+                        title.setText(stringTitle);
+                        pre.setText(stringPre);
+
+                    }
+                });
+
+                // ddd end
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                if (sp.getString("EDialPreference", "0").equals("0")) {
+                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
+                    TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                    if (tm.isNetworkRoaming()) {
+                        Log.v(TAG, "tm.isNetworkRoaming()");
+                        dialog.show();
+                    } else {
+                        ((DialtactsActivity) getActivity()).call(number);
+                    }
+                } else if (sp.getString("EDialPreference", "0").equals("1")) {
+                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
+                    dialog.show();
+                } else if (sp.getString("EDialPreference", "0").equals("2")) {
+                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
+                    ((DialtactsActivity) getActivity()).call(number);
+                } else {
+                    Log.e(TAG, "sharedPreferences error");
+                }
             }
         }
     }
