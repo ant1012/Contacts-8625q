@@ -163,6 +163,20 @@ public class VCardPreviewActivity extends ListActivity {
                     // break;
                 }
             }
+
+            // contact name - X-ESURFING-GROUP property
+            String group = null;
+            for (PropertyNode prop : props) {
+                if ("X-ESURFING-GROUP".equals(prop.propName)) {
+                    group = prop.propValue;
+                    Log.v(TAG, "X-ESURFING-GROUP - " + group);
+                    sb.append(getString(R.string.vcard_preview_group));
+                    sb.append(": ");
+                    sb.append(group);
+                    sb.append('\n');
+                    // break;
+                }
+            }
             map.put("TITLE", sb.toString());
             Log.v(TAG, sb.toString());
 
