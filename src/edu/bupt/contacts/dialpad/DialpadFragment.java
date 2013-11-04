@@ -933,36 +933,36 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 					@Override
 					public void onCheckedChanged(RadioGroup group, int checkedId) {
 						// TODO Auto-generated method stub
-//						switch(checkedId){
-//						
-//						case R.id.radioButton_international:
-//							stringTitle.replace(0,stringTitle.length(), "中国+86");
-//							stringPre.replace(0, stringPre.length(), "+86");
-//							callBackChinaButton.setChecked(true);
-//							break;
-//						
-//						case R.id.radioButton_133:
-//							stringTitle.replace(0,stringTitle.length(), "中国+86");
-//							stringPre.replace(0, stringPre.length(), "**133*86");
-//							callBackChinaButton.setChecked(true);
-//							break;
-//						
-//						case R.id.radioButton_callOther:
-//							stringTitle.replace(0,stringTitle.length(), "美国+1");
-//							stringPre.replace(0, stringPre.length(), "+1");
-//							callBackChinaButton.setChecked(false);
-//							break;
-//						
-//						case R.id.radioButton_callLocal:
-//							stringTitle.replace(0,stringTitle.length(), "中国+86");
-//							stringPre.replace(0, stringPre.length(), "");
-//							callBackChinaButton.setChecked(false);
-//							break;
-//						
-//						
-//						}
-//						title.setText(stringTitle);
-//						pre.setText(stringPre);
+						switch(checkedId){
+						
+						case R.id.radioButton_international:
+							stringTitle.replace(0,stringTitle.length(), "中国+86");
+							stringPre.replace(0, stringPre.length(), "+86");
+							callBackChinaButton.setChecked(true);
+							break;
+						
+						case R.id.radioButton_133:
+							stringTitle.replace(0,stringTitle.length(), "中国+86");
+							stringPre.replace(0, stringPre.length(), "**133*86");
+							callBackChinaButton.setChecked(true);
+							break;
+						
+						case R.id.radioButton_callOther:
+							stringTitle.replace(0,stringTitle.length(), "美国+1");
+							stringPre.replace(0, stringPre.length(), "+1");
+							callBackChinaButton.setChecked(false);
+							break;
+						
+						case R.id.radioButton_callLocal:
+							stringTitle.replace(0,stringTitle.length(), "中国+86");
+							stringPre.replace(0, stringPre.length(), "");
+							callBackChinaButton.setChecked(false);
+							break;
+						
+						
+						}
+						title.setText(stringTitle);
+						pre.setText(stringPre);
 						
 					}
 				});
