@@ -6,7 +6,6 @@ import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.DialtactsActivity;
 import edu.bupt.contacts.numberlocate.NumberLocateSetting;
-import edu.bupt.contacts.numberlocate.NumberLocateProvider.CityCode;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;

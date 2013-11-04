@@ -25,25 +25,51 @@ public class NumberLocateProvider extends ContentProvider {
     static {
         uriMatcher.addURI(AUTHORITY, "numberregion", NUMBERS_REGION);
         uriMatcher.addURI(AUTHORITY, "numberregion/#", NUMBERS_REGION_ID);
-        uriMatcher.addURI(AUTHORITY, "citycode", CODE_REGION);
-        uriMatcher.addURI(AUTHORITY, "citycode/#", CODE_REGION_ID);
+        // uriMatcher.addURI(AUTHORITY, "citycode", CODE_REGION);
+        // uriMatcher.addURI(AUTHORITY, "citycode/#", CODE_REGION_ID);
     }
 
-    public interface CityCode{
-        public static final String _ID = "_id";
-        public static final String CITY = "city";
-        public static final String CODE = "code";
-        public static final String PROVINCE = "province";
+    // public interface CityCode {
+    // public static final String _ID = "_id";
+    // public static final String CITY = "city";
+    // public static final String CODE = "code";
+    // public static final String PROVINCE = "province";
+    //
+    // public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+    // + "/citycode");
+    // public static final String CONTENT_TYPE =
+    // "vnd.android.cursor.dir/citycode";
+    // public static final String CONTENT_ITEM_TYPE =
+    // "vnd.android.cursor.item/citycode";
+    // }
 
-        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/citycode");
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/citycode";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/citycode";
-    }
+    // public interface NumberRegion {
+    // public static final String _ID = "_id";
+    // public static final String NUMBER = "telphone";
+    // public static final String CITY = "telAddress";
+    //
+    // public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+    // + "/numberregion");
+    // public static final String CONTENT_TYPE =
+    // "vnd.android.cursor.dir/numberregion";
+    // public static final String CONTENT_ITEM_TYPE =
+    // "vnd.android.cursor.item/numberregion";
+    // }
 
-    public interface NumberRegion{
+    // from qqq
+    public interface NumberRegion {
         public static final String _ID = "_id";
-        public static final String NUMBER = "telphone";
-        public static final String CITY = "telAddress";
+        // zaizhe
+        public static final String NUMBER = "PhoneNo";
+        public static final String CITY = "PCity";
+        // zaizhe
+        public static final String PROVINCE = "Province";
+        // zaizhe
+        public static final String CARD = "CardP";
+
+        public static final String AREACODE = "AreaCode";
+
+        public static final String ZIPCODE = "ZipCode";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/numberregion");
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/numberregion";
@@ -52,15 +78,15 @@ public class NumberLocateProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        Log.i(TAG, "***onCreate()***");//--/data
+        Log.i(TAG, "***onCreate()***");// --/data
         dbhelper = new NumberLocateDBHelper(getContext());
-        // copy db file 
-        NumberLocateDBHelper.copyDbToData(getContext(),false);
+        // copy db file
+        NumberLocateDBHelper.copyDbToData(getContext(), false);
         /*
-        dbhelper.getWritableDatabase();
-        NumberLocateDBHelper.createCodeTable();
-        NumberLocateDBHelper.initTables(getContext());
-        */
+         * dbhelper.getWritableDatabase();
+         * NumberLocateDBHelper.createCodeTable();
+         * NumberLocateDBHelper.initTables(getContext());
+         */
         return true;
     }
 
@@ -68,14 +94,14 @@ public class NumberLocateProvider extends ContentProvider {
     public String getType(Uri uri) {
         Log.i(TAG, "***getType()***");
         switch (uriMatcher.match(uri)) {
-            case NUMBERS_REGION_ID:
-                return NumberRegion.CONTENT_ITEM_TYPE;
-            case NUMBERS_REGION:
-                return NumberRegion.CONTENT_TYPE;
-            case CODE_REGION_ID:
-                return NumberRegion.CONTENT_ITEM_TYPE;
-            case CODE_REGION:
-                return NumberRegion.CONTENT_TYPE;
+        case NUMBERS_REGION_ID:
+            return NumberRegion.CONTENT_ITEM_TYPE;
+        case NUMBERS_REGION:
+            return NumberRegion.CONTENT_TYPE;
+        case CODE_REGION_ID:
+            return NumberRegion.CONTENT_ITEM_TYPE;
+        case CODE_REGION:
+            return NumberRegion.CONTENT_TYPE;
         }
         throw new IllegalStateException();
     }
@@ -93,32 +119,32 @@ public class NumberLocateProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         int matchID = uriMatcher.match(uri);
-        Log.i(TAG, "***query()***uri="+uri+",matchID="+matchID);
+        Log.i(TAG, "***query()***uri=" + uri + ",matchID=" + matchID);
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         switch (matchID) {
-            case NUMBERS_REGION_ID:
-                qb.setTables(NumberLocateDBHelper.TABLE_NAME);
-                long id = ContentUris.parseId(uri);
-                qb.appendWhere(NumberRegion._ID + "=" + id);
-                break;
-            case NUMBERS_REGION:
-                qb.setTables(NumberLocateDBHelper.TABLE_NAME);
-                break;
-            case CODE_REGION_ID:
-                qb.setTables(NumberLocateDBHelper.TABLE_CODE);
-                long codeID = ContentUris.parseId(uri);
-                qb.appendWhere(CityCode._ID + "=" + codeID);
-                break;
-            case CODE_REGION:
-                qb.setTables(NumberLocateDBHelper.TABLE_CODE);
-                break;
-            default:
-                throw new UnsupportedOperationException();
+        case NUMBERS_REGION_ID:
+            qb.setTables(NumberLocateDBHelper.TABLE_NAME);
+            long id = ContentUris.parseId(uri);
+            qb.appendWhere(NumberRegion._ID + "=" + id);
+            break;
+        case NUMBERS_REGION:
+            qb.setTables(NumberLocateDBHelper.TABLE_NAME);
+            break;
+        // case CODE_REGION_ID:
+        // qb.setTables(NumberLocateDBHelper.TABLE_CODE);
+        // long codeID = ContentUris.parseId(uri);
+        // qb.appendWhere(CityCode._ID + "=" + codeID);
+        // break;
+        // case CODE_REGION:
+        // qb.setTables(NumberLocateDBHelper.TABLE_CODE);
+        // break;
+        default:
+            throw new UnsupportedOperationException();
         }
-        return qb.query(dbhelper.getWritableDatabase(), projection, selection, selectionArgs, null, null,
-                sortOrder, null);
+        return qb.query(dbhelper.getWritableDatabase(), projection, selection, selectionArgs, null, null, sortOrder,
+                null);
     }
 
     @Override

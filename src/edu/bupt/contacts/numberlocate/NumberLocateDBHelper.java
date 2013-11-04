@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import edu.bupt.contacts.R;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -21,14 +20,19 @@ public class NumberLocateDBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "number_region.db";
-    public static final String TABLE_NAME = "tbl_telephone";
-    public static final String TABLE_CODE = "city_code";
+
+    /** zzz */
+    // public static final String TABLE_NAME = "tbl_telephone";
+    // public static final String TABLE_CODE = "city_code";
+    public static final String TABLE_NAME = "Haoduan";
 
     private static final String ASSETS_DB = "db/" + DB_NAME;
 
-    public static final String DB_PATH = Environment.getDataDirectory().getAbsolutePath() + "/data/edu.bupt.contacts/" + DB_NAME;
+    public static final String DB_PATH = Environment.getDataDirectory().getAbsolutePath() + "/data/edu.bupt.contacts/"
+            + DB_NAME;
 
     private Context mContext;
+
     public NumberLocateDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         mContext = context;
@@ -42,14 +46,15 @@ public class NumberLocateDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.i(TAG, "***onUpgrade()***oldVersion="+oldVersion+",newVersion="+newVersion);
+        Log.i(TAG, "***onUpgrade()***oldVersion=" + oldVersion + ",newVersion=" + newVersion);
         int version = oldVersion;
         if (version != DB_VERSION) {
-            copyDbToData(mContext,true);
+            copyDbToData(mContext, true);
         }
     }
 
     private static SQLiteDatabase mDb;
+
     @Override
     public synchronized SQLiteDatabase getWritableDatabase() {
         if (mDb == null) {
@@ -57,25 +62,28 @@ public class NumberLocateDBHelper extends SQLiteOpenHelper {
         }
         return mDb;
     }
+
     @Override
     public synchronized SQLiteDatabase getReadableDatabase() {
         return getWritableDatabase();
     }
 
-    static void copyDbToData(Context context,boolean cover) {
+    static void copyDbToData(Context context, boolean cover) {
         Log.i(TAG, "***copyDbToData()***");
         File file = new File(DB_PATH);
         if (cover) {
-            if (file.exists()) file.delete();
+            if (file.exists())
+                file.delete();
         } else {
-            if (file.exists()) return;
+            if (file.exists())
+                return;
         }
         InputStream is = null;
         try {
             is = context.getAssets().open(ASSETS_DB);
-            FileOutputStream fos = new FileOutputStream(DB_PATH,false);
+            FileOutputStream fos = new FileOutputStream(DB_PATH, false);
             int count = 0;
-            byte[] buffer = new byte[1024*10];
+            byte[] buffer = new byte[1024 * 10];
             while ((count = is.read(buffer)) != -1) {
                 fos.write(buffer, 0, count);
             }
@@ -88,50 +96,53 @@ public class NumberLocateDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    static void createCodeTable() {
-        mDb.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_CODE + " ("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "code STRING NOT NULL,"
-                + "city STRING NOT NULL,"
-                + "province STRING NOT NULL);");
-    }
+    // static void createCodeTable() {
+    // mDb.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_CODE + " ("
+    // + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    // + "code STRING NOT NULL,"
+    // + "city STRING NOT NULL,"
+    // + "province STRING NOT NULL);");
+    // }
 
-    static void initTables(Context context) {
-        Log.i(TAG, "***initTables()***");
-        final long curTime = System.currentTimeMillis();
-        InputStream inputStream = null;
-        BufferedReader br = null;
-        InputStreamReader isr = null;
-        try {
-            inputStream = context.getResources().openRawResource(R.raw.code);
-            isr = new InputStreamReader(inputStream);
-            br = new BufferedReader(isr);
-            String line = null;
-            String province = null;
-            while ((line = br.readLine()) != null) {
-                if (!TextUtils.isEmpty(line)) {
-                    int codeStart = line.indexOf("0");
-                    //province
-                    if (codeStart == -1) {
-                        province = line;
-                        Log.i(TAG, "***initTables()***province="+province);
-                    } else {
-                        String city = line.substring(0, codeStart);
-                        String code = line.substring(codeStart);
-                        mDb.execSQL("INSERT INTO " + TABLE_CODE + " (code,city,province) VALUES ('"+ code + "','" + city + "','" + province + "');");
-                    }
-                }
-            }
-            inputStream.close();
-            isr.close();
-            if (br != null) {
-                br.close();
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "***initTables() IO error***");
-            e.printStackTrace();
-        }
-        Log.e(TAG,"***initTables:pay time:" + (System.currentTimeMillis() - curTime) + "***");
-    }
+    // static void initTables(Context context) {
+    // Log.i(TAG, "***initTables()***");
+    // final long curTime = System.currentTimeMillis();
+    // InputStream inputStream = null;
+    // BufferedReader br = null;
+    // InputStreamReader isr = null;
+    // try {
+    // inputStream = context.getResources().openRawResource(R.raw.code);
+    // isr = new InputStreamReader(inputStream);
+    // br = new BufferedReader(isr);
+    // String line = null;
+    // String province = null;
+    // while ((line = br.readLine()) != null) {
+    // if (!TextUtils.isEmpty(line)) {
+    // int codeStart = line.indexOf("0");
+    // //province
+    // if (codeStart == -1) {
+    // province = line;
+    // Log.i(TAG, "***initTables()***province="+province);
+    // } else {
+    // String city = line.substring(0, codeStart);
+    // String code = line.substring(codeStart);
+    // mDb.execSQL("INSERT INTO " + TABLE_CODE +
+    // " (code,city,province) VALUES ('"+ code + "','" + city + "','" + province
+    // + "');");
+    // }
+    // }
+    // }
+    // inputStream.close();
+    // isr.close();
+    // if (br != null) {
+    // br.close();
+    // }
+    // } catch (IOException e) {
+    // Log.e(TAG, "***initTables() IO error***");
+    // e.printStackTrace();
+    // }
+    // Log.e(TAG,"***initTables:pay time:" + (System.currentTimeMillis() -
+    // curTime) + "***");
+    // }
 
 }

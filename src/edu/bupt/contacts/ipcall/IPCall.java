@@ -16,14 +16,14 @@ public class IPCall {
     }
 
     public boolean isCDMAIPEnabled() {
-        if (sp.getString("CDMAIPPreference", null) != null && sp.getString("CDMAIPPreference", null) != "") {
+        if (sp.getString("CDMAIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
             return true;
         }
         return false;
     }
 
     public boolean isGSMIPEnabled() {
-        if (sp.getString("GSMIPPreference", null) != null && sp.getString("GSMIPPreference", null) != "") {
+        if (sp.getString("GSMIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
             return true;
         }
         return false;

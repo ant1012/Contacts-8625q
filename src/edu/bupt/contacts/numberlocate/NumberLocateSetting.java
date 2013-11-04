@@ -1,9 +1,7 @@
 package edu.bupt.contacts.numberlocate;
 
 import edu.bupt.contacts.R;
-import edu.bupt.contacts.numberlocate.NumberLocateProvider.CityCode;
 import edu.bupt.contacts.numberlocate.NumberLocateProvider.NumberRegion;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,7 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 
-public class NumberLocateSetting extends Activity implements OnCheckedChangeListener, OnClickListener{
+public class NumberLocateSetting extends Activity implements OnCheckedChangeListener, OnClickListener {
     public static final String RegionFuncKey = "regionFunc";
     public static final String AnimatFuncKey = "animationFunc";
     private Switch regionFunc = null;
@@ -32,17 +30,18 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
     private TextView searchResult = null;
 
     private AsyncQueryHandler queryHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_layout);
 
-        animatFunc = (Switch)findViewById(R.id.animation_switch);
-        regionFunc = (Switch)findViewById(R.id.number_region_switch);
+        animatFunc = (Switch) findViewById(R.id.animation_switch);
+        regionFunc = (Switch) findViewById(R.id.number_region_switch);
 
-        numberInput = (EditText)findViewById(R.id.number_input);
-        searchBut = (Button)findViewById(R.id.search_but);
-        searchResult = (TextView)findViewById(R.id.search_result);
+        numberInput = (EditText) findViewById(R.id.number_input);
+        searchBut = (Button) findViewById(R.id.search_but);
+        searchResult = (TextView) findViewById(R.id.search_result);
         searchBut.setOnClickListener(this);
 
         animatFunc.setChecked(getSettingValue(this, AnimatFuncKey));
@@ -55,7 +54,29 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 if (cursor != null && cursor.moveToNext()) {
-                    String city = cursor.getString(0);
+
+                    /** zzz */
+                    StringBuilder sb = new StringBuilder();
+
+                    String resProvince = cursor.getString(0);
+                    String resCity = cursor.getString(1);
+
+                    sb.append(resProvince);
+
+                    //ahahaha
+//                    if (!resProvince.equals(resCity)) {
+//                        sb.append(' ');
+//                        sb.append(resCity);
+//                    }
+//
+//                    String resCardp = "";
+//                    if (cursor.getColumnCount() == 3) {
+//                        resCardp = cursor.getString(2);
+//                        sb.append(' ');
+//                        sb.append(resCardp);
+//                    }
+
+                    String city = sb.toString();
                     cursor.close();
                     searchResult.setText(city);
                 } else {
@@ -71,12 +92,12 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();
         switch (id) {
-            case R.id.animation_switch:
-                saveSetting(this,AnimatFuncKey,isChecked);
-                break;
-            case R.id.number_region_switch:
-                saveSetting(this,RegionFuncKey,isChecked);
-                break;
+        case R.id.animation_switch:
+            saveSetting(this, AnimatFuncKey, isChecked);
+            break;
+        case R.id.number_region_switch:
+            saveSetting(this, RegionFuncKey, isChecked);
+            break;
         }
     }
 
@@ -102,7 +123,8 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
             searchBut.setEnabled(false);
             numberInput.setEnabled(false);
             startQuery(this, number);
-            //Log.v("final","city:"+PhoneStatusRecevier.queryRegion(this, number));
+            // Log.v("final","city:"+PhoneStatusRecevier.queryRegion(this,
+            // number));
         }
     }
 
@@ -111,15 +133,33 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
             String formatNumber = PhoneStatusRecevier.formatNumber(number);
             String selection = null;
             String[] projection = null;
-            Uri uri = CityCode.CONTENT_URI;
+            // Uri uri = CityCode.CONTENT_URI;
+            // if (formatNumber.length() == 7) {
+            // selection = NumberRegion.NUMBER+"="+formatNumber;
+            // uri = NumberRegion.CONTENT_URI;
+            // projection = new String[]{NumberRegion.CITY};
+            // } else {
+            // selection = CityCode.CODE+"="+formatNumber+" OR " +
+            // CityCode.CODE+"=" + formatNumber.substring(0, 3);
+            // uri = CityCode.CONTENT_URI;
+            // projection = new String[]{CityCode.CITY};
+            // }
+
+            /** zzz */
+            Uri uri = NumberRegion.CONTENT_URI;
             if (formatNumber.length() == 7) {
-                selection = NumberRegion.NUMBER+"="+formatNumber;
+                selection = NumberRegion.NUMBER + "=" + formatNumber;
                 uri = NumberRegion.CONTENT_URI;
-                projection = new String[]{NumberRegion.CITY};
+                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
             } else {
-                selection = CityCode.CODE+"="+formatNumber+" OR " + CityCode.CODE+"=" + formatNumber.substring(0, 3);
-                uri = CityCode.CONTENT_URI;
-                projection = new String[]{CityCode.CITY};
+
+                Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
+                        + formatNumber);
+
+                selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" + " OR " + NumberRegion.AREACODE
+                        + "=" + "'" + formatNumber.substring(0, 3) + "'";
+                uri = NumberRegion.CONTENT_URI;
+                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
             }
             queryHandler.startQuery(0, null, uri, projection, selection, null, null);
         } else {
