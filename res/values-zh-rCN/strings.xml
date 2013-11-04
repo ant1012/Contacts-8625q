@@ -682,6 +682,7 @@
     <string name="gsm_ip_setting">GSM IP电话设置</string>
     <string name="default_ip_setting">修改IP电话前缀</string>
 <!-- ddd     -->
+	<string name="esurfing_dial">翼拨号</string>
     <string name="call_setting">IP通话设置</string>
     <string name="call_ip_setting_dialog_title">IP电话设置</string>
     <string name="call_ip_dialog_title">IP电话选择</string>

@@ -712,6 +712,13 @@
         <item>@string/show_out_calls</item>
         <item>@string/show_missed_calls</item>
     </array>
-
+<!--     ddd -->
+    <array name="esurfing_options">
+        <item>拨回中国大陆</item>
+		<item>国际漫游呼叫</item>
+		<item>**133回拨</item>
+		<item>拨打其他国家地区</item>
+		<item>拨打本地</item>
+    </array>
 	
 </resources>

@@ -62,6 +62,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.InputFilter.LengthFilter;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -87,6 +88,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -862,7 +866,9 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         final MenuItem twoSecPauseMenuItem = menu.findItem(R.id.menu_2s_pause);
         final MenuItem waitMenuItem = menu.findItem(R.id.menu_add_wait);
         final MenuItem sendSMSMenuItem = menu.findItem(R.id.menu_send_sms);
-       
+       //ddd
+        final MenuItem esurfingDialItem = menu.findItem(R.id.menu_esurfing_dial);
+        
         final MenuItem callLogSettingMenuItem = menu.findItem(R.id.menu_call_setting);
 
         final MenuItem callIPOneMenuItem = menu.findItem(R.id.menu_ip_call_one);
@@ -870,7 +876,104 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // by yuan
 
         final IPCall ipcall = new IPCall(getActivity());
+        // ddd start
+        esurfingDialItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+                // TODO Auto-generated method stub
+         	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+//            	builder.setTitle("翼拨号");
+//            	builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
+//            	builder.setPositiveButton("拨号",null);
+//            	builder.setSingleChoiceItems(R.array.esurfing_options,0,new android.content.DialogInterface.OnClickListener(){
+//
+//					@Override
+//					public void onClick(DialogInterface arg0, int arg1) {
+//						// TODO Auto-generated method stub
+//						
+//					}});
+//                builder.create();
+//                builder.show();
+//                return false;
+            	//Context mContext = getActivity(); 
+            
+                Context context = getActivity();
+                if (context == null) {
+                	return false;
+
+                }
+
+                String sendNumber = mDigits.getText().toString(); 
+                Dialog dialog = new Dialog(context);
+            	dialog.setContentView(R.layout.dialpad_esurfing);
+            	
+            	RadioGroup radioGroupEsurfing = (RadioGroup) dialog.findViewById(R.id.radioGroupEsurfing);
+            	final RadioButton callBackChinaButton = (RadioButton) dialog.findViewById(R.id.radioButton_callBackChina);
+            	final RadioButton internationalButton = (RadioButton) dialog.findViewById(R.id.radioButton_international);
+            	final RadioButton call133Button = (RadioButton) dialog.findViewById(R.id.radioButton_133);
+            	final RadioButton callOtherButton = (RadioButton) dialog.findViewById(R.id.radioButton_callOther);
+            	final RadioButton callLocalButton = (RadioButton) dialog.findViewById(R.id.radioButton_callLocal);
+            	
+            	final TextView title = (TextView) dialog.findViewById(R.id.textView_title);
+            	final TextView pre =(TextView) dialog.findViewById(R.id.textView_pre);
+                final StringBuffer stringPre=new StringBuffer();
+                stringPre.append("+86");
+                final StringBuffer stringTitle=new StringBuffer();
+                stringTitle.append("中国+86");
+                
+            	EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
+            	EditTextNumber.setText(sendNumber);
+            	dialog.setTitle("翼拨号");
+            	dialog.show();
+            	
+            	radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId) {
+						// TODO Auto-generated method stub
+//						switch(checkedId){
+//						
+//						case R.id.radioButton_international:
+//							stringTitle.replace(0,stringTitle.length(), "中国+86");
+//							stringPre.replace(0, stringPre.length(), "+86");
+//							callBackChinaButton.setChecked(true);
+//							break;
+//						
+//						case R.id.radioButton_133:
+//							stringTitle.replace(0,stringTitle.length(), "中国+86");
+//							stringPre.replace(0, stringPre.length(), "**133*86");
+//							callBackChinaButton.setChecked(true);
+//							break;
+//						
+//						case R.id.radioButton_callOther:
+//							stringTitle.replace(0,stringTitle.length(), "美国+1");
+//							stringPre.replace(0, stringPre.length(), "+1");
+//							callBackChinaButton.setChecked(false);
+//							break;
+//						
+//						case R.id.radioButton_callLocal:
+//							stringTitle.replace(0,stringTitle.length(), "中国+86");
+//							stringPre.replace(0, stringPre.length(), "");
+//							callBackChinaButton.setChecked(false);
+//							break;
+//						
+//						
+//						}
+//						title.setText(stringTitle);
+//						pre.setText(stringPre);
+						
+					}
+				});
+
+				return false; 
+            }
+
+        });
+
+
+        //ddd end
         callIPOneMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             @Override
@@ -935,6 +1038,8 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // seeing usual dialpads and has typed at least one digit.
         // We never show a menu if the "choose dialpad" UI is up.
         if (dialpadChooserVisible() || isDigitsEmpty()) {
+        	//ddd
+        	esurfingDialItem.setVisible(false);
             addToContactMenuItem.setVisible(false);
             sendSMSMenuItem.setVisible(false);
             twoSecPauseMenuItem.setVisible(false);
@@ -965,6 +1070,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
             sendSMSMenuItem.setVisible(true);
 
+            
             // Check out whether to show Pause & Wait option menu items
             int selectionStart;
             int selectionEnd;

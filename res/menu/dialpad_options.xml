@@ -16,6 +16,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 
     >
+<!--     ddd add esurfing dial option -->
+    <item
+        android:id="@+id/menu_esurfing_dial"
+        android:title="@string/esurfing_dial"
+        android:showAsAction="withText"
+        android:orderInCategory="1" 
+        />
+    
     <item
         android:id="@+id/menu_add_contacts"
         android:title="@string/recentCalls_addToContact"
