@@ -1878,18 +1878,21 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
                 // ddd end
 
+                /** zzz */
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 if (sp.getString("EDialPreference", "0").equals("0")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
                     TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                     if (tm.isNetworkRoaming()) {
                         Log.v(TAG, "tm.isNetworkRoaming()");
+                        // show dialog here
                         dialog.show();
                     } else {
                         ((DialtactsActivity) getActivity()).call(number);
                     }
                 } else if (sp.getString("EDialPreference", "0").equals("1")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
+                    // show dialog here
                     dialog.show();
                 } else if (sp.getString("EDialPreference", "0").equals("2")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
