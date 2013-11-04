@@ -37,18 +37,17 @@ public class NumberLocate {
 
                     sb.append(resProvince);
 
-                    //ahahaha
-//                    if (!resProvince.equals(resCity)) {
-//                        sb.append(' ');
-//                        sb.append(resCity);
-//                    }
-//
-//                    String resCardp = "";
-//                    if (cursor.getColumnCount() == 3) {
-//                        resCardp = cursor.getString(2);
-//                        sb.append(' ');
-//                        sb.append(resCardp);
-//                    }
+                    if (!resProvince.equals(resCity)) {
+                        sb.append(' ');
+                        sb.append(resCity);
+                    }
+
+                    String resCardp = "";
+                    if (cursor.getColumnCount() == 3) {
+                        resCardp = cursor.getString(2);
+                        sb.append(' ');
+                        sb.append(resCardp);
+                    }
 
                     String city = sb.toString();
                     Log.v(TAG, "city - " + city);

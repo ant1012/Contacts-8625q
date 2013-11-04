@@ -254,18 +254,17 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
                 sb.append(resProvince);
 
-                // ahahaha
-                // if (!resProvince.equals(resCity)) {
-                // sb.append(' ');
-                // sb.append(resCity);
-                // }
-                //
-                // String resCardp = "";
-                // if (cursor.getColumnCount() == 3) {
-                // resCardp = cursor.getString(2);
-                // sb.append(' ');
-                // sb.append(resCardp);
-                // }
+                if (!resProvince.equals(resCity)) {
+                    sb.append(' ');
+                    sb.append(resCity);
+                }
+
+                String resCardp = "";
+                if (cursor.getColumnCount() == 3) {
+                    resCardp = cursor.getString(2);
+                    sb.append(' ');
+                    sb.append(resCardp);
+                }
 
                 city = sb.toString();
 
