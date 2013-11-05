@@ -64,7 +64,7 @@ public class NumberLocate {
                     Message msg = new Message();
                     msg.obj = city;
                     handler.sendMessage(msg);
-                    PhoneStatusRecevier.saveAsCache(mContext, number, city);
+                    PhoneStatusRecevierOld.saveAsCache(mContext, number, city);
                 }
             }
         };
@@ -93,7 +93,7 @@ public class NumberLocate {
             handler.sendMessage(msg);
         } else {
             if (number.length() >= 11) {
-                String formatNumber = PhoneStatusRecevier.formatNumber(number);
+                String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
                 String selection = null;
                 String[] projection = null;
                 // Uri uri = CityCode.CONTENT_URI;
@@ -129,7 +129,7 @@ public class NumberLocate {
         if (TextUtils.isEmpty(number))
             return null;
         SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
-        String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
         return cache.getString(formatNumber, null);
     }
 }

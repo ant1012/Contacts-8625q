@@ -122,14 +122,14 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
             searchBut.setEnabled(false);
             numberInput.setEnabled(false);
             startQuery(this, number);
-            // Log.v("final","city:"+PhoneStatusRecevier.queryRegion(this,
+            // Log.v("final","city:"+PhoneStatusRecevierOld.queryRegion(this,
             // number));
         }
     }
 
     private void startQuery(Context context, String number) {
         if (number.length() >= 11) {
-            String formatNumber = PhoneStatusRecevier.formatNumber(number);
+            String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
             String selection = null;
             String[] projection = null;
             // Uri uri = CityCode.CONTENT_URI;

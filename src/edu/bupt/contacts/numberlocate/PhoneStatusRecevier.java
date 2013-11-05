@@ -32,7 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class PhoneStatusRecevier extends BroadcastReceiver {
-    private static final String TAG = "PhoneStatusRecevier";
+    private static final String TAG = "PhoneStatusRecevierOld";
     private static boolean isInComingPhone = false;
     private static boolean isOutComingPhone = false;
     private static String phoneNumber = null;
@@ -152,11 +152,28 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         };
     };
 
-    static String formatNumber(String number) {
+    public static String formatNumber(String number) {
         StringBuilder sb = new StringBuilder(number);
         if (sb.charAt(0) == '+') {
             return sb.delete(0, 3).substring(0, 7).toString();
         }
+        // //zaizhe
+        // if(sb.indexOf("010")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("020")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("030")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("040")==0){
+        // return sb.substring(0, 3);
+        // }
+        // //zaizhe
         if (sb.charAt(0) == '0') {
             return sb.substring(0, 4);
         }
@@ -207,76 +224,88 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         // cursor.close();
         // }
         // }
-        if (!TextUtils.isEmpty(number) && number.length() >= 11) {
-            String formatNumber = PhoneStatusRecevier.formatNumber(number);
-            String selection = null;
-            String[] projection = null;
-            // Uri uri = CityCode.CONTENT_URI;
-            // if (formatNumber.length() == 7) {
-            // selection = NumberRegion.NUMBER+"="+formatNumber;
-            // uri = NumberRegion.CONTENT_URI;
-            // projection = new String[]{NumberRegion.CITY};
-            // } else {
-            // selection = CityCode.CODE+"="+formatNumber+" OR " +
-            // CityCode.CODE+"=" + formatNumber.substring(0, 3);
-            // uri = CityCode.CONTENT_URI;
-            // projection = new String[]{CityCode.CITY};
-            // }
+
+        // if (!TextUtils.isEmpty(number) && number.length() >= 11) {
+        // String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        // String selection = null;
+        // String[] projection = null;
+        // Uri uri = NumberRegion.CONTENT_URI;
+        // if (formatNumber.length() == 7) {
+        // selection = NumberRegion.NUMBER + "=" + formatNumber;
+        // uri = NumberRegion.CONTENT_URI;
+        // projection = new String[] { NumberRegion.CITY };
+        // } else {
+        // selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" +
+        // " OR " + NumberRegion.AREACODE
+        // + "=" + "'" + formatNumber.substring(0, 3) + "'";
+        // uri = NumberRegion.CONTENT_URI;
+        // projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY
+        // };
+        // }
+        // ContentResolver cr = context.getContentResolver();
+        // Cursor cursor = cr.query(uri, projection, selection, null, null);
+        // if (cursor != null && cursor.moveToNext()) {
+        // city = cursor.getString(0);
+        // cursor.close();
+        // }
+        // }
+
+        /** zzz */
+        String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        String selection = null;
+        String[] projection = null;
+        Uri uri = NumberRegion.CONTENT_URI;
+        if (formatNumber.length() == 7) {
+            selection = NumberRegion.NUMBER + "=" + formatNumber;
+            uri = NumberRegion.CONTENT_URI;
+            projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
+        } else {
+
+            Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
+                    + formatNumber);
+
+            selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" + " OR " + NumberRegion.AREACODE + "="
+                    + "'" + formatNumber.substring(0, 3) + "'";
+            uri = NumberRegion.CONTENT_URI;
+            projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
+        }
+
+        ContentResolver cr = context.getContentResolver();
+        Cursor cursor = cr.query(uri, projection, selection, null, null);
+        if (cursor != null && cursor.moveToNext()) {
+            /** zzz */
+            // city = cursor.getString(0);
 
             /** zzz */
-            Uri uri = NumberRegion.CONTENT_URI;
-            if (formatNumber.length() == 7) {
-                selection = NumberRegion.NUMBER + "=" + formatNumber;
-                uri = NumberRegion.CONTENT_URI;
-                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
-            } else {
+            StringBuilder sb = new StringBuilder();
 
-                Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
-                        + formatNumber);
+            String resProvince = cursor.getString(0);
+            String resCity = cursor.getString(1);
 
-                selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" + " OR " + NumberRegion.AREACODE
-                        + "=" + "'" + formatNumber.substring(0, 3) + "'";
-                uri = NumberRegion.CONTENT_URI;
-                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
+            sb.append(resProvince);
+
+            if (!resProvince.equals(resCity)) {
+                sb.append(' ');
+                sb.append(resCity);
             }
 
-            ContentResolver cr = context.getContentResolver();
-            Cursor cursor = cr.query(uri, projection, selection, null, null);
-            if (cursor != null && cursor.moveToNext()) {
-                /** zzz */
-                // city = cursor.getString(0);
-
-                /** zzz */
-                StringBuilder sb = new StringBuilder();
-
-                String resProvince = cursor.getString(0);
-                String resCity = cursor.getString(1);
-
-                sb.append(resProvince);
-
-                if (!resProvince.equals(resCity)) {
-                    sb.append(' ');
-                    sb.append(resCity);
+            String resCardp = "";
+            if (cursor.getColumnCount() == 3) {
+                resCardp = cursor.getString(2);
+                if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
+                    resCardp = mContext.getString(R.string.cardp_mobile);
+                } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom))) {
+                    resCardp = mContext.getString(R.string.cardp_telecom);
+                } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom))) {
+                    resCardp = mContext.getString(R.string.cardp_unicom);
                 }
-
-                String resCardp = "";
-                if (cursor.getColumnCount() == 3) {
-                    resCardp = cursor.getString(2);
-                    if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
-                        resCardp = mContext.getString(R.string.cardp_mobile);
-                    } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom))) {
-                        resCardp = mContext.getString(R.string.cardp_telecom);
-                    } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom))) {
-                        resCardp = mContext.getString(R.string.cardp_unicom);
-                    }
-                    sb.append(' ');
-                    sb.append(resCardp);
-                }
-
-                city = sb.toString();
-
-                cursor.close();
+                sb.append(' ');
+                sb.append(resCardp);
             }
+
+            city = sb.toString();
+
+            cursor.close();
         }
 
         return city;
@@ -285,15 +314,13 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.e(TAG, "intent=" + intent);
-
-        /** zzz */
         // if (!NumberLocateSetting.getSettingValue(context,
         // NumberLocateSetting.RegionFuncKey)) {
         // return;
         // }
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sp.getBoolean("DispLocatePreference", false)) {
+        if (!sp.getBoolean("DispLocatePreference", false)) {
             return;
         }
 
@@ -301,7 +328,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         if (intent == null)
             return;
         String action = intent.getAction();
-        if (Intent.ACTION_NEW_OUTGOING_CALL.equals(action)) {// 锟斤拷锟斤拷锟界话
+        if (Intent.ACTION_NEW_OUTGOING_CALL.equals(action)) {// �����绰
             isOutComingPhone = true;
             phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
             Log.v(TAG, "out going number:::" + phoneNumber);
@@ -310,7 +337,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             // mHandler.obtainMessage(NEW_OUTGOING_CALL,
             // phoneNumber).sendToTarget();
             Log.v("PhoneStatusRecevier1", "callOneState=" + cardOneState + "callTwoState=" + cardTwoState);
-        } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {// 锟界话状态锟侥憋拷
+        } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {// �绰״̬�ı�
             cardOneState = MSimTelephonyManager.getDefault().getCallState(0);
             cardTwoState = MSimTelephonyManager.getDefault().getCallState(1);
             Log.v("PhoneStatusRecevier2", "callOneState=" + cardOneState + "callTwoState=" + cardTwoState);
@@ -346,14 +373,14 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             }
             // if(cardOneState==0){
             // switch (cardTwoState) {
-            // case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
+            // case TelephonyManager.CALL_STATE_RINGING://����״̬---1
             // isInComingPhone = true;
             // phoneNumber =
             // intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             // mHandler.obtainMessage(CALL_STATE_RINGING,
             // phoneNumber).sendToTarget();
             // break;
-            // case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
+            // case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone accept :" + phoneNumber);
             // mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
@@ -363,7 +390,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             // phoneNumber).sendToTarget();
             // }
             // break;
-            // case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
+            // case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone hangup");
             // isInComingPhone = false;
@@ -378,14 +405,14 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             //
             // if(cardOneState==1){
             // switch (cardTwoState) {
-            // case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
+            // case TelephonyManager.CALL_STATE_RINGING://����״̬---1
             // isInComingPhone = true;
             // phoneNumber =
             // intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             // mHandler.obtainMessage(CALL_STATE_RINGING,
             // phoneNumber).sendToTarget();
             // break;
-            // case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
+            // case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone accept :" + phoneNumber);
             // mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
@@ -395,7 +422,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             // phoneNumber).sendToTarget();
             // }
             // break;
-            // case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
+            // case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone hangup");
             // isInComingPhone = false;
@@ -409,14 +436,14 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             // }
             // if(cardOneState==2){
             // switch (cardTwoState) {
-            // case TelephonyManager.CALL_STATE_RINGING://锟斤拷锟斤拷状态---1
+            // case TelephonyManager.CALL_STATE_RINGING://����״̬---1
             // isInComingPhone = true;
             // phoneNumber =
             // intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             // mHandler.obtainMessage(CALL_STATE_RINGING,
             // phoneNumber).sendToTarget();
             // break;
-            // case TelephonyManager.CALL_STATE_OFFHOOK://锟界话锟斤拷通状态---2
+            // case TelephonyManager.CALL_STATE_OFFHOOK://�绰��ͨ״̬---2
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone accept :" + phoneNumber);
             // mHandler.obtainMessage(CALL_STATE_OFFHOOK).sendToTarget();
@@ -426,7 +453,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             // phoneNumber).sendToTarget();
             // }
             // break;
-            // case TelephonyManager.CALL_STATE_IDLE://锟界话锟揭讹拷状态---0
+            // case TelephonyManager.CALL_STATE_IDLE://�绰�Ҷ�״̬---0
             // if (isInComingPhone) {
             // Log.i(TAG, "incoming phone hangup");
             // isInComingPhone = false;
@@ -443,14 +470,14 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
     public static WindowManager.LayoutParams params = new WindowManager.LayoutParams();
     static {
-        // 锟斤拷view锟斤拷锟斤拷锟斤拷锟较诧拷
+        // ��view�������ϲ�
         params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        // 锟矫碉拷前View失去锟斤拷锟姐，锟矫猴拷锟斤拷慕锟斤拷锟斤拷媒锟斤拷锟� params.flags =
-        // WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        params.format = PixelFormat.RGBA_8888;// 锟斤拷锟斤拷透锟斤拷
+        // �õ�ǰViewʧȥ���㣬�ú���Ľ����ý���
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        params.format = PixelFormat.RGBA_8888;// ����͸��
         params.gravity = Gravity.TOP | Gravity.CENTER_VERTICAL;
         params.x = 0;
-        params.y = 170;
+        params.y = 120;
         params.width = LayoutParams.FILL_PARENT;
         params.height = LayoutParams.WRAP_CONTENT;
     }
@@ -468,9 +495,9 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             case MotionEvent.ACTION_DOWN:// 0
                 downX = params.x;
                 downY = params.y;
-                rawX = (int) event.getRawX();// 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷幕
+                rawX = (int) event.getRawX();// ����������Ļ
                 rawY = (int) event.getRawY();
-                Log.i(TAG, "onTouch()--->down x=" + (int) event.getX() + ",y=" + (int) event.getY());// 锟斤拷锟斤拷锟斤拷约锟斤拷锟斤拷view
+                Log.i(TAG, "onTouch()--->down x=" + (int) event.getX() + ",y=" + (int) event.getY());// ������Լ����view
                 break;
             case MotionEvent.ACTION_MOVE:// 2
                 int x = (int) event.getRawX();
