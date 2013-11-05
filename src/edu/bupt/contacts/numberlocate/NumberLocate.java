@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import edu.bupt.contacts.R;
 import edu.bupt.contacts.numberlocate.NumberLocateProvider.NumberRegion;
 
 public class NumberLocate {
@@ -45,6 +46,13 @@ public class NumberLocate {
                     String resCardp = "";
                     if (cursor.getColumnCount() == 3) {
                         resCardp = cursor.getString(2);
+                        if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
+                            resCardp = mContext.getString(R.string.cardp_mobile);
+                        } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom))) {
+                            resCardp = mContext.getString(R.string.cardp_telecom);
+                        } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom))) {
+                            resCardp = mContext.getString(R.string.cardp_unicom);
+                        }
                         sb.append(' ');
                         sb.append(resCardp);
                     }
@@ -105,7 +113,7 @@ public class NumberLocate {
                 if (formatNumber.length() == 7) {
                     selection = NumberRegion.NUMBER + "=" + formatNumber;
                     uri = NumberRegion.CONTENT_URI;
-                    projection = new String[] { NumberRegion.CITY, NumberRegion.PROVINCE, NumberRegion.CARD };
+                    projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
                 } else {
                     selection = NumberRegion.AREACODE + "=" + formatNumber + " OR " + NumberRegion.AREACODE + "="
                             + formatNumber.substring(0, 3);

@@ -262,6 +262,13 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
                 String resCardp = "";
                 if (cursor.getColumnCount() == 3) {
                     resCardp = cursor.getString(2);
+                    if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
+                        resCardp = mContext.getString(R.string.cardp_mobile);
+                    } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom))) {
+                        resCardp = mContext.getString(R.string.cardp_telecom);
+                    } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom))) {
+                        resCardp = mContext.getString(R.string.cardp_unicom);
+                    }
                     sb.append(' ');
                     sb.append(resCardp);
                 }

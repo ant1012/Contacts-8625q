@@ -661,6 +661,9 @@
     <string name="preference_category_disp_locate">归属地设置</string>
     <string name="preference_edial">翼拨号</string>
     <string name="preference_disp_locate">显示归属地</string>
+    <string name="cardp_mobile">移动</string>
+    <string name="cardp_telecom">电信</string>
+    <string name="cardp_unicom">联通</string>
 
     <!-- merge -->
     <!-- new string to show options -->
