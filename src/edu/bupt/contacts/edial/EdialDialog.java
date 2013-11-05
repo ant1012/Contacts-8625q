@@ -1,9 +1,12 @@
 package edu.bupt.contacts.edial;
 
+import com.android.internal.telephony.msim.ITelephonyMSim;
+
 import edu.bupt.contacts.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.os.ServiceManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -104,6 +107,19 @@ public class EdialDialog extends Dialog {
 
             }
         });
+    }
+
+    private void call(String number) {
+        try {
+            ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                    .getService(Context.MSIM_TELEPHONY_SERVICE));
+            telephony.call(number, 0);
+
+            // MSimTelephonyManager m =
+            // (MSimTelephonyManager)getSystemService(MSIM_TELEPHONY_SERVICE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
