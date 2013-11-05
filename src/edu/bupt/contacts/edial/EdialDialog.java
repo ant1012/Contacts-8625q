@@ -88,7 +88,7 @@ public class EdialDialog extends HoloDialog {
 
                     callBackChinaButton.setChecked(false);
                     // Context context = getActivity();
-                    
+
                     /** zzz */
                     // Dialog nationalCodeDialog = new Dialog(context);
                     HoloDialog nationalCodeDialog = new HoloDialog(context);
