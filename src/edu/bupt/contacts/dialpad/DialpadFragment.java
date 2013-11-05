@@ -175,6 +175,9 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private DialpadChooserAdapter mDialpadChooserAdapter;
     // ddd
     private View mSmsButton;
+    private Button asiaButton;
+    private Button northAmericaButton;
+    private Button southAmericaButton;
     /**
      * Regular expression prohibiting manual phone call. Can be empty, which
      * means "no rule".
@@ -1832,7 +1835,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 stringPre.append("+86");
                 final StringBuffer stringTitle = new StringBuffer();
                 stringTitle.append("中国+86");
-
+                final TextView TextViewSuffix=(TextView)dialog.findViewById(R.id.textView_suffix);
                 EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
                 EditTextNumber.setText(sendNumber);
                 
@@ -1848,19 +1851,23 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                         case R.id.radioButton_international:
                             stringTitle.replace(0, stringTitle.length(), "中国+86");
                             stringPre.replace(0, stringPre.length(), "+86");
+                            TextViewSuffix.setVisibility(8);
                             callBackChinaButton.setChecked(true);
                             break;
 
                         case R.id.radioButton_133:
                             stringTitle.replace(0, stringTitle.length(), "中国+86");
                             stringPre.replace(0, stringPre.length(), "**133*86");
+                            TextViewSuffix.setVisibility(0);
                             callBackChinaButton.setChecked(true);
                             break;
 
                         case R.id.radioButton_callOther:
                             stringTitle.replace(0, stringTitle.length(), "美国+1");
                             stringPre.replace(0, stringPre.length(), "+1");
-                           
+                            
+                            TextViewSuffix.setVisibility(8);
+                            
                             callBackChinaButton.setChecked(false);
                             Context context = getActivity();
                             Dialog nationalCodeDialog = new Dialog(context);
@@ -1870,6 +1877,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                             break;
 
                         case R.id.radioButton_callLocal:
+                        	TextViewSuffix.setVisibility(8);
                             stringTitle.replace(0, stringTitle.length(), "中国+86");
                             stringPre.replace(0, stringPre.length(), "");
                             callBackChinaButton.setChecked(false);
@@ -2468,4 +2476,34 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         intent.putExtra(SUBSCRIPTION_KEY, mSubscription);
         return intent;
     }
+    
+    
+  //ddd start pick national code
+	private void pickNationalCode(){
+		
+		
+		
+		return;
+	}
+
+
+
+  //ddd end
+    
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
