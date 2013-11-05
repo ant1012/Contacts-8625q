@@ -1816,7 +1816,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 String sendNumber = mDigits.getText().toString();
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialpad_esurfing);
-
+                dialog.setTitle("翼拨号");
                 RadioGroup radioGroupEsurfing = (RadioGroup) dialog.findViewById(R.id.radioGroupEsurfing);
                 final RadioButton callBackChinaButton = (RadioButton) dialog
                         .findViewById(R.id.radioButton_callBackChina);
@@ -1835,7 +1835,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
                 EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
                 EditTextNumber.setText(sendNumber);
-                dialog.setTitle("翼拨号");
+                
                 // dialog.show();
 
                 radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -1860,7 +1860,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                         case R.id.radioButton_callOther:
                             stringTitle.replace(0, stringTitle.length(), "美国+1");
                             stringPre.replace(0, stringPre.length(), "+1");
+                           
                             callBackChinaButton.setChecked(false);
+                            Context context = getActivity();
+                            Dialog nationalCodeDialog = new Dialog(context);
+                            nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
+                            nationalCodeDialog.setTitle("选择目标国家地区");
+                            nationalCodeDialog.show();
                             break;
 
                         case R.id.radioButton_callLocal:
