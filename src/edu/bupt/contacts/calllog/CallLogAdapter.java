@@ -28,6 +28,7 @@ import edu.bupt.contacts.format.FormatUtils;
 import edu.bupt.contacts.ipcall.IPCall;
 import edu.bupt.contacts.util.ExpirableCache;
 import edu.bupt.contacts.util.UriUtils;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.AlertDialog;
@@ -62,8 +63,11 @@ import libcore.util.Objects;
 /**
  * Adapter class to fill in data for the Call Log.
  */
-/* package */class CallLogAdapter extends GroupingListAdapter implements
-        ViewTreeObserver.OnPreDrawListener, CallLogGroupBuilder.GroupCreator {
+/* package */class CallLogAdapter extends GroupingListAdapter implements ViewTreeObserver.OnPreDrawListener,
+        CallLogGroupBuilder.GroupCreator {
+
+    protected static final String TAG = "CallLogAdapter";
+
     /** Interface used to initiate a refresh of the content. */
     public interface CallFetcher {
         public void fetchCalls();
@@ -93,14 +97,12 @@ import libcore.util.Objects;
             if (!(o instanceof NumberWithCountryIso))
                 return false;
             NumberWithCountryIso other = (NumberWithCountryIso) o;
-            return TextUtils.equals(number, other.number)
-                    && TextUtils.equals(countryIso, other.countryIso);
+            return TextUtils.equals(number, other.number) && TextUtils.equals(countryIso, other.countryIso);
         }
 
         @Override
         public int hashCode() {
-            return (number == null ? 0 : number.hashCode())
-                    ^ (countryIso == null ? 0 : countryIso.hashCode());
+            return (number == null ? 0 : number.hashCode()) ^ (countryIso == null ? 0 : countryIso.hashCode());
         }
     }
 
@@ -140,8 +142,7 @@ import libcore.util.Objects;
         /** The cached contact information stored in the call log. */
         public final ContactInfo callLogInfo;
 
-        public ContactInfoRequest(String number, String countryIso,
-                ContactInfo callLogInfo) {
+        public ContactInfoRequest(String number, String countryIso, ContactInfo callLogInfo) {
             this.number = number;
             this.countryIso = countryIso;
             this.callLogInfo = callLogInfo;
@@ -172,12 +173,9 @@ import libcore.util.Objects;
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result
-                    + ((callLogInfo == null) ? 0 : callLogInfo.hashCode());
-            result = prime * result
-                    + ((countryIso == null) ? 0 : countryIso.hashCode());
-            result = prime * result
-                    + ((number == null) ? 0 : number.hashCode());
+            result = prime * result + ((callLogInfo == null) ? 0 : callLogInfo.hashCode());
+            result = prime * result + ((countryIso == null) ? 0 : countryIso.hashCode());
+            result = prime * result + ((number == null) ? 0 : number.hashCode());
             return result;
         }
     }
@@ -237,17 +235,14 @@ import libcore.util.Objects;
                 return false;
             }
             if (ipcall.isCDMAIPEnabled() && ipcall.isGSMIPEnabled()) {
-                itemchoice = new String[] {
-                        mContext.getString(R.string.ip_call_one),
+                itemchoice = new String[] { mContext.getString(R.string.ip_call_one),
                         mContext.getString(R.string.ip_call_two) };
             } else {
                 if (ipcall.isCDMAIPEnabled()) {
-                    itemchoice = new String[] { mContext
-                            .getString(R.string.ip_call_one) };
+                    itemchoice = new String[] { mContext.getString(R.string.ip_call_one) };
                 }
                 if (ipcall.isGSMIPEnabled()) {
-                    itemchoice = new String[] { mContext
-                            .getString(R.string.ip_call_two) };
+                    itemchoice = new String[] { mContext.getString(R.string.ip_call_two) };
                 }
             }
             final int length = itemchoice.length;
@@ -255,41 +250,31 @@ import libcore.util.Objects;
             final boolean isGSM = ipcall.isGSMIPEnabled();
             String phoneNumber1 = null;
             IntentProvider intentProvider = (IntentProvider) view.getTag();
-            Log.v("longclick", intentProvider.getIntent(mContext).getData()
-                    .toString());
+            Log.v("longclick", intentProvider.getIntent(mContext).getData().toString());
             if (intentProvider != null) {
-                phoneNumber1 = getPhoneNumberForUri(intentProvider.getIntent(
-                        mContext).getData());
+                phoneNumber1 = getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
             }
             final String phoneNumber = phoneNumber1;
-            new AlertDialog.Builder(mContext, 0)
-                    .setTitle(R.string.call_ip_dialog_title)
-                    .setItems(itemchoice,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    // TODO Auto-generated method stub
-                                    if (length == 2) {
-                                        if (which == 0) {
-                                            call(ipcall.getCDMAIPCode()
-                                                    + phoneNumber);
-                                        } else {
-                                            call(ipcall.getGSMIPCode()
-                                                    + phoneNumber);
-                                        }
-                                    } else {
-                                        if (isCDMA) {
-                                            call(ipcall.getCDMAIPCode()
-                                                    + phoneNumber);
-                                        }
-                                        if (isGSM) {
-                                            call(ipcall.getGSMIPCode()
-                                                    + phoneNumber);
-                                        }
-                                    }
+            new AlertDialog.Builder(mContext, 0).setTitle(R.string.call_ip_dialog_title)
+                    .setItems(itemchoice, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO Auto-generated method stub
+                            if (length == 2) {
+                                if (which == 0) {
+                                    call(ipcall.getCDMAIPCode() + phoneNumber);
+                                } else {
+                                    call(ipcall.getGSMIPCode() + phoneNumber);
                                 }
-                            }).setNegativeButton(R.string.menu_doNotSave, null)
-                    .show();
+                            } else {
+                                if (isCDMA) {
+                                    call(ipcall.getCDMAIPCode() + phoneNumber);
+                                }
+                                if (isGSM) {
+                                    call(ipcall.getGSMIPCode() + phoneNumber);
+                                }
+                            }
+                        }
+                    }).setNegativeButton(R.string.menu_doNotSave, null).show();
             return false;
         }
     };
@@ -301,12 +286,10 @@ import libcore.util.Objects;
         final String[] CALL_LOG_PROJECTION = new String[] { CallLog.Calls.NUMBER };
         ContentResolver resolver = mContext.getContentResolver();
 
-        Cursor callCursor = resolver.query(callUri, CALL_LOG_PROJECTION, null,
-                null, null);
+        Cursor callCursor = resolver.query(callUri, CALL_LOG_PROJECTION, null, null, null);
         try {
             if (callCursor == null || !callCursor.moveToFirst()) {
-                throw new IllegalArgumentException("Cannot find content: "
-                        + callUri);
+                throw new IllegalArgumentException("Cannot find content: " + callUri);
             }
             return callCursor.getString(0);
 
@@ -319,9 +302,8 @@ import libcore.util.Objects;
 
     public void call(String number) {
         try {
-            ITelephonyMSim telephony = ITelephonyMSim.Stub
-                    .asInterface(ServiceManager
-                            .getService(Context.MSIM_TELEPHONY_SERVICE));
+            ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                    .getService(Context.MSIM_TELEPHONY_SERVICE));
             telephony.call(number, 0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -337,62 +319,54 @@ import libcore.util.Objects;
 
             final String phoneNumber = (String) view.getTag();
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            View layout = inflater
-                    .inflate(R.layout.call_ip_choose_dialog, null);
-            Builder dialogBuilder = new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.call_ip_dialog_title).setView(layout)
-                    .setNegativeButton(R.string.cancel, null);
+            View layout = inflater.inflate(R.layout.call_ip_choose_dialog, null);
+            Builder dialogBuilder = new AlertDialog.Builder(mContext).setTitle(R.string.call_ip_dialog_title)
+                    .setView(layout).setNegativeButton(R.string.cancel, null);
             final AlertDialog mDialog = dialogBuilder.create();
-            layout.findViewById(R.id.imageButton_call).setOnClickListener(
-                    new OnClickListener() {
+            layout.findViewById(R.id.imageButton_call).setOnClickListener(new OnClickListener() {
 
-                        @Override
-                        public void onClick(View arg0) {
-                            // TODO Auto-generated method stub
-                            try {
-                                ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                                        .getService(Context.MSIM_TELEPHONY_SERVICE));
-                                telephony.call(phoneNumber, 0);
-                                mDialog.dismiss();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                @Override
+                public void onClick(View arg0) {
+                    // TODO Auto-generated method stub
+                    try {
+                        ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                                .getService(Context.MSIM_TELEPHONY_SERVICE));
+                        telephony.call(phoneNumber, 0);
+                        mDialog.dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                    });
+            });
             final IPCall ipcall = new IPCall(mContext);
             if (ipcall.isCDMAIPEnabled()) {
-                layout.findViewById(R.id.imageButton_ipcall_one).setVisibility(
-                        View.VISIBLE);
-                layout.findViewById(R.id.imageButton_ipcall_one)
-                        .setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View arg0) {
-                                mDialog.dismiss();
-                                call(ipcall.getCDMAIPCode() + phoneNumber);
-                            }
-                        });
+                layout.findViewById(R.id.imageButton_ipcall_one).setVisibility(View.VISIBLE);
+                layout.findViewById(R.id.imageButton_ipcall_one).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        mDialog.dismiss();
+                        call(ipcall.getCDMAIPCode() + phoneNumber);
+                    }
+                });
 
             }
             if (ipcall.isGSMIPEnabled()) {
-                layout.findViewById(R.id.imageButton_ipcall_two).setVisibility(
-                        View.VISIBLE);
-                layout.findViewById(R.id.imageButton_ipcall_two)
-                        .setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View arg0) {
-                                mDialog.dismiss();
-                                call(ipcall.getGSMIPCode() + phoneNumber);
-                            }
-                        });
+                layout.findViewById(R.id.imageButton_ipcall_two).setVisibility(View.VISIBLE);
+                layout.findViewById(R.id.imageButton_ipcall_two).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        mDialog.dismiss();
+                        call(ipcall.getGSMIPCode() + phoneNumber);
+                    }
+                });
 
             }
 
             if (!ipcall.isCDMAIPEnabled() && !ipcall.isGSMIPEnabled()) {
                 try {
-                    ITelephonyMSim telephony = ITelephonyMSim.Stub
-                            .asInterface(ServiceManager
-                                    .getService(Context.MSIM_TELEPHONY_SERVICE));
+                    ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                            .getService(Context.MSIM_TELEPHONY_SERVICE));
                     telephony.call((String) view.getTag(), 0);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -418,8 +392,7 @@ import libcore.util.Objects;
         // Only schedule a thread-creation message if the thread hasn't been
         // created yet. This is purely an optimization, to queue fewer messages.
         if (mCallerIdThread == null) {
-            mHandler.sendEmptyMessageDelayed(START_THREAD,
-                    START_PROCESSING_REQUESTS_DELAY_MILLIS);
+            mHandler.sendEmptyMessageDelayed(START_THREAD, START_PROCESSING_REQUESTS_DELAY_MILLIS);
         }
 
         return true;
@@ -439,8 +412,7 @@ import libcore.util.Objects;
         }
     };
 
-    CallLogAdapter(Context context, CallFetcher callFetcher,
-            ContactInfoHelper contactInfoHelper) {
+    CallLogAdapter(Context context, CallFetcher callFetcher, ContactInfoHelper contactInfoHelper) {
         super(context);
 
         mContext = context;
@@ -455,10 +427,9 @@ import libcore.util.Objects;
 
         mContactPhotoManager = ContactPhotoManager.getInstance(mContext);
         mPhoneNumberHelper = new PhoneNumberHelper(resources);
-        PhoneCallDetailsHelper phoneCallDetailsHelper = new PhoneCallDetailsHelper(
-                resources, callTypeHelper, mPhoneNumberHelper);
-        mCallLogViewsHelper = new CallLogListItemHelper(phoneCallDetailsHelper,
-                mPhoneNumberHelper, resources);
+        PhoneCallDetailsHelper phoneCallDetailsHelper = new PhoneCallDetailsHelper(resources, callTypeHelper,
+                mPhoneNumberHelper);
+        mCallLogViewsHelper = new CallLogListItemHelper(phoneCallDetailsHelper, mPhoneNumberHelper, resources);
         mCallLogGroupBuilder = new CallLogGroupBuilder(this);
     }
 
@@ -548,10 +519,8 @@ import libcore.util.Objects;
      * {@link #START_PROCESSING_REQUESTS_DELAY_MILLIS}.
      */
     @VisibleForTesting
-    void enqueueRequest(String number, String countryIso,
-            ContactInfo callLogInfo, boolean immediate) {
-        ContactInfoRequest request = new ContactInfoRequest(number, countryIso,
-                callLogInfo);
+    void enqueueRequest(String number, String countryIso, ContactInfo callLogInfo, boolean immediate) {
+        ContactInfoRequest request = new ContactInfoRequest(number, countryIso, callLogInfo);
         synchronized (mRequests) {
             if (!mRequests.contains(request)) {
                 mRequests.add(request);
@@ -574,10 +543,8 @@ import libcore.util.Objects;
      * It returns true if it updated the content of the cache and we should
      * therefore tell the view to update its content.
      */
-    private boolean queryContactInfo(String number, String countryIso,
-            ContactInfo callLogInfo) {
-        final ContactInfo info = mContactInfoHelper.lookupNumber(number,
-                countryIso);
+    private boolean queryContactInfo(String number, String countryIso, ContactInfo callLogInfo) {
+        final ContactInfo info = mContactInfoHelper.lookupNumber(number, countryIso);
 
         if (info == null) {
             // The lookup failed, just return without requesting to update the
@@ -588,12 +555,9 @@ import libcore.util.Objects;
         // Check the existing entry in the cache: only if it has changed we
         // should update the
         // view.
-        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(
-                number, countryIso);
-        ContactInfo existingInfo = mContactInfoCache
-                .getPossiblyExpired(numberCountryIso);
-        boolean updated = (existingInfo != ContactInfo.EMPTY)
-                && !info.equals(existingInfo);
+        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(number, countryIso);
+        ContactInfo existingInfo = mContactInfoCache.getPossiblyExpired(numberCountryIso);
+        boolean updated = (existingInfo != ContactInfo.EMPTY) && !info.equals(existingInfo);
 
         // Store the data in the cache so that the UI thread can use to display
         // it. Store it
@@ -640,8 +604,7 @@ import libcore.util.Objects;
                 if (req != null) {
                     // Process the request. If the lookup succeeds, schedule a
                     // redraw.
-                    needRedraw |= queryContactInfo(req.number, req.countryIso,
-                            req.callLogInfo);
+                    needRedraw |= queryContactInfo(req.number, req.countryIso, req.callLogInfo);
                 } else {
                     // Throttle redraw rate by only sending them when there are
                     // more requests.
@@ -672,10 +635,8 @@ import libcore.util.Objects;
 
     @Override
     protected View newStandAloneView(Context context, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater
-                .inflate(R.layout.call_log_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.call_log_list_item, parent, false);
         findAndCacheViews(view);
         return view;
     }
@@ -687,10 +648,8 @@ import libcore.util.Objects;
 
     @Override
     protected View newChildView(Context context, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater
-                .inflate(R.layout.call_log_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.call_log_list_item, parent, false);
         findAndCacheViews(view);
         return view;
     }
@@ -702,17 +661,14 @@ import libcore.util.Objects;
 
     @Override
     protected View newGroupView(Context context, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater
-                .inflate(R.layout.call_log_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.call_log_list_item, parent, false);
         findAndCacheViews(view);
         return view;
     }
 
     @Override
-    protected void bindGroupView(View view, Context context, Cursor cursor,
-            int groupSize, boolean expanded) {
+    protected void bindGroupView(View view, Context context, Cursor cursor, int groupSize, boolean expanded) {
         bindView(view, cursor, groupSize);
     }
 
@@ -743,21 +699,18 @@ import libcore.util.Objects;
 
         // This might be a header: check the value of the section column in the
         // cursor.
-        if (section == CallLogQuery.SECTION_NEW_HEADER
-                || section == CallLogQuery.SECTION_OLD_HEADER) {
+        if (section == CallLogQuery.SECTION_NEW_HEADER || section == CallLogQuery.SECTION_OLD_HEADER) {
             views.primaryActionView.setVisibility(View.GONE);
             views.bottomDivider.setVisibility(View.GONE);
             views.listHeaderTextView.setVisibility(View.VISIBLE);
-            views.listHeaderTextView
-                    .setText(section == CallLogQuery.SECTION_NEW_HEADER ? R.string.call_log_new_header
-                            : R.string.call_log_old_header);
+            views.listHeaderTextView.setText(section == CallLogQuery.SECTION_NEW_HEADER ? R.string.call_log_new_header
+                    : R.string.call_log_old_header);
             // Nothing else to set up for a header.
             return;
         }
         // Default case: an item in the call log.
         views.primaryActionView.setVisibility(View.VISIBLE);
-        views.bottomDivider.setVisibility(isLastOfSection(c) ? View.GONE
-                : View.VISIBLE);
+        views.bottomDivider.setVisibility(isLastOfSection(c) ? View.GONE : View.VISIBLE);
         views.listHeaderTextView.setVisibility(View.GONE);
 
         final String number = c.getString(CallLogQuery.NUMBER);
@@ -768,9 +721,8 @@ import libcore.util.Objects;
 
         final ContactInfo cachedContactInfo = getContactInfoFromCallLog(c);
 
-        views.primaryActionView.setTag(IntentProvider
-                .getCallDetailIntentProvider(this, c.getPosition(),
-                        c.getLong(CallLogQuery.ID), count));
+        views.primaryActionView.setTag(IntentProvider.getCallDetailIntentProvider(this, c.getPosition(),
+                c.getLong(CallLogQuery.ID), count));
         // Log.v("eeeee",IntentProvider.getCallDetailIntentProvider(this,
         // c.getPosition(), c.getLong(CallLogQuery.ID),
         // count).getIntent(mContext).getDataString());
@@ -787,15 +739,12 @@ import libcore.util.Objects;
             views.secondaryActionView.setTag(number);
 
             /** �����е�������� */
-            ViewEntry entry = new ViewEntry(mContext.getString(
-                    R.string.menu_callNumber,
-                    FormatUtils.forceLeftToRight(number)),
-                    ContactsUtils.getCallIntent(number), mContext.getString(
-                            R.string.description_call, number));
-            entry.setSecondaryAction(R.drawable.ic_text_holo_dark, new Intent(
-                    Intent.ACTION_SENDTO, Uri.fromParts("sms", number, null)),
-                    mContext.getString(R.string.description_send_text_message,
-                            number));
+            ViewEntry entry = new ViewEntry(mContext.getString(R.string.menu_callNumber,
+                    FormatUtils.forceLeftToRight(number)), ContactsUtils.getCallIntent(number), mContext.getString(
+                    R.string.description_call, number));
+            entry.setSecondaryAction(R.drawable.ic_text_holo_dark,
+                    new Intent(Intent.ACTION_SENDTO, Uri.fromParts("sms", number, null)),
+                    mContext.getString(R.string.description_send_text_message, number));
             views.thirdaryActionView.setTag(entry);
 
         } else {
@@ -805,13 +754,10 @@ import libcore.util.Objects;
         }
 
         // Lookup contacts with this number
-        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(
-                number, countryIso);
-        ExpirableCache.CachedValue<ContactInfo> cachedInfo = mContactInfoCache
-                .getCachedValue(numberCountryIso);
+        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(number, countryIso);
+        ExpirableCache.CachedValue<ContactInfo> cachedInfo = mContactInfoCache.getCachedValue(numberCountryIso);
         ContactInfo info = cachedInfo == null ? null : cachedInfo.getValue();
-        if (!mPhoneNumberHelper.canPlaceCallsTo(number)
-                || mPhoneNumberHelper.isVoicemailNumber(number)) {
+        if (!mPhoneNumberHelper.canPlaceCallsTo(number) || mPhoneNumberHelper.isVoicemailNumber(number)) {
             // If this is a number that cannot be dialed, there is no point in
             // looking up a contact
             // for it.
@@ -860,15 +806,14 @@ import libcore.util.Objects;
         final PhoneCallDetails details;
 
         if (TextUtils.isEmpty(name)) {
-            details = new PhoneCallDetails(number, formattedNumber, countryIso,
-                    geocode, callTypes, date, duration,
+            details = new PhoneCallDetails(number, formattedNumber, countryIso, geocode, callTypes, date, duration,
                     c.getInt(CallLogQuery.SUB_ID));
         } else {
             // We do not pass a photo id since we do not need the high-res
             // picture.
-            details = new PhoneCallDetails(number, formattedNumber, countryIso,
-                    geocode, callTypes, date, duration, name, ntype, label,
-                    lookupUri, null, c.getInt(CallLogQuery.SUB_ID)); // by yuan
+            details = new PhoneCallDetails(number, formattedNumber, countryIso, geocode, callTypes, date, duration,
+                    name, ntype, label, lookupUri, null, c.getInt(CallLogQuery.SUB_ID)); // by
+                                                                                         // yuan
         }
 
         final boolean isNew = c.getInt(CallLogQuery.IS_READ) == 0;
@@ -908,8 +853,7 @@ import libcore.util.Objects;
             primaryDescription = description;
         }
 
-        public void setSecondaryAction(int icon, Intent intent,
-                String description) {
+        public void setSecondaryAction(int icon, Intent intent, String description) {
             secondaryIcon = icon;
             secondaryIntent = intent;
             secondaryDescription = description;
@@ -935,8 +879,7 @@ import libcore.util.Objects;
     private boolean callLogInfoMatches(ContactInfo callLogInfo, ContactInfo info) {
         // The call log only contains a subset of the fields in the contacts db.
         // Only check those.
-        return TextUtils.equals(callLogInfo.name, info.name)
-                && callLogInfo.type == info.type
+        return TextUtils.equals(callLogInfo.name, info.name) && callLogInfo.type == info.type
                 && TextUtils.equals(callLogInfo.label, info.label);
     }
 
@@ -944,8 +887,8 @@ import libcore.util.Objects;
      * Stores the updated contact info in the call log if it is different from
      * the current one.
      */
-    private void updateCallLogContactInfoCache(String number,
-            String countryIso, ContactInfo updatedInfo, ContactInfo callLogInfo) {
+    private void updateCallLogContactInfoCache(String number, String countryIso, ContactInfo updatedInfo,
+            ContactInfo callLogInfo) {
         final ContentValues values = new ContentValues();
         boolean needsUpdate = false;
 
@@ -964,16 +907,12 @@ import libcore.util.Objects;
                 values.put(Calls.CACHED_NUMBER_LABEL, updatedInfo.label);
                 needsUpdate = true;
             }
-            if (!UriUtils
-                    .areEqual(updatedInfo.lookupUri, callLogInfo.lookupUri)) {
-                values.put(Calls.CACHED_LOOKUP_URI,
-                        UriUtils.uriToString(updatedInfo.lookupUri));
+            if (!UriUtils.areEqual(updatedInfo.lookupUri, callLogInfo.lookupUri)) {
+                values.put(Calls.CACHED_LOOKUP_URI, UriUtils.uriToString(updatedInfo.lookupUri));
                 needsUpdate = true;
             }
-            if (!TextUtils.equals(updatedInfo.normalizedNumber,
-                    callLogInfo.normalizedNumber)) {
-                values.put(Calls.CACHED_NORMALIZED_NUMBER,
-                        updatedInfo.normalizedNumber);
+            if (!TextUtils.equals(updatedInfo.normalizedNumber, callLogInfo.normalizedNumber)) {
+                values.put(Calls.CACHED_NORMALIZED_NUMBER, updatedInfo.normalizedNumber);
                 needsUpdate = true;
             }
             if (!TextUtils.equals(updatedInfo.number, callLogInfo.number)) {
@@ -984,10 +923,8 @@ import libcore.util.Objects;
                 values.put(Calls.CACHED_PHOTO_ID, updatedInfo.photoId);
                 needsUpdate = true;
             }
-            if (!TextUtils.equals(updatedInfo.formattedNumber,
-                    callLogInfo.formattedNumber)) {
-                values.put(Calls.CACHED_FORMATTED_NUMBER,
-                        updatedInfo.formattedNumber);
+            if (!TextUtils.equals(updatedInfo.formattedNumber, callLogInfo.formattedNumber)) {
+                values.put(Calls.CACHED_FORMATTED_NUMBER, updatedInfo.formattedNumber);
                 needsUpdate = true;
             }
         } else {
@@ -995,14 +932,11 @@ import libcore.util.Objects;
             values.put(Calls.CACHED_NAME, updatedInfo.name);
             values.put(Calls.CACHED_NUMBER_TYPE, updatedInfo.type);
             values.put(Calls.CACHED_NUMBER_LABEL, updatedInfo.label);
-            values.put(Calls.CACHED_LOOKUP_URI,
-                    UriUtils.uriToString(updatedInfo.lookupUri));
+            values.put(Calls.CACHED_LOOKUP_URI, UriUtils.uriToString(updatedInfo.lookupUri));
             values.put(Calls.CACHED_MATCHED_NUMBER, updatedInfo.number);
-            values.put(Calls.CACHED_NORMALIZED_NUMBER,
-                    updatedInfo.normalizedNumber);
+            values.put(Calls.CACHED_NORMALIZED_NUMBER, updatedInfo.normalizedNumber);
             values.put(Calls.CACHED_PHOTO_ID, updatedInfo.photoId);
-            values.put(Calls.CACHED_FORMATTED_NUMBER,
-                    updatedInfo.formattedNumber);
+            values.put(Calls.CACHED_FORMATTED_NUMBER, updatedInfo.formattedNumber);
             needsUpdate = true;
         }
 
@@ -1010,35 +944,27 @@ import libcore.util.Objects;
             return;
 
         if (countryIso == null) {
-            mContext.getContentResolver()
-                    .update(Calls.CONTENT_URI,
-                            values,
-                            Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO
-                                    + " IS NULL", new String[] { number });
+            mContext.getContentResolver().update(Calls.CONTENT_URI, values,
+                    Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO + " IS NULL", new String[] { number });
         } else {
             mContext.getContentResolver().update(Calls.CONTENT_URI, values,
-                    Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO + " = ?",
-                    new String[] { number, countryIso });
+                    Calls.NUMBER + " = ? AND " + Calls.COUNTRY_ISO + " = ?", new String[] { number, countryIso });
         }
     }
 
     /** Returns the contact information as stored in the call log. */
     private ContactInfo getContactInfoFromCallLog(Cursor c) {
         ContactInfo info = new ContactInfo();
-        info.lookupUri = UriUtils.parseUriOrNull(c
-                .getString(CallLogQuery.CACHED_LOOKUP_URI));
+        info.lookupUri = UriUtils.parseUriOrNull(c.getString(CallLogQuery.CACHED_LOOKUP_URI));
         info.name = c.getString(CallLogQuery.CACHED_NAME);
         info.type = c.getInt(CallLogQuery.CACHED_NUMBER_TYPE);
         info.label = c.getString(CallLogQuery.CACHED_NUMBER_LABEL);
         String matchedNumber = c.getString(CallLogQuery.CACHED_MATCHED_NUMBER);
-        info.number = matchedNumber == null ? c.getString(CallLogQuery.NUMBER)
-                : matchedNumber;
-        info.normalizedNumber = c
-                .getString(CallLogQuery.CACHED_NORMALIZED_NUMBER);
+        info.number = matchedNumber == null ? c.getString(CallLogQuery.NUMBER) : matchedNumber;
+        info.normalizedNumber = c.getString(CallLogQuery.CACHED_NORMALIZED_NUMBER);
         info.photoId = c.getLong(CallLogQuery.CACHED_PHOTO_ID);
         info.photoUri = null; // We do not cache the photo URI.
-        info.formattedNumber = c
-                .getString(CallLogQuery.CACHED_FORMATTED_NUMBER);
+        info.formattedNumber = c.getString(CallLogQuery.CACHED_FORMATTED_NUMBER);
         return info;
     }
 
@@ -1060,11 +986,15 @@ import libcore.util.Objects;
         return callTypes;
     }
 
-    private void setPhoto(CallLogListItemViews views, long photoId,
-            Uri contactUri) {
+    private void setPhoto(CallLogListItemViews views, long photoId, Uri contactUri) {
         views.quickContactView.assignContactUri(contactUri);
-        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId,
-                true);
+//        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
+        views.quickContactView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Log.v(TAG, "onClick");
+            }
+        });
     }
 
     /**
@@ -1080,10 +1010,8 @@ import libcore.util.Objects;
     }
 
     @VisibleForTesting
-    void injectContactInfoForTest(String number, String countryIso,
-            ContactInfo contactInfo) {
-        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(
-                number, countryIso);
+    void injectContactInfoForTest(String number, String countryIso, ContactInfo contactInfo) {
+        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(number, countryIso);
         mContactInfoCache.put(numberCountryIso, contactInfo);
     }
 
@@ -1103,21 +1031,18 @@ import libcore.util.Objects;
     public String getBetterNumberFromContacts(String number, String countryIso) {
         String matchingNumber = null;
         // Look in the cache first. If it's not found then query the Phones db
-        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(
-                number, countryIso);
+        NumberWithCountryIso numberCountryIso = new NumberWithCountryIso(number, countryIso);
         ContactInfo ci = mContactInfoCache.getPossiblyExpired(numberCountryIso);
         if (ci != null && ci != ContactInfo.EMPTY) {
             matchingNumber = ci.number;
         } else {
             try {
                 Cursor phonesCursor = mContext.getContentResolver().query(
-                        Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
-                                number), PhoneQuery._PROJECTION, null, null,
-                        null);
+                        Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, number), PhoneQuery._PROJECTION, null,
+                        null, null);
                 if (phonesCursor != null) {
                     if (phonesCursor.moveToFirst()) {
-                        matchingNumber = phonesCursor
-                                .getString(PhoneQuery.MATCHED_NUMBER);
+                        matchingNumber = phonesCursor.getString(PhoneQuery.MATCHED_NUMBER);
                     }
                     phonesCursor.close();
                 }
@@ -1126,8 +1051,7 @@ import libcore.util.Objects;
             }
         }
         if (!TextUtils.isEmpty(matchingNumber)
-                && (matchingNumber.startsWith("+") || matchingNumber.length() > number
-                        .length())) {
+                && (matchingNumber.startsWith("+") || matchingNumber.length() > number.length())) {
             number = matchingNumber;
         }
         return number;

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -15,6 +16,7 @@ import android.util.Log;
 public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "country_calling_codes";
+    private static final String TB_NAME = "international_phonecode";
     private static final int VERSION = 1;
     private static final String TAG = "CountryCodeDBHelper";
     private Context mContext;
@@ -26,7 +28,9 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        executeSQLScript(database, "international_phonecode.sql");
+        if (tabbleIsExist(TB_NAME)) {
+            executeSQLScript(database, "international_phonecode.sql");
+        }
     }
 
     public void executeSQLScript(SQLiteDatabase database, String dbname) {
@@ -65,4 +69,30 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         executeSQLScript(database, "SQLiteDatabase");
     }
 
+    private boolean tabbleIsExist(String tableName) {
+        boolean result = false;
+        if (tableName == null) {
+            return false;
+        }
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        try {
+            db = this.getReadableDatabase();
+            String sql = "select count(*) as c from sqlite_master where type ='table' and name ='" + tableName.trim()
+                    + "' ";
+            cursor = db.rawQuery(sql, null);
+            if (cursor.moveToNext()) {
+                int count = cursor.getInt(0);
+                if (count > 0) {
+                    result = true;
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        } finally {
+            cursor.close();
+        }
+        return result;
+    }
 }
