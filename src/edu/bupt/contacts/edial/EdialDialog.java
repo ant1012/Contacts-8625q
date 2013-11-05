@@ -7,14 +7,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.ServiceManager;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-/** zzz */
 public class EdialDialog extends HoloDialog {
 
     public EdialDialog(final Context context, String digits) {
@@ -90,7 +88,7 @@ public class EdialDialog extends HoloDialog {
 
                     callBackChinaButton.setChecked(false);
                     // Context context = getActivity();
-
+                    
                     /** zzz */
                     // Dialog nationalCodeDialog = new Dialog(context);
                     HoloDialog nationalCodeDialog = new HoloDialog(context);
