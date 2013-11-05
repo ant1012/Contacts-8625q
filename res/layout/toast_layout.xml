@@ -6,7 +6,7 @@
     android:background="#808080"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp" >
 
@@ -14,6 +14,7 @@
             android:id="@+id/imageView_cardid"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp" />
 
@@ -23,6 +24,16 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/imageView_cardid"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/call_type"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="5dp"
             android:gravity="center" />
 
         <TextView
@@ -30,16 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/call_type"
             android:gravity="center" />
-
-        <TextView
-            android:id="@+id/call_type"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="5dp"
-            android:gravity="center" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

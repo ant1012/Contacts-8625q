@@ -988,6 +988,8 @@ import libcore.util.Objects;
 
     private void setPhoto(CallLogListItemViews views, long photoId, Uri contactUri) {
         views.quickContactView.assignContactUri(contactUri);
+
+        /** zzz */
 //        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
         views.quickContactView.setOnClickListener(new OnClickListener() {
             @Override

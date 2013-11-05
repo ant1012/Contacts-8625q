@@ -7,13 +7,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.ServiceManager;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-public class EdialDialog extends Dialog {
+/** zzz */
+public class EdialDialog extends HoloDialog {
 
     public EdialDialog(final Context context, String digits) {
         super(context);
@@ -88,7 +90,11 @@ public class EdialDialog extends Dialog {
 
                     callBackChinaButton.setChecked(false);
                     // Context context = getActivity();
-                    Dialog nationalCodeDialog = new Dialog(context);
+
+                    /** zzz */
+                    // Dialog nationalCodeDialog = new Dialog(context);
+                    HoloDialog nationalCodeDialog = new HoloDialog(context);
+
                     nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
                     nationalCodeDialog.setTitle("选择目标国家地区");
                     nationalCodeDialog.show();

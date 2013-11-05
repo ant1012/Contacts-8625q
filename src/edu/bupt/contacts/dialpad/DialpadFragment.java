@@ -1906,30 +1906,43 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 // ddd end
 
                 /** zzz */
-                EdialDialog edialDialog = new EdialDialog(getActivity(), mDigits.getText().toString());
+                // EdialDialog edialDialog = new EdialDialog(getActivity(),
+                // mDigits.getText().toString());
+                //
+                // SharedPreferences sp =
+                // PreferenceManager.getDefaultSharedPreferences(getActivity());
+                //
+                // if (sp.getString("EDialPreference", "0").equals("0")) {
+                // Log.v(TAG,
+                // "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
+                // TelephonyManager tm = (TelephonyManager)
+                // getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                // if (tm.isNetworkRoaming()) {
+                // Log.v(TAG, "tm.isNetworkRoaming()");
+                // // show dialog here
+                // edialDialog.show();
+                // } else {
+                // ((DialtactsActivity) getActivity()).call(number);
+                // }
+                // } else if (sp.getString("EDialPreference", "0").equals("1"))
+                // {
+                // Log.v(TAG,
+                // "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
+                // // show dialog here
+                // edialDialog.show();
+                // } else if (sp.getString("EDialPreference", "0").equals("2"))
+                // {
+                // Log.v(TAG,
+                // "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
+                // ((DialtactsActivity) getActivity()).call(number);
+                // } else {
+                // Log.e(TAG, "sharedPreferences error");
+                // }
 
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                if (sp.getString("EDialPreference", "0").equals("0")) {
-                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
-                    TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                    if (tm.isNetworkRoaming()) {
-                        Log.v(TAG, "tm.isNetworkRoaming()");
-                        // show dialog here
-                        edialDialog.show();
-                    } else {
-                        ((DialtactsActivity) getActivity()).call(number);
-                    }
-                } else if (sp.getString("EDialPreference", "0").equals("1")) {
-                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
-                    // show dialog here
-                    edialDialog.show();
-                } else if (sp.getString("EDialPreference", "0").equals("2")) {
-                    Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
-                    ((DialtactsActivity) getActivity()).call(number);
-                } else {
-                    Log.e(TAG, "sharedPreferences error");
-                }
+                Intent intent = new Intent();
+                intent.setAction("edu.bupt.action.EDIAL");
+                intent.putExtra("digit", number);
+                getActivity().startService(intent);
             }
         }
     }
