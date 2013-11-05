@@ -99,6 +99,7 @@ import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.SpecialCharSequenceMgr;
 import edu.bupt.contacts.activities.DialtactsActivity;
+import edu.bupt.contacts.edial.EdialDialog;
 import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.PhoneNumberFormatter;
@@ -1796,7 +1797,9 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 /** zzz */
 
                 // ddd start
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                // AlertDialog.Builder builder = new
+                // AlertDialog.Builder(getActivity());
 
                 // builder.setTitle("翼拨号");
                 // builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
@@ -1814,100 +1817,113 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 // return false;
                 // Context mContext = getActivity();
 
-                Context context = getActivity();
-
-                String sendNumber = mDigits.getText().toString();
-                Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.dialpad_esurfing);
-                dialog.setTitle("翼拨号");
-                RadioGroup radioGroupEsurfing = (RadioGroup) dialog.findViewById(R.id.radioGroupEsurfing);
-                final RadioButton callBackChinaButton = (RadioButton) dialog
-                        .findViewById(R.id.radioButton_callBackChina);
-                final RadioButton internationalButton = (RadioButton) dialog
-                        .findViewById(R.id.radioButton_international);
-                final RadioButton call133Button = (RadioButton) dialog.findViewById(R.id.radioButton_133);
-                final RadioButton callOtherButton = (RadioButton) dialog.findViewById(R.id.radioButton_callOther);
-                final RadioButton callLocalButton = (RadioButton) dialog.findViewById(R.id.radioButton_callLocal);
-
-                final TextView title = (TextView) dialog.findViewById(R.id.textView_title);
-                final TextView pre = (TextView) dialog.findViewById(R.id.textView_pre);
-                final StringBuffer stringPre = new StringBuffer();
-                stringPre.append("+86");
-                final StringBuffer stringTitle = new StringBuffer();
-                stringTitle.append("中国+86");
-                final TextView TextViewSuffix=(TextView)dialog.findViewById(R.id.textView_suffix);
-                EditText EditTextNumber = (EditText) dialog.findViewById(R.id.editTextInputNumber);
-                EditTextNumber.setText(sendNumber);
-                
-                // dialog.show();
-
-                radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        // TODO Auto-generated method stub
-                        switch (checkedId) {
-
-                        case R.id.radioButton_international:
-                            stringTitle.replace(0, stringTitle.length(), "中国+86");
-                            stringPre.replace(0, stringPre.length(), "+86");
-                            TextViewSuffix.setVisibility(8);
-                            callBackChinaButton.setChecked(true);
-                            break;
-
-                        case R.id.radioButton_133:
-                            stringTitle.replace(0, stringTitle.length(), "中国+86");
-                            stringPre.replace(0, stringPre.length(), "**133*86");
-                            TextViewSuffix.setVisibility(0);
-                            callBackChinaButton.setChecked(true);
-                            break;
-
-                        case R.id.radioButton_callOther:
-                            stringTitle.replace(0, stringTitle.length(), "美国+1");
-                            stringPre.replace(0, stringPre.length(), "+1");
-                            
-                            TextViewSuffix.setVisibility(8);
-                            
-                            callBackChinaButton.setChecked(false);
-                            Context context = getActivity();
-                            Dialog nationalCodeDialog = new Dialog(context);
-                            nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
-                            nationalCodeDialog.setTitle("选择目标国家地区");
-                            nationalCodeDialog.show();
-                            break;
-
-                        case R.id.radioButton_callLocal:
-                        	TextViewSuffix.setVisibility(8);
-                            stringTitle.replace(0, stringTitle.length(), "中国+86");
-                            stringPre.replace(0, stringPre.length(), "");
-                            callBackChinaButton.setChecked(false);
-                            break;
-
-                        }
-                        title.setText(stringTitle);
-                        pre.setText(stringPre);
-
-                    }
-                });
+                // Context context = getActivity();
+                //
+                // String sendNumber = mDigits.getText().toString();
+                // Dialog dialog = new Dialog(context);
+                // dialog.setContentView(R.layout.dialpad_esurfing);
+                // dialog.setTitle("翼拨号");
+                // RadioGroup radioGroupEsurfing = (RadioGroup)
+                // dialog.findViewById(R.id.radioGroupEsurfing);
+                // final RadioButton callBackChinaButton = (RadioButton) dialog
+                // .findViewById(R.id.radioButton_callBackChina);
+                // final RadioButton internationalButton = (RadioButton) dialog
+                // .findViewById(R.id.radioButton_international);
+                // final RadioButton call133Button = (RadioButton)
+                // dialog.findViewById(R.id.radioButton_133);
+                // final RadioButton callOtherButton = (RadioButton)
+                // dialog.findViewById(R.id.radioButton_callOther);
+                // final RadioButton callLocalButton = (RadioButton)
+                // dialog.findViewById(R.id.radioButton_callLocal);
+                //
+                // final TextView title = (TextView)
+                // dialog.findViewById(R.id.textView_title);
+                // final TextView pre = (TextView)
+                // dialog.findViewById(R.id.textView_pre);
+                // final StringBuffer stringPre = new StringBuffer();
+                // stringPre.append("+86");
+                // final StringBuffer stringTitle = new StringBuffer();
+                // stringTitle.append("中国+86");
+                // final TextView
+                // TextViewSuffix=(TextView)dialog.findViewById(R.id.textView_suffix);
+                // EditText EditTextNumber = (EditText)
+                // dialog.findViewById(R.id.editTextInputNumber);
+                // EditTextNumber.setText(sendNumber);
+                //
+                // // dialog.show();
+                //
+                // radioGroupEsurfing.setOnCheckedChangeListener(new
+                // OnCheckedChangeListener() {
+                //
+                // @Override
+                // public void onCheckedChanged(RadioGroup group, int checkedId)
+                // {
+                // // TODO Auto-generated method stub
+                // switch (checkedId) {
+                //
+                // case R.id.radioButton_international:
+                // stringTitle.replace(0, stringTitle.length(), "中国+86");
+                // stringPre.replace(0, stringPre.length(), "+86");
+                // TextViewSuffix.setVisibility(8);
+                // callBackChinaButton.setChecked(true);
+                // break;
+                //
+                // case R.id.radioButton_133:
+                // stringTitle.replace(0, stringTitle.length(), "中国+86");
+                // stringPre.replace(0, stringPre.length(), "**133*86");
+                // TextViewSuffix.setVisibility(0);
+                // callBackChinaButton.setChecked(true);
+                // break;
+                //
+                // case R.id.radioButton_callOther:
+                // stringTitle.replace(0, stringTitle.length(), "美国+1");
+                // stringPre.replace(0, stringPre.length(), "+1");
+                //
+                // TextViewSuffix.setVisibility(8);
+                //
+                // callBackChinaButton.setChecked(false);
+                // Context context = getActivity();
+                // Dialog nationalCodeDialog = new Dialog(context);
+                // nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
+                // nationalCodeDialog.setTitle("选择目标国家地区");
+                // nationalCodeDialog.show();
+                // break;
+                //
+                // case R.id.radioButton_callLocal:
+                // TextViewSuffix.setVisibility(8);
+                // stringTitle.replace(0, stringTitle.length(), "中国+86");
+                // stringPre.replace(0, stringPre.length(), "");
+                // callBackChinaButton.setChecked(false);
+                // break;
+                //
+                // }
+                // title.setText(stringTitle);
+                // pre.setText(stringPre);
+                //
+                // }
+                // });
 
                 // ddd end
 
                 /** zzz */
+                EdialDialog edialDialog = new EdialDialog(getActivity(), mDigits.getText().toString());
+
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
                 if (sp.getString("EDialPreference", "0").equals("0")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
                     TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                     if (tm.isNetworkRoaming()) {
                         Log.v(TAG, "tm.isNetworkRoaming()");
                         // show dialog here
-                        dialog.show();
+                        edialDialog.show();
                     } else {
                         ((DialtactsActivity) getActivity()).call(number);
                     }
                 } else if (sp.getString("EDialPreference", "0").equals("1")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
                     // show dialog here
-                    dialog.show();
+                    edialDialog.show();
                 } else if (sp.getString("EDialPreference", "0").equals("2")) {
                     Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
                     ((DialtactsActivity) getActivity()).call(number);
@@ -2476,34 +2492,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         intent.putExtra(SUBSCRIPTION_KEY, mSubscription);
         return intent;
     }
-    
-    
-  //ddd start pick national code
-	private void pickNationalCode(){
-		
-		
-		
-		return;
-	}
 
+    // ddd start pick national code
+    private void pickNationalCode() {
 
+        return;
+    }
 
-  //ddd end
-    
-    
-    
+    // ddd end
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
