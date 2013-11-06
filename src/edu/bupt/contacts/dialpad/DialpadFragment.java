@@ -1939,6 +1939,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 // Log.e(TAG, "sharedPreferences error");
                 // }
 
+                /** zzz */
                 Intent intent = new Intent();
                 intent.setAction("edu.bupt.action.EDIAL");
                 intent.putExtra("digit", number);

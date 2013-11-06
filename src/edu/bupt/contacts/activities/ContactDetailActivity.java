@@ -79,8 +79,7 @@ public class ContactDetailActivity extends ContactsActivity {
             final Intent originalIntent = getIntent();
             Intent intent = new Intent();
             intent.setAction(originalIntent.getAction());
-            intent.setDataAndType(originalIntent.getData(),
-                    originalIntent.getType());
+            intent.setDataAndType(originalIntent.getData(), originalIntent.getType());
 
             // If we are launched from the outside, we should create a new task,
             // because the user
@@ -88,14 +87,11 @@ public class ContactDetailActivity extends ContactsActivity {
             // only the UP button
             // kicks the user into the full app)
             if (shouldUpRecreateTask(intent)) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             } else {
-                intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-                        | Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
 
             intent.setClass(this, PeopleActivity.class);
@@ -106,19 +102,15 @@ public class ContactDetailActivity extends ContactsActivity {
 
         setContentView(R.layout.contact_detail_activity);
 
-        mContactDetailLayoutController = new ContactDetailLayoutController(
-                this, savedState, getFragmentManager(), null,
-                findViewById(R.id.contact_detail_container),
-                mContactDetailFragmentListener);
+        mContactDetailLayoutController = new ContactDetailLayoutController(this, savedState, getFragmentManager(),
+                null, findViewById(R.id.contact_detail_container), mContactDetailFragmentListener);
 
         // We want the UP affordance but no app icon.
         // Setting HOME_AS_UP, SHOW_TITLE and clearing SHOW_HOME does the trick.
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                    | ActionBar.DISPLAY_SHOW_TITLE,
-                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE
-                            | ActionBar.DISPLAY_SHOW_HOME);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE,
+                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
             actionBar.setTitle("");
         }
 
@@ -140,18 +132,16 @@ public class ContactDetailActivity extends ContactsActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.star, menu);
         if (DEBUG_TRANSITIONS) {
-            final MenuItem toggleSocial = menu.add(mLoaderFragment
-                    .getLoadStreamItems() ? "less" : "more");
+            final MenuItem toggleSocial = menu.add(mLoaderFragment.getLoadStreamItems() ? "less" : "more");
             toggleSocial.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleSocial
-                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            mLoaderFragment.toggleLoadStreamItems();
-                            invalidateOptionsMenu();
-                            return false;
-                        }
-                    });
+            toggleSocial.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    mLoaderFragment.toggleLoadStreamItems();
+                    invalidateOptionsMenu();
+                    return false;
+                }
+            });
         }
         return true;
     }
@@ -159,42 +149,35 @@ public class ContactDetailActivity extends ContactsActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem starredMenuItem = menu.findItem(R.id.menu_star);
-        starredMenuItem
-                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Toggle "starred" state
-                        // Make sure there is a contact
-                        if (mLookupUri != null) {
-                            // Read the current starred value from the UI
-                            // instead of using the last
-                            // loaded state. This allows rapid tapping without
-                            // writing the same
-                            // value several times
-                            final boolean isStarred = starredMenuItem
-                                    .isChecked();
+        starredMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Toggle "starred" state
+                // Make sure there is a contact
+                if (mLookupUri != null) {
+                    // Read the current starred value from the UI
+                    // instead of using the last
+                    // loaded state. This allows rapid tapping without
+                    // writing the same
+                    // value several times
+                    final boolean isStarred = starredMenuItem.isChecked();
 
-                            // To improve responsiveness, swap out the picture
-                            // (and tag) in the UI already
-                            ContactDetailDisplayUtils.configureStarredMenuItem(
-                                    starredMenuItem,
-                                    mContactData.isDirectoryEntry(),
-                                    mContactData.isUserProfile(), !isStarred);
+                    // To improve responsiveness, swap out the picture
+                    // (and tag) in the UI already
+                    ContactDetailDisplayUtils.configureStarredMenuItem(starredMenuItem,
+                            mContactData.isDirectoryEntry(), mContactData.isUserProfile(), !isStarred);
 
-                            // Now perform the real save
-                            Intent intent = ContactSaveService
-                                    .createSetStarredIntent(
-                                            ContactDetailActivity.this,
-                                            mLookupUri, !isStarred);
-                            ContactDetailActivity.this.startService(intent);
-                        }
-                        return true;
-                    }
-                });
+                    // Now perform the real save
+                    Intent intent = ContactSaveService.createSetStarredIntent(ContactDetailActivity.this, mLookupUri,
+                            !isStarred);
+                    ContactDetailActivity.this.startService(intent);
+                }
+                return true;
+            }
+        });
         // If there is contact data, update the starred state
         if (mContactData != null) {
-            ContactDetailDisplayUtils.configureStarredMenuItem(starredMenuItem,
-                    mContactData.isDirectoryEntry(),
+            ContactDetailDisplayUtils.configureStarredMenuItem(starredMenuItem, mContactData.isDirectoryEntry(),
                     mContactData.isUserProfile(), mContactData.getStarred());
         }
         return true;
@@ -207,8 +190,7 @@ public class ContactDetailActivity extends ContactsActivity {
             return true;
 
         // Otherwise find the correct fragment to handle the event
-        FragmentKeyListener mCurrentFragment = mContactDetailLayoutController
-                .getCurrentPage();
+        FragmentKeyListener mCurrentFragment = mContactDetailLayoutController.getCurrentPage();
         if (mCurrentFragment != null && mCurrentFragment.handleKeyDown(keyCode))
             return true;
 
@@ -260,9 +242,7 @@ public class ContactDetailActivity extends ContactsActivity {
         @Override
         public void onEditRequested(Uri contactLookupUri) {
             Intent intent = new Intent(Intent.ACTION_EDIT, contactLookupUri);
-            intent.putExtra(
-                    ContactEditorActivity.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED,
-                    true);
+            intent.putExtra(ContactEditorActivity.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             // Don't finish the detail activity after launching the editor
             // because when the
             // editor is done, we will still want to show the updated contact
@@ -273,8 +253,7 @@ public class ContactDetailActivity extends ContactsActivity {
 
         @Override
         public void onDeleteRequested(Uri contactUri) {
-            ContactDeletionInteraction.start(ContactDetailActivity.this,
-                    contactUri, true);
+            ContactDeletionInteraction.start(ContactDetailActivity.this, contactUri, true);
         }
     };
 
@@ -282,21 +261,17 @@ public class ContactDetailActivity extends ContactsActivity {
      * Setup the activity title and subtitle with contact name and company.
      */
     private void setupTitle() {
-        CharSequence displayName = ContactDetailDisplayUtils.getDisplayName(
-                this, mContactData);
-        String company = ContactDetailDisplayUtils.getCompany(this,
-                mContactData);
+        CharSequence displayName = ContactDetailDisplayUtils.getDisplayName(this, mContactData);
+        String company = ContactDetailDisplayUtils.getCompany(this, mContactData);
 
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(displayName);
         actionBar.setSubtitle(company);
 
-        if (!TextUtils.isEmpty(displayName)
-                && AccessibilityManager.getInstance(this).isEnabled()) {
+        if (!TextUtils.isEmpty(displayName) && AccessibilityManager.getInstance(this).isEnabled()) {
             View decorView = getWindow().getDecorView();
             decorView.setContentDescription(displayName);
-            decorView
-                    .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+            decorView.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
     }
 
@@ -314,16 +289,22 @@ public class ContactDetailActivity extends ContactsActivity {
                 Log.v(TAG, "intent - " + intent.getDataString());
 
                 if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
-                    String number = intent.getDataString().substring(
-                            intent.getDataString().indexOf(':'));
-                    try {
-                        ITelephonyMSim telephony = ITelephonyMSim.Stub
-                                .asInterface(ServiceManager
-                                        .getService(Context.MSIM_TELEPHONY_SERVICE));
-                        telephony.call(number, 0);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                    String number = intent.getDataString().substring(intent.getDataString().indexOf(':'));
+                    // try {
+                    // ITelephonyMSim telephony = ITelephonyMSim.Stub
+                    // .asInterface(ServiceManager
+                    // .getService(Context.MSIM_TELEPHONY_SERVICE));
+                    // telephony.call(number, 0);
+                    // } catch (RemoteException e) {
+                    // e.printStackTrace();
+                    // }
+
+                    /** zzz */
+                    Intent i = new Intent();
+                    i.setAction("edu.bupt.action.EDIAL");
+                    i.putExtra("digit", number);
+                    startService(i);
+
                 } else {
                     startActivity(intent);
                 }
@@ -334,15 +315,10 @@ public class ContactDetailActivity extends ContactsActivity {
         }
 
         @Override
-        public void onCreateRawContactRequested(
-                ArrayList<ContentValues> values, AccountWithDataSet account) {
-            Toast.makeText(ContactDetailActivity.this,
-                    R.string.toast_making_personal_copy, Toast.LENGTH_LONG)
-                    .show();
-            Intent serviceIntent = ContactSaveService
-                    .createNewRawContactIntent(ContactDetailActivity.this,
-                            values, account, ContactDetailActivity.class,
-                            Intent.ACTION_VIEW);
+        public void onCreateRawContactRequested(ArrayList<ContentValues> values, AccountWithDataSet account) {
+            Toast.makeText(ContactDetailActivity.this, R.string.toast_making_personal_copy, Toast.LENGTH_LONG).show();
+            Intent serviceIntent = ContactSaveService.createNewRawContactIntent(ContactDetailActivity.this, values,
+                    account, ContactDetailActivity.class, Intent.ACTION_VIEW);
             startService(serviceIntent);
 
         }

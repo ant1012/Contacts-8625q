@@ -301,13 +301,21 @@ import libcore.util.Objects;
     }
 
     public void call(String number) {
-        try {
-            ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                    .getService(Context.MSIM_TELEPHONY_SERVICE));
-            telephony.call(number, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // try {
+        // ITelephonyMSim telephony =
+        // ITelephonyMSim.Stub.asInterface(ServiceManager
+        // .getService(Context.MSIM_TELEPHONY_SERVICE));
+        // telephony.call(number, 0);
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+
+        /** zzz */
+        Intent intent = new Intent();
+        intent.setAction("edu.bupt.action.EDIAL");
+        intent.putExtra("digit", number);
+        mContext.startService(intent);
+
     }
 
     // edited by yuan
@@ -328,14 +336,21 @@ import libcore.util.Objects;
                 @Override
                 public void onClick(View arg0) {
                     // TODO Auto-generated method stub
-                    try {
-                        ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                                .getService(Context.MSIM_TELEPHONY_SERVICE));
-                        telephony.call(phoneNumber, 0);
-                        mDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    // try {
+                    // ITelephonyMSim telephony =
+                    // ITelephonyMSim.Stub.asInterface(ServiceManager
+                    // .getService(Context.MSIM_TELEPHONY_SERVICE));
+                    // telephony.call(phoneNumber, 0);
+                    // mDialog.dismiss();
+                    // } catch (Exception e) {
+                    // e.printStackTrace();
+                    // }
+
+                    /** zzz */
+                    Intent intent = new Intent();
+                    intent.setAction("edu.bupt.action.EDIAL");
+                    intent.putExtra("digit", phoneNumber);
+                    mContext.startService(intent);
                 }
 
             });
@@ -364,13 +379,20 @@ import libcore.util.Objects;
             }
 
             if (!ipcall.isCDMAIPEnabled() && !ipcall.isGSMIPEnabled()) {
-                try {
-                    ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                            .getService(Context.MSIM_TELEPHONY_SERVICE));
-                    telephony.call((String) view.getTag(), 0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                // try {
+                // ITelephonyMSim telephony =
+                // ITelephonyMSim.Stub.asInterface(ServiceManager
+                // .getService(Context.MSIM_TELEPHONY_SERVICE));
+                // telephony.call((String) view.getTag(), 0);
+                // } catch (Exception e) {
+                // e.printStackTrace();
+                // }
+
+                /** zzz */
+                Intent intent = new Intent();
+                intent.setAction("edu.bupt.action.EDIAL");
+                intent.putExtra("digit", (String) view.getTag());
+                mContext.startService(intent);
             } else {
                 mDialog.show();
             }
@@ -990,7 +1012,8 @@ import libcore.util.Objects;
         views.quickContactView.assignContactUri(contactUri);
 
         /** zzz */
-//        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
+        // mContactPhotoManager.loadThumbnail(views.quickContactView, photoId,
+        // true);
         views.quickContactView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {

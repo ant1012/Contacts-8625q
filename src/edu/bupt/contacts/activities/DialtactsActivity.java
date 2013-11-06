@@ -81,11 +81,10 @@ import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 
 /**
- * The dialer activity that has one tab with the virtual 12key
- * dialer, a tab with recent calls in it, a tab with the contacts and
- * a tab with the favorite. This is the container and the tabs are
- * embedded using intents.
- * The dialer tab's title is 'phone', a more common name (see strings.xml).
+ * The dialer activity that has one tab with the virtual 12key dialer, a tab
+ * with recent calls in it, a tab with the contacts and a tab with the favorite.
+ * This is the container and the tabs are embedded using intents. The dialer
+ * tab's title is 'phone', a more common name (see strings.xml).
  */
 public class DialtactsActivity extends TransactionSafeActivity implements View.OnClickListener {
     private static final String TAG = "DialtactsActivity";
@@ -105,7 +104,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     private static final String CALL_ORIGIN_DIALTACTS = "edu.bupt.contacts.activities.DialtactsActivity";
 
     /**
-     * Just for backward compatibility. Should behave as same as {@link Intent#ACTION_DIAL}.
+     * Just for backward compatibility. Should behave as same as
+     * {@link Intent#ACTION_DIAL}.
      */
     private static final String ACTION_TOUCH_DIALER = "com.android.phone.action.TOUCH_DIALER";
 
@@ -132,19 +132,20 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case TAB_INDEX_DIALER:
-                    return new DialpadFragment();
-                case TAB_INDEX_CALL_LOG:
-                    return new CallLogFragment();
-                case TAB_INDEX_FAVORITES:
-                    return new PhoneFavoriteFragment();
+            case TAB_INDEX_DIALER:
+                return new DialpadFragment();
+            case TAB_INDEX_CALL_LOG:
+                return new CallLogFragment();
+            case TAB_INDEX_FAVORITES:
+                return new PhoneFavoriteFragment();
             }
             throw new IllegalStateException("No fragment at position " + position);
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            // The parent's setPrimaryItem() also calls setMenuVisibility(), so we want to know
+            // The parent's setPrimaryItem() also calls setMenuVisibility(), so
+            // we want to know
             // when it happens.
             if (DEBUG) {
                 Log.d(TAG, "FragmentPagerAdapter#setPrimaryItem(), position: " + position);
@@ -159,45 +160,50 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     }
 
     /**
-     * True when the app detects user's drag event. This variable should not become true when
-     * mUserTabClick is true.
-     *
-     * During user's drag or tab click, we shouldn't show fake buttons but just show real
-     * ActionBar at the bottom of the screen, for transition animation.
+     * True when the app detects user's drag event. This variable should not
+     * become true when mUserTabClick is true.
+     * 
+     * During user's drag or tab click, we shouldn't show fake buttons but just
+     * show real ActionBar at the bottom of the screen, for transition
+     * animation.
      */
     boolean mDuringSwipe = false;
     /**
-     * True when the app detects user's tab click (at the top of the screen). This variable should
-     * not become true when mDuringSwipe is true.
-     *
-     * During user's drag or tab click, we shouldn't show fake buttons but just show real
-     * ActionBar at the bottom of the screen, for transition animation.
+     * True when the app detects user's tab click (at the top of the screen).
+     * This variable should not become true when mDuringSwipe is true.
+     * 
+     * During user's drag or tab click, we shouldn't show fake buttons but just
+     * show real ActionBar at the bottom of the screen, for transition
+     * animation.
      */
     boolean mUserTabClick = false;
 
     private class PageChangeListener implements OnPageChangeListener {
         private int mCurrentPosition = -1;
         /**
-         * Used during page migration, to remember the next position {@link #onPageSelected(int)}
-         * specified.
+         * Used during page migration, to remember the next position
+         * {@link #onPageSelected(int)} specified.
          */
         private int mNextPosition = -1;
 
         @Override
-        public void onPageScrolled(
-                int position, float positionOffset, int positionOffsetPixels) {
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
 
         @Override
         public void onPageSelected(int position) {
-            if (DEBUG) Log.d(TAG, "onPageSelected: position: " + position);
+            if (DEBUG)
+                Log.d(TAG, "onPageSelected: position: " + position);
             final ActionBar actionBar = getActionBar();
             if (mDialpadFragment != null) {
                 if (mDuringSwipe && position == TAB_INDEX_DIALER) {
                     // TODO: Figure out if we want this or not. Right now
-                    // - with this call, both fake buttons and real action bar overlap
-                    // - without this call, there's tiny flicker happening to search/menu buttons.
-                    // If we can reduce the flicker without this call, it would be much better.
+                    // - with this call, both fake buttons and real action bar
+                    // overlap
+                    // - without this call, there's tiny flicker happening to
+                    // search/menu buttons.
+                    // If we can reduce the flicker without this call, it would
+                    // be much better.
                     // updateFakeMenuButtonsVisibility(true);
                 }
             }
@@ -221,51 +227,58 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         @Override
         public void onPageScrollStateChanged(int state) {
             switch (state) {
-                case ViewPager.SCROLL_STATE_IDLE: {
-                    if (mNextPosition == -1) {
-                        // This happens when the user drags the screen just after launching the
-                        // application, and settle down the same screen without actually swiping it.
-                        // At that moment mNextPosition is apparently -1 yet, and we expect it
-                        // being updated by onPageSelected(), which is *not* called if the user
-                        // settle down the exact same tab after the dragging.
-                        if (DEBUG) {
-                            Log.d(TAG, "Next position is not specified correctly. Use current tab ("
-                                    + mViewPager.getCurrentItem() + ")");
-                        }
-                        mNextPosition = mViewPager.getCurrentItem();
-                    }
+            case ViewPager.SCROLL_STATE_IDLE: {
+                if (mNextPosition == -1) {
+                    // This happens when the user drags the screen just after
+                    // launching the
+                    // application, and settle down the same screen without
+                    // actually swiping it.
+                    // At that moment mNextPosition is apparently -1 yet, and we
+                    // expect it
+                    // being updated by onPageSelected(), which is *not* called
+                    // if the user
+                    // settle down the exact same tab after the dragging.
                     if (DEBUG) {
-                        Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_IDLE. "
-                                + "mCurrentPosition: " + mCurrentPosition
-                                + ", mNextPosition: " + mNextPosition);
+                        Log.d(TAG,
+                                "Next position is not specified correctly. Use current tab ("
+                                        + mViewPager.getCurrentItem() + ")");
                     }
-                    // Interpret IDLE as the end of migration (both swipe and tab click)
-                    mDuringSwipe = false;
-                    mUserTabClick = false;
-
-                    updateFakeMenuButtonsVisibility(mNextPosition == TAB_INDEX_DIALER);
-                    sendFragmentVisibilityChange(mCurrentPosition, false);
-                    sendFragmentVisibilityChange(mNextPosition, true);
-
-                    invalidateOptionsMenu();
-
-                    mCurrentPosition = mNextPosition;
-                    break;
+                    mNextPosition = mViewPager.getCurrentItem();
                 }
-                case ViewPager.SCROLL_STATE_DRAGGING: {
-                    if (DEBUG) Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_DRAGGING");
-                    mDuringSwipe = true;
-                    mUserTabClick = false;
-                    break;
+                if (DEBUG) {
+                    Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_IDLE. " + "mCurrentPosition: "
+                            + mCurrentPosition + ", mNextPosition: " + mNextPosition);
                 }
-                case ViewPager.SCROLL_STATE_SETTLING: {
-                    if (DEBUG) Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_SETTLING");
-                    mDuringSwipe = true;
-                    mUserTabClick = false;
-                    break;
-                }
-                default:
-                    break;
+                // Interpret IDLE as the end of migration (both swipe and tab
+                // click)
+                mDuringSwipe = false;
+                mUserTabClick = false;
+
+                updateFakeMenuButtonsVisibility(mNextPosition == TAB_INDEX_DIALER);
+                sendFragmentVisibilityChange(mCurrentPosition, false);
+                sendFragmentVisibilityChange(mNextPosition, true);
+
+                invalidateOptionsMenu();
+
+                mCurrentPosition = mNextPosition;
+                break;
+            }
+            case ViewPager.SCROLL_STATE_DRAGGING: {
+                if (DEBUG)
+                    Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_DRAGGING");
+                mDuringSwipe = true;
+                mUserTabClick = false;
+                break;
+            }
+            case ViewPager.SCROLL_STATE_SETTLING: {
+                if (DEBUG)
+                    Log.d(TAG, "onPageScrollStateChanged() with SCROLL_STATE_SETTLING");
+                mDuringSwipe = true;
+                mUserTabClick = false;
+                break;
+            }
+            default:
+                break;
             }
         }
     }
@@ -282,8 +295,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     private View mSearchButton;
     private View mMenuButton;
 
-    private final ContactListFilterListener mContactListFilterListener =
-            new ContactListFilterListener() {
+    private final ContactListFilterListener mContactListFilterListener = new ContactListFilterListener() {
         @Override
         public void onContactListFilterChanged() {
             boolean doInvalidateOptionsMenu = false;
@@ -309,7 +321,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     private final TabListener mTabListener = new TabListener() {
         @Override
         public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-            if (DEBUG) Log.d(TAG, "onTabUnselected(). tab: " + tab);
+            if (DEBUG)
+                Log.d(TAG, "onTabUnselected(). tab: " + tab);
         }
 
         @Override
@@ -317,14 +330,19 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             if (DEBUG) {
                 Log.d(TAG, "onTabSelected(). tab: " + tab + ", mDuringSwipe: " + mDuringSwipe);
             }
-            // When the user swipes the screen horizontally, this method will be called after
-            // ViewPager.SCROLL_STATE_DRAGGING and ViewPager.SCROLL_STATE_SETTLING events, while
-            // when the user clicks a tab at the ActionBar at the top, this will be called before
-            // them. This logic interprets the order difference as a difference of the user action.
+            // When the user swipes the screen horizontally, this method will be
+            // called after
+            // ViewPager.SCROLL_STATE_DRAGGING and
+            // ViewPager.SCROLL_STATE_SETTLING events, while
+            // when the user clicks a tab at the ActionBar at the top, this will
+            // be called before
+            // them. This logic interprets the order difference as a difference
+            // of the user action.
             if (!mDuringSwipe) {
                 if (DEBUG) {
-                    Log.d(TAG, "Tab select. from: " + mPageChangeListener.getCurrentPosition()
-                            + ", to: " + tab.getPosition());
+                    Log.d(TAG,
+                            "Tab select. from: " + mPageChangeListener.getCurrentPosition() + ", to: "
+                                    + tab.getPosition());
                 }
                 if (mDialpadFragment != null) {
                     updateFakeMenuButtonsVisibility(tab.getPosition() == TAB_INDEX_DIALER);
@@ -338,8 +356,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
             // During the call, we don't remember the tab position.
             if (!DialpadFragment.phoneIsInUse()) {
-                // Remember this tab index. This function is also called, if the tab is set
-                // automatically in which case the setter (setCurrentTab) has to set this to its old
+                // Remember this tab index. This function is also called, if the
+                // tab is set
+                // automatically in which case the setter (setCurrentTab) has to
+                // set this to its old
                 // value afterwards
                 mLastManuallySelectedFragment = tab.getPosition();
             }
@@ -347,18 +367,19 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         @Override
         public void onTabReselected(Tab tab, FragmentTransaction ft) {
-            if (DEBUG) Log.d(TAG, "onTabReselected");
+            if (DEBUG)
+                Log.d(TAG, "onTabReselected");
         }
     };
 
     /**
-     * Fragment for searching phone numbers. Unlike the other Fragments, this doesn't correspond
-     * to tab but is shown by a search action.
+     * Fragment for searching phone numbers. Unlike the other Fragments, this
+     * doesn't correspond to tab but is shown by a search action.
      */
     private PhoneNumberPickerFragment mSearchFragment;
     /**
-     * True when this Activity is in its search UI (with a {@link SearchView} and
-     * {@link PhoneNumberPickerFragment}).
+     * True when this Activity is in its search UI (with a {@link SearchView}
+     * and {@link PhoneNumberPickerFragment}).
      */
     private boolean mInSearchUi;
     private SearchView mSearchView;
@@ -372,32 +393,29 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
             filterOptionMenuItem.setOnMenuItemClickListener(mFilterOptionsMenuItemClickListener);
             final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
-            addContactOptionMenuItem.setIntent(
-                    new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
+            addContactOptionMenuItem.setIntent(new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
             popupMenu.show();
         }
     };
 
     /**
-     * The index of the Fragment (or, the tab) that has last been manually selected.
-     * This value does not keep track of programmatically set Tabs (e.g. Call Log after a Call)
+     * The index of the Fragment (or, the tab) that has last been manually
+     * selected. This value does not keep track of programmatically set Tabs
+     * (e.g. Call Log after a Call)
      */
     private int mLastManuallySelectedFragment;
 
     private ContactListFilterController mContactListFilterController;
-    private OnMenuItemClickListener mFilterOptionsMenuItemClickListener =
-            new OnMenuItemClickListener() {
+    private OnMenuItemClickListener mFilterOptionsMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            AccountFilterUtil.startAccountFilterActivityForResult(
-                    DialtactsActivity.this, SUBACTIVITY_ACCOUNT_FILTER,
+            AccountFilterUtil.startAccountFilterActivityForResult(DialtactsActivity.this, SUBACTIVITY_ACCOUNT_FILTER,
                     mContactListFilterController.getFilter());
             return true;
         }
     };
 
-    private OnMenuItemClickListener mSearchMenuItemClickListener =
-            new OnMenuItemClickListener() {
+    private OnMenuItemClickListener mSearchMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             enterSearchUi();
@@ -406,79 +424,77 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     };
 
     /**
-     * Listener used when one of phone numbers in search UI is selected. This will initiate a
-     * phone call using the phone number.
+     * Listener used when one of phone numbers in search UI is selected. This
+     * will initiate a phone call using the phone number.
      */
-    private final OnPhoneNumberPickerActionListener mPhoneNumberPickerActionListener =
-            new OnPhoneNumberPickerActionListener() {
-                @Override
-                public void onPickPhoneNumberAction(Uri dataUri) {
-                    // Specify call-origin so that users will see the previous tab instead of
-                    // CallLog screen (search UI will be automatically exited).
-                    PhoneNumberInteraction.startInteractionForPhoneCall(
-                            DialtactsActivity.this, dataUri, getCallOrigin());
-                }
+    private final OnPhoneNumberPickerActionListener mPhoneNumberPickerActionListener = new OnPhoneNumberPickerActionListener() {
+        @Override
+        public void onPickPhoneNumberAction(Uri dataUri) {
+            // Specify call-origin so that users will see the previous tab
+            // instead of
+            // CallLog screen (search UI will be automatically exited).
+            PhoneNumberInteraction.startInteractionForPhoneCall(DialtactsActivity.this, dataUri, getCallOrigin());
+        }
 
-                @Override
-                public void onShortcutIntentCreated(Intent intent) {
-                    Log.w(TAG, "Unsupported intent has come (" + intent + "). Ignoring.");
-                }
+        @Override
+        public void onShortcutIntentCreated(Intent intent) {
+            Log.w(TAG, "Unsupported intent has come (" + intent + "). Ignoring.");
+        }
 
-                @Override
-                public void onHomeInActionBarSelected() {
-                    exitSearchUi();
-                }
+        @Override
+        public void onHomeInActionBarSelected() {
+            exitSearchUi();
+        }
     };
 
     /**
      * Listener used to send search queries to the phone search fragment.
      */
-    private final OnQueryTextListener mPhoneSearchQueryTextListener =
-            new OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    View view = getCurrentFocus();
-                    if (view != null) {
-                        hideInputMethod(view);
-                        view.clearFocus();
-                    }
-                    return true;
-                }
+    private final OnQueryTextListener mPhoneSearchQueryTextListener = new OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            View view = getCurrentFocus();
+            if (view != null) {
+                hideInputMethod(view);
+                view.clearFocus();
+            }
+            return true;
+        }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    // Show search result with non-empty text. Show a bare list otherwise.
-                    if (mSearchFragment != null) {
-                        mSearchFragment.setQueryString(newText, true);
-                        Log.v("newsearch1",newText);
-                    }
-                    return true;
-                }
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            // Show search result with non-empty text. Show a bare list
+            // otherwise.
+            if (mSearchFragment != null) {
+                mSearchFragment.setQueryString(newText, true);
+                Log.v("newsearch1", newText);
+            }
+            return true;
+        }
     };
 
     /**
-     * Listener used to handle the "close" button on the right side of {@link SearchView}.
-     * If some text is in the search view, this will clean it up. Otherwise this will exit
-     * the search UI and let users go back to usual Phone UI.
-     *
+     * Listener used to handle the "close" button on the right side of
+     * {@link SearchView}. If some text is in the search view, this will clean
+     * it up. Otherwise this will exit the search UI and let users go back to
+     * usual Phone UI.
+     * 
      * This does _not_ handle back button.
      */
-    private final OnCloseListener mPhoneSearchCloseListener =
-            new OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    if (!TextUtils.isEmpty(mSearchView.getQuery())) {
-                        mSearchView.setQuery(null, true);
-                    }
-                    return true;
-                }
+    private final OnCloseListener mPhoneSearchCloseListener = new OnCloseListener() {
+        @Override
+        public boolean onClose() {
+            if (!TextUtils.isEmpty(mSearchView.getQuery())) {
+                mSearchView.setQuery(null, true);
+            }
+            return true;
+        }
     };
 
-    private final View.OnLayoutChangeListener mFirstLayoutListener
-            = new View.OnLayoutChangeListener() {
+    private final View.OnLayoutChangeListener mFirstLayoutListener = new View.OnLayoutChangeListener() {
         @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                int oldTop, int oldRight, int oldBottom) {
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                int oldRight, int oldBottom) {
             v.removeOnLayoutChangeListener(this); // Unregister self.
             addSearchFragment();
         }
@@ -508,14 +524,17 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         int minCellSize = getResources().getDimensionPixelSize(R.dimen.fake_menu_button_min_width);
         int cellCount = dm.widthPixels / minCellSize;
         int fakeMenuItemWidth = dm.widthPixels / cellCount;
-        if (DEBUG) Log.d(TAG, "The size of fake menu buttons (in pixel): " + fakeMenuItemWidth);
+        if (DEBUG)
+            Log.d(TAG, "The size of fake menu buttons (in pixel): " + fakeMenuItemWidth);
 
-        // Soft menu button should appear only when there's no hardware menu button.
+        // Soft menu button should appear only when there's no hardware menu
+        // button.
         mMenuButton = findViewById(R.id.overflow_menu);
         if (mMenuButton != null) {
             mMenuButton.setMinimumWidth(fakeMenuItemWidth);
             if (ViewConfiguration.get(this).hasPermanentMenuKey()) {
-                // This is required for dialpad button's layout, so must not use GONE here.
+                // This is required for dialpad button's layout, so must not use
+                // GONE here.
                 mMenuButton.setVisibility(View.INVISIBLE);
             } else {
                 mMenuButton.setOnClickListener(this);
@@ -527,7 +546,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             mSearchButton.setOnClickListener(this);
         }
 
-        // Setup the ActionBar tabs (the order matches the tab-index contants TAB_INDEX_*)
+        // Setup the ActionBar tabs (the order matches the tab-index contants
+        // TAB_INDEX_*)
         setupDialer();
         setupCallLog();
         setupFavorites();
@@ -540,14 +560,14 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         mLastManuallySelectedFragment = mPrefs.getInt(PREF_LAST_MANUALLY_SELECTED_TAB,
                 PREF_LAST_MANUALLY_SELECTED_TAB_DEFAULT);
         if (mLastManuallySelectedFragment >= TAB_INDEX_COUNT) {
-            // Stored value may have exceeded the number of current tabs. Reset it.
+            // Stored value may have exceeded the number of current tabs. Reset
+            // it.
             mLastManuallySelectedFragment = PREF_LAST_MANUALLY_SELECTED_TAB_DEFAULT;
         }
 
         setCurrentTab(intent);
 
-        if (UI.FILTER_CONTACTS_ACTION.equals(intent.getAction())
-                && icicle == null) {
+        if (UI.FILTER_CONTACTS_ACTION.equals(intent.getAction()) && icicle == null) {
             setupFilterText(intent);
         }
     }
@@ -563,7 +583,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         }
 
         if (mDuringSwipe || mUserTabClick) {
-            if (DEBUG) Log.d(TAG, "reset buggy flag state..");
+            if (DEBUG)
+                Log.d(TAG, "reset buggy flag state..");
             mDuringSwipe = false;
             mUserTabClick = false;
         }
@@ -588,41 +609,45 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.searchButton: {
-                enterSearchUi();
-                break;
-            }
-            case R.id.overflow_menu: {
-                if (mDialpadFragment != null) {
-                    PopupMenu popup = mDialpadFragment.constructPopupMenu(view);
-                    if (popup != null) {
-                        popup.show();
-                    }
-                } else {
-                    Log.w(TAG, "DialpadFragment is null during onClick() event for " + view);
+        case R.id.searchButton: {
+            enterSearchUi();
+            break;
+        }
+        case R.id.overflow_menu: {
+            if (mDialpadFragment != null) {
+                PopupMenu popup = mDialpadFragment.constructPopupMenu(view);
+                if (popup != null) {
+                    popup.show();
                 }
-                break;
+            } else {
+                Log.w(TAG, "DialpadFragment is null during onClick() event for " + view);
             }
-            default: {
-                Log.wtf(TAG, "Unexpected onClick event from " + view);
-                break;
-            }
+            break;
+        }
+        default: {
+            Log.wtf(TAG, "Unexpected onClick event from " + view);
+            break;
+        }
         }
     }
 
     /**
-     * Add search fragment.  Note this is called during onLayout, so there's some restrictions,
-     * such as executePendingTransaction can't be used in it.
+     * Add search fragment. Note this is called during onLayout, so there's some
+     * restrictions, such as executePendingTransaction can't be used in it.
      */
     private void addSearchFragment() {
-        // In order to take full advantage of "fragment deferred start", we need to create the
+        // In order to take full advantage of "fragment deferred start", we need
+        // to create the
         // search fragment after all other fragments are created.
-        // The other fragments are created by the ViewPager on the first onMeasure().
+        // The other fragments are created by the ViewPager on the first
+        // onMeasure().
         // We use the first onLayout call, which is after onMeasure().
 
-        // Just return if the fragment is already created, which happens after configuration
+        // Just return if the fragment is already created, which happens after
+        // configuration
         // changes.
-        if (mSearchFragment != null) return;
+        if (mSearchFragment != null)
+            return;
 
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
         final Fragment searchFragment = new PhoneNumberPickerFragment();
@@ -638,8 +663,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         mSearchView = (SearchView) searchViewLayout.findViewById(R.id.search_view);
         mSearchView.setOnQueryTextListener(mPhoneSearchQueryTextListener);
         mSearchView.setOnCloseListener(mPhoneSearchCloseListener);
-        // Since we're using a custom layout for showing SearchView instead of letting the
-        // search menu icon do that job, we need to manually configure the View so it looks
+        // Since we're using a custom layout for showing SearchView instead of
+        // letting the
+        // search menu icon do that job, we need to manually configure the View
+        // so it looks
         // "shown via search menu".
         // - it should be iconified by default
         // - it should not be iconified at this time
@@ -657,7 +684,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         });
 
         if (!ViewConfiguration.get(this).hasPermanentMenuKey()) {
-            // Filter option menu should be shown on the right side of SearchView.
+            // Filter option menu should be shown on the right side of
+            // SearchView.
             final View filterOptionView = searchViewLayout.findViewById(R.id.search_option);
             filterOptionView.setVisibility(View.VISIBLE);
             filterOptionView.setOnClickListener(mFilterOptionClickListener);
@@ -669,8 +697,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
     @Override
     public void onAttachFragment(Fragment fragment) {
-        // This method can be called before onCreate(), at which point we cannot rely on ViewPager.
-        // In that case, we will setup the "current position" soon after the ViewPager is ready.
+        // This method can be called before onCreate(), at which point we cannot
+        // rely on ViewPager.
+        // In that case, we will setup the "current position" soon after the
+        // ViewPager is ready.
         final int currentPosition = mViewPager != null ? mViewPager.getCurrentItem() : -1;
 
         if (fragment instanceof DialpadFragment) {
@@ -680,31 +710,36 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         } else if (fragment instanceof PhoneFavoriteFragment) {
             mPhoneFavoriteFragment = (PhoneFavoriteFragment) fragment;
             mPhoneFavoriteFragment.setListener(mPhoneFavoriteListener);
-            if (mContactListFilterController != null
-                    && mContactListFilterController.getFilter() != null) {
+            if (mContactListFilterController != null && mContactListFilterController.getFilter() != null) {
                 mPhoneFavoriteFragment.setFilter(mContactListFilterController.getFilter());
             }
         } else if (fragment instanceof PhoneNumberPickerFragment) {
             mSearchFragment = (PhoneNumberPickerFragment) fragment;
             mSearchFragment.setOnPhoneNumberPickerActionListener(mPhoneNumberPickerActionListener);
             mSearchFragment.setQuickContactEnabled(true);
-            //ddd 设置为false
+            // ddd 设置为false
             mSearchFragment.setDarkTheme(false);
             mSearchFragment.setPhotoPosition(ContactListItemView.PhotoPosition.LEFT);
             mSearchFragment.setUseCallableUri(true);
-            if (mContactListFilterController != null
-                    && mContactListFilterController.getFilter() != null) {
+            if (mContactListFilterController != null && mContactListFilterController.getFilter() != null) {
                 mSearchFragment.setFilter(mContactListFilterController.getFilter());
             }
-            // Here we assume that we're not on the search mode, so let's hide the fragment.
+            // Here we assume that we're not on the search mode, so let's hide
+            // the fragment.
             //
-            // We get here either when the fragment is created (normal case), or after configuration
-            // changes.  In the former case, we're not in search mode because we can only
-            // enter search mode if the fragment is created.  (see enterSearchUi())
-            // In the latter case we're not in search mode either because we don't retain
-            // mInSearchUi -- ideally we should but at this point it's not supported.
+            // We get here either when the fragment is created (normal case), or
+            // after configuration
+            // changes. In the former case, we're not in search mode because we
+            // can only
+            // enter search mode if the fragment is created. (see
+            // enterSearchUi())
+            // In the latter case we're not in search mode either because we
+            // don't retain
+            // mInSearchUi -- ideally we should but at this point it's not
+            // supported.
             mSearchFragment.setUserVisibleHint(false);
-            // After configuration changes fragments will forget their "hidden" state, so make
+            // After configuration changes fragments will forget their "hidden"
+            // state, so make
             // sure to hide it.
             if (!mSearchFragment.isHidden()) {
                 final FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -718,22 +753,22 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     protected void onPause() {
         super.onPause();
 
-        mPrefs.edit().putInt(PREF_LAST_MANUALLY_SELECTED_TAB, mLastManuallySelectedFragment)
-                .apply();
+        mPrefs.edit().putInt(PREF_LAST_MANUALLY_SELECTED_TAB, mLastManuallySelectedFragment).apply();
     }
 
     private void fixIntent(Intent intent) {
         // This should be cleaned up: the call key used to send an Intent
-        // that just said to go to the recent calls list.  It now sends this
-        // abstract action, but this class hasn't been rewritten to deal with it.
+        // that just said to go to the recent calls list. It now sends this
+        // abstract action, but this class hasn't been rewritten to deal with
+        // it.
         if (Intent.ACTION_CALL_BUTTON.equals(intent.getAction())) {
             intent.setDataAndType(Calls.CONTENT_URI, Calls.CONTENT_TYPE);
             intent.putExtra("call_key", true);
             setIntent(intent);
         }
     }
-    
-    //修改 添加文字说明 ddd
+
+    // 修改 添加文字说明 ddd
 
     private void setupDialer() {
         final Tab tab = getActionBar().newTab();
@@ -765,14 +800,17 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     }
 
     /**
-     * Returns true if the intent is due to hitting the green send key while in a call.
-     *
-     * @param intent the intent that launched this activity
-     * @param recentCallsRequest true if the intent is requesting to view recent calls
-     * @return true if the intent is due to hitting the green send key while in a call
+     * Returns true if the intent is due to hitting the green send key while in
+     * a call.
+     * 
+     * @param intent
+     *            the intent that launched this activity
+     * @param recentCallsRequest
+     *            true if the intent is requesting to view recent calls
+     * @return true if the intent is due to hitting the green send key while in
+     *         a call
      */
-    private boolean isSendKeyWhileInCall(final Intent intent,
-            final boolean recentCallsRequest) {
+    private boolean isSendKeyWhileInCall(final Intent intent, final boolean recentCallsRequest) {
         // If there is a call in progress go to the call screen
         if (recentCallsRequest) {
             final boolean callKey = intent.getBooleanExtra("call_key", false);
@@ -792,18 +830,22 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
     /**
      * Sets the current tab based on the intent's request type
-     *
-     * @param intent Intent that contains information about which tab should be selected
+     * 
+     * @param intent
+     *            Intent that contains information about which tab should be
+     *            selected
      */
     private void setCurrentTab(Intent intent) {
-        // If we got here by hitting send and we're in call forward along to the in-call activity
+        // If we got here by hitting send and we're in call forward along to the
+        // in-call activity
         final boolean recentCallsRequest = Calls.CONTENT_TYPE.equals(intent.getType());
         if (isSendKeyWhileInCall(intent, recentCallsRequest)) {
             finish();
             return;
         }
 
-        // Remember the old manually selected tab index so that it can be restored if it is
+        // Remember the old manually selected tab index so that it can be
+        // restored if it is
         // overwritten by one of the programmatic tab selections
         final int savedTabIndex = mLastManuallySelectedFragment;
 
@@ -819,10 +861,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final int previousItemIndex = mViewPager.getCurrentItem();
         mViewPager.setCurrentItem(tabIndex, false /* smoothScroll */);
         if (previousItemIndex != tabIndex) {
-            sendFragmentVisibilityChange(previousItemIndex, false /* not visible */ );
+            sendFragmentVisibilityChange(previousItemIndex, false /* not visible */);
         }
         mPageChangeListener.setCurrentPosition(tabIndex);
-        sendFragmentVisibilityChange(tabIndex, true /* visible */ );
+        sendFragmentVisibilityChange(tabIndex, true /* visible */);
 
         // Restore to the previous manual selection
         mLastManuallySelectedFragment = savedTabIndex;
@@ -859,7 +901,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         invalidateOptionsMenu();
     }
 
-    /** Returns true if the given intent contains a phone number to populate the dialer with */
+    /**
+     * Returns true if the given intent contains a phone number to populate the
+     * dialer with
+     */
     private boolean isDialIntent(Intent intent) {
         final String action = intent.getAction();
         if (Intent.ACTION_DIAL.equals(action) || ACTION_TOUCH_DIALER.equals(action)) {
@@ -873,51 +918,62 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         }
         return false;
     }
-    
+
     /**
      * 
      * yuan
+     * 
      * @param number
      */
-    public void call(String number){
-    	try
-		{
-			ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
-			telephony.call(number, 0);
-			
-//			MSimTelephonyManager m = (MSimTelephonyManager)getSystemService(MSIM_TELEPHONY_SERVICE);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+    public void call(String number) {
+        // try
+        // {
+        // ITelephonyMSim telephony =
+        // ITelephonyMSim.Stub.asInterface(ServiceManager.getService(Context.MSIM_TELEPHONY_SERVICE));
+        // telephony.call(number, 0);
+        //
+        // // MSimTelephonyManager m =
+        // (MSimTelephonyManager)getSystemService(MSIM_TELEPHONY_SERVICE);
+        // }
+        // catch (Exception e)
+        // {
+        // e.printStackTrace();
+        // }
+
+        /** zzz */
+        Intent intent = new Intent();
+        intent.setAction("edu.bupt.action.EDIAL");
+        intent.putExtra("digit", number);
+        startService(intent);
+
     }
-    
-//    private void chooseSIMDialog(final String number) {
-//    	AlertDialog.Builder builder = new Builder(this);
-//    	builder.setTitle("Choose SIM Card");
-//    	builder.setPositiveButton("SIM", new DialogInterface.OnClickListener(){
-//			@Override
-//			public void onClick(DialogInterface arg0, int arg1) {
-//				// TODO Auto-generated method stub	
-//				callFromSim(number,1);
-//			}   		
-//    	});
-//    	builder.setNegativeButton("UIM", new DialogInterface.OnClickListener(){
-//			@Override
-//			public void onClick(DialogInterface arg0, int arg1) {
-//				// TODO Auto-generated method stub	
-//				callFromSim(number,0);
-//			}   		
-//    	});
-//    	builder.create().show();
-//    }
+
+    // private void chooseSIMDialog(final String number) {
+    // AlertDialog.Builder builder = new Builder(this);
+    // builder.setTitle("Choose SIM Card");
+    // builder.setPositiveButton("SIM", new DialogInterface.OnClickListener(){
+    // @Override
+    // public void onClick(DialogInterface arg0, int arg1) {
+    // // TODO Auto-generated method stub
+    // callFromSim(number,1);
+    // }
+    // });
+    // builder.setNegativeButton("UIM", new DialogInterface.OnClickListener(){
+    // @Override
+    // public void onClick(DialogInterface arg0, int arg1) {
+    // // TODO Auto-generated method stub
+    // callFromSim(number,0);
+    // }
+    // });
+    // builder.create().show();
+    // }
 
     /**
-     * Returns an appropriate call origin for this Activity. May return null when no call origin
-     * should be used (e.g. when some 3rd party application launched the screen. Call origin is
-     * for remembering the tab in which the user made a phone call, so the external app's DIAL
-     * request should not be counted.)
+     * Returns an appropriate call origin for this Activity. May return null
+     * when no call origin should be used (e.g. when some 3rd party application
+     * launched the screen. Call origin is for remembering the tab in which the
+     * user made a phone call, so the external app's DIAL request should not be
+     * counted.)
      */
     public String getCallOrigin() {
         return !isDialIntent(getIntent()) ? CALL_ORIGIN_DIALTACTS : null;
@@ -928,7 +984,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
      * This text originally came from a FILTER_CONTACTS_ACTION intent received
      * by this activity. The stored text will then be cleared after after this
      * method returns.
-     *
+     * 
      * @return The stored filter text
      */
     public String getAndClearFilterText() {
@@ -939,12 +995,15 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
     /**
      * Stores the filter text associated with a FILTER_CONTACTS_ACTION intent.
-     * This is so child activities can check if they are supposed to display a filter.
-     *
-     * @param intent The intent received in {@link #onNewIntent(Intent)}
+     * This is so child activities can check if they are supposed to display a
+     * filter.
+     * 
+     * @param intent
+     *            The intent received in {@link #onNewIntent(Intent)}
      */
     private void setupFilterText(Intent intent) {
-        // If the intent was relaunched from history, don't apply the filter text.
+        // If the intent was relaunched from history, don't apply the filter
+        // text.
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
             return;
         }
@@ -970,12 +1029,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         }
     }
 
-    private final PhoneFavoriteFragment.Listener mPhoneFavoriteListener =
-            new PhoneFavoriteFragment.Listener() {
+    private final PhoneFavoriteFragment.Listener mPhoneFavoriteListener = new PhoneFavoriteFragment.Listener() {
         @Override
         public void onContactSelected(Uri contactUri) {
-            PhoneNumberInteraction.startInteractionForPhoneCall(
-                    DialtactsActivity.this, contactUri, getCallOrigin());
+            PhoneNumberInteraction.startInteractionForPhoneCall(DialtactsActivity.this, contactUri, getCallOrigin());
         }
 
         @Override
@@ -989,16 +1046,22 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             Log.v(TAG, "intent - " + intent.getDataString());
 
             if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
-                String number = intent.getDataString().substring(
-                        intent.getDataString().indexOf(':'));
-                try {
-                    ITelephonyMSim telephony = ITelephonyMSim.Stub
-                            .asInterface(ServiceManager
-                                    .getService(Context.MSIM_TELEPHONY_SERVICE));
-                    telephony.call(number, 0);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                String number = intent.getDataString().substring(intent.getDataString().indexOf(':'));
+                // try {
+                // ITelephonyMSim telephony =
+                // ITelephonyMSim.Stub.asInterface(ServiceManager
+                // .getService(Context.MSIM_TELEPHONY_SERVICE));
+                // telephony.call(number, 0);
+                // } catch (RemoteException e) {
+                // e.printStackTrace();
+                // }
+
+                /** zzz */
+                Intent i = new Intent();
+                i.setAction("edu.bupt.action.EDIAL");
+                i.putExtra("digit", number);
+                startService(i);
+
             } else {
                 startActivity(intent);
             }
@@ -1018,13 +1081,12 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
 
         callSettingsMenuItem.setIntent(DialtactsActivity.getCallSettingsIntent());
-      
+
         searchMenuItem.setOnMenuItemClickListener(mSearchMenuItemClickListener);
         filterOptionMenuItem.setOnMenuItemClickListener(mFilterOptionsMenuItemClickListener);
-        addContactOptionMenuItem.setIntent(
-                new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
-//        Intent intent = new Intent(this, ContactDetailActivity.class);
-//        startActivity(intent);
+        addContactOptionMenuItem.setIntent(new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI));
+        // Intent intent = new Intent(this, ContactDetailActivity.class);
+        // startActivity(intent);
         return true;
     }
 
@@ -1036,16 +1098,16 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             // get reference to the currently selected tab
             final Tab tab = getActionBar().getSelectedTab();
             if (tab != null) {
-                switch(tab.getPosition()) {
-                    case TAB_INDEX_DIALER:
-                        prepareOptionsMenuForDialerTab(menu);
-                        break;
-                    case TAB_INDEX_CALL_LOG:
-                        prepareOptionsMenuForCallLogTab(menu);
-                        break;
-                    case TAB_INDEX_FAVORITES:
-                        prepareOptionsMenuForFavoritesTab(menu);
-                        break;
+                switch (tab.getPosition()) {
+                case TAB_INDEX_DIALER:
+                    prepareOptionsMenuForDialerTab(menu);
+                    break;
+                case TAB_INDEX_CALL_LOG:
+                    prepareOptionsMenuForCallLogTab(menu);
+                    break;
+                case TAB_INDEX_FAVORITES:
+                    prepareOptionsMenuForFavoritesTab(menu);
+                    break;
                 }
             }
         }
@@ -1056,25 +1118,24 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         // get references to menu items
         final MenuItem searchMenuItem = menu.findItem(R.id.search_on_action_bar);
 
-        
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-     //ddd   final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+        // ddd final MenuItem emptyRightMenuItem =
+        // menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
-        
+
         searchMenuItem.setVisible(false);
         filterOptionMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
         addContactOptionMenuItem.setVisible(false);
         callSettingsMenuItem.setVisible(false);
- //ddd       emptyRightMenuItem.setVisible(false);
+        // ddd emptyRightMenuItem.setVisible(false);
     }
 
     private void prepareOptionsMenuForDialerTab(Menu menu) {
         if (DEBUG) {
-            Log.d(TAG, "onPrepareOptionsMenu(dialer). swipe: " + mDuringSwipe
-                    + ", user tab click: " + mUserTabClick);
+            Log.d(TAG, "onPrepareOptionsMenu(dialer). swipe: " + mDuringSwipe + ", user tab click: " + mUserTabClick);
         }
 
         // get references to menu items
@@ -1082,29 +1143,36 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-    //ddd    final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
-        
+        // ddd final MenuItem emptyRightMenuItem =
+        // menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
         filterOptionMenuItem.setVisible(false);
         addContactOptionMenuItem.setVisible(false);
         if (mDuringSwipe || mUserTabClick) {
-            // During horizontal movement, the real ActionBar menu items are shown
+            // During horizontal movement, the real ActionBar menu items are
+            // shown
             searchMenuItem.setVisible(true);
             callSettingsMenuItem.setVisible(true);
-            // When there is a permanent menu key, there is no overflow icon on the right of
-            // the action bar which would force the search menu item (if it is visible) to the
-            // left.  This is the purpose of showing the emptyRightMenuItem.
-    //ddd        emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
+            // When there is a permanent menu key, there is no overflow icon on
+            // the right of
+            // the action bar which would force the search menu item (if it is
+            // visible) to the
+            // left. This is the purpose of showing the emptyRightMenuItem.
+            // ddd
+            // emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
         } else {
-            // This is when the user is looking at the dialer pad.  In this case, the real
+            // This is when the user is looking at the dialer pad. In this case,
+            // the real
             // ActionBar is hidden and fake menu items are shown.
             searchMenuItem.setVisible(false);
-            // If a permanent menu key is available, then we need to show the call settings item
-            // so that the call settings item can be invoked by the permanent menu key.
+            // If a permanent menu key is available, then we need to show the
+            // call settings item
+            // so that the call settings item can be invoked by the permanent
+            // menu key.
             callSettingsMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
-            //ddd
-   //ddd         emptyRightMenuItem.setVisible(true);
+            // ddd
+            // ddd emptyRightMenuItem.setVisible(true);
         }
     }
 
@@ -1114,14 +1182,16 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-   //ddd     final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+        // ddd final MenuItem emptyRightMenuItem =
+        // menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
         searchMenuItem.setVisible(true);
         filterOptionMenuItem.setVisible(false);
         addContactOptionMenuItem.setVisible(false);
         callSettingsMenuItem.setVisible(true);
-    // ddd   emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
+        // ddd
+        // emptyRightMenuItem.setVisible(ViewConfiguration.get(this).hasPermanentMenuKey());
     }
 
     private void prepareOptionsMenuForFavoritesTab(Menu menu) {
@@ -1130,19 +1200,19 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         final MenuItem filterOptionMenuItem = menu.findItem(R.id.filter_option);
         final MenuItem addContactOptionMenuItem = menu.findItem(R.id.add_contact);
         final MenuItem callSettingsMenuItem = menu.findItem(R.id.menu_call_settings);
-    //ddd    final MenuItem emptyRightMenuItem = menu.findItem(R.id.empty_right_menu_item);
+        // ddd final MenuItem emptyRightMenuItem =
+        // menu.findItem(R.id.empty_right_menu_item);
 
         // prepare the menu items
         searchMenuItem.setVisible(true);
         filterOptionMenuItem.setVisible(true);
         addContactOptionMenuItem.setVisible(true);
         callSettingsMenuItem.setVisible(true);
-    //ddd    emptyRightMenuItem.setVisible(false);
+        // ddd emptyRightMenuItem.setVisible(false);
     }
 
     @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery,
-            Bundle appSearchData, boolean globalSearch) {
+    public void startSearch(String initialQuery, boolean selectInitialQuery, Bundle appSearchData, boolean globalSearch) {
         if (mSearchFragment != null && mSearchFragment.isAdded() && !globalSearch) {
             if (mInSearchUi) {
                 if (mSearchView.hasFocus()) {
@@ -1163,12 +1233,17 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
      */
     private void enterSearchUi() {
         if (mSearchFragment == null) {
-            // We add the search fragment dynamically in the first onLayoutChange() and
-            // mSearchFragment is set sometime later when the fragment transaction is actually
-            // executed, which means there's a window when users are able to hit the (physical)
+            // We add the search fragment dynamically in the first
+            // onLayoutChange() and
+            // mSearchFragment is set sometime later when the fragment
+            // transaction is actually
+            // executed, which means there's a window when users are able to hit
+            // the (physical)
             // search key but mSearchFragment is still null.
-            // It's quite hard to handle this case right, so let's just ignore the search key
-            // in this case.  Users can just hit it again and it will work this time.
+            // It's quite hard to handle this case right, so let's just ignore
+            // the search key
+            // in this case. Users can just hit it again and it will work this
+            // time.
             return;
         }
         if (mSearchView == null) {
@@ -1179,7 +1254,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         final Tab tab = actionBar.getSelectedTab();
 
-        // User can search during the call, but we don't want to remember the status.
+        // User can search during the call, but we don't want to remember the
+        // status.
         if (tab != null && !DialpadFragment.phoneIsInUse()) {
             mLastManuallySelectedFragment = tab.getPosition();
         }
@@ -1194,7 +1270,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         updateFakeMenuButtonsVisibility(false);
 
         for (int i = 0; i < TAB_INDEX_COUNT; i++) {
-            sendFragmentVisibilityChange(i, false /* not visible */ );
+            sendFragmentVisibilityChange(i, false /* not visible */);
         }
 
         // Show the search fragment and hide everything else.
@@ -1204,14 +1280,16 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         transaction.commitAllowingStateLoss();
         mViewPager.setVisibility(View.GONE);
 
-        // We need to call this and onActionViewCollapsed() manually, since we are using a custom
-        // layout instead of asking the search menu item to take care of SearchView.
+        // We need to call this and onActionViewCollapsed() manually, since we
+        // are using a custom
+        // layout instead of asking the search menu item to take care of
+        // SearchView.
         mSearchView.onActionViewExpanded();
         mInSearchUi = true;
     }
 
     private void showInputMethod(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             if (!imm.showSoftInput(view, 0)) {
                 Log.w(TAG, "Failed to show soft input method.");
@@ -1220,15 +1298,15 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
     }
 
     private void hideInputMethod(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null && view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
     /**
-     * Goes back to usual Phone UI with tags. Previously selected Tag and associated Fragment
-     * should be automatically focused again.
+     * Goes back to usual Phone UI with tags. Previously selected Tag and
+     * associated Fragment should be automatically focused again.
      */
     private void exitSearchUi() {
         final ActionBar actionBar = getActionBar();
@@ -1242,7 +1320,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             transaction.commitAllowingStateLoss();
         }
 
-        // We want to hide SearchView and show Tabs. Also focus on previously selected one.
+        // We want to hide SearchView and show Tabs. Also focus on previously
+        // selected one.
         actionBar.setDisplayShowCustomEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -1269,21 +1348,20 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
     private Fragment getFragmentAt(int position) {
         switch (position) {
-            case TAB_INDEX_DIALER:
-                return mDialpadFragment;
-            case TAB_INDEX_CALL_LOG:
-                return mCallLogFragment;
-            case TAB_INDEX_FAVORITES:
-                return mPhoneFavoriteFragment;
-            default:
-                throw new IllegalStateException("Unknown fragment index: " + position);
+        case TAB_INDEX_DIALER:
+            return mDialpadFragment;
+        case TAB_INDEX_CALL_LOG:
+            return mCallLogFragment;
+        case TAB_INDEX_FAVORITES:
+            return mPhoneFavoriteFragment;
+        default:
+            throw new IllegalStateException("Unknown fragment index: " + position);
         }
     }
 
     private void sendFragmentVisibilityChange(int position, boolean visibility) {
         if (DEBUG) {
-            Log.d(TAG, "sendFragmentVisibiltyChange(). position: " + position
-                    + ", visibility: " + visibility);
+            Log.d(TAG, "sendFragmentVisibiltyChange(). position: " + position + ", visibility: " + visibility);
         }
         // Position can be -1 initially. See PageChangeListener.
         if (position >= 0) {
@@ -1297,10 +1375,11 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
     /**
      * Update visibility of the search button and menu button at the bottom.
-     * They should be invisible when bottom ActionBar's real items are available, and be visible
-     * otherwise.
-     *
-     * @param visible True when visible.
+     * They should be invisible when bottom ActionBar's real items are
+     * available, and be visible otherwise.
+     * 
+     * @param visible
+     *            True when visible.
      */
     private void updateFakeMenuButtonsVisibility(boolean visible) {
         if (DEBUG) {
@@ -1309,10 +1388,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         if (mSearchButton != null) {
             if (visible) {
-               // ddd 隐藏搜索按钮mSearchButton.setVisibility(View.VISIBLE);
-            	 mSearchButton.setVisibility(View.GONE);
+                // ddd 隐藏搜索按钮mSearchButton.setVisibility(View.VISIBLE);
+                mSearchButton.setVisibility(View.GONE);
             } else {
-               // ddd 隐藏搜索按钮 mSearchButton.setVisibility(View.INVISIBLE);
+                // ddd 隐藏搜索按钮 mSearchButton.setVisibility(View.INVISIBLE);
 
             }
         }
@@ -1320,8 +1399,8 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             if (visible && !ViewConfiguration.get(this).hasPermanentMenuKey()) {
                 mMenuButton.setVisibility(View.VISIBLE);
             } else {
-              // 显示menubutton适配机型需要  mMenuButton.setVisibility(View.INVISIBLE);
-            	mMenuButton.setVisibility(View.GONE);
+                // 显示menubutton适配机型需要 mMenuButton.setVisibility(View.INVISIBLE);
+                mMenuButton.setVisibility(View.GONE);
             }
         }
     }
@@ -1344,10 +1423,9 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             return;
         }
         switch (requestCode) {
-            case SUBACTIVITY_ACCOUNT_FILTER: {
-                AccountFilterUtil.handleAccountFilterResult(
-                        mContactListFilterController, resultCode, data);
-            }
+        case SUBACTIVITY_ACCOUNT_FILTER: {
+            AccountFilterUtil.handleAccountFilterResult(mContactListFilterController, resultCode, data);
+        }
             break;
         }
     }

@@ -1,5 +1,8 @@
 package edu.bupt.contacts.edial;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
 import android.app.Service;
@@ -37,8 +40,12 @@ public class EdialService extends Service {
 
         String digit = intent.getStringExtra("digit");
 
-        EdialDialog edialDialog = new EdialDialog(this, digit);
+        if (!ShouldShowEdial(digit)) {
+            call(digit);
+            return super.onStartCommand(intent, flags, startId);
+        }
 
+        EdialDialog edialDialog = new EdialDialog(this, digit);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (sp.getString("EDialPreference", "0").equals("0")) {
@@ -70,6 +77,20 @@ public class EdialService extends Service {
         super.onDestroy();
     }
 
+    private String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
+    }
+
     private void call(String number) {
         try {
             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
@@ -81,5 +102,39 @@ public class EdialService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // call directly when return false
+    private boolean ShouldShowEdial(String digit) {
+        Log.i(TAG, "ShouldShowEdial?");
+        Pattern p1 = Pattern.compile("^+");
+        Matcher m1 = p1.matcher(digit);
+        if (m1.find()) {
+            Log.v(TAG, "start with \'+\'");
+            if (isC2CRoaming()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        
+
+        Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
+        Matcher m2 = p2.matcher(digit);
+        if (m2.find()) {
+            Log.v(TAG, "start with \'**133\', end with \'#\'");
+            if (isC2CRoaming()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isC2CRoaming() {
+        return false;
     }
 }

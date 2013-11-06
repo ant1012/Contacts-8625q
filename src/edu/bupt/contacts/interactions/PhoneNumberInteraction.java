@@ -68,49 +68,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Initiates phone calls or a text message. If there are multiple candidates, this class shows a
- * dialog to pick one. Creating one of these interactions should be done through the static
- * factory methods.
- *
- * Note that this class initiates not only usual *phone* calls but also *SIP* calls.
- *
- * TODO: clean up code and documents since it is quite confusing to use "phone numbers" or
- *        "phone calls" here while they can be SIP addresses or SIP calls (See also issue 5039627).
+ * Initiates phone calls or a text message. If there are multiple candidates,
+ * this class shows a dialog to pick one. Creating one of these interactions
+ * should be done through the static factory methods.
+ * 
+ * Note that this class initiates not only usual *phone* calls but also *SIP*
+ * calls.
+ * 
+ * TODO: clean up code and documents since it is quite confusing to use
+ * "phone numbers" or "phone calls" here while they can be SIP addresses or SIP
+ * calls (See also issue 5039627).
  */
 public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
     private static final String TAG = PhoneNumberInteraction.class.getSimpleName();
 
     @VisibleForTesting
-    /* package */ enum InteractionType {
-        PHONE_CALL,
-        SMS
+    /* package */enum InteractionType {
+        PHONE_CALL, SMS
     }
 
     /**
      * A model object for capturing a phone number for a given contact.
      */
     @VisibleForTesting
-    /* package */ static class PhoneItem implements Parcelable, Collapsible<PhoneItem> {
+    /* package */static class PhoneItem implements Parcelable, Collapsible<PhoneItem> {
         long id;
         String phoneNumber;
         String accountType;
         String dataSet;
         long type;
         String label;
-        /** {@link Phone#CONTENT_ITEM_TYPE} or {@link SipAddress#CONTENT_ITEM_TYPE}. */
+        /**
+         * {@link Phone#CONTENT_ITEM_TYPE} or
+         * {@link SipAddress#CONTENT_ITEM_TYPE}.
+         */
         String mimeType;
 
         public PhoneItem() {
         }
 
         private PhoneItem(Parcel in) {
-            this.id          = in.readLong();
+            this.id = in.readLong();
             this.phoneNumber = in.readString();
             this.accountType = in.readString();
-            this.dataSet     = in.readString();
-            this.type        = in.readLong();
-            this.label       = in.readString();
-            this.mimeType    = in.readString();
+            this.dataSet = in.readString();
+            this.type = in.readLong();
+            this.label = in.readString();
+            this.mimeType = in.readString();
         }
 
         @Override
@@ -140,8 +144,8 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
 
         @Override
         public boolean shouldCollapseWith(PhoneItem phoneItem) {
-            return ContactsUtils.shouldCollapse(Phone.CONTENT_ITEM_TYPE, phoneNumber,
-                    Phone.CONTENT_ITEM_TYPE, phoneItem.phoneNumber);
+            return ContactsUtils.shouldCollapse(Phone.CONTENT_ITEM_TYPE, phoneNumber, Phone.CONTENT_ITEM_TYPE,
+                    phoneItem.phoneNumber);
         }
 
         @Override
@@ -149,8 +153,7 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
             return phoneNumber;
         }
 
-        public static final Parcelable.Creator<PhoneItem> CREATOR
-                = new Parcelable.Creator<PhoneItem>() {
+        public static final Parcelable.Creator<PhoneItem> CREATOR = new Parcelable.Creator<PhoneItem>() {
             @Override
             public PhoneItem createFromParcel(Parcel in) {
                 return new PhoneItem(in);
@@ -170,8 +173,7 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         private final InteractionType mInteractionType;
         private final AccountTypeManager mAccountTypeManager;
 
-        public PhoneItemAdapter(Context context, List<PhoneItem> list,
-                InteractionType interactionType) {
+        public PhoneItemAdapter(Context context, List<PhoneItem> list, InteractionType interactionType) {
             super(context, R.layout.phone_disambig_item, android.R.id.text2, list);
             mInteractionType = interactionType;
             mAccountTypeManager = AccountTypeManager.getInstance(context);
@@ -182,16 +184,15 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
             final View view = super.getView(position, convertView, parent);
 
             final PhoneItem item = getItem(position);
-            final AccountType accountType = mAccountTypeManager.getAccountType(
-                    item.accountType, item.dataSet);
+            final AccountType accountType = mAccountTypeManager.getAccountType(item.accountType, item.dataSet);
             final TextView typeView = (TextView) view.findViewById(android.R.id.text1);
             final DataKind kind = accountType.getKindForMimetype(Phone.CONTENT_ITEM_TYPE);
             if (kind != null) {
                 ContentValues values = new ContentValues();
                 values.put(Phone.TYPE, item.type);
                 values.put(Phone.LABEL, item.label);
-                StringInflater header = (mInteractionType == InteractionType.SMS)
-                        ? kind.actionAltHeader : kind.actionHeader;
+                StringInflater header = (mInteractionType == InteractionType.SMS) ? kind.actionAltHeader
+                        : kind.actionHeader;
                 typeView.setText(header.inflateUsing(getContext(), values));
             } else {
                 typeView.setText(R.string.call_other);
@@ -201,18 +202,20 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
     }
 
     /**
-     * {@link DialogFragment} used for displaying a dialog with a list of phone numbers of which
-     * one will be chosen to make a call or initiate an sms message.
-     *
+     * {@link DialogFragment} used for displaying a dialog with a list of phone
+     * numbers of which one will be chosen to make a call or initiate an sms
+     * message.
+     * 
      * It is recommended to use
-     * {@link PhoneNumberInteraction#startInteractionForPhoneCall(TransactionSafeActivity, Uri)} or
+     * {@link PhoneNumberInteraction#startInteractionForPhoneCall(TransactionSafeActivity, Uri)}
+     * or
      * {@link PhoneNumberInteraction#startInteractionForTextMessage(TransactionSafeActivity, Uri)}
-     * instead of directly using this class, as those methods handle one or multiple data cases
-     * appropriately.
+     * instead of directly using this class, as those methods handle one or
+     * multiple data cases appropriately.
      */
     /* Made public to let the system reach this class */
-    public static class PhoneDisambiguationDialogFragment extends DialogFragment
-            implements DialogInterface.OnClickListener, DialogInterface.OnDismissListener {
+    public static class PhoneDisambiguationDialogFragment extends DialogFragment implements
+            DialogInterface.OnClickListener, DialogInterface.OnDismissListener {
 
         private static final String ARG_PHONE_LIST = "phoneList";
         private static final String ARG_INTERACTION_TYPE = "interactionType";
@@ -223,9 +226,8 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         private List<PhoneItem> mPhoneList;
         private String mCallOrigin;
 
-        public static void show(FragmentManager fragmentManager,
-                ArrayList<PhoneItem> phoneList, InteractionType interactionType,
-                String callOrigin) {
+        public static void show(FragmentManager fragmentManager, ArrayList<PhoneItem> phoneList,
+                InteractionType interactionType, String callOrigin) {
             PhoneDisambiguationDialogFragment fragment = new PhoneDisambiguationDialogFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(ARG_PHONE_LIST, phoneList);
@@ -239,8 +241,7 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Activity activity = getActivity();
             mPhoneList = getArguments().getParcelableArrayList(ARG_PHONE_LIST);
-            mInteractionType =
-                    (InteractionType) getArguments().getSerializable(ARG_INTERACTION_TYPE);
+            mInteractionType = (InteractionType) getArguments().getSerializable(ARG_INTERACTION_TYPE);
             mCallOrigin = getArguments().getString(ARG_CALL_ORIGIN);
 
             mPhonesAdapter = new PhoneItemAdapter(activity, mPhoneList, mInteractionType);
@@ -248,51 +249,39 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
             final View setPrimaryView = inflater.inflate(R.layout.set_primary_checkbox, null);
             return new AlertDialog.Builder(activity)
                     .setAdapter(mPhonesAdapter, this)
-                    .setTitle(mInteractionType == InteractionType.SMS
-                            ? R.string.sms_disambig_title : R.string.call_disambig_title)
-                    .setView(setPrimaryView)
-                    .create();
+                    .setTitle(
+                            mInteractionType == InteractionType.SMS ? R.string.sms_disambig_title
+                                    : R.string.call_disambig_title).setView(setPrimaryView).create();
         }
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final Activity activity = getActivity();
-            if (activity == null) return;
-            final AlertDialog alertDialog = (AlertDialog)dialog;
+            if (activity == null)
+                return;
+            final AlertDialog alertDialog = (AlertDialog) dialog;
             if (mPhoneList.size() > which && which >= 0) {
                 final PhoneItem phoneItem = mPhoneList.get(which);
-                final CheckBox checkBox = (CheckBox)alertDialog.findViewById(R.id.setPrimary);
+                final CheckBox checkBox = (CheckBox) alertDialog.findViewById(R.id.setPrimary);
                 if (checkBox.isChecked()) {
                     // Request to mark the data as primary in the background.
-                    final Intent serviceIntent = ContactSaveService.createSetSuperPrimaryIntent(
-                            activity, phoneItem.id);
+                    final Intent serviceIntent = ContactSaveService.createSetSuperPrimaryIntent(activity, phoneItem.id);
                     activity.startService(serviceIntent);
                 }
 
-                PhoneNumberInteraction.performAction(activity, phoneItem.phoneNumber,
-                        mInteractionType, mCallOrigin);
+                PhoneNumberInteraction.performAction(activity, phoneItem.phoneNumber, mInteractionType, mCallOrigin);
             } else {
                 dialog.dismiss();
             }
         }
     }
 
-    private static final String[] PHONE_NUMBER_PROJECTION = new String[] {
-            Phone._ID,
-            Phone.NUMBER,
-            Phone.IS_SUPER_PRIMARY,
-            RawContacts.ACCOUNT_TYPE,
-            RawContacts.DATA_SET,
-            Phone.TYPE,
-            Phone.LABEL,
-            Phone.MIMETYPE
-    };
+    private static final String[] PHONE_NUMBER_PROJECTION = new String[] { Phone._ID, Phone.NUMBER,
+            Phone.IS_SUPER_PRIMARY, RawContacts.ACCOUNT_TYPE, RawContacts.DATA_SET, Phone.TYPE, Phone.LABEL,
+            Phone.MIMETYPE };
 
-    private static final String PHONE_NUMBER_SELECTION =
-            Data.MIMETYPE + " IN ('"
-                + Phone.CONTENT_ITEM_TYPE + "', "
-                + "'" + SipAddress.CONTENT_ITEM_TYPE + "') AND "
-                + Data.DATA1 + " NOT NULL";
+    private static final String PHONE_NUMBER_SELECTION = Data.MIMETYPE + " IN ('" + Phone.CONTENT_ITEM_TYPE + "', "
+            + "'" + SipAddress.CONTENT_ITEM_TYPE + "') AND " + Data.DATA1 + " NOT NULL";
 
     private final Context mContext;
     private final OnDismissListener mDismissListener;
@@ -303,13 +292,15 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
     private CursorLoader mLoader;
 
     /**
-     * Constructs a new {@link PhoneNumberInteraction}. The constructor takes in a {@link Context}
-     * instead of a {@link TransactionSafeActivity} for testing purposes to verify the functionality
-     * of this class. However, all factory methods for creating {@link PhoneNumberInteraction}s
-     * require a {@link TransactionSafeActivity} (i.e. see {@link #startInteractionForPhoneCall}).
+     * Constructs a new {@link PhoneNumberInteraction}. The constructor takes in
+     * a {@link Context} instead of a {@link TransactionSafeActivity} for
+     * testing purposes to verify the functionality of this class. However, all
+     * factory methods for creating {@link PhoneNumberInteraction}s require a
+     * {@link TransactionSafeActivity} (i.e. see
+     * {@link #startInteractionForPhoneCall}).
      */
     @VisibleForTesting
-    /* package */ PhoneNumberInteraction(Context context, InteractionType interactionType,
+    /* package */PhoneNumberInteraction(Context context, InteractionType interactionType,
             DialogInterface.OnDismissListener dismissListener) {
         this(context, interactionType, dismissListener, null);
     }
@@ -326,18 +317,16 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         PhoneNumberInteraction.performAction(mContext, phoneNumber, mInteractionType, mCallOrigin);
     }
 
-    private static void performAction(
-            Context context, String phoneNumber, InteractionType interactionType,
+    private static void performAction(Context context, String phoneNumber, InteractionType interactionType,
             String callOrigin) {
         Intent intent;
         switch (interactionType) {
-            case SMS:
-                intent = new Intent(
-                        Intent.ACTION_SENDTO, Uri.fromParts("sms", phoneNumber, null));
-                break;
-            default:
-                intent = ContactsUtils.getCallIntent(phoneNumber, callOrigin);
-                break;
+        case SMS:
+            intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("sms", phoneNumber, null));
+            break;
+        default:
+            intent = ContactsUtils.getCallIntent(phoneNumber, callOrigin);
+            break;
         }
 
         /** zzz */
@@ -347,27 +336,34 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         Log.v(TAG, "intent - " + intent.getDataString());
 
         if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
-            String number = intent.getDataString().substring(
-                    intent.getDataString().indexOf(':'));
-            try {
-                ITelephonyMSim telephony = ITelephonyMSim.Stub
-                        .asInterface(ServiceManager
-                                .getService(Context.MSIM_TELEPHONY_SERVICE));
-                telephony.call(number, 0);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            String number = intent.getDataString().substring(intent.getDataString().indexOf(':'));
+            // try {
+            // ITelephonyMSim telephony = ITelephonyMSim.Stub
+            // .asInterface(ServiceManager
+            // .getService(Context.MSIM_TELEPHONY_SERVICE));
+            // telephony.call(number, 0);
+            // } catch (RemoteException e) {
+            // e.printStackTrace();
+            // }
+
+            /** zzz */
+            Intent i = new Intent();
+            i.setAction("edu.bupt.action.EDIAL");
+            i.putExtra("digit", number);
+            context.startService(i);
+
         } else {
             context.startActivity(intent);
         }
     }
 
     /**
-     * Initiates the interaction. This may result in a phone call or sms message started
-     * or a disambiguation dialog to determine which phone number should be used.
+     * Initiates the interaction. This may result in a phone call or sms message
+     * started or a disambiguation dialog to determine which phone number should
+     * be used.
      */
     @VisibleForTesting
-    /* package */ void startInteraction(Uri uri) {
+    /* package */void startInteraction(Uri uri) {
         if (mLoader != null) {
             mLoader.reset();
         }
@@ -383,16 +379,11 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
         } else if (inputUriAsString.startsWith(Data.CONTENT_URI.toString())) {
             queryUri = uri;
         } else {
-            throw new UnsupportedOperationException(
-                    "Input Uri must be contact Uri or data Uri (input: \"" + uri + "\")");
+            throw new UnsupportedOperationException("Input Uri must be contact Uri or data Uri (input: \"" + uri
+                    + "\")");
         }
 
-        mLoader = new CursorLoader(mContext,
-                queryUri,
-                PHONE_NUMBER_PROJECTION,
-                PHONE_NUMBER_SELECTION,
-                null,
-                null);
+        mLoader = new CursorLoader(mContext, queryUri, PHONE_NUMBER_PROJECTION, PHONE_NUMBER_SELECTION, null, null);
         mLoader.registerListener(0, this);
         mLoader.startLoading();
     }
@@ -417,8 +408,7 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
                 PhoneItem item = new PhoneItem();
                 item.id = cursor.getLong(cursor.getColumnIndex(Data._ID));
                 item.phoneNumber = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
-                item.accountType =
-                        cursor.getString(cursor.getColumnIndex(RawContacts.ACCOUNT_TYPE));
+                item.accountType = cursor.getString(cursor.getColumnIndex(RawContacts.ACCOUNT_TYPE));
                 item.dataSet = cursor.getString(cursor.getColumnIndex(RawContacts.DATA_SET));
                 item.type = cursor.getInt(cursor.getColumnIndex(Phone.TYPE));
                 item.label = cursor.getString(cursor.getColumnIndex(Phone.LABEL));
@@ -451,8 +441,8 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
     }
 
     private boolean isSafeToCommitTransactions() {
-        return mContext instanceof TransactionSafeActivity ?
-                ((TransactionSafeActivity) mContext).isSafeToCommitTransactions() : true;
+        return mContext instanceof TransactionSafeActivity ? ((TransactionSafeActivity) mContext)
+                .isSafeToCommitTransactions() : true;
     }
 
     private void onDismiss() {
@@ -462,59 +452,66 @@ public class PhoneNumberInteraction implements OnLoadCompleteListener<Cursor> {
     }
 
     /**
-     * Start call action using given contact Uri. If there are multiple candidates for the phone
-     * call, dialog is automatically shown and the user is asked to choose one.
-     *
-     * @param activity that is calling this interaction. This must be of type
-     * {@link TransactionSafeActivity} because we need to check on the activity state after the
-     * phone numbers have been queried for.
-     * @param uri contact Uri (built from {@link Contacts#CONTENT_URI}) or data Uri
-     * (built from {@link Data#CONTENT_URI}). Contact Uri may show the disambiguation dialog while
-     * data Uri won't.
+     * Start call action using given contact Uri. If there are multiple
+     * candidates for the phone call, dialog is automatically shown and the user
+     * is asked to choose one.
+     * 
+     * @param activity
+     *            that is calling this interaction. This must be of type
+     *            {@link TransactionSafeActivity} because we need to check on
+     *            the activity state after the phone numbers have been queried
+     *            for.
+     * @param uri
+     *            contact Uri (built from {@link Contacts#CONTENT_URI}) or data
+     *            Uri (built from {@link Data#CONTENT_URI}). Contact Uri may
+     *            show the disambiguation dialog while data Uri won't.
      */
     public static void startInteractionForPhoneCall(TransactionSafeActivity activity, Uri uri) {
-        (new PhoneNumberInteraction(activity, InteractionType.PHONE_CALL, null))
-                .startInteraction(uri);
+        (new PhoneNumberInteraction(activity, InteractionType.PHONE_CALL, null)).startInteraction(uri);
     }
 
     /**
-     * @param activity that is calling this interaction. This must be of type
-     * {@link TransactionSafeActivity} because we need to check on the activity state after the
-     * phone numbers have been queried for.
-     * @param callOrigin If non null, {@link DialtactsActivity#EXTRA_CALL_ORIGIN} will be
-     * appended to the Intent initiating phone call. See comments in Phone package (PhoneApp)
-     * for more detail.
+     * @param activity
+     *            that is calling this interaction. This must be of type
+     *            {@link TransactionSafeActivity} because we need to check on
+     *            the activity state after the phone numbers have been queried
+     *            for.
+     * @param callOrigin
+     *            If non null, {@link DialtactsActivity#EXTRA_CALL_ORIGIN} will
+     *            be appended to the Intent initiating phone call. See comments
+     *            in Phone package (PhoneApp) for more detail.
      */
-    public static void startInteractionForPhoneCall(TransactionSafeActivity activity, Uri uri,
-            String callOrigin) {
-        (new PhoneNumberInteraction(activity, InteractionType.PHONE_CALL, null, callOrigin))
-                .startInteraction(uri);
+    public static void startInteractionForPhoneCall(TransactionSafeActivity activity, Uri uri, String callOrigin) {
+        (new PhoneNumberInteraction(activity, InteractionType.PHONE_CALL, null, callOrigin)).startInteraction(uri);
     }
 
     /**
-     * Start text messaging (a.k.a SMS) action using given contact Uri. If there are multiple
-     * candidates for the phone call, dialog is automatically shown and the user is asked to choose
-     * one.
-     *
-     * @param activity that is calling this interaction. This must be of type
-     * {@link TransactionSafeActivity} because we need to check on the activity state after the
-     * phone numbers have been queried for.
-     * @param uri contact Uri (built from {@link Contacts#CONTENT_URI}) or data Uri
-     * (built from {@link Data#CONTENT_URI}). Contact Uri may show the disambiguation dialog while
-     * data Uri won't.
+     * Start text messaging (a.k.a SMS) action using given contact Uri. If there
+     * are multiple candidates for the phone call, dialog is automatically shown
+     * and the user is asked to choose one.
+     * 
+     * @param activity
+     *            that is calling this interaction. This must be of type
+     *            {@link TransactionSafeActivity} because we need to check on
+     *            the activity state after the phone numbers have been queried
+     *            for.
+     * @param uri
+     *            contact Uri (built from {@link Contacts#CONTENT_URI}) or data
+     *            Uri (built from {@link Data#CONTENT_URI}). Contact Uri may
+     *            show the disambiguation dialog while data Uri won't.
      */
     public static void startInteractionForTextMessage(TransactionSafeActivity activity, Uri uri) {
         (new PhoneNumberInteraction(activity, InteractionType.SMS, null)).startInteraction(uri);
     }
 
     @VisibleForTesting
-    /* package */ CursorLoader getLoader() {
+    /* package */CursorLoader getLoader() {
         return mLoader;
     }
 
     @VisibleForTesting
-    /* package */ void showDisambiguationDialog(ArrayList<PhoneItem> phoneList) {
-        PhoneDisambiguationDialogFragment.show(((Activity)mContext).getFragmentManager(),
-                phoneList, mInteractionType, mCallOrigin);
+    /* package */void showDisambiguationDialog(ArrayList<PhoneItem> phoneList) {
+        PhoneDisambiguationDialogFragment.show(((Activity) mContext).getFragmentManager(), phoneList, mInteractionType,
+                mCallOrigin);
     }
 }

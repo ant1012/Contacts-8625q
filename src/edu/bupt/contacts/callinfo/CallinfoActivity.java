@@ -117,13 +117,22 @@ public class CallinfoActivity extends Activity {
                 // Uri uri = Uri.parse("tel:" + number);
                 // Intent i = new Intent(Intent.ACTION_DIAL, uri);
                 // startActivity(i);
-                try {
-                    ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
-                            .getService(Context.MSIM_TELEPHONY_SERVICE));
-                    telephony.call(number, 0);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+
+                // try {
+                // ITelephonyMSim telephony =
+                // ITelephonyMSim.Stub.asInterface(ServiceManager
+                // .getService(Context.MSIM_TELEPHONY_SERVICE));
+                // telephony.call(number, 0);
+                // } catch (RemoteException e) {
+                // e.printStackTrace();
+                // }
+
+                /** zzz */
+                Intent intent = new Intent();
+                intent.setAction("edu.bupt.action.EDIAL");
+                intent.putExtra("digit", number);
+                startService(intent);
+
             } else if (v.equals(buttonAdd)) {
                 Log.v(TAG, "buttonAdd clicked");
                 Intent intent = new Intent(Intent.ACTION_INSERT, People.CONTENT_URI);
