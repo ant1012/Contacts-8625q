@@ -107,7 +107,7 @@ public class EdialService extends Service {
     // call directly when return false
     private boolean ShouldShowEdial(String digit) {
         Log.i(TAG, "ShouldShowEdial?");
-        Pattern p1 = Pattern.compile("^+");
+        Pattern p1 = Pattern.compile("^\\+");
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
             Log.v(TAG, "start with \'+\'");
@@ -117,8 +117,6 @@ public class EdialService extends Service {
                 return false;
             }
         }
-        
-        
 
         Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
         Matcher m2 = p2.matcher(digit);
