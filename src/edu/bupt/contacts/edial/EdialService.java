@@ -18,6 +18,7 @@ import android.util.Log;
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
+    private String digit = null;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -38,13 +39,21 @@ public class EdialService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Service.onStartCommand()");
 
-        String digit = intent.getStringExtra("digit");
+        if (!intent.hasExtra("digit")) {
+            Log.e(TAG, "!intent.hasExtra(\"digit\")");
+            return super.onStartCommand(intent, flags, startId);
+        }
 
-        if (!ShouldShowEdial(digit)) {
+        digit = intent.getStringExtra("digit");
+        digit = formatNumber(digit);
+
+        if (!shouldShowEdial()) {
+            // call directly
             call(digit);
             return super.onStartCommand(intent, flags, startId);
         }
 
+        // show dialog
         EdialDialog edialDialog = new EdialDialog(this, digit);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -77,20 +86,6 @@ public class EdialService extends Service {
         super.onDestroy();
     }
 
-    private String replacePattern(String origin, String pattern, String replace) {
-        Log.i(TAG, "origin - " + origin);
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(origin);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, replace);
-        }
-
-        m.appendTail(sb);
-        Log.i(TAG, "sb.toString() - " + sb.toString());
-        return sb.toString();
-    }
-
     private void call(String number) {
         try {
             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
@@ -105,34 +100,90 @@ public class EdialService extends Service {
     }
 
     // call directly when return false
-    private boolean ShouldShowEdial(String digit) {
-        Log.i(TAG, "ShouldShowEdial?");
+    private boolean shouldShowEdial() {
+        Log.d(TAG, "ShouldShowEdial?");
+
+        // start with +
         Pattern p1 = Pattern.compile("^\\+");
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
-            Log.v(TAG, "start with \'+\'");
+            Log.w(TAG, "start with \'+\'");
             if (isC2CRoaming()) {
+                digit = stripCountryCodePrefix(digit);
                 return true;
             } else {
                 return false;
             }
         }
 
+        // start with **133, end with #
         Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
         Matcher m2 = p2.matcher(digit);
         if (m2.find()) {
-            Log.v(TAG, "start with \'**133\', end with \'#\'");
+            Log.w(TAG, "start with \'**133\', end with \'#\'");
             if (isC2CRoaming()) {
+                digit = strip133Prefix(digit);
                 return true;
             } else {
                 return false;
             }
         }
 
+        // start with local country code
+        String localcode = getLocalCode();
+        Pattern p3 = Pattern.compile("^" + localcode);
+        Matcher m3 = p3.matcher(digit);
+        if (m3.find() && digit.length() > 11) {
+            Log.w(TAG, "start with local country code " + localcode);
+            return false;
+        }
+
+        // TODO
         return true;
     }
 
-    private boolean isC2CRoaming() {
-        return false;
+    private static String formatNumber(String s) {
+        String strip1 = replacePattern(s, "(\\:)", ""); // strip :
+        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
+        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
+        return strip3;
+    }
+
+    private String stripCountryCodePrefix(String s) {
+        // TODO other countries?
+        String strip1 = replacePattern(s, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                       // +86
+        return strip1;
+    }
+
+    private static String strip133Prefix(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        sb.delete(0, 8); // **133*86
+        sb.deleteCharAt(sb.length() - 1); // #
+        return sb.toString();
+    }
+
+    private static String getLocalCode() {
+        // TODO
+        return "00";
+    }
+
+    private static boolean isC2CRoaming() {
+        // TODO
+        return true;
+    }
+
+    private static String replacePattern(String origin, String pattern, String replace) {
+        Log.i(TAG, "origin - " + origin);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(origin);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, replace);
+        }
+
+        m.appendTail(sb);
+        Log.i(TAG, "sb.toString() - " + sb.toString());
+        return sb.toString();
     }
 }
