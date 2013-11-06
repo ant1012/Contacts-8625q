@@ -1,21 +1,45 @@
 package edu.bupt.contacts.edial;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.blacklist.BlacklistDBHelper;
+import a_vcard.android.util.Log;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.ServiceManager;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class EdialDialog extends HoloDialog {
+	
+	 CountryCodeDBHelper mdbHelper;
+     Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
+     Button europeButton = (Button) this.findViewById(R.id.europeButton);
+     Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
+     Button africaButton = (Button) this.findViewById(R.id.africaButton);
+     Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
+     Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
+     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	 private ListView listView;
+	 private Cursor cursor;
+	 private SimpleAdapter adapter;
+	   
 
     public EdialDialog(final Context context, String digits) {
         super(context);
@@ -105,6 +129,7 @@ public class EdialDialog extends HoloDialog {
                     nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
                     nationalCodeDialog.setTitle("选择目标国家地区");
                     nationalCodeDialog.show();
+                    pickCountry();
                     break;
 
                 case R.id.radioButton_callLocal:
@@ -136,30 +161,32 @@ public class EdialDialog extends HoloDialog {
     }
     
     private void pickCountry(){
+    	
+        listView = (ListView) this.findViewById(R.id.nationalCodeListView);
+        mdbHelper=new CountryCodeDBHelper(this.getContext());
+        final SQLiteDatabase db = mdbHelper.getReadableDatabase();
+        mdbHelper.onCreate(db);
 
-        final Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
-        final Button europeButton = (Button) this.findViewById(R.id.europeButton);
-        final Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
-        final Button africaButton = (Button) this.findViewById(R.id.africaButton);
-        final Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
-        final Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
-        
+
     	africaButton.setOnClickListener(new Button.OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-
+                 Log.i("this is africa", "africa");
+				list=mdbHelper.getCountry(1);
+				Log.i("list", list.toString());
+			
+				adapter = new SimpleAdapter(EdialDialog.this.getContext(),list,R.layout.edial_item, new String[]{"cn_name","code"}, new int[]{R.id.edial_item_text1, R.id.edial_item_text2});
+		        
+               listView.setAdapter(adapter);
 				
 			}
 		});
     	
-    	
-    	
+
     	
     }
-    
-
 }
 
 

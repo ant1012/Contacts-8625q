@@ -3,6 +3,9 @@ package edu.bupt.contacts.edial;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -15,8 +18,14 @@ import android.util.Log;
 
 public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "country_calling_codes";
+    private static final String DB_NAME = "country_calling_codes";    
     private static final String TB_NAME = "international_phonecode";
+    
+    //ddd start
+    private static SQLiteDatabase dbInstance;
+    private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+    //ddd end
+    
     private static final int VERSION = 1;
     private static final String TAG = "CountryCodeDBHelper";
     private Context mContext;
@@ -28,15 +37,15 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        if (tabbleIsExist(TB_NAME)) {
-            executeSQLScript(database, "international_phonecode.sql");
+        if (!tabbleIsExist(TB_NAME)) {
+            executeSQLScript(database, "db/international_phonecode.sql");
         }
     }
 
     public void executeSQLScript(SQLiteDatabase database, String dbname) {
         Log.d(TAG, "executeSQLScript");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte buf[] = new byte[15000];
+        byte buf[] = new byte[150000];
         int len;
         AssetManager assetManager = mContext.getAssets();
         InputStream inputStream = null;
@@ -87,12 +96,54 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
                     result = true;
                 }
             }
+            cursor.close();
 
         } catch (Exception e) {
             Log.e(TAG, e.toString());
-        } finally {
-            cursor.close();
         }
         return result;
     }
+    
+    
+	public ArrayList<Map<String, String>> getCountry(int continent) {
+		ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		Cursor cursor = null;
+		if(continent==1) {
+			cursor = dbInstance.query(TB_NAME, 
+					new String[]{"cn_name","en_name","code","countryiso"}, 
+					"code=86", 
+					null, 
+					null, 
+					null, 
+					null);
+		} else {
+			cursor = dbInstance.query(TB_NAME, 
+					new String[]{"cn_name","en_name","code","countryiso"}, 
+					"code=86", 
+					null, 
+					null, 
+					null, 
+					null);
+		}
+		 
+		
+		while(cursor.moveToNext()) {
+			HashMap<String, String> item = new HashMap<String,String>();
+			item.put("cn_name", cursor.getString(cursor.getColumnIndex("cn_name")));
+			item.put("en_name", cursor.getString(cursor.getColumnIndex("en_name")));
+			item.put("code", cursor.getString(cursor.getColumnIndex("code")));
+			item.put("countryiso", cursor.getString(cursor.getColumnIndex("countryiso")));
+			
+			list.add(item);
+		}
+		
+		return list;
+	}
+    
+    
+    
+
+
 }
+
+

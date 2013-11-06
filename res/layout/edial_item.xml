@@ -1,0 +1,30 @@
+<!-- 设置edial行内容 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edial_item"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/edial_item_text1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+android:paddingLeft="30dp"
+android:gravity="center_vertical"
+android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/edial_item_text2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+android:gravity="center_vertical"
+android:layout_marginLeft="30dp"
+android:textColor="#5a5a5a"
+        android:textSize="14sp" />
+
+
+
+</LinearLayout>
