@@ -34,18 +34,21 @@
         <TableRow>
 
             <Button
+                android:id="@+id/asiaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="亚洲" />
 
             <Button
+                android:id="@+id/northAmericaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="北美洲" />
 
             <Button
+                android:id="@+id/southAmericaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -55,18 +58,21 @@
         <TableRow>
 
             <Button
+                android:id="@+id/europeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="欧洲" />
 
             <Button
+                android:id="@+id/oceaniaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="大洋洲" />
 
             <Button
+                android:id="@+id/africaButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -77,6 +83,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="328dp" >
+        
+        <ListView 
+            android:id="@+id/nationalCodeListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#33b5e5"
+                        
+            
+            ></ListView>
 
     </LinearLayout>
 

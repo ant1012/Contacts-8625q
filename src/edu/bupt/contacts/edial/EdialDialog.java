@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.ServiceManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -46,6 +48,13 @@ public class EdialDialog extends HoloDialog {
         final RadioButton call133Button = (RadioButton) this.findViewById(R.id.radioButton_133);
         final RadioButton callOtherButton = (RadioButton) this.findViewById(R.id.radioButton_callOther);
         final RadioButton callLocalButton = (RadioButton) this.findViewById(R.id.radioButton_callLocal);
+       
+//        final Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
+//        final Button europeButton = (Button) this.findViewById(R.id.europeButton);
+//        final Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
+//        final Button africaButton = (Button) this.findViewById(R.id.africaButton);
+//        final Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
+//        final Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
 
         final TextView title = (TextView) this.findViewById(R.id.textView_title);
         final TextView pre = (TextView) this.findViewById(R.id.textView_pre);
@@ -125,5 +134,32 @@ public class EdialDialog extends HoloDialog {
             e.printStackTrace();
         }
     }
+    
+    private void pickCountry(){
+
+        final Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
+        final Button europeButton = (Button) this.findViewById(R.id.europeButton);
+        final Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
+        final Button africaButton = (Button) this.findViewById(R.id.africaButton);
+        final Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
+        final Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
+        
+    	africaButton.setOnClickListener(new Button.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+
+				
+			}
+		});
+    	
+    	
+    	
+    	
+    }
+    
 
 }
+
+
