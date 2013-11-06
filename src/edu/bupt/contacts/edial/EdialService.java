@@ -103,7 +103,7 @@ public class EdialService extends Service {
     private boolean shouldShowEdial() {
         Log.d(TAG, "ShouldShowEdial?");
 
-        // start with +
+        // start with '+'
         Pattern p1 = Pattern.compile("^\\+");
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
@@ -116,7 +116,7 @@ public class EdialService extends Service {
             }
         }
 
-        // start with **133, end with #
+        // start with '**133', end with '#'
         Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
         Matcher m2 = p2.matcher(digit);
         if (m2.find()) {
@@ -138,7 +138,8 @@ public class EdialService extends Service {
             return false;
         }
 
-        // TODO
+        // strip beginning '0'
+        digit = stripZeroPrefix(digit);
         return true;
     }
 
@@ -161,6 +162,11 @@ public class EdialService extends Service {
         sb.delete(0, 8); // **133*86
         sb.deleteCharAt(sb.length() - 1); // #
         return sb.toString();
+    }
+
+    private String stripZeroPrefix(String s) {
+        String strip1 = replacePattern(s, "^(0{0,1})", ""); // strip 0
+        return strip1;
     }
 
     private static String getLocalCode() {

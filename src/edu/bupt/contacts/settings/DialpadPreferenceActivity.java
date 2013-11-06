@@ -32,7 +32,7 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
         if (sp.getString("CDMAIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
             findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference", ""));
         }
-        if (sp.getString("GSMIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
+        if (sp.getString("GSMIPPreference", null) != null && !sp.getString("GSMIPPreference", null).equals("")) {
             findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference", ""));
         }
 
