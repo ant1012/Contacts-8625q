@@ -12,7 +12,7 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
+     limitations under the License.
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -706,5 +706,15 @@
     <string name="ip_call_one">卡1 IP 呼叫</string>
     <string name="ip_call_two">卡2 IP 呼叫</string>
     <string name="calllog_search">搜索通话记录</string>
+
+    <!-- zzz -->
+    <string name="esurfing_dial_search">搜索</string>
+    <string name="esurfing_dial_continent_asia">亚洲</string>
+    <string name="esurfing_dial_continent_northamerica">北美洲</string>
+    <string name="esurfing_dial_continent_southamerica">南美洲</string>
+    <string name="esurfing_dial_continent_europe">欧洲</string>
+    <string name="esurfing_dial_continent_australia">大洋洲</string>
+    <string name="esurfing_dial_continent_africa">非洲</string>
+    <string name="esurfing_dial_pick_country">选择目标国家地区</string>
 
 </resources>

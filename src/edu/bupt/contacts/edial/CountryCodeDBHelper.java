@@ -22,7 +22,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     private static final String TB_NAME = "international_phonecode";
 
     // ddd start
-    private static SQLiteDatabase dbInstance;
+    // private static SQLiteDatabase dbInstance;
     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
     // ddd end
 
@@ -78,41 +78,43 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         executeSQLScript(database, "SQLiteDatabase");
     }
 
-    private boolean tabbleIsExist(String tableName) {
-        boolean result = false;
-        if (tableName == null) {
-            return false;
-        }
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = this.getReadableDatabase();
-            String sql = "select count(*) as c from sqlite_master where type ='table' and name ='" + tableName.trim()
-                    + "' ";
-            cursor = db.rawQuery(sql, null);
-            if (cursor.moveToNext()) {
-                int count = cursor.getInt(0);
-                if (count > 0) {
-                    result = true;
-                }
-            }
-            cursor.close();
-
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
-        return result;
-    }
+    // private boolean tabbleIsExist(String tableName) {
+    // boolean result = false;
+    // if (tableName == null) {
+    // return false;
+    // }
+    // SQLiteDatabase db = null;
+    // Cursor cursor = null;
+    // try {
+    // db = this.getReadableDatabase();
+    // String sql =
+    // "select count(*) as c from sqlite_master where type ='table' and name ='"
+    // + tableName.trim()
+    // + "' ";
+    // cursor = db.rawQuery(sql, null);
+    // if (cursor.moveToNext()) {
+    // int count = cursor.getInt(0);
+    // if (count > 0) {
+    // result = true;
+    // }
+    // }
+    // cursor.close();
+    //
+    // } catch (Exception e) {
+    // Log.e(TAG, e.toString());
+    // }
+    // return result;
+    // }
 
     public ArrayList<Map<String, String>> getCountry(int continent) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
         if (continent == 1) {
-            cursor = dbInstance.query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" }, "code=86",
-                    null, null, null, null);
+            cursor = getWritableDatabase().query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" },
+                    "code=86", null, null, null, null);
         } else {
-            cursor = dbInstance.query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" }, "code=86",
-                    null, null, null, null);
+            cursor = getWritableDatabase().query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" },
+                    "code=86", null, null, null, null);
         }
 
         while (cursor.moveToNext()) {
