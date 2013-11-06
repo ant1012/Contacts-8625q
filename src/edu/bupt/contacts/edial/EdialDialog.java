@@ -27,22 +27,30 @@ import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class EdialDialog extends HoloDialog {
-	
-	 CountryCodeDBHelper mdbHelper;
-     Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
-     Button europeButton = (Button) this.findViewById(R.id.europeButton);
-     Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
-     Button africaButton = (Button) this.findViewById(R.id.africaButton);
-     Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
-     Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
-     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
-	 private ListView listView;
-	 private Cursor cursor;
-	 private SimpleAdapter adapter;
-	   
+
+    CountryCodeDBHelper mdbHelper;
+    private Button asiaButton;
+    private Button europeButton;
+    private Button oceaniaButton;
+    private Button africaButton;
+    private Button northAmericaButton;
+    private Button southAmericaButton;
+    private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+    private ListView listView;
+    private Cursor cursor;
+    private SimpleAdapter adapter;
 
     public EdialDialog(final Context context, String digits) {
         super(context);
+
+        // asiaButton = (Button) this.findViewById(R.id.asiaButton);
+        // europeButton = (Button) this.findViewById(R.id.europeButton);
+        // oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
+        // africaButton = (Button) this.findViewById(R.id.africaButton);
+        // northAmericaButton = (Button)
+        // this.findViewById(R.id.northAmericaButton);
+        // southAmericaButton = (Button)
+        // this.findViewById(R.id.southAmericaButton);
 
         // AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -72,13 +80,19 @@ public class EdialDialog extends HoloDialog {
         final RadioButton call133Button = (RadioButton) this.findViewById(R.id.radioButton_133);
         final RadioButton callOtherButton = (RadioButton) this.findViewById(R.id.radioButton_callOther);
         final RadioButton callLocalButton = (RadioButton) this.findViewById(R.id.radioButton_callLocal);
-       
-//        final Button asiaButton = (Button) this.findViewById(R.id.asiaButton);
-//        final Button europeButton = (Button) this.findViewById(R.id.europeButton);
-//        final Button oceaniaButton = (Button) this.findViewById(R.id.oceaniaButton);
-//        final Button africaButton = (Button) this.findViewById(R.id.africaButton);
-//        final Button northAmericaButton = (Button) this.findViewById(R.id.northAmericaButton);
-//        final Button southAmericaButton = (Button) this.findViewById(R.id.southAmericaButton);
+
+        // final Button asiaButton = (Button)
+        // this.findViewById(R.id.asiaButton);
+        // final Button europeButton = (Button)
+        // this.findViewById(R.id.europeButton);
+        // final Button oceaniaButton = (Button)
+        // this.findViewById(R.id.oceaniaButton);
+        // final Button africaButton = (Button)
+        // this.findViewById(R.id.africaButton);
+        // final Button northAmericaButton = (Button)
+        // this.findViewById(R.id.northAmericaButton);
+        // final Button southAmericaButton = (Button)
+        // this.findViewById(R.id.southAmericaButton);
 
         final TextView title = (TextView) this.findViewById(R.id.textView_title);
         final TextView pre = (TextView) this.findViewById(R.id.textView_pre);
@@ -128,6 +142,12 @@ public class EdialDialog extends HoloDialog {
 
                     nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
                     nationalCodeDialog.setTitle("选择目标国家地区");
+                    asiaButton = (Button) nationalCodeDialog.findViewById(R.id.asiaButton);
+                    europeButton = (Button) nationalCodeDialog.findViewById(R.id.europeButton);
+                    oceaniaButton = (Button) nationalCodeDialog.findViewById(R.id.oceaniaButton);
+                    africaButton = (Button) nationalCodeDialog.findViewById(R.id.africaButton);
+                    northAmericaButton = (Button) nationalCodeDialog.findViewById(R.id.northAmericaButton);
+                    southAmericaButton = (Button) nationalCodeDialog.findViewById(R.id.southAmericaButton);
                     nationalCodeDialog.show();
                     pickCountry();
                     break;
@@ -159,34 +179,30 @@ public class EdialDialog extends HoloDialog {
             e.printStackTrace();
         }
     }
-    
-    private void pickCountry(){
-    	
+
+    private void pickCountry() {
+
         listView = (ListView) this.findViewById(R.id.nationalCodeListView);
-        mdbHelper=new CountryCodeDBHelper(this.getContext());
-        final SQLiteDatabase db = mdbHelper.getReadableDatabase();
-        mdbHelper.onCreate(db);
+        mdbHelper = new CountryCodeDBHelper(this.getContext());
+        // final SQLiteDatabase db = mdbHelper.getReadableDatabase();
+        // mdbHelper.onCreate(db);
 
+        africaButton.setOnClickListener(new Button.OnClickListener() {
 
-    	africaButton.setOnClickListener(new Button.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-                 Log.i("this is africa", "africa");
-				list=mdbHelper.getCountry(1);
-				Log.i("list", list.toString());
-			
-				adapter = new SimpleAdapter(EdialDialog.this.getContext(),list,R.layout.edial_item, new String[]{"cn_name","code"}, new int[]{R.id.edial_item_text1, R.id.edial_item_text2});
-		        
-               listView.setAdapter(adapter);
-				
-			}
-		});
-    	
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                Log.i("this is africa", "africa");
+                list = mdbHelper.getCountry(1);
+                Log.i("list", list.toString());
 
-    	
+                adapter = new SimpleAdapter(EdialDialog.this.getContext(), list, R.layout.edial_item, new String[] {
+                        "cn_name", "code" }, new int[] { R.id.edial_item_text1, R.id.edial_item_text2 });
+
+                listView.setAdapter(adapter);
+
+            }
+        });
+
     }
 }
-
-
