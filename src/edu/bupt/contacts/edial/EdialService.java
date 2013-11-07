@@ -41,8 +41,8 @@ public class EdialService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Service.onStartCommand()");
 
-        if (!intent.hasExtra("digit")) {
-            Log.e(TAG, "!intent.hasExtra(\"digit\")");
+        if (intent == null || !intent.hasExtra("digit")) {
+            Log.e(TAG, "intent == null || !intent.hasExtra(\"digit\")");
             return super.onStartCommand(intent, flags, startId);
         }
 
