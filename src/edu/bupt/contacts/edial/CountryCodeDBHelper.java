@@ -121,12 +121,12 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
         String current_sql_sel;
-        switch (continent) {
-        case 1:
+        // switch(continent){
+        // case 1:
 
-            current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent=" + "'1' order by code";
-            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
-            break;
+        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent='" + continent + "' order by code";
+        cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+        // break;
         // case 2:
         // current_sql_sel = "SELECT  * FROM "+TB_NAME
         // +" where "+"code"+" like '2%'";
@@ -160,7 +160,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         // break;
         //
         //
-        }
+        // }
 
         while (cursor != null && cursor.moveToNext()) {
             HashMap<String, String> item = new HashMap<String, String>();
