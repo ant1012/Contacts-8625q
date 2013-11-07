@@ -162,7 +162,7 @@ public class EdialDialog extends HoloDialog {
 
                     /** zzz */
                     // Dialog nationalCodeDialog = new Dialog(context);
-                    HoloDialog nationalCodeDialog = new HoloDialog(context);
+                    final HoloDialog nationalCodeDialog = new HoloDialog(context);
 
                     nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
                     asiaButton = (Button) nationalCodeDialog.findViewById(R.id.button_national_picker_asia);
@@ -181,7 +181,25 @@ public class EdialDialog extends HoloDialog {
 
                     pickCountry();
                     searchCountry(searchButtonEditText, countrySearchButton);
-                    chooseItem();
+                    // chooseItem();
+
+                    listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                            // TODO Auto-generated method stub
+                            TextView country = (TextView) arg1.findViewById(R.id.edial_item_text1);
+                            TextView code = (TextView) arg1.findViewById(R.id.edial_item_text2);
+                            Log.i("tag", country.toString());
+                            Log.i("tag", code.toString());
+                            String countryname = (String) country.getText();
+                            String countrycode = (String) code.getText();
+
+                            stringTitle.replace(0, stringTitle.length(), countryname + countrycode);
+                            stringPre.replace(0, stringPre.length(), countrycode);
+                            nationalCodeDialog.dismiss();
+                        }
+                    });
                     nationalCodeDialog.setTitle(R.string.esurfing_dial_pick_country);
                     nationalCodeDialog.show();
 
@@ -383,6 +401,7 @@ public class EdialDialog extends HoloDialog {
 
                 stringTitle.replace(0, stringTitle.length(), countryname + countrycode);
                 stringPre.replace(0, stringPre.length(), countrycode);
+
             }
         });
     }
