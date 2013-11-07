@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `international_phonecode` (
   `countryiso` varchar(50) DEFAULT NULL,
   `continent` varchar(50) DEFAULT NULL,
   `call_prefix` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 
 INSERT INTO `international_phonecode` (`cn_name`, `en_name`, `code`, `countryiso`, `continent`, `call_prefix`) VALUES

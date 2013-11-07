@@ -12,9 +12,11 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.ServiceManager;
 import android.preference.PreferenceManager;
+import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/** zzz */
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
@@ -47,7 +49,12 @@ public class EdialService extends Service {
         digit = intent.getStringExtra("digit");
         digit = formatNumber(digit);
 
-        if (!shouldShowEdial()) {
+        // prepare the country code database
+        CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
+        mdbHelper.onCreate(mdbHelper.getWritableDatabase());
+        mdbHelper.close();
+
+        if (!shouldShowEdial()) { // may modify the number here
             // call directly
             call(digit);
             return super.onStartCommand(intent, flags, startId);
@@ -103,7 +110,7 @@ public class EdialService extends Service {
     private boolean shouldShowEdial() {
         Log.d(TAG, "ShouldShowEdial?");
 
-        // start with '+'
+        // start with '+' ?
         Pattern p1 = Pattern.compile("^\\+");
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
@@ -116,7 +123,7 @@ public class EdialService extends Service {
             }
         }
 
-        // start with '**133', end with '#'
+        // start with '**133', end with '#' ?
         Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
         Matcher m2 = p2.matcher(digit);
         if (m2.find()) {
@@ -129,8 +136,8 @@ public class EdialService extends Service {
             }
         }
 
-        // start with local country code
-        String localcode = getLocalCode();
+        // start with local country call prefix ?
+        String localcode = getLocalCallPrefix();
         Pattern p3 = Pattern.compile("^" + localcode);
         Matcher m3 = p3.matcher(digit);
         if (m3.find() && digit.length() > 11) {
@@ -164,19 +171,38 @@ public class EdialService extends Service {
         return sb.toString();
     }
 
-    private String stripZeroPrefix(String s) {
+    private static String stripZeroPrefix(String s) {
         String strip1 = replacePattern(s, "^(0{0,1})", ""); // strip 0
         return strip1;
     }
 
-    private static String getLocalCode() {
-        // TODO
-        return "00";
+    private String getLocalCallPrefix() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String countryIso = tm.getNetworkCountryIso();
+        Log.i(TAG, countryIso);
+        CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
+        String ret = mdbHelper.queryCallPrefix(tm.getNetworkCountryIso());
+        mdbHelper.close();
+
+        return ret;
     }
 
-    private static boolean isC2CRoaming() {
-        // TODO
-        return true;
+    private boolean isC2CRoaming() {
+        MSimTelephonyManager m = (MSimTelephonyManager) getSystemService(MSIM_TELEPHONY_SERVICE);
+        if (!m.isNetworkRoaming(0)) {
+            return false;
+        }
+        switch (MSimTelephonyManager.getNetworkType(0)) {
+        case TelephonyManager.NETWORK_TYPE_CDMA:
+        case TelephonyManager.NETWORK_TYPE_1xRTT:
+        case TelephonyManager.NETWORK_TYPE_EVDO_0:
+        case TelephonyManager.NETWORK_TYPE_EVDO_A:
+        case TelephonyManager.NETWORK_TYPE_EVDO_B:
+            return true;
+        default:
+            return false;
+        }
+
     }
 
     private static String replacePattern(String origin, String pattern, String replace) {

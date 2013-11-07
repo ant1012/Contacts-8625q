@@ -716,5 +716,13 @@
     <string name="esurfing_dial_continent_australia">大洋洲</string>
     <string name="esurfing_dial_continent_africa">非洲</string>
     <string name="esurfing_dial_pick_country">选择目标国家地区</string>
+    <string name="esurfing_dial_call_title_china">中国 +86</string>
+    <string name="esurfing_dial_call_china">拨回中国大陆</string>
+    <string name="esurfing_dial_call_roaming">国际漫游呼叫</string>
+    <string name="esurfing_dial_call_133">**133回拨</string>
+    <string name="esurfing_dial_call_others">拨打其他国家地区</string>
+    <string name="esurfing_dial_call_title_local">拨打本地</string>
+    <string name="esurfing_dial_call_local">拨打本地</string>
+    <string name="esurfing_dial_call_realcall">拨号</string>
 
 </resources>

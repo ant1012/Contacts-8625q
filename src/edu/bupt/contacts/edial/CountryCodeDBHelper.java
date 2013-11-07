@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -30,17 +31,20 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     private static final String TAG = "CountryCodeDBHelper";
     private Context mContext;
 
+    /** zzz */
     public CountryCodeDBHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
         this.mContext = context;
     }
 
+    /** zzz */
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
         executeSQLScript(database, "db/international_phonecode.sql");
     }
 
+    /** zzz */
     public void executeSQLScript(SQLiteDatabase database, String dbname) {
         Log.d(TAG, "executeSQLScript");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -72,6 +76,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    /** zzz */
     @Override
     public void onUpgrade(SQLiteDatabase database, int arg1, int arg2) {
         database.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
@@ -106,61 +111,58 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     // return result;
     // }
 
-    
-
-
-
-    
-    
-    
-  //northamerica 1
-  //africa      2
-  //europe       3(347)
-  //northamerica 5
-  //oceania      6
-  //asia         8(698)    	   
+    // northamerica 1
+    // africa 2
+    // europe 3(347)
+    // northamerica 5
+    // oceania 6
+    // asia 8(698)
     public ArrayList<Map<String, String>> getCountry(int continent) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
-        String current_sql_sel; 
-        switch(continent){
+        String current_sql_sel;
+        switch (continent) {
         case 1:
-        	
-            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"continent="+"'1' order by code";  
-            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
-            break;
-//        case 2:
-//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '2%'";  
-//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
-//            break;
-//        case 3:
-//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '[347]%'";  
-//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
-//            break;
-//        case 5:
-//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '5%'";  
-//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
-//            break;
-//        case 6:
-//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '6%'";  
-//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
-//            break;
-//
-//
-//        case 8:
-//        	
-//        	try{current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '[689]%'";  
-//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);}
-//        	catch (SQLException e) {
-//                Log.e(TAG, e.toString());
-//            }
-//            break;
-//        	
-//        
-        }
-        
 
-        while (cursor.moveToNext()) {
+            current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent=" + "'1' order by code";
+            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+            break;
+        // case 2:
+        // current_sql_sel = "SELECT  * FROM "+TB_NAME
+        // +" where "+"code"+" like '2%'";
+        // cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+        // break;
+        // case 3:
+        // current_sql_sel = "SELECT  * FROM "+TB_NAME
+        // +" where "+"code"+" like '[347]%'";
+        // cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+        // break;
+        // case 5:
+        // current_sql_sel = "SELECT  * FROM "+TB_NAME
+        // +" where "+"code"+" like '5%'";
+        // cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+        // break;
+        // case 6:
+        // current_sql_sel = "SELECT  * FROM "+TB_NAME
+        // +" where "+"code"+" like '6%'";
+        // cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+        // break;
+        //
+        //
+        // case 8:
+        //
+        // try{current_sql_sel = "SELECT  * FROM "+TB_NAME
+        // +" where "+"code"+" like '[689]%'";
+        // cursor = getWritableDatabase().rawQuery(current_sql_sel, null);}
+        // catch (SQLException e) {
+        // Log.e(TAG, e.toString());
+        // }
+        // break;
+        //
+        //
+        }
+
+        while (cursor != null && cursor.moveToNext()) {
             HashMap<String, String> item = new HashMap<String, String>();
             item.put("cn_name", cursor.getString(cursor.getColumnIndex("cn_name")));
             item.put("en_name", cursor.getString(cursor.getColumnIndex("en_name")));
@@ -174,16 +176,15 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
         return list;
     }
-    
+
     public ArrayList<Map<String, String>> searchCountry(String countryName) {
 
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
-        String current_sql_sel; 
-       
-            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"cn_name= '"+countryName+"'";  
-            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
+        String current_sql_sel;
 
+        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "cn_name= '" + countryName + "'";
+        cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
 
         while (cursor.moveToNext()) {
             HashMap<String, String> item = new HashMap<String, String>();
@@ -200,10 +201,40 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    /** zzz */
+    public String queryCallPrefix(String countryIso) {
+        String ret = null;
+        Cursor cursor = null;
+        cursor = getWritableDatabase().query(TB_NAME, new String[] { "call_prefix" }, "countryiso = ?",
+                new String[] { countryIso.toUpperCase() }, null, null, null);
+        if (cursor.moveToFirst()) {
+            ret = cursor.getString(0);
+        }
+        cursor.close();
+        ret = ret == null ? "00" : ret;
+        Log.v(TAG, "got call prefix " + ret);
+        return ret;
+    }
 
-    
-    
+    /** zzz */
+    public ContentValues queryLocalCountryCodeAndName(String countryIso) {
+        ContentValues ret = new ContentValues();
+        Cursor cursor = null;
+        cursor = getWritableDatabase().query(TB_NAME, new String[] { "cn_name", "code" }, "countryiso = ?",
+                new String[] { countryIso.toUpperCase() }, null, null, null);
+        if (cursor.moveToFirst()) {
+            if (cursor.getString(0) != null) {
+                ret.put("name", cursor.getString(0));
+            } else {
+                ret.put("name", "unknown");
+            }
 
+            if (cursor.getString(1) != null) {
+                ret.put("code", cursor.getString(1));
+            } else {
+                ret.put("code", "");
+            }
+        }
+        return ret;
+    }
 }
-
-

@@ -11,6 +11,7 @@ import edu.bupt.contacts.blacklist.BlacklistDBHelper;
 import a_vcard.android.util.Log;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.ServiceManager;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.telephony.TelephonyManager;
 import android.text.method.DialerKeyListener;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,7 +38,7 @@ import android.widget.Toast;
 
 public class EdialDialog extends HoloDialog {
 
-    CountryCodeDBHelper mdbHelper;
+    private static final String TAG = "EdialDialog";
     private Button asiaButton;
     private Button europeButton;
     private Button oceaniaButton;
@@ -50,11 +52,18 @@ public class EdialDialog extends HoloDialog {
     private String countryName;
     private StringBuffer stringTitle;
     private StringBuffer stringPre;
+
+    /** zzz */
+    private Context context;
+
     // private Cursor cursor;
     // private SimpleAdapter adapter;
 
     public EdialDialog(final Context context, String digits) {
         super(context);
+
+        /** zzz */
+        this.context = context;
 
         // asiaButton = (Button) this.findViewById(R.id.asiaButton);
         // europeButton = (Button) this.findViewById(R.id.europeButton);
@@ -93,7 +102,6 @@ public class EdialDialog extends HoloDialog {
         final RadioButton call133Button = (RadioButton) this.findViewById(R.id.radioButton_133);
         final RadioButton callOtherButton = (RadioButton) this.findViewById(R.id.radioButton_callOther);
         final RadioButton callLocalButton = (RadioButton) this.findViewById(R.id.radioButton_callLocal);
-        
 
         // final Button asiaButton = (Button)
         // this.findViewById(R.id.asiaButton);
@@ -113,7 +121,7 @@ public class EdialDialog extends HoloDialog {
         stringPre = new StringBuffer();
         stringPre.append("+86");
         stringTitle = new StringBuffer();
-        stringTitle.append("中国+86");
+        stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
         final TextView TextViewSuffix = (TextView) this.findViewById(R.id.textView_suffix);
         EditText EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
         EditTextNumber.setText(sendNumber);
@@ -128,22 +136,24 @@ public class EdialDialog extends HoloDialog {
                 switch (checkedId) {
 
                 case R.id.radioButton_international:
-                    stringTitle.replace(0, stringTitle.length(), "中国+86");
+                    stringTitle.replace(0, stringTitle.length(),
+                            context.getString(R.string.esurfing_dial_call_title_china));
                     stringPre.replace(0, stringPre.length(), "+86");
                     TextViewSuffix.setVisibility(8);
                     callBackChinaButton.setChecked(true);
                     break;
 
                 case R.id.radioButton_133:
-                    stringTitle.replace(0, stringTitle.length(), "中国+86");
+                    stringTitle.replace(0, stringTitle.length(),
+                            context.getString(R.string.esurfing_dial_call_title_china));
                     stringPre.replace(0, stringPre.length(), "**133*86");
                     TextViewSuffix.setVisibility(0);
                     callBackChinaButton.setChecked(true);
                     break;
 
                 case R.id.radioButton_callOther:
-//                    stringTitle.replace(0, stringTitle.length(), "美国+1");
-//                    stringPre.replace(0, stringPre.length(), "+1");
+                    // stringTitle.replace(0, stringTitle.length(), "美国+1");
+                    // stringPre.replace(0, stringPre.length(), "+1");
 
                     TextViewSuffix.setVisibility(8);
 
@@ -164,35 +174,45 @@ public class EdialDialog extends HoloDialog {
                     southAmericaButton = (Button) nationalCodeDialog
                             .findViewById(R.id.button_national_picker_southamerica);
                     listView = (ListView) nationalCodeDialog.findViewById(R.id.nationalCodeListView);
-                    
-                    searchButtonEditText = (EditText) nationalCodeDialog.findViewById(R.id.edittext_national_picker_search);
+
+                    searchButtonEditText = (EditText) nationalCodeDialog
+                            .findViewById(R.id.edittext_national_picker_search);
                     countrySearchButton = (Button) nationalCodeDialog.findViewById(R.id.button_national_picker_search);
 
                     pickCountry();
-                    searchCountry(searchButtonEditText,countrySearchButton);
+                    searchCountry(searchButtonEditText, countrySearchButton);
                     chooseItem();
                     nationalCodeDialog.setTitle(R.string.esurfing_dial_pick_country);
                     nationalCodeDialog.show();
-                   
+
                     break;
 
                 case R.id.radioButton_callLocal:
                     TextViewSuffix.setVisibility(8);
-                    stringTitle.replace(0, stringTitle.length(), "拨打本地");
-                    stringPre.replace(0, stringPre.length(), "");
+
+                    /** zzz */
+                    ContentValues cv = getLocalCountryCodeAndName();
+                    stringTitle.replace(0, stringTitle.length(), cv.getAsString("name") + " +" + cv.getAsString("code"));
+                    stringPre.replace(0, stringPre.length(), "+" + cv.getAsString("code"));
+
+                    // stringTitle.replace(0, stringTitle.length(),
+                    // context.getString(R.string.esurfing_dial_call_title_local));
+                    // stringPre.replace(0, stringPre.length(), "");
                     callBackChinaButton.setChecked(false);
                     break;
 
                 }
-                Log.i("tag",stringTitle.toString());
-                Log.i("tag",stringPre.toString());
+                Log.i("tag", stringTitle.toString());
+                Log.i("tag", stringPre.toString());
                 title.setText(stringTitle);
                 pre.setText(stringPre);
-           
+
             }
+
         });
     }
 
+    /** zzz */
     private void call(String number) {
         try {
             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
@@ -205,17 +225,16 @@ public class EdialDialog extends HoloDialog {
             e.printStackTrace();
         }
     }
-    
-    
-  //northamerica 1
-  //africa      2
-  //europe       3(347)
-  //southamerica 5
-  //oceania      6
-  //asia         8(698)    	
-    private void pickCountry() {    	
-        mdbHelper = new CountryCodeDBHelper(this.getContext());
-        
+
+    // northamerica 1
+    // africa 2
+    // europe 3(347)
+    // southamerica 5
+    // oceania 6
+    // asia 8(698)
+    private void pickCountry() {
+        final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
+
         africaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -232,7 +251,7 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-        
+
         northAmericaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -249,7 +268,7 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-        
+
         asiaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -266,7 +285,7 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-        
+
         southAmericaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -283,8 +302,8 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-        
-       oceaniaButton.setOnClickListener(new Button.OnClickListener() {
+
+        oceaniaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -300,7 +319,7 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-        
+
         europeButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -317,61 +336,65 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
+
+        mdbHelper.close();
     }
 
-    
-    private void searchCountry(final EditText inputcountry,Button searchButton){
-    	mdbHelper = new CountryCodeDBHelper(this.getContext());
+    private void searchCountry(final EditText inputcountry, Button searchButton) {
+        final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
 
-    		searchButton.setOnClickListener(new Button.OnClickListener() {
+        searchButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
-            	
-            	countryName = inputcountry.getText().toString();
-                Toast.makeText(EdialDialog.this.getContext(),countryName, Toast.LENGTH_LONG).show();  
+                countryName = inputcountry.getText().toString();
+                Toast.makeText(EdialDialog.this.getContext(), countryName, Toast.LENGTH_LONG).show();
 
-    		    Log.i("name", countryName);
+                Log.i("name", countryName);
                 list = mdbHelper.searchCountry(countryName);
-              SimpleAdapter adapter = new SimpleAdapter(EdialDialog.this.getContext(), list, R.layout.edial_item,
+                SimpleAdapter adapter = new SimpleAdapter(EdialDialog.this.getContext(), list, R.layout.edial_item,
                         new String[] { "cn_name", "code" }, new int[] { R.id.edial_item_text1, R.id.edial_item_text2 });
 
                 listView.setAdapter(adapter);
-            
-            	
+
             }
         });
-    		
-    	}
-	
-	
-    private void chooseItem(){
-       TextView countryname;
-       TextView code;
-    	listView.setClickable(true);
-    	listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+        mdbHelper.close();
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				TextView country = (TextView ) arg1.findViewById(R.id.edial_item_text1);
-				TextView code = (TextView ) arg1.findViewById(R.id.edial_item_text2);
-              Log.i("tag",country.toString());
-              Log.i("tag",code.toString());
-              String countryname = (String) country.getText();
-              String countrycode = (String) code.getText();
-             
-              stringTitle.replace(0, stringTitle.length(), countryname+countrycode);
-              stringPre.replace(0, stringPre.length(), countrycode);
-			}
-		});
     }
 
+    private void chooseItem() {
+        TextView countryname;
+        TextView code;
+        listView.setClickable(true);
+        listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                // TODO Auto-generated method stub
+                TextView country = (TextView) arg1.findViewById(R.id.edial_item_text1);
+                TextView code = (TextView) arg1.findViewById(R.id.edial_item_text2);
+                Log.i("tag", country.toString());
+                Log.i("tag", code.toString());
+                String countryname = (String) country.getText();
+                String countrycode = (String) code.getText();
+
+                stringTitle.replace(0, stringTitle.length(), countryname + countrycode);
+                stringPre.replace(0, stringPre.length(), countrycode);
+            }
+        });
+    }
+
+    /** zzz */
+    private ContentValues getLocalCountryCodeAndName() {
+        CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String countryIso = tm.getNetworkCountryIso();
+        Log.i(TAG, countryIso);
+        ContentValues ret = mdbHelper.queryLocalCountryCodeAndName(countryIso);
+
+        return ret;
+    }
 }
-
-
-	
