@@ -106,16 +106,59 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     // return result;
     // }
 
+    
+
+
+
+    
+    
+    
+  //northamerica 1
+  //africa      2
+  //europe       3(347)
+  //northamerica 5
+  //oceania      6
+  //asia         8(698)    	   
     public ArrayList<Map<String, String>> getCountry(int continent) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
-        if (continent == 1) {
-            cursor = getWritableDatabase().query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" },
-                    "code=86", null, null, null, null);
-        } else {
-            cursor = getWritableDatabase().query(TB_NAME, new String[] { "cn_name", "en_name", "code", "countryiso" },
-                    "code=86", null, null, null, null);
+        String current_sql_sel; 
+        switch(continent){
+        case 1:
+        	
+            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"continent="+"'1' order by code";  
+            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
+            break;
+//        case 2:
+//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '2%'";  
+//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
+//            break;
+//        case 3:
+//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '[347]%'";  
+//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+//            break;
+//        case 5:
+//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '5%'";  
+//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+//            break;
+//        case 6:
+//            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '6%'";  
+//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
+//            break;
+//
+//
+//        case 8:
+//        	
+//        	try{current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"code"+" like '[689]%'";  
+//            cursor = getWritableDatabase().rawQuery(current_sql_sel, null);}
+//        	catch (SQLException e) {
+//                Log.e(TAG, e.toString());
+//            }
+//            break;
+//        	
+//        
         }
+        
 
         while (cursor.moveToNext()) {
             HashMap<String, String> item = new HashMap<String, String>();
@@ -123,6 +166,33 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
             item.put("en_name", cursor.getString(cursor.getColumnIndex("en_name")));
             item.put("code", cursor.getString(cursor.getColumnIndex("code")));
             item.put("countryiso", cursor.getString(cursor.getColumnIndex("countryiso")));
+            item.put("continent", cursor.getString(cursor.getColumnIndex("continent")));
+            item.put("call_prefix", cursor.getString(cursor.getColumnIndex("call_prefix")));
+
+            list.add(item);
+        }
+
+        return list;
+    }
+    
+    public ArrayList<Map<String, String>> searchCountry(String countryName) {
+
+        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        Cursor cursor = null;
+        String current_sql_sel; 
+       
+            current_sql_sel = "SELECT  * FROM "+TB_NAME +" where "+"cn_name= '"+countryName+"'";  
+            cursor = getWritableDatabase().rawQuery(current_sql_sel, null); 
+
+
+        while (cursor.moveToNext()) {
+            HashMap<String, String> item = new HashMap<String, String>();
+            item.put("cn_name", cursor.getString(cursor.getColumnIndex("cn_name")));
+            item.put("en_name", cursor.getString(cursor.getColumnIndex("en_name")));
+            item.put("code", cursor.getString(cursor.getColumnIndex("code")));
+            item.put("countryiso", cursor.getString(cursor.getColumnIndex("countryiso")));
+            item.put("continent", cursor.getString(cursor.getColumnIndex("continent")));
+            item.put("call_prefix", cursor.getString(cursor.getColumnIndex("call_prefix")));
 
             list.add(item);
         }
@@ -130,4 +200,10 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+
+    
+    
+
 }
+
+
