@@ -84,10 +84,10 @@ public class EdialDialog extends HoloDialog {
         EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
 
         // TODO
-        // if (isC2C()) {
-        // call133Button.setClickable(false);
-        // call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
-        // }
+        if (isC2C()) {
+            call133Button.setClickable(false);
+            call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
+        }
 
         // stringPre = new StringBuffer();
         // stringPre.append("+86");
