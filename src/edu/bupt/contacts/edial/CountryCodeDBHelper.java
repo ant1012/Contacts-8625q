@@ -23,7 +23,6 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     private static final String TB_NAME = "international_phonecode";
 
     // ddd start
-    // private static SQLiteDatabase dbInstance;
     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
     // ddd end
 
@@ -117,14 +116,16 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     // northamerica 5
     // oceania 6
     // asia 8(698)
+    
     public ArrayList<Map<String, String>> getCountry(int continent) {
-        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        
+    	ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
         String current_sql_sel;
         // switch(continent){
         // case 1:
 
-        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent='" + continent + "' order by code";
+        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent='" + continent + "'AND code!='' order by code";
         cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
         // break;
         // case 2:
@@ -182,7 +183,6 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
         String current_sql_sel;
-
         current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "cn_name= '" + countryName + "'";
         cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
 
