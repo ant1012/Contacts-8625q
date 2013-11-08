@@ -87,5 +87,6 @@
     <color name="incall_call_banner_background">#A0000000</color> <!-- semitransparent black -->
     <color name="incall_call_banner_text_color">#FFFFFF</color> <!-- white -->
     <color name="incall_secondary_info_background">#8033b5e5</color> <!-- semitransparent blueish grey -->
+    <color name="edial_text_color_unclickable">#777777</color>
 
 </resources>

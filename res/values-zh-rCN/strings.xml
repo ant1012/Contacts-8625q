@@ -12,7 +12,7 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
+     limitations under the License.
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -724,5 +724,7 @@
     <string name="esurfing_dial_call_title_local">拨打本地</string>
     <string name="esurfing_dial_call_local">拨打本地</string>
     <string name="esurfing_dial_call_realcall">拨号</string>
+    <string name="esurfing_dial_suffix_hash">#</string>
+    <string name="esurfing_dial_suffix_null"></string>
 
 </resources>

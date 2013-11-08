@@ -1,33 +1,21 @@
 package edu.bupt.contacts.edial;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
 import edu.bupt.contacts.R;
-import edu.bupt.contacts.blacklist.BlacklistDBHelper;
 import a_vcard.android.util.Log;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.ServiceManager;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.DialerKeyListener;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,6 +29,23 @@ import android.widget.Toast;
 public class EdialDialog extends HoloDialog {
 
     private static final String TAG = "EdialDialog";
+    private String callNumber;
+    private String sendNumber;
+    /** zzz */
+    private Context context;
+    private RadioGroup radioGroupEsurfing;
+    private RadioButton callBackChinaButton;
+    private RadioButton internationalButton;
+    private RadioButton call133Button;
+    private RadioButton callOtherButton;
+    private RadioButton callLocalButton;
+    private TextView title;
+    private EditText EditTextNumber;
+    private TextView TextViewPrefix;
+    private TextView TextViewSuffix;
+    private Button callButton;
+
+    // for pickCountry dialog
     private Button asiaButton;
     private Button europeButton;
     private Button oceaniaButton;
@@ -52,12 +57,6 @@ public class EdialDialog extends HoloDialog {
     private EditText searchButtonEditText;
     private Button countrySearchButton;
     private String countryName;
-    private StringBuffer stringTitle;
-    private StringBuffer stringPre;
-    private String callNumber;
-    private String sendNumber;
-    /** zzz */
-    private Context context;
 
     // private Cursor cursor;
     // private SimpleAdapter adapter;
@@ -72,82 +71,88 @@ public class EdialDialog extends HoloDialog {
         // Dialog dialog = new Dialog(context);
         this.setContentView(R.layout.dialpad_esurfing);
         this.setTitle(R.string.esurfing_dial);
-        final RadioButton callBackChinaButton = (RadioButton) this.findViewById(R.id.radioButton_callBackChina);
-        final RadioButton internationalButton = (RadioButton) this.findViewById(R.id.radioButton_international);
-        final RadioButton call133Button = (RadioButton) this.findViewById(R.id.radioButton_133);
-        final RadioButton callOtherButton = (RadioButton) this.findViewById(R.id.radioButton_callOther);
-        final RadioButton callLocalButton = (RadioButton) this.findViewById(R.id.radioButton_callLocal);
-        final TextView title = (TextView) this.findViewById(R.id.textView_title);
-        final TextView pre = (TextView) this.findViewById(R.id.textView_pre);
-        final TextView TextViewSuffix = (TextView) this.findViewById(R.id.textView_suffix);
-        Button callButton = (Button) this.findViewById(R.id.dialButton);
-        RadioGroup radioGroupEsurfing = (RadioGroup) this.findViewById(R.id.radioGroupEsurfing);
-        final EditText EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
-        
-        stringPre = new StringBuffer();
-        stringPre.append("+86");
-        stringTitle = new StringBuffer();
-        stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
-        
+        callBackChinaButton = (RadioButton) this.findViewById(R.id.radioButton_callBackChina);
+        internationalButton = (RadioButton) this.findViewById(R.id.radioButton_international);
+        call133Button = (RadioButton) this.findViewById(R.id.radioButton_133);
+        callOtherButton = (RadioButton) this.findViewById(R.id.radioButton_callOther);
+        callLocalButton = (RadioButton) this.findViewById(R.id.radioButton_callLocal);
+        title = (TextView) this.findViewById(R.id.textView_title);
+        TextViewPrefix = (TextView) this.findViewById(R.id.textView_pre);
+        TextViewSuffix = (TextView) this.findViewById(R.id.textView_suffix);
+        callButton = (Button) this.findViewById(R.id.dialButton);
+        radioGroupEsurfing = (RadioGroup) this.findViewById(R.id.radioGroupEsurfing);
+        EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
+
+        // TODO
+        // if (isC2C()) {
+        // call133Button.setClickable(false);
+        // call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
+        // }
+
+        // stringPre = new StringBuffer();
+        // stringPre.append("+86");
+        // stringTitle = new StringBuffer();
+        // stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
 
         EditTextNumber.setText(sendNumber);
         EditTextNumber.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable arg0) {
-				// TODO Auto-generated method stub
-				sendNumber = EditTextNumber.getText().toString();
- //               Toast.makeText(EdialDialog.this.getContext(),sendNumber, Toast.LENGTH_LONG).show();
-			}
-		});
-        
-        callButton = (Button) this.findViewById(R.id.dialButton);
-        //默认拨打国际漫游
-        callNumber="+86"+sendNumber;
-        radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                Log.v(TAG, "onTextChanged");
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                Log.v(TAG, "beforeTextChanged");
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                Log.v(TAG, "afterTextChanged");
+                sendNumber = EditTextNumber.getText().toString();
+                // Toast.makeText(EdialDialog.this.getContext(),sendNumber,
+                // Toast.LENGTH_LONG).show();
+            }
+        });
+
+        callButton = (Button) this.findViewById(R.id.dialButton);
+        // 默认拨打国际漫游
+        // callNumber = "+86" + sendNumber;
+        radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // TODO Auto-generated method stub
+                StringBuffer stringTitle = new StringBuffer();
+                StringBuffer stringPre = new StringBuffer();
                 switch (checkedId) {
 
                 case R.id.radioButton_international:
                     stringTitle.replace(0, stringTitle.length(),
                             context.getString(R.string.esurfing_dial_call_title_china));
                     stringPre.replace(0, stringPre.length(), "+86");
-                    TextViewSuffix.setVisibility(8);
+                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
                     callBackChinaButton.setChecked(true);
-                    callNumber="+86"+sendNumber;
+                    // callNumber = "+86" + sendNumber;
                     break;
 
                 case R.id.radioButton_133:
                     stringTitle.replace(0, stringTitle.length(),
                             context.getString(R.string.esurfing_dial_call_title_china));
                     stringPre.replace(0, stringPre.length(), "**133*86");
-                    TextViewSuffix.setVisibility(0);
+                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_hash);
                     callBackChinaButton.setChecked(true);
-                    callNumber="**133*86"+sendNumber+"%23";
+                    // callNumber = "**133*86" + sendNumber + "%23";
                     break;
 
                 case R.id.radioButton_callOther:
                     // stringTitle.replace(0, stringTitle.length(), "美国+1");
                     // stringPre.replace(0, stringPre.length(), "+1");
+                    stringTitle.replace(0, stringTitle.length(),
+                            context.getString(R.string.esurfing_dial_call_title_china));
+                    stringPre.replace(0, stringPre.length(), "+86");
 
-                    TextViewSuffix.setVisibility(8);
+                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
                     callBackChinaButton.setChecked(false);
                     // Context context = getActivity();
 
@@ -173,7 +178,7 @@ public class EdialDialog extends HoloDialog {
                     pickCountry();
                     searchCountry(searchButtonEditText, countrySearchButton);
                     // chooseItem();
-                   
+
                     listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
                         @Override
@@ -185,9 +190,9 @@ public class EdialDialog extends HoloDialog {
                             Log.i("tag", code.toString());
                             String countryname = (String) country.getText();
                             String countrycode = (String) code.getText();
-                            callNumber="+"+countrycode+sendNumber;
-                            title.setText(countryname+"+"+countrycode);
-                            pre.setText("+"+countrycode);
+                            // callNumber = "+" + countrycode + sendNumber;
+                            title.setText(countryname + "+" + countrycode);
+                            TextViewPrefix.setText("+" + countrycode);
                             nationalCodeDialog.dismiss();
                         }
                     });
@@ -197,13 +202,13 @@ public class EdialDialog extends HoloDialog {
                     break;
 
                 case R.id.radioButton_callLocal:
-                    TextViewSuffix.setVisibility(8);
+                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
 
                     /** zzz */
                     ContentValues cv = getLocalCountryCodeAndName();
                     stringTitle.replace(0, stringTitle.length(), cv.getAsString("name") + " +" + cv.getAsString("code"));
                     stringPre.replace(0, stringPre.length(), "+" + cv.getAsString("code"));
-                    callNumber="+"+cv.getAsString("code")+sendNumber;
+                    // callNumber = "+" + cv.getAsString("code") + sendNumber;
                     // stringTitle.replace(0, stringTitle.length(),
                     // context.getString(R.string.esurfing_dial_call_title_local));
                     // stringPre.replace(0, stringPre.length(), "");
@@ -214,7 +219,7 @@ public class EdialDialog extends HoloDialog {
                 Log.i("tag", stringTitle.toString());
                 Log.i("tag", stringPre.toString());
                 title.setText(stringTitle);
-                pre.setText(stringPre);
+                TextViewPrefix.setText(stringPre);
 
             }
 
@@ -222,14 +227,17 @@ public class EdialDialog extends HoloDialog {
 
         callButton.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				call(callNumber);
-				dismiss();
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                String hash = TextViewSuffix.getText().equals("#") ? "%23" : "";
+                callNumber = TextViewPrefix.getText().toString() + EditTextNumber.getText().toString() + hash;
+                Log.i(TAG, "callNumber - " + callNumber);
+                call(callNumber);
+                dismiss();
 
-			}
-		});
+            }
+        });
     }
 
     /** zzz */
@@ -254,8 +262,8 @@ public class EdialDialog extends HoloDialog {
     // asia 8(698)
     private void pickCountry() {
         final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
-        
-        //默认显示亚洲地区
+
+        // 默认显示亚洲地区
         list = mdbHelper.getCountry(8);
         SimpleAdapter adapter = new SimpleAdapter(EdialDialog.this.getContext(), list, R.layout.edial_item,
                 new String[] { "cn_name", "code" }, new int[] { R.id.edial_item_text1, R.id.edial_item_text2 });
@@ -392,28 +400,29 @@ public class EdialDialog extends HoloDialog {
 
     }
 
-//    private void chooseItem() {
-//        TextView countryname;
-//        TextView code;
-//        listView.setClickable(true);
-//        listView.setOnItemClickListener(new ListView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                // TODO Auto-generated method stub
-//                TextView country = (TextView) arg1.findViewById(R.id.edial_item_text1);
-//                TextView code = (TextView) arg1.findViewById(R.id.edial_item_text2);
-//                Log.i("tag", country.toString());
-//                Log.i("tag", code.toString());
-//                String countryname = (String) country.getText();
-//                String countrycode = (String) code.getText();
-//
-//                stringTitle.replace(0, stringTitle.length(), countryname + countrycode);
-//                stringPre.replace(0, stringPre.length(), countrycode);
-//
-//            }
-//        });
-//    }
+    // private void chooseItem() {
+    // TextView countryname;
+    // TextView code;
+    // listView.setClickable(true);
+    // listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+    //
+    // @Override
+    // public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long
+    // arg3) {
+    // // TODO Auto-generated method stub
+    // TextView country = (TextView) arg1.findViewById(R.id.edial_item_text1);
+    // TextView code = (TextView) arg1.findViewById(R.id.edial_item_text2);
+    // Log.i("tag", country.toString());
+    // Log.i("tag", code.toString());
+    // String countryname = (String) country.getText();
+    // String countrycode = (String) code.getText();
+    //
+    // stringTitle.replace(0, stringTitle.length(), countryname + countrycode);
+    // stringPre.replace(0, stringPre.length(), countrycode);
+    //
+    // }
+    // });
+    // }
 
     /** zzz */
     private ContentValues getLocalCountryCodeAndName() {
@@ -424,5 +433,24 @@ public class EdialDialog extends HoloDialog {
         ContentValues ret = mdbHelper.queryLocalCountryCodeAndName(countryIso);
 
         return ret;
+    }
+
+    /** zzz */
+    private boolean isC2C() {
+        MSimTelephonyManager m = (MSimTelephonyManager) context.getSystemService(context.MSIM_TELEPHONY_SERVICE);
+        // if (!m.isNetworkRoaming(0)) {
+        // return false;
+        // }
+        switch (MSimTelephonyManager.getNetworkType(0)) {
+        case TelephonyManager.NETWORK_TYPE_CDMA:
+        case TelephonyManager.NETWORK_TYPE_1xRTT:
+        case TelephonyManager.NETWORK_TYPE_EVDO_0:
+        case TelephonyManager.NETWORK_TYPE_EVDO_A:
+        case TelephonyManager.NETWORK_TYPE_EVDO_B:
+            return true;
+        default:
+            return false;
+        }
+
     }
 }
