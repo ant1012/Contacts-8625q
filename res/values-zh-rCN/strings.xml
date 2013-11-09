@@ -715,7 +715,8 @@
     <string name="esurfing_dial_continent_europe">欧洲</string>
     <string name="esurfing_dial_continent_australia">大洋洲</string>
     <string name="esurfing_dial_continent_africa">非洲</string>
-    <string name="esurfing_dial_pick_country">选择目标国家地区</string>
+    <string name="esurfing_dial_pick_country">选择目标国家\地区</string>
+    <string name="esurfing_search_hint">输入搜索国家名称，如"中国"</string>
     <string name="esurfing_dial_call_title_china">中国 +86</string>
     <string name="esurfing_dial_call_china">拨回中国大陆</string>
     <string name="esurfing_dial_call_roaming">国际漫游呼叫</string>
