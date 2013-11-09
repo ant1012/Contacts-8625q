@@ -1012,14 +1012,14 @@ import libcore.util.Objects;
         views.quickContactView.assignContactUri(contactUri);
 
         /** zzz */
-        // mContactPhotoManager.loadThumbnail(views.quickContactView, photoId,
-        // true);
-        views.quickContactView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                Log.v(TAG, "onClick");
-            }
-        });
+        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
+
+        // views.quickContactView.setOnClickListener(new OnClickListener() {
+        // @Override
+        // public void onClick(View arg0) {
+        // Log.v(TAG, "onClick");
+        // }
+        // });
     }
 
     /**

@@ -115,12 +115,13 @@ public class EdialService extends Service {
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
             Log.w(TAG, "start with \'+\'");
-            if (isC2CRoaming()) {
-                digit = stripCountryCodePrefix(digit);
-                return true;
-            } else {
-                return false;
-            }
+            // if (isC2CRoaming()) {
+            // digit = stripCountryCodePrefix(digit);
+            // return true;
+            // } else {
+            // return false;
+            // }
+            return false;
         }
 
         // start with '**133', end with '#' ?
@@ -157,12 +158,12 @@ public class EdialService extends Service {
         return strip3;
     }
 
-    private String stripCountryCodePrefix(String s) {
-        // TODO other countries?
-        String strip1 = replacePattern(s, "^((\\+{0,1}86){0,1})", ""); // strip
-                                                                       // +86
-        return strip1;
-    }
+    // private String stripCountryCodePrefix(String s) {
+    // // TODO other countries?
+    // String strip1 = replacePattern(s, "^((\\+{0,1}86){0,1})", ""); // strip
+    // // +86
+    // return strip1;
+    // }
 
     private static String strip133Prefix(String s) {
         StringBuilder sb = new StringBuilder(s);
