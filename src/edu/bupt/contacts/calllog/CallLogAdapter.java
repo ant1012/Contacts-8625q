@@ -46,6 +46,8 @@ import android.os.Message;
 import android.os.ServiceManager;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;
+import android.provider.Contacts;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.text.TextUtils;
 import android.util.Log;
@@ -1008,18 +1010,29 @@ import libcore.util.Objects;
         return callTypes;
     }
 
-    private void setPhoto(CallLogListItemViews views, long photoId, Uri contactUri) {
-        views.quickContactView.assignContactUri(contactUri);
+    private void setPhoto(CallLogListItemViews views, long photoId, final Uri contactUri) {
 
         /** zzz */
+        // views.quickContactView.assignContactUri(contactUri);
+
         mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
 
-        // views.quickContactView.setOnClickListener(new OnClickListener() {
-        // @Override
-        // public void onClick(View arg0) {
-        // Log.v(TAG, "onClick");
-        // }
-        // });
+        views.quickContactView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Log.v(TAG, "onClick");
+                Log.i(TAG, "contactUri - " + contactUri);
+                if (contactUri != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(contactUri);
+                    mContext.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+//                    intent.putExtra(Contacts.Intents.Insert.PHONE, "0533-0033");
+                    mContext.startActivity(intent);
+                }
+            }
+        });
     }
 
     /**

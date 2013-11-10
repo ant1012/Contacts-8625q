@@ -31,7 +31,7 @@ import android.widget.TextView;
  */
 public final class CallLogListItemViews {
     /** The quick contact badge for the contact. */
-    public final QuickContactBadge quickContactView;
+    public final ImageView quickContactView;
     /** The primary action view of the entry. */
     public final View primaryActionView;
     /** The secondary action button on the entry. */
@@ -49,7 +49,7 @@ public final class CallLogListItemViews {
     /** by yuan */
     public final ImageView thirdaryActionView;
 
-    private CallLogListItemViews(QuickContactBadge quickContactView, View primaryActionView,
+    private CallLogListItemViews(ImageView quickContactView, View primaryActionView,
             ImageView secondaryActionView, View dividerView,
             PhoneCallDetailsViews phoneCallDetailsViews,
             TextView listHeaderTextView, View bottomDivider, ImageView thirdaryActionView) {
@@ -65,7 +65,7 @@ public final class CallLogListItemViews {
 
     public static CallLogListItemViews fromView(View view) {
         return new CallLogListItemViews(
-                (QuickContactBadge) view.findViewById(R.id.quick_contact_photo),
+                (ImageView) view.findViewById(R.id.quick_contact_photo),
                 view.findViewById(R.id.primary_action_view),
                 (ImageView) view.findViewById(R.id.secondary_action_icon),
                 view.findViewById(R.id.divider),
@@ -78,7 +78,7 @@ public final class CallLogListItemViews {
     @NeededForTesting
     public static CallLogListItemViews createForTest(Context context) {
         return new CallLogListItemViews(
-                new QuickContactBadge(context),
+                new ImageView(context),
                 new View(context),
                 new ImageView(context),
                 new View(context),
