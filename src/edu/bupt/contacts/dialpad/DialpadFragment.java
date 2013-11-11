@@ -548,9 +548,19 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
      * @return true when {@link #mDigits} is actually filled by the Intent.
      */
     private boolean fillDigitsIfNecessary(Intent intent) {
+
+        /** zzz */
+        // TODO
+
         final String action = intent.getAction();
+
+        Log.i(TAG, "action - " + action);
+
         if (Intent.ACTION_DIAL.equals(action) || Intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
+
+            Log.i(TAG, "uri - " + uri);
+
             if (uri != null) {
                 if (Constants.SCHEME_TEL.equals(uri.getScheme())) {
                     // Put the requested number into the input area

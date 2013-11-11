@@ -63,4 +63,8 @@
         android:id="@+id/menu_add_to_whitelist"
         android:title="@string/menu_add_to_whitelist"/>
 
+    <!-- zzz -->
+    <item
+        android:id="@+id/menu_edit_and_dial"
+        android:title="@string/menu_edit_and_dial"/>
 </menu>

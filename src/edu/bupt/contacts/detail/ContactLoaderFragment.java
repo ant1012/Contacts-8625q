@@ -23,6 +23,7 @@ import java.util.List;
 
 import edu.bupt.contacts.ContactLoader;
 import edu.bupt.contacts.ContactSaveService;
+import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.MenuCalendar;
 import edu.bupt.contacts.activities.MenuHistory;
@@ -77,11 +78,9 @@ import android.widget.Toast;
  * for the contact card. The data is then passed to the listener, who can then
  * pass the data to other {@link View}s.
  */
-public class ContactLoaderFragment extends Fragment implements
-        FragmentKeyListener {
+public class ContactLoaderFragment extends Fragment implements FragmentKeyListener {
 
-    private static final String TAG = ContactLoaderFragment.class
-            .getSimpleName();
+    private static final String TAG = ContactLoaderFragment.class.getSimpleName();
 
     /** The launch code when picking a ringtone */
     private static final int REQUEST_CODE_PICK_RINGTONE = 1;
@@ -162,15 +161,13 @@ public class ContactLoaderFragment extends Fragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         setHasOptionsMenu(true);
         // This is an invisible view. This fragment is declared in a layout, so
         // it can't be
         // "viewless". (i.e. can't return null here.)
         // See also the comment in the layout file.
-        return inflater.inflate(R.layout.contact_detail_loader_fragment,
-                container, false);
+        return inflater.inflate(R.layout.contact_detail_loader_fragment, container, false);
     }
 
     @Override
@@ -180,8 +177,7 @@ public class ContactLoaderFragment extends Fragment implements
         if (mLookupUri != null) {
             Bundle args = new Bundle();
             args.putParcelable(LOADER_ARG_CONTACT_URI, mLookupUri);
-            getLoaderManager().initLoader(LOADER_DETAILS, args,
-                    mDetailLoaderListener);
+            getLoaderManager().initLoader(LOADER_DETAILS, args, mDetailLoaderListener);
         }
     }
 
@@ -201,8 +197,7 @@ public class ContactLoaderFragment extends Fragment implements
         } else if (getActivity() != null) {
             Bundle args = new Bundle();
             args.putParcelable(LOADER_ARG_CONTACT_URI, mLookupUri);
-            getLoaderManager().restartLoader(LOADER_DETAILS, args,
-                    mDetailLoaderListener);
+            getLoaderManager().restartLoader(LOADER_DETAILS, args, mDetailLoaderListener);
         }
     }
 
@@ -217,17 +212,14 @@ public class ContactLoaderFragment extends Fragment implements
         @Override
         public Loader<ContactLoader.Result> onCreateLoader(int id, Bundle args) {
             Uri lookupUri = args.getParcelable(LOADER_ARG_CONTACT_URI);
-            return new ContactLoader(mContext, lookupUri,
-                    true /* loadGroupMetaData */, true /* loadStreamItems */,
+            return new ContactLoader(mContext, lookupUri, true /* loadGroupMetaData */, true /* loadStreamItems */,
                     true /* load invitable account types */, true /* postViewNotification */);
         }
 
         @Override
-        public void onLoadFinished(Loader<ContactLoader.Result> loader,
-                ContactLoader.Result data) {
+        public void onLoadFinished(Loader<ContactLoader.Result> loader, ContactLoader.Result data) {
             if (!mLookupUri.equals(data.getRequestedUri())) {
-                Log.e(TAG, "Different URI: requested=" + mLookupUri
-                        + "  actual=" + data);
+                Log.e(TAG, "Different URI: requested=" + mLookupUri + "  actual=" + data);
                 return;
             }
 
@@ -235,12 +227,9 @@ public class ContactLoaderFragment extends Fragment implements
                 // This shouldn't ever happen, so throw an exception. The {@link
                 // ContactLoader}
                 // should log the actual exception.
-                throw new IllegalStateException("Failed to load contact",
-                        data.getException());
+                throw new IllegalStateException("Failed to load contact", data.getException());
             } else if (data.isNotFound()) {
-                Log.i(TAG,
-                        "No contact found: "
-                                + ((ContactLoader) loader).getLookupUri());
+                Log.i(TAG, "No contact found: " + ((ContactLoader) loader).getLookupUri());
                 mContactData = null;
             } else {
                 mContactData = data;
@@ -269,8 +258,7 @@ public class ContactLoaderFragment extends Fragment implements
     }
 
     public boolean isOptionsMenuChanged() {
-        return mOptionsMenuOptions != isContactOptionsChangeEnabled()
-                || mOptionsMenuEditable != isContactEditable()
+        return mOptionsMenuOptions != isContactOptionsChangeEnabled() || mOptionsMenuEditable != isContactEditable()
                 || mOptionsMenuShareable != isContactShareable()
                 || mOptionsMenuCanCreateShortcut != isContactCanCreateShortcut();
     }
@@ -291,8 +279,7 @@ public class ContactLoaderFragment extends Fragment implements
 
         // Hide telephony-related settings (ringtone, send to voicemail)
         // if we don't have a telephone
-        final MenuItem optionsSendToVoicemail = menu
-                .findItem(R.id.menu_send_to_voicemail);
+        final MenuItem optionsSendToVoicemail = menu.findItem(R.id.menu_send_to_voicemail);
         if (optionsSendToVoicemail != null) {
             optionsSendToVoicemail.setChecked(mSendToVoicemailState);
             optionsSendToVoicemail.setVisible(mOptionsMenuOptions);
@@ -315,14 +302,12 @@ public class ContactLoaderFragment extends Fragment implements
         final MenuItem shareMenu = menu.findItem(R.id.menu_share);
         shareMenu.setVisible(mOptionsMenuShareable);
 
-        final MenuItem createContactShortcutMenu = menu
-                .findItem(R.id.menu_create_contact_shortcut);
+        final MenuItem createContactShortcutMenu = menu.findItem(R.id.menu_create_contact_shortcut);
         createContactShortcutMenu.setVisible(mOptionsMenuCanCreateShortcut);
     }
 
     public boolean isContactOptionsChangeEnabled() {
-        return mContactData != null && !mContactData.isDirectoryEntry()
-                && PhoneCapabilityTester.isPhone(mContext);
+        return mContactData != null && !mContactData.isDirectoryEntry() && PhoneCapabilityTester.isPhone(mContext);
     }
 
     public boolean isContactEditable() {
@@ -334,8 +319,7 @@ public class ContactLoaderFragment extends Fragment implements
     }
 
     public boolean isContactCanCreateShortcut() {
-        return mContactData != null && !mContactData.isUserProfile()
-                && !mContactData.isDirectoryEntry();
+        return mContactData != null && !mContactData.isUserProfile() && !mContactData.isDirectoryEntry();
     }
 
     @Override
@@ -395,8 +379,7 @@ public class ContactLoaderFragment extends Fragment implements
                 return false;
 
             final String lookupKey = mContactData.getLookupKey();
-            Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI,
-                    lookupKey);
+            Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, lookupKey);
 
             /** zzz */
             // if (mContactData.isUserProfile()) {
@@ -484,8 +467,7 @@ public class ContactLoaderFragment extends Fragment implements
             // Update state and save
             mSendToVoicemailState = !mSendToVoicemailState;
             item.setChecked(mSendToVoicemailState);
-            Intent intent = ContactSaveService.createSetSendToVoicemail(
-                    mContext, mLookupUri, mSendToVoicemailState);
+            Intent intent = ContactSaveService.createSetSendToVoicemail(mContext, mLookupUri, mSendToVoicemailState);
             mContext.startService(intent);
             return true;
         }
@@ -513,8 +495,7 @@ public class ContactLoaderFragment extends Fragment implements
             String phone = null;
             long contactId;
 
-            Cursor c = mContext.getContentResolver().query(uri, null, null,
-                    null, null);
+            Cursor c = mContext.getContentResolver().query(uri, null, null, null, null);
             int phoneIdx = 0;
             int idIdx = c.getColumnIndexOrThrow(Phone._ID);
 
@@ -522,13 +503,9 @@ public class ContactLoaderFragment extends Fragment implements
             // phone = c.getString(phoneIdx);
             contactId = c.getLong(idIdx);
 
-            if (Integer
-                    .parseInt(c.getString(c
-                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                Cursor p = mContext.getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        new String[] { CommonDataKinds.Phone.NUMBER },
-                        CommonDataKinds.Phone.CONTACT_ID + " =? ",
+            if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                Cursor p = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
                         new String[] { String.valueOf(contactId) }, null);
                 p.moveToNext();
                 phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
@@ -539,35 +516,24 @@ public class ContactLoaderFragment extends Fragment implements
 
             Log.i(TAG, "phone - " + phone);
             if (phone == null) {
-                Toast.makeText(mContext,
-                        R.string.menu_add_to_blacklist_nophonenum,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.menu_add_to_blacklist_nophonenum, Toast.LENGTH_SHORT).show();
                 return true;
             }
 
             final String phoneFinal = phone;
 
-            new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.menu_add_to_blacklist)
-                    .setMessage(
-                            mContext.getString(
-                                    R.string.menu_add_to_blacklist_check, name))
+            new AlertDialog.Builder(mContext).setTitle(R.string.menu_add_to_blacklist)
+                    .setMessage(mContext.getString(R.string.menu_add_to_blacklist_check, name))
                     .setIconAttribute(android.R.attr.alertDialogIcon)
-                    .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0,
-                                        int arg1) {
-                                    BlacklistDBHelper mDBHelper;
-                                    mDBHelper = new BlacklistDBHelper(mContext,
-                                            1);
-                                    mDBHelper.addPeople(name, phoneFinal);
-                                    Toast.makeText(mContext,
-                                            R.string.menu_add_to_blacklist,
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }).setNegativeButton(android.R.string.cancel, null)
-                    .show();
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            BlacklistDBHelper mDBHelper;
+                            mDBHelper = new BlacklistDBHelper(mContext, 1);
+                            mDBHelper.addPeople(name, phoneFinal);
+                            Toast.makeText(mContext, R.string.menu_add_to_blacklist, Toast.LENGTH_SHORT).show();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, null).show();
 
             return true;
         }
@@ -590,8 +556,7 @@ public class ContactLoaderFragment extends Fragment implements
             String phone = null;
             long contactId;
 
-            Cursor c = mContext.getContentResolver().query(uri, null, null,
-                    null, null);
+            Cursor c = mContext.getContentResolver().query(uri, null, null, null, null);
             int phoneIdx = 0;
             int idIdx = c.getColumnIndexOrThrow(Phone._ID);
 
@@ -599,13 +564,9 @@ public class ContactLoaderFragment extends Fragment implements
             // phone = c.getString(phoneIdx);
             contactId = c.getLong(idIdx);
 
-            if (Integer
-                    .parseInt(c.getString(c
-                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                Cursor p = mContext.getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        new String[] { CommonDataKinds.Phone.NUMBER },
-                        CommonDataKinds.Phone.CONTACT_ID + " =? ",
+            if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                Cursor p = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
                         new String[] { String.valueOf(contactId) }, null);
                 p.moveToNext();
                 phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
@@ -616,42 +577,60 @@ public class ContactLoaderFragment extends Fragment implements
 
             Log.i(TAG, "phone - " + phone);
             if (phone == null) {
-                Toast.makeText(mContext,
-                        R.string.menu_add_to_blacklist_nophonenum,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.menu_add_to_blacklist_nophonenum, Toast.LENGTH_SHORT).show();
                 return true;
             }
 
             final String phoneFinal = phone;
 
-            new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.menu_add_to_whitelist)
-                    .setMessage(
-                            mContext.getString(
-                                    R.string.menu_add_to_whitelist_check, name))
+            new AlertDialog.Builder(mContext).setTitle(R.string.menu_add_to_whitelist)
+                    .setMessage(mContext.getString(R.string.menu_add_to_whitelist_check, name))
                     .setIconAttribute(android.R.attr.alertDialogIcon)
-                    .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0,
-                                        int arg1) {
-                                    WhiteListDBHelper mDBHelper;
-                                    mDBHelper = new WhiteListDBHelper(mContext,
-                                            1);
-                                    mDBHelper.addPeople(name, phoneFinal);
-                                    Toast.makeText(mContext,
-                                            R.string.menu_add_to_whitelist,
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }).setNegativeButton(android.R.string.cancel, null)
-                    .show();
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            WhiteListDBHelper mDBHelper;
+                            mDBHelper = new WhiteListDBHelper(mContext, 1);
+                            mDBHelper.addPeople(name, phoneFinal);
+                            Toast.makeText(mContext, R.string.menu_add_to_whitelist, Toast.LENGTH_SHORT).show();
+                        }
+                    }).setNegativeButton(android.R.string.cancel, null).show();
 
             return true;
 
         }
+        /** zzz */
         case R.id.menu_share_as_text: {
             Log.v(TAG, "R.id.menu_share_as_text");
             shareAsText();
+            return true;
+        }
+        /** zzz */
+        case R.id.menu_edit_and_dial: {
+            Log.v(TAG, "R.id.menu_edit_and_dial");
+            Uri uri = mContactData.getLookupUri();
+            String phone = null;
+            long contactId;
+
+            Cursor c = mContext.getContentResolver().query(uri, null, null, null, null);
+            int phoneIdx = 0;
+            int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+
+            c.moveToNext();
+            // phone = c.getString(phoneIdx);
+            contactId = c.getLong(idIdx);
+
+            if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                Cursor p = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
+                        new String[] { String.valueOf(contactId) }, null);
+                p.moveToNext();
+                phoneIdx = p.getColumnIndexOrThrow(Phone.NUMBER);
+                phone = p.getString(phoneIdx);
+                p.close();
+            }
+            c.close();
+            startActivity(new Intent(Intent.ACTION_DIAL, ContactsUtils.getCallUri(phone)));
         }
         }
         return false;
@@ -664,35 +643,26 @@ public class ContactLoaderFragment extends Fragment implements
 
         Uri contactData2 = mLookupUri;
 
-        final Cursor c2 = mContext.getContentResolver().query(contactData2,
-                null, null, null, null);
+        final Cursor c2 = mContext.getContentResolver().query(contactData2, null, null, null, null);
         if (c2.moveToFirst()) {
 
-            String id = c2.getString(c2
-                    .getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+            String id = c2.getString(c2.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
 
-            String name = c2
-                    .getString(c2
-                            .getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            String name = c2.getString(c2.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
             if (name != null) {
                 number_selected.add("姓名： " + name);
             }
 
             Log.i(TAG, "id - " + id);
 
-            Cursor emailCur = mContext.getContentResolver().query(
-                    ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                    new String[] { id }, null);
+            Cursor emailCur = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[] { id }, null);
             while (emailCur.moveToNext()) {
                 // This would allow you get several email addresses
                 // if the email addresses were stored in an array
-                String email = emailCur
-                        .getString(emailCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                String emailType = emailCur
-                        .getString(emailCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+                String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                String emailType = emailCur.getString(emailCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 
                 number_selected.add("Email: " + email);
                 Log.i(TAG, "email: " + email + " type: " + emailType);
@@ -700,36 +670,26 @@ public class ContactLoaderFragment extends Fragment implements
             }
             emailCur.close();
 
-            String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
-                    + ContactsContract.Data.MIMETYPE + " = ?";
-            String[] addrWhereParams = new String[] {
-                    id,
+            String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] addrWhereParams = new String[] { id,
                     ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
-            Cursor addrCur = mContext.getContentResolver().query(
-                    ContactsContract.Data.CONTENT_URI, null, addrWhere,
+            Cursor addrCur = mContext.getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, addrWhere,
                     addrWhereParams, null);
             while (addrCur.moveToNext()) {
-                String poBox = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
-                String street = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
-                String city = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
-                String state = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
-                String postalCode = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
-                String country = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
-                String type = addrCur
-                        .getString(addrCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
+                String poBox = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
+                String street = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
+                String city = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
+                String state = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
+                String postalCode = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
+                String country = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
+                String type = addrCur.getString(addrCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
 
                 StringBuilder sb_location = new StringBuilder();
 
@@ -758,27 +718,19 @@ public class ContactLoaderFragment extends Fragment implements
                     number_selected.add("地址： " + sb_location.toString());
                 }
 
-                Log.i(TAG, "street: " + street + " city: " + city + state
-                        + postalCode + country + type);
+                Log.i(TAG, "street: " + street + " city: " + city + state + postalCode + country + type);
 
             }
             addrCur.close();
 
-            String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
-                    + ContactsContract.Data.MIMETYPE + " = ?";
-            String[] imWhereParams = new String[] { id,
-                    ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE };
-            Cursor imCur = mContext.getContentResolver().query(
-                    ContactsContract.Data.CONTENT_URI, null, imWhere,
+            String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] imWhereParams = new String[] { id, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE };
+            Cursor imCur = mContext.getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, imWhere,
                     imWhereParams, null);
             if (imCur.moveToFirst()) {
-                String imName = imCur
-                        .getString(imCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+                String imName = imCur.getString(imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
                 String imType;
-                imType = imCur
-                        .getString(imCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
+                imType = imCur.getString(imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
 
                 number_selected.add("即时消息： " + imName);
 
@@ -787,21 +739,16 @@ public class ContactLoaderFragment extends Fragment implements
             }
             imCur.close();
 
-            String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND "
-                    + ContactsContract.Data.MIMETYPE + " = ?";
-            String[] orgWhereParams = new String[] {
-                    id,
+            String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+            String[] orgWhereParams = new String[] { id,
                     ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
-            Cursor orgCur = mContext.getContentResolver().query(
-                    ContactsContract.Data.CONTENT_URI, null, orgWhere,
+            Cursor orgCur = mContext.getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, orgWhere,
                     orgWhereParams, null);
             if (orgCur.moveToFirst()) {
-                String orgName = orgCur
-                        .getString(orgCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
-                String title = orgCur
-                        .getString(orgCur
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
+                String orgName = orgCur.getString(orgCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
+                String title = orgCur.getString(orgCur
+                        .getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
 
                 number_selected.add("单位： " + orgName + " 职务：" + title);
                 Log.i(TAG, "orgName: " + orgName + " title: " + title);
@@ -809,31 +756,24 @@ public class ContactLoaderFragment extends Fragment implements
             }
             orgCur.close();
 
-            String hasPhone = c2
-                    .getString(c2
-                            .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+            String hasPhone = c2.getString(c2.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
             Log.i(TAG, "hasPhone - " + hasPhone);
 
             if (hasPhone.equalsIgnoreCase("1")) {
-                Cursor phones = mContext.getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-                                + " = " + id, null, null);
+                Cursor phones = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
                 phones.moveToFirst();
                 // ArrayList<String> number_selected = new
                 // ArrayList<String>();
 
                 do {
 
-                    number_selected.add("电话： "
-                            + phones.getString(phones.getColumnIndex("data1")));
+                    number_selected.add("电话： " + phones.getString(phones.getColumnIndex("data1")));
 
                 } while (phones.moveToNext());
 
-                Log.v("ComposeMessageActivity for test",
-                        number_selected.toString());
+                Log.v("ComposeMessageActivity for test", number_selected.toString());
 
                 final String[] number_a = new String[number_selected.size()];
                 final boolean[] number_b = new boolean[number_selected.size()];
@@ -846,75 +786,61 @@ public class ContactLoaderFragment extends Fragment implements
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-                builder.setMultiChoiceItems(number_a, null,
-                        new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setMultiChoiceItems(number_a, null, new DialogInterface.OnMultiChoiceClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface arg0,
-                                    int which, boolean isChecked) {
-                                // TODO Auto-generated method stub
+                    @Override
+                    public void onClick(DialogInterface arg0, int which, boolean isChecked) {
+                        // TODO Auto-generated method stub
 
-                                Log.v("ComposeMessageActivity for test",
-                                        "before number_b[which]: "
-                                                + number_b[which]);
+                        Log.v("ComposeMessageActivity for test", "before number_b[which]: " + number_b[which]);
 
-                                number_b[which] = !number_b[which];
-                                Log.v("ComposeMessageActivity for test",
-                                        "after number_b[which]: "
-                                                + number_b[which]);
+                        number_b[which] = !number_b[which];
+                        Log.v("ComposeMessageActivity for test", "after number_b[which]: " + number_b[which]);
 
+                    }
+
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+
+                        StringBuilder sb_text = new StringBuilder();
+
+                        for (int i = 0; i < number_b.length; i++) {
+
+                            if (number_b[i]) {
+                                Log.v("ComposeMessageActivity for test", "number_a[i]: " + number_a[i]);
+
+                                sb_text.append(number_a[i]);
+                                // number_a
                             }
 
-                        })
-                        .setPositiveButton("确定",
-                                new DialogInterface.OnClickListener() {
+                        }
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                            int which) {
-                                        // TODO Auto-generated method stub
+                        /** zzz */
+                        Log.i(TAG, sb_text.toString());
 
-                                        StringBuilder sb_text = new StringBuilder();
+                        Uri uri = Uri.parse("smsto:");
+                        Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                        it.putExtra("sms_body", sb_text.toString());
+                        startActivity(it);
 
-                                        for (int i = 0; i < number_b.length; i++) {
+                        dialog.dismiss();
 
-                                            if (number_b[i]) {
-                                                Log.v("ComposeMessageActivity for test",
-                                                        "number_a[i]: "
-                                                                + number_a[i]);
+                    }
 
-                                                sb_text.append(number_a[i]);
-                                                // number_a
-                                            }
+                }).setNegativeButton("取消", new OnClickListener() {
 
-                                        }
+                    @Override
+                    public void onClick(DialogInterface dialog, int arg1) {
+                        // TODO Auto-generated method stub
 
-                                        /** zzz */
-                                        Log.i(TAG, sb_text.toString());
+                        dialog.dismiss();
 
-                                        Uri uri = Uri.parse("smsto:");
-                                        Intent it = new Intent(
-                                                Intent.ACTION_SENDTO, uri);
-                                        it.putExtra("sms_body",
-                                                sb_text.toString());
-                                        startActivity(it);
+                    }
 
-                                        dialog.dismiss();
-
-                                    }
-
-                                })
-                        .setNegativeButton("取消", new OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int arg1) {
-                                // TODO Auto-generated method stub
-
-                                dialog.dismiss();
-
-                            }
-
-                        });
+                });
 
                 // builder.setSingleChoiceItems(number_a, 0, new
                 // OnClickListener(){
@@ -981,12 +907,11 @@ public class ContactLoaderFragment extends Fragment implements
         // before the callback to onShortcutIntentCreated(...)
         final Activity parentActivity = getActivity();
 
-        ShortcutIntentBuilder builder = new ShortcutIntentBuilder(
-                parentActivity, new OnShortcutIntentCreatedListener() {
+        ShortcutIntentBuilder builder = new ShortcutIntentBuilder(parentActivity,
+                new OnShortcutIntentCreatedListener() {
 
                     @Override
-                    public void onShortcutIntentCreated(Uri uri,
-                            Intent shortcutIntent) {
+                    public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
                         // Broadcast the shortcutIntent to the launcher to
                         // create a
                         // shortcut to this contact
@@ -996,9 +921,8 @@ public class ContactLoaderFragment extends Fragment implements
                         // Send a toast to give feedback to the user that a
                         // shortcut to this
                         // contact was added to the launcher.
-                        Toast.makeText(parentActivity,
-                                R.string.createContactShortcutSuccessful,
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(parentActivity, R.string.createContactShortcutSuccessful, Toast.LENGTH_SHORT)
+                                .show();
                     }
 
                 });
@@ -1011,15 +935,11 @@ public class ContactLoaderFragment extends Fragment implements
      */
     private Uri getPreAuthorizedUri(Uri uri) {
         Bundle uriBundle = new Bundle();
-        uriBundle.putParcelable(
-                ContactsContract.Authorization.KEY_URI_TO_AUTHORIZE, uri);
-        Bundle authResponse = mContext.getContentResolver().call(
-                ContactsContract.AUTHORITY_URI,
-                ContactsContract.Authorization.AUTHORIZATION_METHOD, null,
-                uriBundle);
+        uriBundle.putParcelable(ContactsContract.Authorization.KEY_URI_TO_AUTHORIZE, uri);
+        Bundle authResponse = mContext.getContentResolver().call(ContactsContract.AUTHORITY_URI,
+                ContactsContract.Authorization.AUTHORIZATION_METHOD, null, uriBundle);
         if (authResponse != null) {
-            return (Uri) authResponse
-                    .getParcelable(ContactsContract.Authorization.KEY_AUTHORIZED_URI);
+            return (Uri) authResponse.getParcelable(ContactsContract.Authorization.KEY_AUTHORIZED_URI);
         } else {
             return uri;
         }
@@ -1043,8 +963,7 @@ public class ContactLoaderFragment extends Fragment implements
         // Allow user to pick 'Default'
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
         // Show only ringtones
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,
-                RingtoneManager.TYPE_RINGTONE);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
         // Don't show 'Silent'
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
 
@@ -1054,13 +973,11 @@ public class ContactLoaderFragment extends Fragment implements
         } else {
             // Otherwise pick default ringtone Uri so that something is
             // selected.
-            ringtoneUri = RingtoneManager
-                    .getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
         }
 
         // Put checkmark next to the current ringtone for this contact
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
-                ringtoneUri);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri);
 
         // Launch!
         startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE);
@@ -1073,8 +990,7 @@ public class ContactLoaderFragment extends Fragment implements
         // // Allow user to pick 'Default'
         // intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
         // Show only ringtones
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,
-                RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         // Don't show 'Silent'
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
 
@@ -1111,16 +1027,14 @@ public class ContactLoaderFragment extends Fragment implements
         } else {
             // Otherwise pick default ringtone Uri so that something is
             // selected.
-            msgringUri = RingtoneManager
-                    .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            msgringUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
         String msg = "" + mLookupUri;
         String shortmsg[] = msg.split("/");
         Log.i("update", "" + shortmsg[6]);
         ContentValues values = new ContentValues();
         values.put(RawContacts.SOURCE_ID, "" + msgringUri); // "content://media/internal/audio/media/31"
-        mContext.getContentResolver().update(RawContacts.CONTENT_URI, values,
-                "_id=" + shortmsg[6], null);
+        mContext.getContentResolver().update(RawContacts.CONTENT_URI, values, "_id=" + shortmsg[6], null);
         // cur.moveToFirst();
         // while(cur.getCount() > cur.getPosition()) {
         // String raw_id = cur.getString(cur.getColumnIndex(RawContacts._ID));
@@ -1139,8 +1053,7 @@ public class ContactLoaderFragment extends Fragment implements
         String msg = null;
         String msg0 = "" + mLookupUri;
         String shortmsg[] = msg0.split("/");
-        Cursor cur = mContext.getContentResolver().query(
-                RawContacts.CONTENT_URI, null, null, null, null);
+        Cursor cur = mContext.getContentResolver().query(RawContacts.CONTENT_URI, null, null, null, null);
         cur.moveToFirst();
         while (cur.getCount() > cur.getPosition()) {
             String raw_id = cur.getString(cur.getColumnIndex(RawContacts._ID));
@@ -1163,16 +1076,14 @@ public class ContactLoaderFragment extends Fragment implements
 
         switch (requestCode) {
         case REQUEST_CODE_PICK_RINGTONE: {
-            Uri pickedUri = data
-                    .getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             Log.i("pickedUri", "" + pickedUri);
             handleRingtonePicked(pickedUri);
             break;
         }
         case REQUEST_CODE_PICK_MSGRING: {
             // msgUri();
-            Uri pickedUri = data
-                    .getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);// fetchMsgUri()
+            Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);// fetchMsgUri()
             Log.i("RingtoneManager", pickedUri + ";");
             handleMsgRingPicked(pickedUri);
             // String msg = "" + mLookupUri;
@@ -1194,8 +1105,7 @@ public class ContactLoaderFragment extends Fragment implements
         } else {
             mCustomRingtone = pickedUri.toString();
         }
-        Intent intent = ContactSaveService.createSetRingtone(mContext,
-                mLookupUri, mCustomRingtone);
+        Intent intent = ContactSaveService.createSetRingtone(mContext, mLookupUri, mCustomRingtone);
         mContext.startService(intent);
     }
 
@@ -1212,8 +1122,7 @@ public class ContactLoaderFragment extends Fragment implements
         // mContext.startService(intent);
 
         Log.i(TAG, "handleMsgRingPicked - " + pickedUri);
-        Cursor c = mContext.getContentResolver().query(mLookupUri, null, null, null,
-                null);
+        Cursor c = mContext.getContentResolver().query(mLookupUri, null, null, null, null);
         int idIdx = c.getColumnIndexOrThrow(Phone._ID);
 
         c.moveToNext();
@@ -1225,16 +1134,14 @@ public class ContactLoaderFragment extends Fragment implements
 
     /** Toggles whether to load stream items. Just for debugging */
     public void toggleLoadStreamItems() {
-        Loader<ContactLoader.Result> loaderObj = getLoaderManager().getLoader(
-                LOADER_DETAILS);
+        Loader<ContactLoader.Result> loaderObj = getLoaderManager().getLoader(LOADER_DETAILS);
         ContactLoader loader = (ContactLoader) loaderObj;
         loader.setLoadStreamItems(!loader.getLoadStreamItems());
     }
 
     /** Returns whether to load stream items. Just for debugging */
     public boolean getLoadStreamItems() {
-        Loader<ContactLoader.Result> loaderObj = getLoaderManager().getLoader(
-                LOADER_DETAILS);
+        Loader<ContactLoader.Result> loaderObj = getLoaderManager().getLoader(LOADER_DETAILS);
         ContactLoader loader = (ContactLoader) loaderObj;
         return loader != null && loader.getLoadStreamItems();
     }
