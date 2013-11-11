@@ -272,11 +272,21 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        /** zzz */
+        Log.d(TAG, "beforeTextChanged");
+        Log.i(TAG, " " + mDigits.getText().toString());
+
         mWasEmptyBeforeTextChange = TextUtils.isEmpty(s);
     }
 
     @Override
     public void onTextChanged(CharSequence input, int start, int before, int changeCount) {
+
+        /** zzz */
+        Log.d(TAG, "onTextChanged");
+        Log.i(TAG, " " + mDigits.getText().toString());
+
         if (mWasEmptyBeforeTextChange != TextUtils.isEmpty(input)) {
             final Activity activity = getActivity();
             if (activity != null) {
@@ -295,6 +305,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // since some of SpecialCharSequenceMgr's behavior is too abrupt for the
         // "touch-down"
         // behavior.
+
+        /** zzz */
+        Log.d(TAG, "afterTextChanged");
+        Log.i(TAG, " " + mDigits.getText().toString());
+
         if (!mDigitsFilledByIntent && SpecialCharSequenceMgr.handleChars(getActivity(), input.toString(), mDigits)) {
             // A special sequence was entered, clear the digits
             mDigits.getText().clear();
@@ -548,19 +563,9 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
      * @return true when {@link #mDigits} is actually filled by the Intent.
      */
     private boolean fillDigitsIfNecessary(Intent intent) {
-
-        /** zzz */
-        // TODO
-
         final String action = intent.getAction();
-
-        Log.i(TAG, "action - " + action);
-
         if (Intent.ACTION_DIAL.equals(action) || Intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
-
-            Log.i(TAG, "uri - " + uri);
-
             if (uri != null) {
                 if (Constants.SCHEME_TEL.equals(uri.getScheme())) {
                     // Put the requested number into the input area
@@ -686,6 +691,10 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         String dialString = PhoneNumberUtils.extractNetworkPortion(data);
         dialString = PhoneNumberUtils.formatNumber(dialString, normalizedNumber, mCurrentCountryIso);
         if (!TextUtils.isEmpty(dialString)) {
+
+            /** zzz */
+            // TODO
+
             Editable digits = mDigits.getText();
             digits.replace(0, digits.length(), dialString);
             // for some reason this isn't getting called in the digits.replace
@@ -802,7 +811,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         // added by yuan
 
-        mDigits.getText().clear();
+        /** zzz */
+        // commit this out
+        // why clear digits here???
+        // mDigits.getText().clear();
+
         mMatchedPhones.setText("");
         mMatchedName.setText("");
         mMatchList.setVisibility(View.GONE);

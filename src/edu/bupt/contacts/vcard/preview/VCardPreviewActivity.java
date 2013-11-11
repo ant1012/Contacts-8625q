@@ -260,6 +260,7 @@ public class VCardPreviewActivity extends ListActivity {
             Uri data = Uri.parse("file://" + filename);
             i.setDataAndType(data, "text/vcard");
             startActivity(i);
+            this.finish();
 
             break;
         }
