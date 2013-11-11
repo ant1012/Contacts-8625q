@@ -844,7 +844,10 @@ import libcore.util.Objects;
         // New items also use the highlighted version of the text.
         final boolean isHighlighted = isNew;
         mCallLogViewsHelper.setPhoneCallDetails(views, details, isHighlighted);
-        setPhoto(views, photoId, lookupUri);
+
+        /** zzz */
+        // add arg number
+        setPhoto(views, photoId, lookupUri, number);
 
         // Listen for the first draw
         if (mViewTreeObserver == null) {
@@ -1010,7 +1013,8 @@ import libcore.util.Objects;
         return callTypes;
     }
 
-    private void setPhoto(CallLogListItemViews views, long photoId, final Uri contactUri) {
+    // add arg number
+    private void setPhoto(CallLogListItemViews views, long photoId, final Uri contactUri, final String number) {
 
         /** zzz */
         // views.quickContactView.assignContactUri(contactUri);
@@ -1028,7 +1032,10 @@ import libcore.util.Objects;
                     mContext.startActivity(intent);
                 } else {
                     Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-//                    intent.putExtra(Contacts.Intents.Insert.PHONE, "0533-0033");
+                    intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+                    // TODO
+                    intent.putExtra(ContactsContract.Intents.Insert.PHONE, number);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                     mContext.startActivity(intent);
                 }
             }
