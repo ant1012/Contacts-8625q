@@ -24,6 +24,8 @@ import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.PhoneCallDetails;
 import edu.bupt.contacts.PhoneCallDetailsHelper;
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.CallDetailActivity.Tasks;
+import edu.bupt.contacts.activities.DialtactsActivity;
 import edu.bupt.contacts.format.FormatUtils;
 import edu.bupt.contacts.ipcall.IPCall;
 import edu.bupt.contacts.util.ExpirableCache;
@@ -41,6 +43,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ServiceManager;
@@ -229,54 +232,108 @@ import libcore.util.Objects;
     private final View.OnLongClickListener mPrimaryLongActionListener = new View.OnLongClickListener() {
 
         @Override
-        public boolean onLongClick(View view) {
-            // TODO Auto-generated method stub
-            final IPCall ipcall = new IPCall(mContext);
-            String[] itemchoice = null;
-            if (!ipcall.isCDMAIPEnabled() && !ipcall.isGSMIPEnabled()) {
-                return false;
-            }
-            if (ipcall.isCDMAIPEnabled() && ipcall.isGSMIPEnabled()) {
-                itemchoice = new String[] { mContext.getString(R.string.ip_call_one),
-                        mContext.getString(R.string.ip_call_two) };
-            } else {
-                if (ipcall.isCDMAIPEnabled()) {
-                    itemchoice = new String[] { mContext.getString(R.string.ip_call_one) };
-                }
-                if (ipcall.isGSMIPEnabled()) {
-                    itemchoice = new String[] { mContext.getString(R.string.ip_call_two) };
-                }
-            }
-            final int length = itemchoice.length;
-            final boolean isCDMA = ipcall.isCDMAIPEnabled();
-            final boolean isGSM = ipcall.isGSMIPEnabled();
-            String phoneNumber1 = null;
-            IntentProvider intentProvider = (IntentProvider) view.getTag();
-            Log.v("longclick", intentProvider.getIntent(mContext).getData().toString());
-            if (intentProvider != null) {
-                phoneNumber1 = getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
-            }
-            final String phoneNumber = phoneNumber1;
-            new AlertDialog.Builder(mContext, 0).setTitle(R.string.call_ip_dialog_title)
-                    .setItems(itemchoice, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO Auto-generated method stub
-                            if (length == 2) {
-                                if (which == 0) {
-                                    call(ipcall.getCDMAIPCode() + phoneNumber);
-                                } else {
-                                    call(ipcall.getGSMIPCode() + phoneNumber);
-                                }
-                            } else {
-                                if (isCDMA) {
-                                    call(ipcall.getCDMAIPCode() + phoneNumber);
-                                }
-                                if (isGSM) {
-                                    call(ipcall.getGSMIPCode() + phoneNumber);
-                                }
-                            }
-                        }
-                    }).setNegativeButton(R.string.menu_doNotSave, null).show();
+        public boolean onLongClick(final View view) {
+            /** zzz */
+            // ip call, maybe coded by yuan?
+            // final IPCall ipcall = new IPCall(mContext);
+            // String[] itemchoice = null;
+            // if (!ipcall.isCDMAIPEnabled() && !ipcall.isGSMIPEnabled()) {
+            // return false;
+            // }
+            // if (ipcall.isCDMAIPEnabled() && ipcall.isGSMIPEnabled()) {
+            // itemchoice = new String[] {
+            // mContext.getString(R.string.ip_call_one),
+            // mContext.getString(R.string.ip_call_two) };
+            // } else {
+            // if (ipcall.isCDMAIPEnabled()) {
+            // itemchoice = new String[] {
+            // mContext.getString(R.string.ip_call_one) };
+            // }
+            // if (ipcall.isGSMIPEnabled()) {
+            // itemchoice = new String[] {
+            // mContext.getString(R.string.ip_call_two) };
+            // }
+            // }
+            // final int length = itemchoice.length;
+            // final boolean isCDMA = ipcall.isCDMAIPEnabled();
+            // final boolean isGSM = ipcall.isGSMIPEnabled();
+            // String phoneNumber1 = null;
+            // IntentProvider intentProvider = (IntentProvider) view.getTag();
+            // Log.v("longclick",
+            // intentProvider.getIntent(mContext).getData().toString());
+            // if (intentProvider != null) {
+            // phoneNumber1 =
+            // getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
+            // }
+            // final String phoneNumber = phoneNumber1;
+            // new AlertDialog.Builder(mContext,
+            // 0).setTitle(R.string.call_ip_dialog_title)
+            // .setItems(itemchoice, new DialogInterface.OnClickListener() {
+            // public void onClick(DialogInterface dialog, int which) {
+            // if (length == 2) {
+            // if (which == 0) {
+            // call(ipcall.getCDMAIPCode() + phoneNumber);
+            // } else {
+            // call(ipcall.getGSMIPCode() + phoneNumber);
+            // }
+            // } else {
+            // if (isCDMA) {
+            // call(ipcall.getCDMAIPCode() + phoneNumber);
+            // }
+            // if (isGSM) {
+            // call(ipcall.getGSMIPCode() + phoneNumber);
+            // }
+            // }
+            // }
+            // }).setNegativeButton(R.string.menu_doNotSave, null).show();
+            // return false;
+
+            /** zzz */
+
+            // String[] itemchoice = new String[] {
+            // mContext.getString(R.string.calllog_delete_all_of_this_number) };
+            // new AlertDialog.Builder(mContext,
+            // 0).setTitle(R.string.calllog_options)
+            // .setItems(itemchoice, new DialogInterface.OnClickListener() {
+            // public void onClick(DialogInterface dialog, int which) {
+            // Log.v(TAG, "onClick");
+            //
+            // IntentProvider intentProvider = (IntentProvider) view.getTag();
+            // String phoneNumber = null;
+            // Log.v("longclick",
+            // intentProvider.getIntent(mContext).getData().toString());
+            // if (intentProvider != null) {
+            // phoneNumber =
+            // getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
+            // }
+            // Log.i(TAG, "phoneNumber - " + phoneNumber);
+            //
+            // // final String phoneNumber =
+            // // getPhoneCallDetailsForUri(callUris[0]).number.toString();
+            // //
+            // // ContentResolver cr =
+            // // mContext.getContentResolver();
+            // // Cursor cursor = cr.query(Calls.CONTENT_URI, new
+            // // String[] { Calls.NUMBER, Calls._ID }, null,
+            // // null, null);
+            // // for (cursor.moveToFirst(); !cursor.isAfterLast();
+            // // cursor.moveToNext()) {
+            // // String number = cursor.getString(0);
+            // // String id = cursor.getString(1);
+            // // if (!number.isEmpty() &&
+            // // number.endsWith(phoneNumber)) {
+            // // cr.delete(Calls.CONTENT_URI, Calls._ID + " = " +
+            // // id, null);
+            // // }
+            // // }
+            // // cursor.close();
+            // // getContentResolver().delete(Calls.CONTENT_URI,Calls.NUMBER
+            // // +
+            // // " = " + phoneNumber, null);
+            // }
+            // }).setNegativeButton(R.string.cancel, null).show();
+            // return false;
+
             return false;
         }
     };
@@ -700,7 +757,10 @@ import libcore.util.Objects;
         // Get the views to bind to.
         CallLogListItemViews views = CallLogListItemViews.fromView(view);
         views.primaryActionView.setOnClickListener(mPrimaryActionListener);
-        // views.primaryActionView.setOnLongClickListener(mPrimaryLongActionListener);
+
+        /** zzz */
+        views.primaryActionView.setOnLongClickListener(mPrimaryLongActionListener);
+
         views.secondaryActionView.setOnClickListener(mSecondaryActionListener);
         views.thirdaryActionView.setOnClickListener(mThirdaryActionListener);
         view.setTag(views);

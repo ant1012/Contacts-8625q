@@ -1332,18 +1332,31 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         List<CallResearchModel> phoneNumberMatchedList = new ArrayList<CallResearchModel>();
         String strForMatch = str;
 
-        if (str.toString().contains("+")) {
-            // Log.v("aaa1",""+str.length());
-            strForMatch = str.replace("+", "");
-            Log.v("aaa2", strForMatch + ":" + strForMatch.length());
-        }
+        /** zzz */
+        boolean searchOnlyNumberMatched = false;
+        //ahaha
+//        if (str.toString().contains("*") //
+//                || str.toString().contains("+") //
+//                || str.toString().contains("1") //
+//
+//        ) {
+//            searchOnlyNumberMatched = true;
+//        }
 
         /** zzz */
-        if (str.toString().contains("*")) {
-            // Log.v("aaa1",""+str.length());
-            strForMatch = str.replace("*", "");
-            Log.v(TAG, strForMatch + ":" + strForMatch.length());
-        }
+        // why not search '+'?
+        // if (str.toString().contains("+")) {
+        // // Log.v("aaa1",""+str.length());
+        // strForMatch = str.replace("+", "");
+        // Log.v("aaa2", strForMatch + ":" + strForMatch.length());
+        // }
+
+        /** zzz */
+        // if (str.toString().contains("*")) {
+        // // Log.v("aaa1",""+str.length());
+        // strForMatch = str.replace("*", "");
+        // Log.v(TAG, strForMatch + ":" + strForMatch.length());
+        // }
 
         StringBuffer T9pinyin = new StringBuffer();
         // 获取每一个数字对应的字母列表并以'-'隔开
@@ -1361,7 +1374,12 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         if (rawDataList.size() > 0 && strForMatch.length() > 0) {
             for (CallResearchModel model : rawDataList) {
-                if (pinyinMatched(T9pinyin.toString(), model, strForMatch, headPinyinMatchedList, partPinyinMatchedList)) {
+
+                /** zzz */
+                // if contains '1' '+' '*', no not search as name
+                if (!searchOnlyNumberMatched
+                        && pinyinMatched(T9pinyin.toString(), model, strForMatch, headPinyinMatchedList,
+                                partPinyinMatchedList)) {
                     continue;
                 } else if (model.searchnum.contains(strForMatch)) {
                     model.group = strForMatch;

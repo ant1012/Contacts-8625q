@@ -665,6 +665,9 @@
     <string name="cardp_mobile">移动</string>
     <string name="cardp_telecom">电信</string>
     <string name="cardp_unicom">联通</string>
+    <string name="calllog_options">选择</string>
+    <string name="calllog_delete_all_of_this_number">删除与此联系人的所有通话记录</string>
+
 
     <!-- merge -->
     <!-- new string to show options -->
