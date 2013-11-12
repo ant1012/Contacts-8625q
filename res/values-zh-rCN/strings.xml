@@ -660,8 +660,10 @@
     <string name="preference_category_edial">翼拨号设置</string>
     <string name="preference_category_ipcall">IP拨号设置</string>
     <string name="preference_category_disp_locate">归属地设置</string>
+    <string name="preference_category_time_setting">时间</string>
     <string name="preference_edial">翼拨号</string>
-    <string name="preference_disp_locate">显示归属地</string>
+    <string name="preference_disp_locate">呼叫时显示归属地</string>
+    <string name="preference_time_setting">默认显示时间</string>
     <string name="cardp_mobile">移动</string>
     <string name="cardp_telecom">电信</string>
     <string name="cardp_unicom">联通</string>
@@ -704,7 +706,7 @@
     <string name="default_ip_setting">修改IP电话前缀</string>
     <!-- ddd -->
     <string name="esurfing_dial">翼拨号</string>
-    <string name="call_setting">拨号设置</string>
+    <string name="call_setting">设置</string>
     <string name="call_ip_setting_dialog_title">IP电话设置</string>
     <string name="call_ip_dialog_title">IP电话选择</string>
     <string name="ip_call_one">卡1 IP 呼叫</string>
@@ -731,5 +733,6 @@
     <string name="esurfing_dial_call_realcall">拨号</string>
     <string name="esurfing_dial_suffix_hash">#</string>
     <string name="esurfing_dial_suffix_null"></string>
+    <string name="time_setting">时间显示设置</string>
 
 </resources>

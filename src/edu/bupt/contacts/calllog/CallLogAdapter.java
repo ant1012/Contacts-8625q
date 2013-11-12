@@ -290,51 +290,50 @@ import libcore.util.Objects;
 
             /** zzz */
 
-            // String[] itemchoice = new String[] {
-            // mContext.getString(R.string.calllog_delete_all_of_this_number) };
-            // new AlertDialog.Builder(mContext,
-            // 0).setTitle(R.string.calllog_options)
-            // .setItems(itemchoice, new DialogInterface.OnClickListener() {
-            // public void onClick(DialogInterface dialog, int which) {
-            // Log.v(TAG, "onClick");
-            //
-            // IntentProvider intentProvider = (IntentProvider) view.getTag();
-            // String phoneNumber = null;
-            // Log.v("longclick",
-            // intentProvider.getIntent(mContext).getData().toString());
-            // if (intentProvider != null) {
-            // phoneNumber =
-            // getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
-            // }
-            // Log.i(TAG, "phoneNumber - " + phoneNumber);
-            //
-            // // final String phoneNumber =
-            // // getPhoneCallDetailsForUri(callUris[0]).number.toString();
-            // //
-            // // ContentResolver cr =
-            // // mContext.getContentResolver();
-            // // Cursor cursor = cr.query(Calls.CONTENT_URI, new
-            // // String[] { Calls.NUMBER, Calls._ID }, null,
-            // // null, null);
-            // // for (cursor.moveToFirst(); !cursor.isAfterLast();
-            // // cursor.moveToNext()) {
-            // // String number = cursor.getString(0);
-            // // String id = cursor.getString(1);
-            // // if (!number.isEmpty() &&
-            // // number.endsWith(phoneNumber)) {
-            // // cr.delete(Calls.CONTENT_URI, Calls._ID + " = " +
-            // // id, null);
-            // // }
-            // // }
-            // // cursor.close();
-            // // getContentResolver().delete(Calls.CONTENT_URI,Calls.NUMBER
-            // // +
-            // // " = " + phoneNumber, null);
-            // }
-            // }).setNegativeButton(R.string.cancel, null).show();
-            // return false;
+            String[] itemchoice = new String[] { mContext.getString(R.string.calllog_delete_all_of_this_number) };
+            new AlertDialog.Builder(mContext, 0).setTitle(R.string.calllog_options)
+                    .setItems(itemchoice, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG, "onClick");
+                            String phoneNumber = null;
 
+                            IntentProvider intentProvider = (IntentProvider) view.getTag();
+                            // Log.v("longclick",
+                            // intentProvider.getIntent(mContext).getData().toString());
+                            // if (intentProvider != null) {
+                            // phoneNumber =
+                            // getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
+                            // }
+
+                            Log.i(TAG, "phoneNumber - " + phoneNumber);
+
+                            // final String phoneNumber =
+                            // getPhoneCallDetailsForUri(callUris[0]).number.toString();
+                            //
+                            // ContentResolver cr =
+                            // mContext.getContentResolver();
+                            // Cursor cursor = cr.query(Calls.CONTENT_URI, new
+                            // String[] { Calls.NUMBER, Calls._ID }, null,
+                            // null, null);
+                            // for (cursor.moveToFirst(); !cursor.isAfterLast();
+                            // cursor.moveToNext()) {
+                            // String number = cursor.getString(0);
+                            // String id = cursor.getString(1);
+                            // if (!number.isEmpty() &&
+                            // number.endsWith(phoneNumber)) {
+                            // cr.delete(Calls.CONTENT_URI, Calls._ID + " = " +
+                            // id, null);
+                            // }
+                            // }
+                            // cursor.close();
+                            // getContentResolver().delete(Calls.CONTENT_URI,Calls.NUMBER
+                            // +
+                            // " = " + phoneNumber, null);
+                        }
+                    }).setNegativeButton(R.string.cancel, null).show();
             return false;
+
+            // return false;
         }
     };
 

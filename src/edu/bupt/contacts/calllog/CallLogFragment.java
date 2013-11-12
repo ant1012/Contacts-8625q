@@ -21,13 +21,14 @@ import com.android.common.widget.GroupingListAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import edu.bupt.contacts.CallDetailActivity;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.numberlocate.NumberLocateSetting;
+import edu.bupt.contacts.settings.DialpadPreferenceActivity;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.EmptyLoader;
+
 import com.android.internal.telephony.CallerInfo;
 import com.android.internal.telephony.ITelephony;
 import com.google.common.annotations.VisibleForTesting;
@@ -40,6 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -428,6 +430,38 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
             // startActivity(intent);
             // return true;
 
+            /** zzz */
+            // case R.id.menu_time_setting:
+            // Log.v(TAG, "menu_time_setting");
+            // SharedPreferences sp =
+            // getActivity().getSharedPreferences("time_setting", 0);
+            // int checkedItem = sp.getBoolean("bj_time", false) ? 1 : 0;
+            // AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
+            // b.setTitle(R.string.time_setting);
+            // b.setSingleChoiceItems(R.array.time_setting, checkedItem, new
+            // OnClickListener() {
+            // @Override
+            // public void onClick(DialogInterface dialog, int which) {
+            // Log.v(TAG, "onClick " + which);
+            // SharedPreferences sp =
+            // getActivity().getSharedPreferences("time_setting", 0);
+            // if (which == 0) {
+            // sp.edit().putBoolean("bj_time", false).commit();
+            // } else if (which == 1) {
+            // sp.edit().putBoolean("bj_time", true).commit();
+            // }
+            // dialog.dismiss();
+            // }
+            //
+            // });
+            // b.create();
+            // b.show();
+
+            /** zzz */
+
+        case R.id.menu_call_setting:
+            Intent intent = new Intent(getActivity(), DialpadPreferenceActivity.class);
+            startActivity(intent);
         default:
             return false;
         }

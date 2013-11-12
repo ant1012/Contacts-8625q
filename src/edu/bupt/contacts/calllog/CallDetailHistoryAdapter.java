@@ -16,10 +16,13 @@
 
 package edu.bupt.contacts.calllog;
 
+import java.util.Formatter;
+
 import edu.bupt.contacts.PhoneCallDetails;
 import edu.bupt.contacts.R;
-
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.CallLog.Calls;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -32,7 +35,10 @@ import android.widget.TextView;
  * Adapter for a ListView containing history items from the details of a call.
  */
 public class CallDetailHistoryAdapter extends BaseAdapter {
-    /** The top element is a blank header, which is hidden under the rest of the UI. */
+    /**
+     * The top element is a blank header, which is hidden under the rest of the
+     * UI.
+     */
     private static final int VIEW_TYPE_HEADER = 0;
     /** Each history item shows the detail of a call. */
     private static final int VIEW_TYPE_HISTORY_ITEM = 1;
@@ -48,8 +54,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
     /** The controls that are shown on top of the history list. */
     private final View mControls;
     /** The listener to changes of focus of the header. */
-    private View.OnFocusChangeListener mHeaderFocusChangeListener =
-            new View.OnFocusChangeListener() {
+    private View.OnFocusChangeListener mHeaderFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             // When the header is focused, focus the controls above it instead.
@@ -59,9 +64,8 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         }
     };
 
-    public CallDetailHistoryAdapter(Context context, LayoutInflater layoutInflater,
-            CallTypeHelper callTypeHelper, PhoneCallDetails[] phoneCallDetails,
-            boolean showVoicemail, boolean showCallAndSms, View controls) {
+    public CallDetailHistoryAdapter(Context context, LayoutInflater layoutInflater, CallTypeHelper callTypeHelper,
+            PhoneCallDetails[] phoneCallDetails, boolean showVoicemail, boolean showCallAndSms, View controls) {
         mContext = context;
         mLayoutInflater = layoutInflater;
         mCallTypeHelper = callTypeHelper;
@@ -114,13 +118,14 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == 0) {
-            final View header = convertView == null
-                    ? mLayoutInflater.inflate(R.layout.call_detail_history_header, parent, false)
-                    : convertView;
-            // Voicemail controls are only shown in the main UI if there is a voicemail.
+            final View header = convertView == null ? mLayoutInflater.inflate(R.layout.call_detail_history_header,
+                    parent, false) : convertView;
+            // Voicemail controls are only shown in the main UI if there is a
+            // voicemail.
             View voicemailContainer = header.findViewById(R.id.header_voicemail_container);
             voicemailContainer.setVisibility(mShowVoicemail ? View.VISIBLE : View.GONE);
-            // Call and SMS controls are only shown in the main UI if there is a known number.
+            // Call and SMS controls are only shown in the main UI if there is a
+            // known number.
             View callAndSmsContainer = header.findViewById(R.id.header_call_and_sms_container);
             callAndSmsContainer.setVisibility(mShowCallAndSms ? View.VISIBLE : View.GONE);
             header.setFocusable(true);
@@ -129,13 +134,11 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         }
 
         // Make sure we have a valid convertView to start with
-        final View result  = convertView == null
-                ? mLayoutInflater.inflate(R.layout.call_detail_history_item, parent, false)
-                : convertView;
+        final View result = convertView == null ? mLayoutInflater.inflate(R.layout.call_detail_history_item, parent,
+                false) : convertView;
 
         PhoneCallDetails details = mPhoneCallDetails[position - 1];
-        CallTypeIconsView callTypeIconView =
-                (CallTypeIconsView) result.findViewById(R.id.call_type_icon);
+        CallTypeIconsView callTypeIconView = (CallTypeIconsView) result.findViewById(R.id.call_type_icon);
         TextView callTypeTextView = (TextView) result.findViewById(R.id.call_type_text);
         TextView dateView = (TextView) result.findViewById(R.id.date);
         TextView durationView = (TextView) result.findViewById(R.id.duration);
@@ -145,11 +148,33 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         callTypeIconView.clear();
         callTypeIconView.add(callType);
         callTypeTextView.setText(mCallTypeHelper.getCallTypeText(callType));
-        // Set the date.
-        CharSequence dateValue = DateUtils.formatDateRange(mContext, details.date, details.date,
-                DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
-                DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
+
+        /** zzz */
+        // // Set the date.
+        // CharSequence dateValue = DateUtils.formatDateRange(mContext,
+        // details.date, details.date,
+        // DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE |
+        // DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
+        // dateView.setText(dateValue);
+
+        // if need to show bj time or local time
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
+        CharSequence dateValue = null;
+        if (!showBJTime) { // local time
+            dateValue = DateUtils.formatDateRange(mContext, details.date, details.date, DateUtils.FORMAT_SHOW_TIME
+                    | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
+        } else { // bj time
+            dateValue = DateUtils.formatDateRange(
+                    mContext,
+                    new Formatter(),
+                    details.date,
+                    details.date,
+                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
+                            | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); //TODO
+        }
         dateView.setText(dateValue);
+
         // Set the duration
         if (callType == Calls.MISSED_TYPE || callType == Calls.VOICEMAIL_TYPE) {
             durationView.setVisibility(View.GONE);
@@ -157,14 +182,13 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
             durationView.setVisibility(View.VISIBLE);
             durationView.setText(formatDuration(details.duration));
         }
-        if (details.msimType==0){  //by yuan
-        	msimcardView.setText("CDMA"); 
-        }else if(details.msimType==1){
-        	msimcardView.setText("GSM"); 
-        }else{
-        	msimcardView.setText("unknown");
+        if (details.msimType == 0) { // by yuan
+            msimcardView.setText("CDMA");
+        } else if (details.msimType == 1) {
+            msimcardView.setText("GSM");
+        } else {
+            msimcardView.setText("unknown");
         }
-        
 
         return result;
     }

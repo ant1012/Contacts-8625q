@@ -89,5 +89,12 @@
     <!-- android:title="@string/number_locate_setting" -->
     <!-- android:showAsAction="withText" -->
     <!-- android:orderInCategory="1" /> -->
+    
+    <!-- zzz -->
+    <item
+        android:id="@+id/menu_call_setting"
+        android:orderInCategory="1"
+        android:showAsAction="withText"
+        android:title="@string/call_setting"/>
 
 </menu>

@@ -58,4 +58,9 @@
     <item
         android:id="@+id/menu_heibai"
         android:title="@string/heibaimingdan" />
+
+    <!-- zzz -->
+    <item
+        android:id="@+id/menu_call_setting"
+        android:title="@string/call_setting" />
 </menu>

@@ -33,7 +33,6 @@ import edu.bupt.contacts.util.AsyncTaskExecutor;
 import edu.bupt.contacts.util.AsyncTaskExecutors;
 import edu.bupt.contacts.util.ClipboardUtils;
 import edu.bupt.contacts.util.Constants;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +42,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -960,6 +961,32 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
         return;
 
     }
+
+    /** zzz */
+    // public void onMenucallogTimeSetting(MenuItem menuItem) {
+    // Log.v(TAG, "menu_calllog_time_setting");
+    // SharedPreferences sp = getSharedPreferences("time_setting", 0);
+    // int checkedItem = sp.getBoolean("bj_time", false) ? 1 : 0;
+    // AlertDialog.Builder b = new AlertDialog.Builder(this);
+    // b.setTitle(R.string.time_setting);
+    // b.setSingleChoiceItems(R.array.time_setting, checkedItem, new
+    // OnClickListener() {
+    // @Override
+    // public void onClick(DialogInterface dialog, int which) {
+    // Log.v(TAG, "onClick " + which);
+    // SharedPreferences sp = getSharedPreferences("time_setting", 0);
+    // if (which == 0) {
+    // sp.edit().putBoolean("bj_time", false).commit();
+    // } else if (which == 1) {
+    // sp.edit().putBoolean("bj_time", true).commit();
+    // }
+    // dialog.dismiss();
+    // }
+    //
+    // });
+    // b.create();
+    // b.show();
+    // }
 
     // ddd end
 
