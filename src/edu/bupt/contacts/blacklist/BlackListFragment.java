@@ -65,8 +65,7 @@ public class BlackListFragment extends Fragment {
     public BlackListFragment(Context context) {
         this.context = context;
         spinnerLatestClicked = blockId = -1;
-        blockContent = context.getResources().getStringArray(
-                R.array.block_content);
+        blockContent = context.getResources().getStringArray(R.array.block_content);
         checkedMap = new HashMap<Integer, Boolean>();
     }
 
@@ -76,8 +75,7 @@ public class BlackListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.blacklist_blacklist, container, false);
         findViewAndSetListener();
@@ -86,7 +84,6 @@ public class BlackListFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
 
         Log.v(TAG, "onDestroy...");
@@ -109,27 +106,20 @@ public class BlackListFragment extends Fragment {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         mDBHelper = new BlacklistDBHelper(context, 1);
-        cursor = mDBHelper.getWritableDatabase().query(
-                BlacklistDBHelper.TB_NAME, null, null, null, null, null,
+        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null, null, null, null, null,
                 BlacklistDBHelper.NAME + " ASC");
-        String[] from = new String[] { BlacklistDBHelper.NAME,
-                BlacklistDBHelper.Phone, BlacklistDBHelper.BlockContent };
-        int[] to = new int[] { R.id.blacklist_item_text1,
-                R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
-        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item,
-                cursor, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        String[] from = new String[] { BlacklistDBHelper.NAME, BlacklistDBHelper.Phone, BlacklistDBHelper.BlockContent };
+        int[] to = new int[] { R.id.blacklist_item_text1, R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
+        adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item, cursor, from, to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
-                // TODO Auto-generated method stub
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from BlackListFragment where _ID = "
-                        + arg3;
-                Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql,
-                        null);
+                String sql = "select * from BlackListFragment where _ID = " + arg3;
+                Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql, null);
                 cursor.moveToFirst();
 
                 _ID = cursor.getInt(0);
@@ -143,49 +133,24 @@ public class BlackListFragment extends Fragment {
                 cursor.close();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(name)
-                        .setItems(R.array.blacklist_item_click,
-                                new OnClickListener() {
+                builder.setTitle(name).setItems(R.array.blacklist_item_click, new OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface arg0,
-                                            int arg1) {
-                                        // TODO Auto-generated method stub
-                                        // switch (arg1) {
-                                        //
-                                        // // case 0:// 编辑
-                                        // // showNewRecordDialog(name, phone,
-                                        // // blockId, true);
-                                        // // break;
-                                        //
-                                        // case 1:// 删除
-                                        mDBHelper.delPeople(_ID);
-                                        update();
-                                        // break;
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        switch (arg1) {
 
-                                        // case 2:// 发送短信
-                                        // Uri uri = Uri.parse("smsto:"
-                                        // + phone);
-                                        // Intent sms = new Intent(
-                                        // Intent.ACTION_SENDTO, uri);
-                                        // startActivity(sms);
-                                        // break;
-                                        //
-                                        // case 3:// 呼叫
-                                        // Intent call = new Intent(
-                                        // Intent.ACTION_DIAL);
-                                        // call.setData(Uri.parse("tel:"
-                                        // + phone));
-                                        // startActivity(call);
-                                        // break;
-                                        //
-                                        // case 4:// 清空列表
-                                        // mDBHelper.delAllPeople();
-                                        // update();
-                                        // break;
-                                        // }
-                                    }
-                                }).create().show();
+                        case 0:// 删除
+                            mDBHelper.delPeople(_ID);
+                            update();
+                            break;
+
+                        case 1:// 清空列表
+                            mDBHelper.delAllPeople();
+                            update();
+                            break;
+                        }
+                    }
+                }).create().show();
             }
 
         });
@@ -235,8 +200,7 @@ public class BlackListFragment extends Fragment {
         // CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         initData(list);
-        ContactMultiSelectAdapter adapter = new ContactMultiSelectAdapter(list,
-                context);
+        ContactMultiSelectAdapter adapter = new ContactMultiSelectAdapter(list, context);
 
         listView.setAdapter(adapter);
 
@@ -245,14 +209,11 @@ public class BlackListFragment extends Fragment {
         listView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
-                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1
-                        .getTag();
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
                 holder.checkbox.toggle();
 
-                if (checkedMap.get(arg2) == null
-                        || checkedMap.get(arg2) == false) {
+                if (checkedMap.get(arg2) == null || checkedMap.get(arg2) == false) {
                     Log.d(TAG, "true");
                     checkedMap.put(arg2, true);
                     // CheckedTextView checkedTextView = (CheckedTextView) arg1
@@ -275,9 +236,9 @@ public class BlackListFragment extends Fragment {
                 importContactDialog.dismiss();
                 for (int position : checkedMap.keySet()) {
                     if (checkedMap.get(position)) {
-//                        contact.moveToPosition(position);
-//                        String name = contact.getString(PHONES_DISPLAY_NAME);
-//                        String phone = contact.getString(PHONES_NUMBER);
+                        // contact.moveToPosition(position);
+                        // String name = contact.getString(PHONES_DISPLAY_NAME);
+                        // String phone = contact.getString(PHONES_NUMBER);
 
                         String name = list.get(position).get("name");
                         String phone = list.get(position).get("number");
@@ -301,8 +262,7 @@ public class BlackListFragment extends Fragment {
 
         });
 
-        MyAlertDialog.Builder builder = new MyAlertDialog.Builder(context)
-                .setView(view);
+        MyAlertDialog.Builder builder = new MyAlertDialog.Builder(context).setView(view);
         importContactDialog = builder.create();
         importContactDialog.setCanceledOnTouchOutside(true);
         importContactDialog.show();
@@ -312,17 +272,14 @@ public class BlackListFragment extends Fragment {
         // contactLookupArrayList.clear();
         list.clear();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        String[] projection = new String[] { ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
+        String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
         // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
         // + " = '1'";
         String selection = null;
         String[] selectionArgs = null;
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-                + " COLLATE LOCALIZED ASC";
-        Cursor cursor = context.getContentResolver().query(uri, projection,
-                selection, selectionArgs, sortOrder);
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
         Cursor phonecur = null;
 
         while (cursor.moveToNext()) {
@@ -332,22 +289,17 @@ public class BlackListFragment extends Fragment {
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
             String name = cursor.getString(nameFieldColumnIndex);
             // get id
-            String contactId = cursor
-                    .getString(cursor
-                            .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
+            String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             String strPhoneNumber = "";
 
-            phonecur = context
-                    .getContentResolver()
-                    .query(android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-                                    + " = ?", new String[] { contactId }, null);
+            phonecur = context.getContentResolver().query(
+                    android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                    android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    new String[] { contactId }, null);
             // get number
             while (phonecur.moveToNext()) {
-                strPhoneNumber = phonecur
-                        .getString(phonecur
-                                .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+                strPhoneNumber = phonecur.getString(phonecur
+                        .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
                 // if (strPhoneNumber.length() > 4)
                 // contactsList.add("18610011001" + "\n测试");
                 // contactsList.add(strPhoneNumber+"\n"+name+"");
@@ -371,8 +323,7 @@ public class BlackListFragment extends Fragment {
 
     }
 
-    private void showNewRecordDialog(String name, String phone, int blockId,
-            final boolean isExisted) {
+    private void showNewRecordDialog(String name, String phone, int blockId, final boolean isExisted) {
 
         Button save = null;
         Button cancle = null;
@@ -386,8 +337,7 @@ public class BlackListFragment extends Fragment {
         phoneNumber.setText(phone);
         Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                context, R.array.block_content,
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.block_content,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -397,16 +347,12 @@ public class BlackListFragment extends Fragment {
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                    int arg2, long arg3) {
-                // TODO Auto-generated method stub
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 spinnerLatestClicked = arg2;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
             }
 
         });
@@ -414,7 +360,6 @@ public class BlackListFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 newRecordDialog.dismiss();
             }
 
@@ -423,12 +368,10 @@ public class BlackListFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 String phone = phoneNumber.getText().toString();
                 String name = contactName.getText().toString();
                 if ("".equals(phone)) {
-                    Toast.makeText(context, R.string.no_phone_input,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.no_phone_input, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if ("".equals(name)) {
@@ -444,8 +387,7 @@ public class BlackListFragment extends Fragment {
 
         });
 
-        MyAlertDialog.Builder builder = new MyAlertDialog.Builder(context)
-                .setView(view);
+        MyAlertDialog.Builder builder = new MyAlertDialog.Builder(context).setView(view);
         newRecordDialog = builder.create();
         newRecordDialog.setCanceledOnTouchOutside(true);
         newRecordDialog.show();
@@ -459,8 +401,7 @@ public class BlackListFragment extends Fragment {
     }
 
     private void update() {
-        cursor = mDBHelper.getWritableDatabase().query(
-                BlacklistDBHelper.TB_NAME, null, null, null, null, null,
+        cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null, null, null, null, null,
                 BlacklistDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
@@ -475,8 +416,7 @@ public class BlackListFragment extends Fragment {
             CheckedTextView checkedTextView = null;
         }
 
-        public MyAdapter(Context context, int layout, Cursor c, String[] from,
-                int[] to, int flags) {
+        public MyAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
             super(context, layout, c, from, to, flags);
             this.context = context;
             this.layout = layout;
@@ -492,8 +432,7 @@ public class BlackListFragment extends Fragment {
 
                 arg1 = mInflater.inflate(layout, null);
                 holder = new ViewHolder();
-                holder.checkedTextView = (CheckedTextView) arg1
-                        .findViewById(R.id.contact_checked_text_view);
+                holder.checkedTextView = (CheckedTextView) arg1.findViewById(R.id.contact_checked_text_view);
                 arg1.setTag(holder);
 
             } else {

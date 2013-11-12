@@ -34,10 +34,8 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "onCreate");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + Phone
-                + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
-                + " INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + NAME + " VARCHAR,"
+                + Phone + " VARCHAR," + BlockContent + " VARCHAR," + BlockId + " INTEGER)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -58,35 +56,32 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
 
     public void addPeople(String name, String phone) {
         String sql = "select * from " + TB_NAME + " where phone = ?";
-        Cursor cursor = this.getWritableDatabase().rawQuery(sql,
-                new String[] { phone });
+
+        String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                           // +86
+        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
+        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
+        phone = strip3;
+
+        Cursor cursor = this.getWritableDatabase().rawQuery(sql, new String[] { phone });
+
         if (!cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
-
-            String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
-                                                                               // +86
-            String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
-            String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
-            phone = strip3;
-
             values.put(BlacklistDBHelper.NAME, name);
             values.put(BlacklistDBHelper.Phone, phone);
             // values.put(BlacklistDBHelper.BlockContent, "");
             // values.put(BlacklistDBHelper.BlockId, 0);
-            this.getWritableDatabase().insert(BlacklistDBHelper.TB_NAME,
-                    BlacklistDBHelper.ID, values);
+            this.getWritableDatabase().insert(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID, values);
         }
         cursor.close();
     }
 
     public void delPeople(int id) {
-        this.getWritableDatabase().delete(BlacklistDBHelper.TB_NAME,
-                BlacklistDBHelper.ID + " = " + id, null);
+        this.getWritableDatabase().delete(BlacklistDBHelper.TB_NAME, BlacklistDBHelper.ID + " = " + id, null);
     }
 
     public void delAllPeople() {
-        this.getWritableDatabase()
-                .delete(BlacklistDBHelper.TB_NAME, null, null);
+        this.getWritableDatabase().delete(BlacklistDBHelper.TB_NAME, null, null);
     }
 
     private String replacePattern(String origin, String pattern, String replace) {

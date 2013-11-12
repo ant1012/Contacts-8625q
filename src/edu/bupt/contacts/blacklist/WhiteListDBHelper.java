@@ -32,10 +32,8 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + Phone
-                + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
-                + " INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + NAME + " VARCHAR,"
+                + Phone + " VARCHAR," + BlockContent + " VARCHAR," + BlockId + " INTEGER)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -56,42 +54,39 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
 
     public void addPeople(String name, String phone) {
         String sql = "select * from " + TB_NAME + " where phone = ?";
-        Cursor cursor = this.getWritableDatabase().rawQuery(sql,
-                new String[] { phone });
+
+        String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
+                                                                           // +86
+        String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
+        String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
+        phone = strip3;
+
+        Cursor cursor = this.getWritableDatabase().rawQuery(sql, new String[] { phone });
+
         if (!cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
-
-            String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
-                                                                               // +86
-            String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
-            String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
-            phone = strip3;
 
             values.put(WhiteListDBHelper.NAME, name);
             values.put(WhiteListDBHelper.Phone, phone);
 
             // values.put(WhiteListDBHelper.BlockContent, blockContent);
             // values.put(WhiteListDBHelper.BlockId, blockId);
-            this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME,
-                    WhiteListDBHelper.ID, values);
+            this.getWritableDatabase().insert(WhiteListDBHelper.TB_NAME, WhiteListDBHelper.ID, values);
         }
         cursor.close();
     }
 
     public void delPeople(int id) {
-        this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME,
-                WhiteListDBHelper.ID + " = " + id, null);
+        this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME, WhiteListDBHelper.ID + " = " + id, null);
     }
 
     public void delAllPeople() {
-        this.getWritableDatabase()
-                .delete(WhiteListDBHelper.TB_NAME, null, null);
+        this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME, null, null);
     }
 
     public int getCount() {
         int count = 0;
-        Cursor cursor = this.getWritableDatabase().rawQuery(
-                "select count(*) from " + TB_NAME, null);
+        Cursor cursor = this.getWritableDatabase().rawQuery("select count(*) from " + TB_NAME, null);
         if (cursor.moveToFirst()) {
             count = cursor.getInt(0);
         }

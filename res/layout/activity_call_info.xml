@@ -209,13 +209,13 @@
             <!-- android:background="@drawable/ic_add_contact_holo_dark_white" -->
 
             <Button
-                android:id="@+id/bt_msg"
+                android:id="@+id/bt_dial"
                 android:layout_width="80dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center" />
 
             <Button
-                android:id="@+id/bt_dial"
+                android:id="@+id/bt_msg"
                 android:layout_width="80dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center" />
