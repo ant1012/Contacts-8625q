@@ -155,7 +155,13 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
     public static String formatNumber(String number) {
         StringBuilder sb = new StringBuilder(number);
         if (sb.charAt(0) == '+') {
-            return sb.delete(0, 3).substring(0, 7).toString();
+            /** zzz */
+            if (sb.length() >= 3 && sb.substring(1, 3).equals("86")) {
+                return sb.substring(3).toString();
+            } else {
+                return sb.toString();
+            }
+            // return sb.delete(0, 3).substring(0, 7).toString();
         }
         // //zaizhe
         // if(sb.indexOf("010")==0){
@@ -255,7 +261,11 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         String selection = null;
         String[] projection = null;
         Uri uri = NumberRegion.CONTENT_URI;
-        if (formatNumber.length() == 7) {
+        if (formatNumber.startsWith("+")) {
+            Log.v(TAG, "startsWith(\"+\")");
+            // TODO
+            return "";
+        } else if (formatNumber.length() == 7) {
             selection = NumberRegion.NUMBER + "=" + formatNumber;
             uri = NumberRegion.CONTENT_URI;
             projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
@@ -263,6 +273,13 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
             Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
                     + formatNumber);
+
+            /** zzz */
+            if (formatNumber.startsWith("+")) {
+                Log.v(TAG, "startsWith(\"+\")");
+                // TODO
+                return "";
+            }
 
             selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" + " OR " + NumberRegion.AREACODE + "="
                     + "'" + formatNumber.substring(0, 3) + "'";

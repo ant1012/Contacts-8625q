@@ -26,9 +26,9 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
     protected void onResume() {
         super.onResume();
 
-        findPreference("EDialPreference").setSummary(
-                getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sp.getString(
-                        "EDialPreference", "0"))]);
+        // findPreference("EDialPreference").setSummary(
+        // getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sp.getString(
+        // "EDialPreference", "0"))]);
 
         if (sp.getString("CDMAIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
             findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference", ""));
@@ -49,9 +49,9 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals("EDialPreference")) {
-                findPreference("EDialPreference").setSummary(
-                        getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sharedPreferences
-                                .getString("EDialPreference", "0"))]);
+                // findPreference("EDialPreference").setSummary(
+                // getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sharedPreferences
+                // .getString("EDialPreference", "0"))]);
 
             } else if (key.equals("CDMAIPPreference")) {
                 if (sp.getString("CDMAIPPreference", null) != null

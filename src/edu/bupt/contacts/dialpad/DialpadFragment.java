@@ -19,9 +19,7 @@
 
 package edu.bupt.contacts.dialpad;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +44,6 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -61,10 +58,8 @@ import android.provider.Settings;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.PhoneStateListener;
-import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.InputFilter.LengthFilter;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -90,26 +85,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.SpecialCharSequenceMgr;
 import edu.bupt.contacts.activities.DialtactsActivity;
-import edu.bupt.contacts.edial.EdialDialog;
 import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.PhoneNumberFormatter;
 import edu.bupt.contacts.util.StopWatch;
 
 import com.android.internal.telephony.ITelephony;
-import com.android.internal.telephony.TelephonyProperties;
-
 import edu.bupt.contacts.ipcall.IPCall;
-import edu.bupt.contacts.msim.MultiSimConfig;
 import edu.bupt.contacts.phone.CallLogAsync;
 import edu.bupt.contacts.phone.HapticFeedback;
 import edu.bupt.contacts.settings.*;
@@ -903,6 +890,30 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // by yuan
 
         final IPCall ipcall = new IPCall(getActivity());
+
+        /** zzz */
+        final MenuItem ifShowEdialMenuItem = menu.findItem(R.id.menu_if_show_edial);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (sp.getString("EDialPreference", "0").equals("2")) {
+            ifShowEdialMenuItem.setChecked(false);
+        } else {
+            ifShowEdialMenuItem.setChecked(true);
+        }
+
+        ifShowEdialMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem arg0) {
+                Log.v(TAG, "onMenuItemClick");
+                boolean checked = !arg0.isChecked();
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("EDialPreference", checked ? "0" : "2");
+                editor.commit();
+
+                return false;
+            }
+        });
+
         // ddd start
 
         /*
@@ -1334,14 +1345,14 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         /** zzz */
         boolean searchOnlyNumberMatched = false;
-        //ahaha
-//        if (str.toString().contains("*") //
-//                || str.toString().contains("+") //
-//                || str.toString().contains("1") //
-//
-//        ) {
-//            searchOnlyNumberMatched = true;
-//        }
+        // ahaha
+        // if (str.toString().contains("*") //
+        // || str.toString().contains("+") //
+        // || str.toString().contains("1") //
+        //
+        // ) {
+        // searchOnlyNumberMatched = true;
+        // }
 
         /** zzz */
         // why not search '+'?

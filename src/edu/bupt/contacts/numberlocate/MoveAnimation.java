@@ -29,14 +29,14 @@ public class MoveAnimation extends Thread {
             long deltaTime = System.currentTimeMillis() - time;
             if (deltaTime > 450) {
                 Log.w("MoveAnimation","MoveAnimation time reached");
-                mHandler.removeMessages(PhoneStatusRecevierOld.ANIMATION_PROCESS);
+                mHandler.removeMessages(PhoneStatusRecevier.ANIMATION_PROCESS);
                 RUNNING = false;
                 break;
             }
-            mHandler.sendEmptyMessageDelayed(PhoneStatusRecevierOld.ANIMATION_PROCESS, 40 + deltaTime*10/450);
+            mHandler.sendEmptyMessageDelayed(PhoneStatusRecevier.ANIMATION_PROCESS, 40 + deltaTime*10/450);
         }
         RUNNING = false;
-        mHandler.sendEmptyMessage(PhoneStatusRecevierOld.ANIMATION_FINISH);
+        mHandler.sendEmptyMessage(PhoneStatusRecevier.ANIMATION_FINISH);
         Log.w("MoveAnimation","MoveAnimation thread finish");
     }
 }

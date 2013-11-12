@@ -67,7 +67,7 @@ public class EdialService extends Service {
         if (sp.getString("EDialPreference", "0").equals("0")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm.isNetworkRoaming()) {
+            if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
                 Log.v(TAG, "tm.isNetworkRoaming()");
                 // show dialog here
                 edialDialog.show();

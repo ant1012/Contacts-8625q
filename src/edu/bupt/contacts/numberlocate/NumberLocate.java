@@ -64,7 +64,7 @@ public class NumberLocate {
                     Message msg = new Message();
                     msg.obj = city;
                     handler.sendMessage(msg);
-                    PhoneStatusRecevierOld.saveAsCache(mContext, number, city);
+                    PhoneStatusRecevier.saveAsCache(mContext, number, city);
                 }
             }
         };
@@ -93,7 +93,7 @@ public class NumberLocate {
             handler.sendMessage(msg);
         } else {
             if (number.length() >= 11) {
-                String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
+                String formatNumber = PhoneStatusRecevier.formatNumber(number);
                 String selection = null;
                 String[] projection = null;
                 // Uri uri = CityCode.CONTENT_URI;
@@ -110,11 +110,23 @@ public class NumberLocate {
 
                 /** zzz */
                 Uri uri = NumberRegion.CONTENT_URI;
-                if (formatNumber.length() == 7) {
+                if (formatNumber.startsWith("+")) {
+                    Log.v(TAG, "startsWith(" + ")");
+                    // TODO
+                    return;
+                } else if (formatNumber.length() == 7) {
                     selection = NumberRegion.NUMBER + "=" + formatNumber;
                     uri = NumberRegion.CONTENT_URI;
                     projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
                 } else {
+
+                    /** zzz */
+                    if (formatNumber.startsWith("+")) {
+                        Log.v(TAG, "startsWith(\"+\")");
+                        // TODO
+                        return;
+                    }
+
                     selection = NumberRegion.AREACODE + "=" + formatNumber + " OR " + NumberRegion.AREACODE + "="
                             + formatNumber.substring(0, 3);
                     uri = NumberRegion.CONTENT_URI;
@@ -129,7 +141,7 @@ public class NumberLocate {
         if (TextUtils.isEmpty(number))
             return null;
         SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
-        String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
+        String formatNumber = PhoneStatusRecevier.formatNumber(number);
         return cache.getString(formatNumber, null);
     }
 }

@@ -76,4 +76,12 @@
         android:title="@string/call_settings"
         android:showAsAction="withText"
         android:orderInCategory="1" />
+
+
+    <item
+        android:id="@+id/menu_if_show_edial"
+        android:checkable="true"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/preference_edial"/>
+
 </menu>

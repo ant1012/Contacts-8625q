@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/preference_category_edial" >
-        <ListPreference
-            android:defaultValue="0"
-            android:dialogTitle="ListPreference"
-            android:entries="@array/edial_list_preference"
-            android:entryValues="@array/edial_list_preference_values"
-            android:key="EDialPreference"
-            android:title="@string/preference_edial" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_disp_locate" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dialogTitle="@string/preference_disp_locate"
-            android:key="DispLocatePreference"
-            android:title="@string/preference_disp_locate" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_category_time_setting" >
         <ListPreference
             android:defaultValue="0"
@@ -25,6 +9,13 @@
             android:entryValues="@array/time_setting_values"
             android:key="TimeSettingPreference"
             android:title="@string/preference_time_setting" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_category_disp_locate" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dialogTitle="@string/preference_disp_locate"
+            android:key="DispLocatePreference"
+            android:title="@string/preference_disp_locate" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_category_ipcall" >
         <EditTextPreference
@@ -39,6 +30,23 @@
             android:key="GSMIPPreference"
             android:summary="@string/default_ip_setting"
             android:title="@string/gsm_ip_setting" />
+    </PreferenceCategory>
+    <!-- </PreferenceCategory> -->
+    <!-- <PreferenceCategory android:title="@string/preference_category_edial" > -->
+    <!-- <ListPreference -->
+    <!-- android:defaultValue="0" -->
+    <!-- android:dialogTitle="ListPreference" -->
+    <!-- android:entries="@array/edial_list_preference" -->
+    <!-- android:entryValues="@array/edial_list_preference_values" -->
+    <!-- android:key="EDialPreference" -->
+    <!-- android:title="@string/preference_edial" /> -->
+    <!-- </PreferenceCategory> -->
+    <PreferenceCategory android:title="@string/preference_category_test" >
+        <CheckBoxPreference
+            android:defaultValue="0"
+            android:dialogTitle="@string/preference_roaming"
+            android:key="RoamingTestPreference"
+            android:title="@string/preference_roaming" />
     </PreferenceCategory>
 
 </PreferenceScreen>

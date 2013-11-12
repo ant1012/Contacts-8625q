@@ -129,7 +129,7 @@ public class NumberLocateSetting extends Activity implements OnCheckedChangeList
 
     private void startQuery(Context context, String number) {
         if (number.length() >= 11) {
-            String formatNumber = PhoneStatusRecevierOld.formatNumber(number);
+            String formatNumber = PhoneStatusRecevier.formatNumber(number);
             String selection = null;
             String[] projection = null;
             // Uri uri = CityCode.CONTENT_URI;
