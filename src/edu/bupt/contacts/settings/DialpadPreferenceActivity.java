@@ -1,6 +1,8 @@
 package edu.bupt.contacts.settings;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.edial.HelpActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -56,7 +58,7 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
             } else if (key.equals("CDMAIPPreference")) {
                 if (sp.getString("CDMAIPPreference", null) != null
                         && !sp.getString("CDMAIPPreference", null).equals("")) {
-                    Log.v(TAG, "refresh CDMAIPPreference");
+                    Log.v(TAG, "CDMAIPPreference");
                     findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference", ""));
                 } else {
                     Log.v(TAG, "no CDMAIPPreference !");
@@ -66,7 +68,7 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
             } else if (key.equals("GSMIPPreference")) {
 
                 if (sp.getString("GSMIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
-                    Log.v(TAG, "refresh GSMIPPreference");
+                    Log.v(TAG, "GSMIPPreference");
                     findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference", ""));
                 } else {
                     Log.v(TAG, "no GSMIPPreference !");
@@ -74,9 +76,9 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
                 }
 
             } else if (key.equals("DispLocatePreference")) {
-                Log.v(TAG, "refresh DispLocatePreference");
+                Log.v(TAG, "DispLocatePreference");
             } else if (key.equals("TimeSettingPreference")) {
-                Log.v(TAG, "refresh TimeSettingPreference");
+                Log.v(TAG, "TimeSettingPreference");
                 findPreference("TimeSettingPreference").setSummary(
                         getResources().getStringArray(R.array.time_setting)[Integer.parseInt(sp.getString(
                                 "TimeSettingPreference", "0"))]);
@@ -85,4 +87,13 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
 
     };
 
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+
+        if (preference == findPreference("HelpPreference")) {
+            Log.v(TAG, "HelpPreference");
+            startActivity(new Intent(DialpadPreferenceActivity.this, HelpActivity.class));
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
 }

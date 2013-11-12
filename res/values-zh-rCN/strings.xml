@@ -663,6 +663,8 @@
     <string name="preference_category_disp_locate">归属地设置</string>
     <string name="preference_category_time_setting">时间</string>
     <string name="preference_edial">翼拨号</string>
+    <string name="preference_help">展示翼拨号功能</string>
+    <string name="preference_help_summary">使用说明</string>
     <string name="preference_roaming">漫游测试</string>
     <string name="preference_disp_locate">显示来去电归属地</string>
     <string name="preference_time_setting">默认显示时间</string>

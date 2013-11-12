@@ -963,6 +963,12 @@
                 <action android:name="edu.bupt.action.EDIAL" />
             </intent-filter>
         </service>
+        
+        <!-- zzz -->
+        <activity
+            android:name="edu.bupt.contacts.edial.HelpActivity"
+            android:theme="@android:style/Theme.Holo.Light" >
+        </activity>
     </application>
 
 </manifest>
