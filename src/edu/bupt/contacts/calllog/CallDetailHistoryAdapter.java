@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.CallLog.Calls;
+import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,20 +161,30 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         // if need to show bj time or local time
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
-        CharSequence dateValue = null;
+        TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        StringBuilder dateValueSB = new StringBuilder();
+        if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+            String timeLocate = showBJTime ? mContext.getResources().getStringArray(R.array.time_setting)[1] : mContext
+                    .getResources().getStringArray(R.array.time_setting)[0];
+            dateValueSB.append(timeLocate);
+            dateValueSB.append(' ');
+        }
+
         if (!showBJTime) { // local time
-            dateValue = DateUtils.formatDateRange(mContext, details.date, details.date, DateUtils.FORMAT_SHOW_TIME
-                    | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
+            dateValueSB.append(DateUtils.formatDateRange(mContext, details.date, details.date,
+                    DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
+                            | DateUtils.FORMAT_SHOW_YEAR));
         } else { // bj time
-            dateValue = DateUtils.formatDateRange(
+            dateValueSB.append(DateUtils.formatDateRange(
                     mContext,
                     new Formatter(),
                     details.date,
                     details.date,
                     DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                            | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); //TODO
+                            | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
         }
-        dateView.setText(dateValue);
+        dateView.setText(dateValueSB.toString());
 
         // Set the duration
         if (callType == Calls.MISSED_TYPE || callType == Calls.VOICEMAIL_TYPE) {

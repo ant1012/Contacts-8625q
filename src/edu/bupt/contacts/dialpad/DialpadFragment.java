@@ -1345,14 +1345,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         /** zzz */
         boolean searchOnlyNumberMatched = false;
-        // ahaha
-        // if (str.toString().contains("*") //
-        // || str.toString().contains("+") //
-        // || str.toString().contains("1") //
-        //
-        // ) {
-        // searchOnlyNumberMatched = true;
-        // }
+        if (str.toString().contains("*") //
+                || str.toString().contains("+") //
+                || str.toString().contains("1") //
+
+        ) {
+            searchOnlyNumberMatched = true;
+        }
 
         /** zzz */
         // why not search '+'?

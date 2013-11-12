@@ -10,6 +10,7 @@ import java.util.Map;
 
 import edu.bupt.contacts.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract.Events;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -158,32 +160,44 @@ public class MenuCalendar extends Activity {
             // String eventEnd = dt(dtend);
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
             boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
-            CharSequence dateValueStart = null;
-            CharSequence dateValueEnd = null;
-            if (!showBJTime) { // local time
-                dateValueStart = DateUtils.formatDateRange(this, dtstart, dtstart, DateUtils.FORMAT_SHOW_TIME
-                        | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
 
-                dateValueEnd = DateUtils.formatDateRange(this, dtend, dtend, DateUtils.FORMAT_SHOW_TIME
-                        | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
-            } else { // bj time
-                dateValueStart = DateUtils.formatDateRange(
-                        this,
-                        new Formatter(),
-                        dtstart,
-                        dtstart,
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); // TODO
-                dateValueEnd = DateUtils.formatDateRange(
-                        this,
-                        new Formatter(),
-                        dtend,
-                        dtend,
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); // TODO
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            StringBuilder dateValueStartSB = new StringBuilder();
+            StringBuilder dateValueEndSB = new StringBuilder();
+
+            if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+                String timeLocate = showBJTime ? getResources().getStringArray(R.array.time_setting)[1]
+                        : getResources().getStringArray(R.array.time_setting)[0];
+                dateValueStartSB.append(timeLocate);
+                dateValueStartSB.append(' ');
+                dateValueEndSB.append(timeLocate);
+                dateValueEndSB.append(' ');
             }
-            String eventStart = dateValueStart.toString();
-            String eventEnd = dateValueEnd.toString();
+
+            if (!showBJTime) { // local time
+                dateValueStartSB.append(DateUtils.formatDateRange(this, dtstart, dtstart, DateUtils.FORMAT_SHOW_TIME
+                        | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
+
+                dateValueEndSB.append(DateUtils.formatDateRange(this, dtend, dtend, DateUtils.FORMAT_SHOW_TIME
+                        | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
+            } else { // bj time
+                dateValueStartSB.append(DateUtils.formatDateRange(
+                        this,
+                        new Formatter(),
+                        dtstart,
+                        dtstart,
+                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
+                                | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                dateValueEndSB.append(DateUtils.formatDateRange(
+                        this,
+                        new Formatter(),
+                        dtend,
+                        dtend,
+                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
+                                | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+            }
+            String eventStart = dateValueStartSB.toString();
+            String eventEnd = dateValueEndSB.toString();
 
             /** zzz */
             if (title == null //

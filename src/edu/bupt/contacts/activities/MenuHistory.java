@@ -12,6 +12,7 @@ import java.util.Map;
 
 import edu.bupt.contacts.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ListView;
@@ -241,20 +243,29 @@ public class MenuHistory extends Activity {
                 // if need to show bj time or local time
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                 boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
-                CharSequence dateValue = null;
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                StringBuilder dateValueSB = new StringBuilder();
+                if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+                    String timeLocate = showBJTime ? getResources().getStringArray(R.array.time_setting)[1]
+                            : getResources().getStringArray(R.array.time_setting)[0];
+                    dateValueSB.append(timeLocate);
+                    dateValueSB.append(' ');
+                }
+
                 if (!showBJTime) { // local time
-                    dateValue = DateUtils.formatDateRange(this, date, date, DateUtils.FORMAT_SHOW_TIME
-                            | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
+                    dateValueSB.append(DateUtils.formatDateRange(this, date, date, DateUtils.FORMAT_SHOW_TIME
+                            | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR));
                 } else { // bj time
-                    dateValue = DateUtils.formatDateRange(
+                    dateValueSB.append(DateUtils.formatDateRange(
                             this,
                             new Formatter(),
                             date,
                             date,
                             DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                    | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); // TODO
+                                    | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
                 }
-                Log.i("date", checkDur(duration) + ";" + dateValue);
+                Log.i("date", checkDur(duration) + ";" + dateValueSB.toString());
 
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("img", ImgType(typeIndex));
@@ -262,7 +273,7 @@ public class MenuHistory extends Activity {
 
                 /** zzz */
                 map.put("dateOrig", dt(date));
-                map.put("date", dateValue);
+                map.put("date", dateValueSB.toString());
 
                 map.put("duration", "呼叫时长： " + checkDur(duration) + "\n");
                 map.put("sub_id", SimType(sub_id));
@@ -302,19 +313,29 @@ public class MenuHistory extends Activity {
                     // if need to show bj time or local time
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                     boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
-                    CharSequence dateValue = null;
+
+                    TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                    StringBuilder dateValueSB = new StringBuilder();
+                    if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+                        String timeLocate = showBJTime ? getResources().getStringArray(R.array.time_setting)[1]
+                                : getResources().getStringArray(R.array.time_setting)[0];
+                        dateValueSB.append(timeLocate);
+                        dateValueSB.append(' ');
+                    }
+
                     if (!showBJTime) { // local time
-                        dateValue = DateUtils.formatDateRange(this, date, date, DateUtils.FORMAT_SHOW_TIME
+                        dateValueSB.append(DateUtils.formatDateRange(this, date, date, DateUtils.FORMAT_SHOW_TIME
                                 | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                | DateUtils.FORMAT_SHOW_YEAR);
+                                | DateUtils.FORMAT_SHOW_YEAR));
                     } else { // bj time
-                        dateValue = DateUtils.formatDateRange(
+                        dateValueSB.append(DateUtils.formatDateRange(
                                 this,
                                 new Formatter(),
                                 date,
                                 date,
                                 DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                        | DateUtils.FORMAT_SHOW_YEAR, "Europe/paris").toString(); // TODO
+                                        | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
                     }
 
                     Map<String, Object> map = new HashMap<String, Object>();
@@ -323,7 +344,7 @@ public class MenuHistory extends Activity {
 
                     /** zzz */
                     map.put("dateOrig", dt(date));
-                    map.put("date", dateValue);
+                    map.put("date", dateValueSB.toString());
 
                     map.put("duration", duration + "\n");
                     map.put("sub_id", SimType(sub_id));

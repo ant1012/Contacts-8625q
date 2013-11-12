@@ -78,6 +78,7 @@
             android:layout_height="1dip"
             android:background="@android:color/holo_blue_light"
             android:layout_below="@+id/contact_background_sizer"
+                android:orientation="horizontal"
         />
         <View
             android:id="@+id/photo_text_bar"
@@ -128,6 +129,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/call_detail_button_spacing"
             android:layout_below="@id/blue_separator"
+                android:orientation="horizontal"
         >
             <!-- The voicemail fragment will be put here. -->
         </LinearLayout>
@@ -140,13 +142,14 @@
             android:gravity="center_vertical"
 
         >
+            <!-- zzz -->
             <LinearLayout
                 android:id="@+id/call_and_sms_main_action"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:focusable="true"
-                android:background="?android:attr/selectableItemBackground"
+                android:background="@color/white"
                 >
 
                 <LinearLayout

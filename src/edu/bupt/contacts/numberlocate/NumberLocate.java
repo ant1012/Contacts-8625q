@@ -17,6 +17,7 @@ public class NumberLocate {
     private final String TAG = "NumberLocate";
 
     private AsyncQueryHandler queryHandler;
+    private AsyncQueryHandler queryHandlerCountry;
     private Context mContext;
     private Handler handler;
     private String number;
@@ -68,6 +69,21 @@ public class NumberLocate {
                 }
             }
         };
+        
+        /** zzz */
+        queryHandlerCountry = new AsyncQueryHandler(mContext.getContentResolver()){
+
+            @Override
+            protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+                //TODO
+                String city = "yohe?";
+                
+                Message msg = new Message();
+                msg.obj = city;
+                handler.sendMessage(msg);
+                PhoneStatusRecevier.saveAsCache(mContext, number, city);
+            }
+        };
     }
 
     static boolean getSettingValue(Context context, String key) {
@@ -111,7 +127,7 @@ public class NumberLocate {
                 /** zzz */
                 Uri uri = NumberRegion.CONTENT_URI;
                 if (formatNumber.startsWith("+")) {
-                    Log.v(TAG, "startsWith(" + ")");
+                    Log.v(TAG, "startsWith(\"+\")");
                     // TODO
                     return;
                 } else if (formatNumber.length() == 7) {

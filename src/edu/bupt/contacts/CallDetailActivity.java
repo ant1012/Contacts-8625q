@@ -437,7 +437,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                 Log.v(TAG, "firstdetails - " + firstdetails.number.toString());
 
                 Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null,
-                        CallLog.Calls.NUMBER + " = ?", new String[] { firstdetails.number.toString() }, null);
+                        CallLog.Calls.NUMBER + " = ?", new String[] { firstdetails.number.toString() },
+                        CallLog.Calls.DATE + " desc");
                 Log.v(TAG, "cursor.getCount() - " + cursor.getCount());
                 PhoneCallDetails[] details = new PhoneCallDetails[cursor.getCount()];
                 for (int index = 0; cursor.moveToNext(); index++) {
