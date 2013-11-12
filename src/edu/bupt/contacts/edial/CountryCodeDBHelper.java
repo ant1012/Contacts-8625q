@@ -40,7 +40,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
-        executeSQLScript(database, "db/international_phonecode.sql");
+        executeSQLScript(database, "db/international_phonecode_add.sql");
     }
 
     /** zzz */
@@ -116,16 +116,17 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     // northamerica 5
     // oceania 6
     // asia 8(698)
-    
+
     public ArrayList<Map<String, String>> getCountry(int continent) {
-        
-    	ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
         Cursor cursor = null;
         String current_sql_sel;
         // switch(continent){
         // case 1:
 
-        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent='" + continent + "'AND code!='' order by code";
+        current_sql_sel = "SELECT  * FROM " + TB_NAME + " where " + "continent='" + continent
+                + "'AND code!='' order by code";
         cursor = getWritableDatabase().rawQuery(current_sql_sel, null);
         // break;
         // case 2:
@@ -174,6 +175,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
 
             list.add(item);
         }
+        cursor.close();
 
         return list;
     }
@@ -198,6 +200,7 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
             list.add(item);
         }
 
+        cursor.close();
         return list;
     }
 
@@ -235,6 +238,20 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
                 ret.put("code", "");
             }
         }
+        cursor.close();
+        return ret;
+    }
+
+    /** zzz */
+    public boolean queryIs133Enabled(String countryIso) {
+        boolean ret = false;
+        Cursor cursor = null;
+        cursor = getWritableDatabase().query(TB_NAME, new String[] { "support_esurfing" }, "countryiso = ?",
+                new String[] { countryIso.toUpperCase() }, null, null, null);
+        if (cursor.moveToFirst()) {
+            ret = cursor.getString(0).equals("Y") ? true : false;
+        }
+        cursor.close();
         return ret;
     }
 }

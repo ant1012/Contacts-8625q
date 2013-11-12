@@ -9,7 +9,9 @@ import edu.bupt.contacts.R;
 import a_vcard.android.util.Log;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.ServiceManager;
+import android.preference.PreferenceManager;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -84,7 +86,7 @@ public class EdialDialog extends HoloDialog {
         EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
 
         // TODO
-        if (isC2C()) {
+        if (!is133Enabled()) {
             call133Button.setClickable(false);
             call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
         }
@@ -436,20 +438,30 @@ public class EdialDialog extends HoloDialog {
     }
 
     /** zzz */
-    private boolean isC2C() {
-        MSimTelephonyManager m = (MSimTelephonyManager) context.getSystemService(context.MSIM_TELEPHONY_SERVICE);
-        // if (!m.isNetworkRoaming(0)) {
-        // return false;
-        // }
+    private boolean is133Enabled() {
+        CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        MSimTelephonyManager mtm = (MSimTelephonyManager) context.getSystemService(context.MSIM_TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        // for test
+        if (sp.getBoolean("RoamingTestPreference", false)) {
+            return true;
+        }
+
+        if (!mtm.isNetworkRoaming(0)) {
+            return false;
+        }
         switch (MSimTelephonyManager.getNetworkType(0)) {
         case TelephonyManager.NETWORK_TYPE_CDMA:
         case TelephonyManager.NETWORK_TYPE_1xRTT:
         case TelephonyManager.NETWORK_TYPE_EVDO_0:
         case TelephonyManager.NETWORK_TYPE_EVDO_A:
         case TelephonyManager.NETWORK_TYPE_EVDO_B:
-            return true;
-        default:
             return false;
+        default:
+            String countryIso = tm.getNetworkCountryIso();
+            return mdbHelper.queryIs133Enabled(countryIso);
         }
 
     }
