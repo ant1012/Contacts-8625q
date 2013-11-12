@@ -19,6 +19,7 @@ package edu.bupt.contacts.calllog;
 import com.android.common.widget.GroupingListAdapter;
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
+import edu.bupt.contacts.CallDetailActivity;
 import edu.bupt.contacts.ContactPhotoManager;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.PhoneCallDetails;
@@ -36,6 +37,7 @@ import com.google.common.annotations.VisibleForTesting;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -232,7 +234,7 @@ import libcore.util.Objects;
     private final View.OnLongClickListener mPrimaryLongActionListener = new View.OnLongClickListener() {
 
         @Override
-        public boolean onLongClick(final View view) {
+        public boolean onLongClick(View view) {
             /** zzz */
             // ip call, maybe coded by yuan?
             // final IPCall ipcall = new IPCall(mContext);
@@ -289,46 +291,44 @@ import libcore.util.Objects;
             // return false;
 
             /** zzz */
+            String s = null;
+            IntentProvider intentProvider = (IntentProvider) view.getTag();
+            if (intentProvider == null) {
+                Log.w(TAG, "intentProvider == null");
+                return false;
+            }
+            if (intentProvider.getIntent(mContext).getData() != null) {
+                s = getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
+            } else if (intentProvider.getIntent(mContext).hasExtra(CallDetailActivity.EXTRA_CALL_LOG_IDS)) {
 
+                long id = intentProvider.getIntent(mContext).getLongArrayExtra(CallDetailActivity.EXTRA_CALL_LOG_IDS)[0];
+                s = getPhoneNumberForUri(ContentUris.withAppendedId(Calls.CONTENT_URI, id));
+            }
+            final String phoneNumber = s;
+
+            Log.i(TAG, "phoneNumber - " + phoneNumber);
             String[] itemchoice = new String[] { mContext.getString(R.string.calllog_delete_all_of_this_number) };
             new AlertDialog.Builder(mContext, 0).setTitle(R.string.calllog_options)
                     .setItems(itemchoice, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.v(TAG, "onClick");
-                            String phoneNumber = null;
-
-                            IntentProvider intentProvider = (IntentProvider) view.getTag();
-                            // Log.v("longclick",
-                            // intentProvider.getIntent(mContext).getData().toString());
-                            // if (intentProvider != null) {
-                            // phoneNumber =
-                            // getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
-                            // }
-
-                            Log.i(TAG, "phoneNumber - " + phoneNumber);
 
                             // final String phoneNumber =
                             // getPhoneCallDetailsForUri(callUris[0]).number.toString();
-                            //
-                            // ContentResolver cr =
-                            // mContext.getContentResolver();
-                            // Cursor cursor = cr.query(Calls.CONTENT_URI, new
-                            // String[] { Calls.NUMBER, Calls._ID }, null,
-                            // null, null);
-                            // for (cursor.moveToFirst(); !cursor.isAfterLast();
-                            // cursor.moveToNext()) {
-                            // String number = cursor.getString(0);
-                            // String id = cursor.getString(1);
-                            // if (!number.isEmpty() &&
-                            // number.endsWith(phoneNumber)) {
-                            // cr.delete(Calls.CONTENT_URI, Calls._ID + " = " +
-                            // id, null);
-                            // }
-                            // }
-                            // cursor.close();
-                            // getContentResolver().delete(Calls.CONTENT_URI,Calls.NUMBER
-                            // +
-                            // " = " + phoneNumber, null);
+
+                            ContentResolver cr = mContext.getContentResolver();
+                            Cursor cursor = cr.query(Calls.CONTENT_URI, new String[] { Calls.NUMBER, Calls._ID }, null,
+                                    null, null);
+                            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                                String number = cursor.getString(0);
+                                String id = cursor.getString(1);
+                                if (!number.isEmpty() && number.endsWith(phoneNumber)) {
+                                    cr.delete(Calls.CONTENT_URI, Calls._ID + " = " + id, null);
+                                }
+                            }
+                            cursor.close();
+                            // cr.delete(Calls.CONTENT_URI, Calls.NUMBER + " = "
+                            // + phoneNumber, null);
                         }
                     }).setNegativeButton(R.string.cancel, null).show();
             return false;

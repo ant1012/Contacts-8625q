@@ -664,7 +664,7 @@
     <string name="preference_category_time_setting">时间</string>
     <string name="preference_edial">翼拨号</string>
     <string name="preference_roaming">漫游测试</string>
-    <string name="preference_disp_locate">呼叫时显示归属地</string>
+    <string name="preference_disp_locate">显示来去电归属地</string>
     <string name="preference_time_setting">默认显示时间</string>
     <string name="cardp_mobile">移动</string>
     <string name="cardp_telecom">电信</string>
