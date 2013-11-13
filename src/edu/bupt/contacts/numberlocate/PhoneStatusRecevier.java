@@ -154,15 +154,22 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
     public static String formatNumber(String number) {
         StringBuilder sb = new StringBuilder(number);
+        String ret = new String();
         if (sb.charAt(0) == '+') {
             /** zzz */
+            Log.v(TAG, "sb.charAt(0) == \'+\'");
             if (sb.length() >= 3 && sb.substring(1, 3).equals("86")) {
-                return sb.substring(3).toString();
+                try {
+                    ret = sb.substring(3, 10).toString();
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString());
+                    ret = sb.substring(3).toString();
+                }
             } else {
-                return sb.toString();
+                ret = sb.toString();
             }
             // return sb.delete(0, 3).substring(0, 7).toString();
-        }
+        } else
         // //zaizhe
         // if(sb.indexOf("010")==0){
         // return sb.substring(0, 3);
@@ -181,12 +188,18 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         // }
         // //zaizhe
         if (sb.charAt(0) == '0') {
-            return sb.substring(0, 4);
+            Log.v(TAG, "sb.charAt(0) == 0");
+            ret = sb.substring(0, 4);
+        } else if (sb.length() < 7) {
+            Log.v(TAG, "sb.length() < 7");
+            ret = sb.toString();
+        } else {
+            // return sb.substring(0, 7).toString();
+            Log.v(TAG, "defalt");
+            ret = sb.substring(0, 7).toString();
         }
-        if (sb.length() < 7) {
-            return sb.toString();
-        }
-        return sb.substring(0, 7).toString();
+        Log.v(TAG, "ret - " + ret);
+        return ret;
     }
 
     public static void saveAsCache(Context context, String number, String city) {
@@ -258,25 +271,33 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
         /** zzz */
         String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        Log.v(TAG, "formatNumber - " + formatNumber);
         String selection = null;
         String[] projection = null;
         Uri uri = NumberRegion.CONTENT_URI;
         if (formatNumber.startsWith("+")) {
             Log.v(TAG, "startsWith(\"+\")");
+            Log.v(TAG, "formatNumber - " + formatNumber);
             // TODO
             return "";
         } else if (formatNumber.length() == 7) {
+            Log.v(TAG, "formatNumber - " + formatNumber);
             selection = NumberRegion.NUMBER + "=" + formatNumber;
             uri = NumberRegion.CONTENT_URI;
             projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
         } else {
 
+            Log.v(TAG, "formatNumber - " + formatNumber);
             Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
                     + formatNumber);
 
             /** zzz */
             if (formatNumber.startsWith("+")) {
                 Log.v(TAG, "startsWith(\"+\")");
+                // TODO
+                return "";
+            } else if (formatNumber.length() <= 3) {
+                Log.v(TAG, "formatNumber.length() <= 3");
                 // TODO
                 return "";
             }

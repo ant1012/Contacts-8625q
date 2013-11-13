@@ -82,6 +82,9 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
                 findPreference("TimeSettingPreference").setSummary(
                         getResources().getStringArray(R.array.time_setting)[Integer.parseInt(sp.getString(
                                 "TimeSettingPreference", "0"))]);
+            } else if (key.equals("RoamingTestPreference")) {
+                Log.v(TAG, "RoamingTestPreference");
+                setShouldShowHelp(true);
             }
         }
 
@@ -95,5 +98,12 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
             startActivity(new Intent(DialpadPreferenceActivity.this, HelpActivity.class));
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private void setShouldShowHelp(boolean b) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = sp.edit();
+        editor.putBoolean("ShouldShowHelpPreference", b);
+        editor.commit();
     }
 }

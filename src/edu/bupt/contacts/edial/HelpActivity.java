@@ -37,8 +37,8 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         views = new ArrayList<View>();
 
@@ -135,5 +135,6 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = sp.edit();
         editor.putBoolean("ShouldShowHelpPreference", b);
+        editor.commit();
     }
 }

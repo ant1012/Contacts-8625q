@@ -52,7 +52,10 @@ public class EdialService extends Service {
         // for help activity
         if ((tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false))
                 && sp.getBoolean("ShouldShowHelpPreference", true)) {
-            
+            Intent i = new Intent(EdialService.this, HelpActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            return super.onStartCommand(intent, flags, startId);
         }
 
         digit = intent.getStringExtra("digit");

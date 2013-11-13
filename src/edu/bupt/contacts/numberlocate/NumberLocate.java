@@ -14,7 +14,7 @@ import edu.bupt.contacts.R;
 import edu.bupt.contacts.numberlocate.NumberLocateProvider.NumberRegion;
 
 public class NumberLocate {
-    private final String TAG = "NumberLocate";
+    private final static String TAG = "NumberLocate";
 
     private AsyncQueryHandler queryHandler;
     private AsyncQueryHandler queryHandlerCountry;
@@ -69,15 +69,15 @@ public class NumberLocate {
                 }
             }
         };
-        
+
         /** zzz */
-        queryHandlerCountry = new AsyncQueryHandler(mContext.getContentResolver()){
+        queryHandlerCountry = new AsyncQueryHandler(mContext.getContentResolver()) {
 
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-                //TODO
+                // TODO
                 String city = "yohe?";
-                
+
                 Message msg = new Message();
                 msg.obj = city;
                 handler.sendMessage(msg);
@@ -110,6 +110,7 @@ public class NumberLocate {
         } else {
             if (number.length() >= 11) {
                 String formatNumber = PhoneStatusRecevier.formatNumber(number);
+                Log.v(TAG, "formatNumber - " + formatNumber);
                 String selection = null;
                 String[] projection = null;
                 // Uri uri = CityCode.CONTENT_URI;
@@ -128,15 +129,18 @@ public class NumberLocate {
                 Uri uri = NumberRegion.CONTENT_URI;
                 if (formatNumber.startsWith("+")) {
                     Log.v(TAG, "startsWith(\"+\")");
+                    Log.v(TAG, "formatNumber - " + formatNumber);
                     // TODO
                     return;
                 } else if (formatNumber.length() == 7) {
+                    Log.v(TAG, "formatNumber - " + formatNumber);
                     selection = NumberRegion.NUMBER + "=" + formatNumber;
                     uri = NumberRegion.CONTENT_URI;
                     projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
                 } else {
 
                     /** zzz */
+                    Log.v(TAG, "formatNumber - " + formatNumber);
                     if (formatNumber.startsWith("+")) {
                         Log.v(TAG, "startsWith(\"+\")");
                         // TODO
@@ -158,6 +162,7 @@ public class NumberLocate {
             return null;
         SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
         String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        Log.v(TAG, "formatNumber - " + formatNumber);
         return cache.getString(formatNumber, null);
     }
 }

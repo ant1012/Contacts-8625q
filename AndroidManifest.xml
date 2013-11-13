@@ -966,8 +966,7 @@
         
         <!-- zzz -->
         <activity
-            android:name="edu.bupt.contacts.edial.HelpActivity"
-            android:theme="@android:style/Theme.Holo.Light" >
+            android:name="edu.bupt.contacts.edial.HelpActivity" >
         </activity>
     </application>
 
