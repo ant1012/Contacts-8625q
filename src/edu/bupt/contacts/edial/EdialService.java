@@ -46,6 +46,15 @@ public class EdialService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
 
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // for help activity
+        if ((tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false))
+                && sp.getBoolean("ShouldShowHelpPreference", true)) {
+            
+        }
+
         digit = intent.getStringExtra("digit");
         digit = formatNumber(digit);
 
@@ -62,11 +71,9 @@ public class EdialService extends Service {
 
         // show dialog
         EdialDialog edialDialog = new EdialDialog(this, digit);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (sp.getString("EDialPreference", "0").equals("0")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
                 Log.v(TAG, "tm.isNetworkRoaming()");
                 // show dialog here
