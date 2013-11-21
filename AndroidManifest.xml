@@ -17,8 +17,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.bupt.contacts"
-    android:versionCode="5"
-    android:versionName="0.8" >
+    android:versionCode="6"
+    android:versionName="0.8a" >
 
     <uses-sdk android:minSdkVersion="16" />
 
