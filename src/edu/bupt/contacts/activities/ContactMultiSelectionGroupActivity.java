@@ -51,6 +51,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -300,10 +301,12 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(0, 0, 0, R.string.cancel);
-        menu.add(0, 1, 0, R.string.ok);
-        menu.findItem(0).setShowAsAction(1);
-        menu.findItem(1).setShowAsAction(2);
+        menu.add(0, 0, 0, R.string.menu_select_all);
+        menu.add(0, 1, 1, R.string.cancel);
+        menu.add(0, 2, 2, R.string.ok);
+        menu.findItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(1).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(2).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
 
@@ -314,10 +317,16 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
-            finish();
+            for (int i = 0; i < list.size(); i++) {
+                ContactMultiSelectAdapter.getIsSelected().put(i, true);
+            }
+            ((BaseAdapter)mAdapter).notifyDataSetChanged();
             break;
 
         case 1:
+            finish();
+            break;
+        case 2:
             if (flagPackageVcard == 0) {
                 pickContacts();
             } else if (flagPackageVcard == 1) {
