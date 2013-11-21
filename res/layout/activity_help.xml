@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/people_app_theme_color"
-    android:orientation="vertical" >
+    android:background="@color/people_app_theme_color" >
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/ll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal" >
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal" >
 
-        <ImageView
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:padding="15.0dip"
+                android:src="@drawable/help_dot" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/button_skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
+            android:layout_alignParentRight="true"
+            android:paddingRight="3dp"
+            android:paddingTop="3dp"
+            android:text="@string/esurfing_dial_skiphelp"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dip"
-            android:src="@drawable/help_dot" />
-    </LinearLayout>
-
-</RelativeLayout>
+</FrameLayout>

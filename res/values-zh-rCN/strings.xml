@@ -738,5 +738,6 @@
     <string name="esurfing_dial_suffix_hash">#</string>
     <string name="esurfing_dial_suffix_null"></string>
     <string name="time_setting">时间显示设置</string>
+    <string name="esurfing_dial_skiphelp">跳过</string>
 
 </resources>

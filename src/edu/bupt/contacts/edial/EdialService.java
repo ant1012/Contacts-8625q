@@ -50,11 +50,15 @@ public class EdialService extends Service {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // for help activity
-        if ((tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false))
-                && sp.getBoolean("ShouldShowHelpPreference", true)) {
-            Intent i = new Intent(EdialService.this, HelpActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+        // if ((tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference",
+        // false))
+        // && sp.getBoolean("ShouldShowHelpPreference", true)) {
+        // Intent i = new Intent(EdialService.this, HelpActivity.class);
+        // i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // startActivity(i);
+        // return super.onStartCommand(intent, flags, startId);
+        // }
+        if (showHelpActivity(intent, flags, startId)) {
             return super.onStartCommand(intent, flags, startId);
         }
 
@@ -79,6 +83,10 @@ public class EdialService extends Service {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
                 Log.v(TAG, "tm.isNetworkRoaming()");
+
+                // if (showHelpActivity(intent, flags, startId)) {
+                // return super.onStartCommand(intent, flags, startId);
+                // }
                 // show dialog here
                 edialDialog.show();
             } else {
@@ -86,6 +94,10 @@ public class EdialService extends Service {
             }
         } else if (sp.getString("EDialPreference", "0").equals("1")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
+
+            // if (showHelpActivity(intent, flags, startId)) {
+            // return super.onStartCommand(intent, flags, startId);
+            // }
             // show dialog here
             edialDialog.show();
         } else if (sp.getString("EDialPreference", "0").equals("2")) {
@@ -228,5 +240,22 @@ public class EdialService extends Service {
         m.appendTail(sb);
         Log.i(TAG, "sb.toString() - " + sb.toString());
         return sb.toString();
+    }
+
+    private boolean showHelpActivity(Intent intent, int flags, int startId) {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // for help activity
+        if ((tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false))
+                && sp.getBoolean("ShouldShowHelpPreference", true)) {
+            Intent i = new Intent(EdialService.this, HelpActivity.class);
+            i.putExtra("digit", digit);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

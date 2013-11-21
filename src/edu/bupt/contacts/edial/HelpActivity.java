@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.bupt.contacts.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
@@ -16,11 +17,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /** zzz */
 public class HelpActivity extends Activity implements OnPageChangeListener, OnClickListener {
@@ -28,6 +32,8 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
     private ViewPager vp;
     private ViewPagerAdapter vpAdapter;
     private List<View> views;
+    private TextView tv_skip;
+    private String digit;
 
     private final String[] pics = { "pic/edial_help1.png", "pic/edial_help2.png", "pic/edial_help3.png",
             "pic/edial_help4.png", "pic/edial_help5.png", "pic/edial_help6.png" };
@@ -42,6 +48,9 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         setContentView(R.layout.activity_help);
         views = new ArrayList<View>();
 
+        Intent intent = getIntent();
+        digit = intent.getStringExtra("digit");
+
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -55,6 +64,22 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         vpAdapter = new ViewPagerAdapter(views);
         vp.setAdapter(vpAdapter);
         vp.setOnPageChangeListener(this);
+
+        tv_skip = (TextView) findViewById(R.id.button_skip);
+        tv_skip.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                if (digit != null) {
+                    Intent intent = new Intent();
+                    intent.setAction("edu.bupt.action.EDIAL");
+                    intent.putExtra("digit", digit);
+                    startService(intent);
+                }
+                finish();
+            }
+
+        });
 
         initDots();
 
@@ -120,10 +145,14 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
     @Override
     public void onPageScrollStateChanged(int arg0) {
+        // Log.v(TAG, "arg0 - " + arg0);
     }
 
     @Override
     public void onPageScrolled(int arg0, float arg1, int arg2) {
+        // Log.v(TAG, "arg0 - " + arg0);
+        // Log.v(TAG, "arg1 - " + arg1);
+        // Log.v(TAG, "arg2 - " + arg2);
     }
 
     @Override
@@ -136,5 +165,22 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         Editor editor = sp.edit();
         editor.putBoolean("ShouldShowHelpPreference", b);
         editor.commit();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.v(TAG, "keyCode - " + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if (digit != null) {
+                Intent intent = new Intent();
+                intent.setAction("edu.bupt.action.EDIAL");
+                intent.putExtra("digit", digit);
+                startService(intent);
+            }
+            finish();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
