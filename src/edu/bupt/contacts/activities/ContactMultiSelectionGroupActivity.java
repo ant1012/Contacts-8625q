@@ -320,7 +320,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             for (int i = 0; i < list.size(); i++) {
                 ContactMultiSelectAdapter.getIsSelected().put(i, true);
             }
-            ((BaseAdapter)mAdapter).notifyDataSetChanged();
+            ((BaseAdapter) mAdapter).notifyDataSetChanged();
             break;
 
         case 1:
