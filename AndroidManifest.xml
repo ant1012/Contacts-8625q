@@ -691,7 +691,7 @@
         </activity>
 
         <receiver android:name="edu.bupt.contacts.blacklist.BlacklistBroadcastReceiver" >
-            <intent-filter android:priority="1000" >
+            <intent-filter android:priority="10000" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -949,7 +949,7 @@
         <receiver
             android:name="edu.bupt.contacts.numberlocate.PhoneStatusRecevier"
             android:exported="true" >
-            <intent-filter android:priority="1000" >
+            <intent-filter android:priority="900" >
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>

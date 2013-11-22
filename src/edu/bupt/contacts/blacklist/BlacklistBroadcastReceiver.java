@@ -162,8 +162,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
         if (ACTION_CALL.equals(action)) {
 
-            MSimTelephonyManager telMgr = (MSimTelephonyManager) context
-                    .getSystemService("phone");
+            MSimTelephonyManager telMgr = (MSimTelephonyManager) context.getSystemService("phone");
 
             Log.i(TAG, "telMgr.getCallState(0) - " + telMgr.getCallState(0));
             Log.i(TAG, "telMgr.getCallState(1) - " + telMgr.getCallState(1));
@@ -196,8 +195,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                 white_block_mode = sp.getBoolean("white_mode", false);
 
                 Log.v(TAG, "incoming call !");
-                Log.i("white_block_mode", "white_block_mode is "
-                        + white_block_mode);
+                Log.i("white_block_mode", "white_block_mode is " + white_block_mode);
 
                 incomingNumber = intent.getStringExtra("incoming_number");
 
@@ -210,15 +208,17 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
                     mWhiteDBHelper = new WhiteListDBHelper(context, 1);
                     String sql = "select * from WhiteListFragment where phone = ?";
-                    Cursor cursor = mWhiteDBHelper.getWritableDatabase()
-                            .rawQuery(sql, new String[] { incomingNumber });
+                    Cursor cursor = mWhiteDBHelper.getWritableDatabase().rawQuery(sql, new String[] { incomingNumber });
+
+                    Log.v(TAG, "cursor.getCount() - " + cursor.getCount());
+                    Log.v(TAG, "cursor.moveToFirst() - " + cursor.moveToFirst());
+
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
-                    if (!cursor.moveToFirst() && (isStranger(incomingNumber))) {
+                    if (!cursor.moveToFirst() || (isStranger(incomingNumber))) {
                         Log.v(TAG, "This number is not in whitelist...");
                         int blockId = 2;
                         String time = formatter.format(new Date());
-                        String name = context.getResources().getString(
-                                R.string.stranger);
+                        String name = context.getResources().getString(R.string.stranger);
 
                         if (cursor.moveToFirst()) {
                             // blockId = cursor.getInt(4);
@@ -251,9 +251,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                         // }
 
                         try {
-                            ITelephonyMSim telephony = ITelephonyMSim.Stub
-                                    .asInterface(ServiceManager
-                                            .getService(Context.MSIM_TELEPHONY_SERVICE));
+                            ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                                    .getService(Context.MSIM_TELEPHONY_SERVICE));
                             telephony.endCall(0);
                             telephony.endCall(1);
                         } catch (Exception e) {
@@ -264,29 +263,25 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                         callDBHelper.addRecord(name, incomingNumber, time);
                         callDBHelper.close();
 
-                        context.sendBroadcast(new Intent(
-                                CallBlockFragment.ACTION_CALL_UPDATE));
+                        context.sendBroadcast(new Intent(CallBlockFragment.ACTION_CALL_UPDATE));
 
                         if (callLogContent != null) {
-                            context.getContentResolver()
-                                    .unregisterContentObserver(callLogContent);
+                            context.getContentResolver().unregisterContentObserver(callLogContent);
                         }
 
-                        callLogContent = new CallLogContent(new Handler(),
-                                incomingNumber);
-                        context.getContentResolver()
-                                .registerContentObserver(
-                                        CallLog.Calls.CONTENT_URI, true,
-                                        callLogContent);
+                        callLogContent = new CallLogContent(new Handler(), incomingNumber);
+                        context.getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true,
+                                callLogContent);
                         // }
                         cursor.close();
                     } else if (callLogContent != null) {
-                        context.getContentResolver().unregisterContentObserver(
-                                callLogContent);
+                        context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
                     mWhiteDBHelper.close();
-                    context.sendBroadcast(new Intent(
-                            MsgBlockFragment.ACTION_SMS_UPDATE));
+
+                    Log.v(TAG, "mWhiteDBHelper.close()");
+
+                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     // break;
                 } else {
                     Log.i(TAG, incomingNumber + " is calling...");
@@ -297,16 +292,13 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
                     mDBHelper = new BlacklistDBHelper(context, 1);
                     String sql = "select * from BlackListFragment where phone = ?";
-                    Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(
-                            sql, new String[] { incomingNumber });
+                    Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql, new String[] { incomingNumber });
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
-                    if (cursor.moveToFirst()
-                            || (blockStranger && isStranger(incomingNumber))) {
+                    if (cursor.moveToFirst() || (blockStranger && isStranger(incomingNumber))) {
                         Log.v(TAG, "This number is in blacklist...");
                         int blockId = 2;
                         String time = formatter.format(new Date());
-                        String name = context.getResources().getString(
-                                R.string.stranger);
+                        String name = context.getResources().getString(R.string.stranger);
 
                         if (cursor.moveToFirst()) {
                             blockId = cursor.getInt(4);
@@ -340,9 +332,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                             // }
 
                             try {
-                                ITelephonyMSim telephony = ITelephonyMSim.Stub
-                                        .asInterface(ServiceManager
-                                                .getService(Context.MSIM_TELEPHONY_SERVICE));
+                                ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
+                                        .getService(Context.MSIM_TELEPHONY_SERVICE));
                                 telephony.endCall(0);
                                 telephony.endCall(1);
                             } catch (Exception e) {
@@ -353,30 +344,22 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                             callDBHelper.addRecord(name, incomingNumber, time);
                             callDBHelper.close();
 
-                            context.sendBroadcast(new Intent(
-                                    CallBlockFragment.ACTION_CALL_UPDATE));
+                            context.sendBroadcast(new Intent(CallBlockFragment.ACTION_CALL_UPDATE));
 
                             if (callLogContent != null) {
-                                context.getContentResolver()
-                                        .unregisterContentObserver(
-                                                callLogContent);
+                                context.getContentResolver().unregisterContentObserver(callLogContent);
                             }
 
-                            callLogContent = new CallLogContent(new Handler(),
-                                    incomingNumber);
-                            context.getContentResolver()
-                                    .registerContentObserver(
-                                            CallLog.Calls.CONTENT_URI, true,
-                                            callLogContent);
+                            callLogContent = new CallLogContent(new Handler(), incomingNumber);
+                            context.getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true,
+                                    callLogContent);
                         }
                         cursor.close();
                     } else if (callLogContent != null) {
-                        context.getContentResolver().unregisterContentObserver(
-                                callLogContent);
+                        context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
                     mDBHelper.close();
-                    context.sendBroadcast(new Intent(
-                            MsgBlockFragment.ACTION_SMS_UPDATE));
+                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     // break;
                 }
 
@@ -401,29 +384,27 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
             super.onChange(selfChange);
 
             ContentResolver resolver = context.getContentResolver();
-            Cursor cursorContact = resolver.query(CallLog.Calls.CONTENT_URI,
-                    new String[] { "_id" }, "number=? and (type=1 or type=3)",
-                    new String[] { phone }, "_id desc limit 1");
+            Cursor cursorContact = resolver.query(CallLog.Calls.CONTENT_URI, new String[] { "_id" },
+                    "number=? and (type=1 or type=3)", new String[] { phone }, "_id desc limit 1");
             if (cursorContact.moveToFirst()) {
                 int id = cursorContact.getInt(0);
-                resolver.delete(CallLog.Calls.CONTENT_URI, "_id=?",
-                        new String[] { id + "" });
+                resolver.delete(CallLog.Calls.CONTENT_URI, "_id=?", new String[] { id + "" });
             }
             cursorContact.close();
         }
     }
 
     private boolean isStranger(String phoneNumber) {
-//        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
-//                ContactsContract.CommonDataKinds.Phone.NUMBER };
-//        Cursor cursor = context.getContentResolver().query(
-//                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                projection, // Which columns to return.
-//                ContactsContract.CommonDataKinds.Phone.NUMBER + " = '"
-//                        + phoneNumber + "'", // WHERE clause.
-//                null, // WHERE clause value substitution
-//                null); // Sort order.
-//        return (!cursor.moveToFirst());// 不能以cursor是否为null判断
+        // String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME,
+        // ContactsContract.CommonDataKinds.Phone.NUMBER };
+        // Cursor cursor = context.getContentResolver().query(
+        // ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        // projection, // Which columns to return.
+        // ContactsContract.CommonDataKinds.Phone.NUMBER + " = '"
+        // + phoneNumber + "'", // WHERE clause.
+        // null, // WHERE clause value substitution
+        // null); // Sort order.
+        // return (!cursor.moveToFirst());// 不能以cursor是否为null判断
         return false;
     }
 
