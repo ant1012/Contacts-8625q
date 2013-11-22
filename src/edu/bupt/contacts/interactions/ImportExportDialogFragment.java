@@ -119,7 +119,7 @@ public class ImportExportDialogFragment extends DialogFragment
             /** zzz */
             // baoge
 //            adapter.add(R.string.manage_sim_contacts);
-            adapter.add(R.string.export_to_sim);
+//            adapter.add(R.string.export_to_sim);
         }
         if (res.getBoolean(R.bool.config_allow_import_from_sdcard)) {
             adapter.add(R.string.import_from_sdcard);

@@ -12,7 +12,7 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
+     limitations under the License.
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -636,6 +636,7 @@
     <string name="save_to_phone">手机</string>
     <string name="save_to_uim">卡一</string>
     <string name="save_to_sim2">卡二</string>
+    <string name="export_to_sim">导出到SIM卡</string>
     <string name="menu_add_to_blacklist">"添加到黑名单"</string>
     <string name="menu_share_as_text">"文本分享"</string>
     <string name="menu_share_as_vcard">"VCard分享"</string>
@@ -673,7 +674,6 @@
     <string name="cardp_unicom">联通</string>
     <string name="calllog_options">选择</string>
     <string name="calllog_delete_all_of_this_number">删除与此联系人的所有通话记录</string>
-
 
     <!-- merge -->
     <!-- new string to show options -->
