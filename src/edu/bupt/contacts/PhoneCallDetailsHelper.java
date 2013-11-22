@@ -108,12 +108,18 @@ public class PhoneCallDetailsHelper {
             mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
-            if (TextUtils.isEmpty(details.geocode)
-                    || mPhoneNumberHelper.isVoicemailNumber(details.number)) {
-                numberText = mResources.getString(R.string.call_log_empty_gecode);
-            } else {
-                numberText = details.geocode;
-            }
+
+            /** zzz */
+            // TODO
+            // if (TextUtils.isEmpty(details.geocode)
+            // || mPhoneNumberHelper.isVoicemailNumber(details.number)) {
+            // numberText =
+            // mResources.getString(R.string.call_log_empty_gecode);
+            // } else {
+            // numberText = details.geocode;
+            // }
+            numberText = "";
+
             labelText = null;
         } else {
             nameText = details.name;
