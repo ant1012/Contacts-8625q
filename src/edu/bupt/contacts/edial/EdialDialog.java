@@ -445,11 +445,11 @@ public class EdialDialog extends HoloDialog {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         // for test
-        if (sp.getBoolean("RoamingTestPreference", false)) {
-            return true;
-        }
+//        if (sp.getBoolean("RoamingTestPreference", false)) {
+//            return true;
+//        }
 
-        if (!mtm.isNetworkRoaming(0)) {
+        if (!(mtm.isNetworkRoaming(0) || sp.getBoolean("RoamingTestPreference", false))) {
             return false;
         }
         switch (MSimTelephonyManager.getNetworkType(0)) {

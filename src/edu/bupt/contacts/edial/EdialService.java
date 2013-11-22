@@ -72,6 +72,7 @@ public class EdialService extends Service {
 
         if (!shouldShowEdial()) { // may modify the number here
             // call directly
+            digit = replacePattern(digit, "#", "%23"); // replace #
             call(digit);
             return super.onStartCommand(intent, flags, startId);
         }
@@ -90,6 +91,7 @@ public class EdialService extends Service {
                 // show dialog here
                 edialDialog.show();
             } else {
+                digit = replacePattern(digit, "#", "%23"); // replace #
                 call(digit);
             }
         } else if (sp.getString("EDialPreference", "0").equals("1")) {
@@ -102,6 +104,7 @@ public class EdialService extends Service {
             edialDialog.show();
         } else if (sp.getString("EDialPreference", "0").equals("2")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
+            digit = replacePattern(digit, "#", "%23"); // replace #
             call(digit);
         } else {
             Log.e(TAG, "sharedPreferences error");
@@ -152,9 +155,11 @@ public class EdialService extends Service {
         if (m2.find()) {
             Log.w(TAG, "start with \'**133\', end with \'#\'");
             if (isC2CRoaming()) {
+                Log.v(TAG, "isC2CRoaming()");
                 digit = strip133Prefix(digit);
                 return true;
             } else {
+                Log.v(TAG, "!isC2CRoaming()");
                 return false;
             }
         }
@@ -212,7 +217,9 @@ public class EdialService extends Service {
 
     private boolean isC2CRoaming() {
         MSimTelephonyManager m = (MSimTelephonyManager) getSystemService(MSIM_TELEPHONY_SERVICE);
-        if (!m.isNetworkRoaming(0)) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!(m.isNetworkRoaming(0) || sp.getBoolean("RoamingTestPreference", false))) {
+            Log.v(TAG, "!m.isNetworkRoaming(0)");
             return false;
         }
         switch (MSimTelephonyManager.getNetworkType(0)) {
@@ -221,6 +228,7 @@ public class EdialService extends Service {
         case TelephonyManager.NETWORK_TYPE_EVDO_0:
         case TelephonyManager.NETWORK_TYPE_EVDO_A:
         case TelephonyManager.NETWORK_TYPE_EVDO_B:
+            Log.v(TAG, "MSimTelephonyManager.getNetworkType(0) - " + MSimTelephonyManager.getNetworkType(0));
             return true;
         default:
             return false;

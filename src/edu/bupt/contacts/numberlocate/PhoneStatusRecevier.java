@@ -275,7 +275,7 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         String selection = null;
         String[] projection = null;
         Uri uri = NumberRegion.CONTENT_URI;
-        if (formatNumber.startsWith("+")) {
+        if (formatNumber.startsWith("+") || formatNumber.startsWith("*")) {
             Log.v(TAG, "startsWith(\"+\")");
             Log.v(TAG, "formatNumber - " + formatNumber);
             // TODO
