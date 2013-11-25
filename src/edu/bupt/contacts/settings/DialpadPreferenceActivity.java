@@ -1,5 +1,7 @@
 package edu.bupt.contacts.settings;
 
+import java.util.TimeZone;
+
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.edial.HelpActivity;
 import android.content.Intent;
@@ -45,8 +47,21 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
                         "TimeSettingPreference", "0"))]);
 
         // unusable when same time zone
-        
-        findPreference("TimeSettingPreference").setEnabled(true);
+        //ddd
+        TimeZone timeZone = TimeZone.getDefault();
+        //timeZone = TimeZone.getTimeZone("GMT+09:00");
+        // 获取“时间偏移”。相对于“本初子午线”的偏移，单位是ms。
+        int offset = timeZone.getRawOffset();
+        // 获取“时间偏移” 对应的小时
+        int gmt = offset/(3600*1000);
+        Log.i(TAG,"timeZone--"+ String.valueOf(gmt));
+        if(gmt == 8){
+        	findPreference("TimeSettingPreference").setEnabled(false);
+        }
+        else{
+        	findPreference("TimeSettingPreference").setEnabled(true);
+        }
+    
 
         sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
     }
