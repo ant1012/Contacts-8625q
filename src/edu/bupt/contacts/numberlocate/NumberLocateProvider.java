@@ -143,6 +143,8 @@ public class NumberLocateProvider extends ContentProvider {
         default:
             throw new UnsupportedOperationException();
         }
+        Log.i(TAG, "projection - " + projection);
+        Log.i(TAG, "selection - " + selection);
         return qb.query(dbhelper.getWritableDatabase(), projection, selection, selectionArgs, null, null, sortOrder,
                 null);
     }

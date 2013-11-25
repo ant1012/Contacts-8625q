@@ -29,6 +29,7 @@ public class NumberLocate {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 Log.d(TAG, "onQueryComplete");
+                String city = null;
                 if (cursor != null && cursor.moveToNext()) {
                     /** zzz */
                     // String city = cursor.getString(0);
@@ -59,15 +60,21 @@ public class NumberLocate {
                         sb.append(resCardp);
                     }
 
-                    String city = sb.toString();
+                    city = sb.toString();
                     Log.v(TAG, "city - " + city);
 
                     cursor.close();
-                    Message msg = new Message();
-                    msg.obj = city;
-                    handler.sendMessage(msg);
+                    // Message msg = new Message();
+                    // msg.obj = city;
+                    // handler.sendMessage(msg);
                     saveAsCache(mContext, number, city);
+                } else {
+                    city = mContext.getString(R.string.unknown);
+                    Log.v(TAG, "city - " + city);
                 }
+                Message msg = new Message();
+                msg.obj = city;
+                handler.sendMessage(msg);
             }
         };
 
@@ -78,12 +85,27 @@ public class NumberLocate {
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 // TODO
                 Log.d(TAG, "onQueryComplete");
-                String city = "yohe?";
+                String city = null;
+                if (cursor != null && cursor.moveToNext()) {
+                    StringBuilder sb = new StringBuilder(cursor.getString(0));
+                    while (cursor.moveToNext()) {
+                        sb.append("/").append(cursor.getString(0));
+                    }
+                    city = sb.toString();
 
+                    // Message msg = new Message();
+                    // msg.obj = city;
+                    // handler.sendMessage(msg);
+
+                    saveAsCache(mContext, number, city);
+                    cursor.close();
+                } else {
+                    city = mContext.getString(R.string.unknown);
+                    Log.v(TAG, "city - " + city);
+                }
                 Message msg = new Message();
                 msg.obj = city;
                 handler.sendMessage(msg);
-                // saveAsCache(mContext, number, city);
             }
         };
     }
@@ -104,8 +126,8 @@ public class NumberLocate {
 
     private void startQuery(Context context, String number) {
         this.number = number;
-        // String city = queryFromCache(mContext, number);
-        String city = "";
+        String city = queryFromCache(mContext, number);
+        // String city = "";
         if (!TextUtils.isEmpty(city)) {
             Message msg = new Message();
             msg.obj = city;
@@ -134,16 +156,33 @@ public class NumberLocate {
                 Log.d(TAG, "foreign");
                 // TODO
 
-                if (formatNumber.length() >= 2) {
-                    Log.i(TAG, "formatNumber - " + formatNumber);
-                    StringBuilder sb = new StringBuilder(formatNumber.charAt(1));
-                    selection = CountryCodeProvider.CODE + " = " + sb.toString();
-                    uri = CountryCodeProvider.CONTENT_URI;
-                    projection = new String[] { CountryCodeProvider.CN_NAME };
-                    queryHandlerCountry.startQuery(0, null, uri, projection, selection, null, null);
-                }
+                // if (formatNumber.length() >= 2) {
+                // Log.i(TAG, "formatNumber - " + formatNumber);
+                // StringBuilder sb = new StringBuilder(formatNumber.charAt(1));
+                // selection = CountryCodeProvider.CODE + " = " + sb.toString();
+                // uri = CountryCodeProvider.CONTENT_URI;
+                // projection = new String[] { CountryCodeProvider.CN_NAME };
+                // queryHandlerCountry.startQuery(0, null, uri, projection,
+                // selection, null, null);
+                // }
 
-                // StringBuilder sb =
+                StringBuilder selectionSB = new StringBuilder();
+                try {
+                    StringBuilder sb = new StringBuilder(formatNumber);
+                    selectionSB.append(CountryCodeProvider.CODE + " = ").append(sb.substring(1, 2));
+                    selectionSB.append(" or " + CountryCodeProvider.CODE + " = ").append(sb.substring(1, 3));
+                    selectionSB.append(" or " + CountryCodeProvider.CODE + " = ").append(sb.substring(1, 4));
+                    selectionSB.append(" or " + CountryCodeProvider.CODE + " = ").append(sb.substring(1, 5));
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString());
+                }
+                selection = selectionSB.toString();
+                uri = CountryCodeProvider.CONTENT_URI;
+                projection = new String[] { CountryCodeProvider.CN_NAME };
+
+                Log.i(TAG, "selection - " + selection);
+
+                queryHandlerCountry.startQuery(0, null, uri, projection, selection, null, null);
 
                 return;
             } else if (formatNumber.length() == 7) { // mobile
@@ -165,8 +204,8 @@ public class NumberLocate {
                 // }
 
                 try {
-                    selection = NumberRegion.AREACODE + "=" + formatNumber + " OR " + NumberRegion.AREACODE + "="
-                            + formatNumber.substring(0, 3);
+                    selection = NumberRegion.AREACODE + " = \'" + formatNumber + "\' or " + NumberRegion.AREACODE
+                            + " = \'" + formatNumber.substring(0, 3) + "\'";
 
                 } catch (Exception e) {
                     Log.w(TAG, e.toString());
