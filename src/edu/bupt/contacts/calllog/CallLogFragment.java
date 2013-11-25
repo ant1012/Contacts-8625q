@@ -16,39 +16,27 @@
 
 package edu.bupt.contacts.calllog;
 
-import com.android.common.io.MoreCloseables;
-import com.android.common.widget.GroupingListAdapter;
-
 import android.app.AlertDialog;
-import android.app.Dialog;
-import edu.bupt.contacts.CallDetailActivity;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
-import edu.bupt.contacts.numberlocate.NumberLocateSetting;
 import edu.bupt.contacts.settings.DialpadPreferenceActivity;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.EmptyLoader;
 
 import com.android.internal.telephony.CallerInfo;
-import com.android.internal.telephony.ITelephony;
 import com.google.common.annotations.VisibleForTesting;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.CallLog.Calls;
@@ -63,8 +51,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.List;
 
 /**
  * Displays a list of call log entries.

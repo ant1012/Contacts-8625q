@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
+import edu.bupt.contacts.numberlocate.CountryCodeDBHelper;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -63,7 +64,10 @@ public class EdialService extends Service {
         }
 
         digit = intent.getStringExtra("digit");
+        Log.w(TAG, "digit - " + digit);
         digit = formatNumber(digit);
+
+        Log.w(TAG, "digit - " + digit);
 
         // prepare the country code database
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
@@ -72,6 +76,7 @@ public class EdialService extends Service {
 
         if (!shouldShowEdial()) { // may modify the number here
             // call directly
+            Log.i(TAG, "digit - " + digit);
             digit = replacePattern(digit, "#", "%23"); // replace #
             call(digit);
             return super.onStartCommand(intent, flags, startId);
@@ -84,6 +89,8 @@ public class EdialService extends Service {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
                 Log.v(TAG, "tm.isNetworkRoaming()");
+                // strip beginning '0'
+                digit = stripZeroPrefix(digit);
 
                 // if (showHelpActivity(intent, flags, startId)) {
                 // return super.onStartCommand(intent, flags, startId);
@@ -96,6 +103,8 @@ public class EdialService extends Service {
             }
         } else if (sp.getString("EDialPreference", "0").equals("1")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
+            // strip beginning '0'
+            digit = stripZeroPrefix(digit);
 
             // if (showHelpActivity(intent, flags, startId)) {
             // return super.onStartCommand(intent, flags, startId);
@@ -173,8 +182,6 @@ public class EdialService extends Service {
             return false;
         }
 
-        // strip beginning '0'
-        digit = stripZeroPrefix(digit);
         return true;
     }
 

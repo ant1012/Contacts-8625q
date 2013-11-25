@@ -6,6 +6,7 @@ import java.util.Map;
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.numberlocate.CountryCodeDBHelper;
 import a_vcard.android.util.Log;
 import android.content.ContentValues;
 import android.content.Context;

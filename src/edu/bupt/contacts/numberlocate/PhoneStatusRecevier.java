@@ -15,6 +15,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
@@ -65,27 +66,30 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             case NEW_OUTGOING_CALL: {
                 String number = (String) msg.obj;
                 // query from cache
-                String city = queryFromCache(mContext, number);
+                String city = NumberLocate.queryFromCache(mContext, number);
                 Log.v("number1", "" + city);
 
                 if (TextUtils.isEmpty(city)) {
-                    // query from database
-                    city = queryRegion(mContext, number);
+                    // // query from database
+                    // city = queryRegion(mContext, number);
+                    //
+                    // // save as cache
+                    // NumberLocate.saveAsCache(mContext, number, city);
+                    new NumberLocate(mContext, handler).getLocation(number);
+                } else {
 
-                    // save as cache
-                    saveAsCache(mContext, number, city);
-                }
-                //
-                Log.v("number2", "" + city);
-                // String city = new NumberLocate(mContext).getLocation(number);
+                    Log.v("number2", "" + city);
+                    // String city = new
+                    // NumberLocate(mContext).getLocation(number);
 
-                if (cardOneState == 0 && cardTwoState == 2) {
-                    showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
-                            mContext.getText(R.string.description_call_log_outgoing_call));
-                }
-                if (cardOneState == 2 && cardTwoState == 0) {
-                    showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
-                            mContext.getText(R.string.description_call_log_outgoing_call));
+                    if (cardOneState == 0 && cardTwoState == 2) {
+                        showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
+                                mContext.getText(R.string.description_call_log_outgoing_call));
+                    }
+                    if (cardOneState == 2 && cardTwoState == 0) {
+                        showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
+                                mContext.getText(R.string.description_call_log_outgoing_call));
+                    }
                 }
 
                 break;
@@ -93,20 +97,22 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             case CALL_STATE_RINGING: {
                 String number = (String) msg.obj;
                 // query from cache
-                String city = queryFromCache(mContext, number);
+                String city = NumberLocate.queryFromCache(mContext, number);
                 if (TextUtils.isEmpty(city)) {
-                    // query from database
-                    city = queryRegion(mContext, number);
-                    // save as cache
-                    saveAsCache(mContext, number, city);
-                }
-                if (cardOneState == 0 && cardTwoState == 1) {
-                    showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
-                            mContext.getText(R.string.description_call_log_incoming_call));
-                }
-                if (cardOneState == 1 && cardTwoState == 0) {
-                    showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
-                            mContext.getText(R.string.description_call_log_incoming_call));
+                    // // query from database
+                    // city = queryRegion(mContext, number);
+                    // // save as cache
+                    // NumberLocate.saveAsCache(mContext, number, city);
+                    new NumberLocate(mContext, handler).getLocation(number);
+                } else {
+                    if (cardOneState == 0 && cardTwoState == 1) {
+                        showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
+                                mContext.getText(R.string.description_call_log_incoming_call));
+                    }
+                    if (cardOneState == 1 && cardTwoState == 0) {
+                        showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
+                                mContext.getText(R.string.description_call_log_incoming_call));
+                    }
                 }
                 break;
             }
@@ -152,202 +158,238 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
         };
     };
 
-    public static String formatNumber(String number) {
-        StringBuilder sb = new StringBuilder(number);
-        String ret = new String();
-        if (sb.charAt(0) == '+') {
-            /** zzz */
-            Log.v(TAG, "sb.charAt(0) == \'+\'");
-            if (sb.length() >= 3 && sb.substring(1, 3).equals("86")) {
-                try {
-                    ret = sb.substring(3, 10).toString();
-                } catch (Exception e) {
-                    Log.w(TAG, e.toString());
-                    ret = sb.substring(3).toString();
-                }
-            } else {
-                ret = sb.toString();
-            }
-            // return sb.delete(0, 3).substring(0, 7).toString();
-        } else
-        // //zaizhe
-        // if(sb.indexOf("010")==0){
-        // return sb.substring(0, 3);
-        // }
-        //
-        // if(sb.indexOf("020")==0){
-        // return sb.substring(0, 3);
-        // }
-        //
-        // if(sb.indexOf("030")==0){
-        // return sb.substring(0, 3);
-        // }
-        //
-        // if(sb.indexOf("040")==0){
-        // return sb.substring(0, 3);
-        // }
-        // //zaizhe
-        if (sb.charAt(0) == '0') {
-            Log.v(TAG, "sb.charAt(0) == 0");
-            ret = sb.substring(0, 4);
-        } else if (sb.length() < 7) {
-            Log.v(TAG, "sb.length() < 7");
-            ret = sb.toString();
-        } else {
-            // return sb.substring(0, 7).toString();
-            Log.v(TAG, "defalt");
-            ret = sb.substring(0, 7).toString();
-        }
-        Log.v(TAG, "ret - " + ret);
-        return ret;
-    }
+    /** zzz */
+    static Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
 
-    public static void saveAsCache(Context context, String number, String city) {
-        if (!TextUtils.isEmpty(city) && number.length() >= 11) {
-            String formatNumber = formatNumber(number);
-            SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
-            cache.edit().putString(formatNumber, city).commit();
-        }
-    }
+            String city = msg.obj.toString();
 
-    static String queryFromCache(Context context, String number) {
-        if (TextUtils.isEmpty(number))
-            return null;
-        SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
-        String formatNumber = formatNumber(number);
-        return cache.getString(formatNumber, null);
-        // return null;
-    }
+            // save as cache
+            NumberLocate.saveAsCache(mContext, phoneNumber, city);
+            Log.v("number2", "" + city);
+            // String city = new NumberLocate(mContext).getLocation(number);
 
-    static String queryRegion(Context context, String number) {
-        String city = null;
-        // if (!TextUtils.isEmpty(number) && number.length() >= 11) {
-        // String formatNumber = formatNumber(number);
-        // Cursor cursor = null;
-        // if (formatNumber.length() == 7) {
-        // String selection = NumberRegion.NUMBER+"="+formatNumber;
-        // cursor = context.getContentResolver().query(NumberRegion.CONTENT_URI,
-        // null, selection, null, null);
-        // } else {
-        // String selection = CityCode.CODE+"="+formatNumber+" OR " +
-        // CityCode.CODE+"=" + formatNumber.substring(0, 3);
-        // cursor = context.getContentResolver().query(CityCode.CONTENT_URI,
-        // null, selection, null, null);
-        // }
-        // //Log.v(TAG,
-        // "queryRegion()-->formatNumber="+formatNumber+",cursor:::" +
-        // cursor.getCount());
-        // if (cursor != null && cursor.getCount() > 0) {
-        // cursor.moveToNext();
-        // city = cursor.getString(0);
-        // cursor.close();
-        // }
-        // }
-
-        // if (!TextUtils.isEmpty(number) && number.length() >= 11) {
-        // String formatNumber = PhoneStatusRecevier.formatNumber(number);
-        // String selection = null;
-        // String[] projection = null;
-        // Uri uri = NumberRegion.CONTENT_URI;
-        // if (formatNumber.length() == 7) {
-        // selection = NumberRegion.NUMBER + "=" + formatNumber;
-        // uri = NumberRegion.CONTENT_URI;
-        // projection = new String[] { NumberRegion.CITY };
-        // } else {
-        // selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" +
-        // " OR " + NumberRegion.AREACODE
-        // + "=" + "'" + formatNumber.substring(0, 3) + "'";
-        // uri = NumberRegion.CONTENT_URI;
-        // projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY
-        // };
-        // }
-        // ContentResolver cr = context.getContentResolver();
-        // Cursor cursor = cr.query(uri, projection, selection, null, null);
-        // if (cursor != null && cursor.moveToNext()) {
-        // city = cursor.getString(0);
-        // cursor.close();
-        // }
-        // }
-
-        /** zzz */
-        String formatNumber = PhoneStatusRecevier.formatNumber(number);
-        Log.v(TAG, "formatNumber - " + formatNumber);
-        String selection = null;
-        String[] projection = null;
-        Uri uri = NumberRegion.CONTENT_URI;
-        if (formatNumber.startsWith("+") || formatNumber.startsWith("*")) {
-            Log.v(TAG, "startsWith(\"+\")");
-            Log.v(TAG, "formatNumber - " + formatNumber);
-            // TODO
-            return "";
-        } else if (formatNumber.length() == 7) {
-            Log.v(TAG, "formatNumber - " + formatNumber);
-            selection = NumberRegion.NUMBER + "=" + formatNumber;
-            uri = NumberRegion.CONTENT_URI;
-            projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
-        } else {
-
-            Log.v(TAG, "formatNumber - " + formatNumber);
-            Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " + NumberRegion.AREACODE + " formatNumber: "
-                    + formatNumber);
-
-            /** zzz */
-            if (formatNumber.startsWith("+")) {
-                Log.v(TAG, "startsWith(\"+\")");
-                // TODO
-                return "";
-            } else if (formatNumber.length() <= 3) {
-                Log.v(TAG, "formatNumber.length() <= 3");
-                // TODO
-                return "";
+            if (cardOneState == 0 && cardTwoState == 2) {
+                showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
+                        mContext.getText(R.string.description_call_log_outgoing_call));
+            } else if (cardOneState == 2 && cardTwoState == 0) {
+                showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
+                        mContext.getText(R.string.description_call_log_outgoing_call));
+            } else if (cardOneState == 0 && cardTwoState == 1) {
+                showToast(mContext, city, 2, MSimTelephonyManager.getDefault().getNetworkOperatorName(1),
+                        mContext.getText(R.string.description_call_log_incoming_call));
+            } else if (cardOneState == 1 && cardTwoState == 0) {
+                showToast(mContext, city, 1, MSimTelephonyManager.getDefault().getNetworkOperatorName(0),
+                        mContext.getText(R.string.description_call_log_incoming_call));
             }
 
-            selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" + " OR " + NumberRegion.AREACODE + "="
-                    + "'" + formatNumber.substring(0, 3) + "'";
-            uri = NumberRegion.CONTENT_URI;
-            projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
         }
+    };
 
-        ContentResolver cr = context.getContentResolver();
-        Cursor cursor = cr.query(uri, projection, selection, null, null);
-        if (cursor != null && cursor.moveToNext()) {
-            /** zzz */
-            // city = cursor.getString(0);
+    // public static String formatNumber(String number) {
+    // StringBuilder sb = new StringBuilder(number);
+    // String ret = new String();
+    // if (sb.charAt(0) == '+') {
+    // /** zzz */
+    // Log.v(TAG, "sb.charAt(0) == \'+\'");
+    // if (sb.length() >= 3 && sb.substring(1, 3).equals("86")) {
+    // try {
+    // ret = sb.substring(3, 10).toString();
+    // } catch (Exception e) {
+    // Log.w(TAG, e.toString());
+    // ret = sb.substring(3).toString();
+    // }
+    // } else {
+    // ret = sb.toString();
+    // }
+    // // return sb.delete(0, 3).substring(0, 7).toString();
+    // } else
+    // // //zaizhe
+    // // if(sb.indexOf("010")==0){
+    // // return sb.substring(0, 3);
+    // // }
+    // //
+    // // if(sb.indexOf("020")==0){
+    // // return sb.substring(0, 3);
+    // // }
+    // //
+    // // if(sb.indexOf("030")==0){
+    // // return sb.substring(0, 3);
+    // // }
+    // //
+    // // if(sb.indexOf("040")==0){
+    // // return sb.substring(0, 3);
+    // // }
+    // // //zaizhe
+    // if (sb.charAt(0) == '0') {
+    // Log.v(TAG, "sb.charAt(0) == 0");
+    // ret = sb.substring(0, 4);
+    // } else if (sb.length() < 7) {
+    // Log.v(TAG, "sb.length() < 7");
+    // ret = sb.toString();
+    // } else {
+    // // return sb.substring(0, 7).toString();
+    // Log.v(TAG, "defalt");
+    // ret = sb.substring(0, 7).toString();
+    // }
+    // Log.v(TAG, "ret - " + ret);
+    // return ret;
+    // }
 
-            /** zzz */
-            StringBuilder sb = new StringBuilder();
+    // public static void saveAsCache(Context context, String number, String
+    // city) {
+    // if (!TextUtils.isEmpty(city) && number.length() >= 11) {
+    // String formatNumber = NumberLocate.formatNumber(number);
+    // SharedPreferences cache = context.getSharedPreferences("number_region",
+    // Context.MODE_PRIVATE);
+    // cache.edit().putString(formatNumber, city).commit();
+    // }
+    // }
+    //
+    // static String queryFromCache(Context context, String number) {
+    // if (TextUtils.isEmpty(number))
+    // return null;
+    // SharedPreferences cache = context.getSharedPreferences("number_region",
+    // Context.MODE_PRIVATE);
+    // String formatNumber = NumberLocate.formatNumber(number);
+    // return cache.getString(formatNumber, null);
+    // // return null;
+    // }
 
-            String resProvince = cursor.getString(0);
-            String resCity = cursor.getString(1);
-
-            sb.append(resProvince);
-
-            if (!resProvince.equals(resCity)) {
-                sb.append(' ');
-                sb.append(resCity);
-            }
-
-            String resCardp = "";
-            if (cursor.getColumnCount() == 3) {
-                resCardp = cursor.getString(2);
-                if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
-                    resCardp = mContext.getString(R.string.cardp_mobile);
-                } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom))) {
-                    resCardp = mContext.getString(R.string.cardp_telecom);
-                } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom))) {
-                    resCardp = mContext.getString(R.string.cardp_unicom);
-                }
-                sb.append(' ');
-                sb.append(resCardp);
-            }
-
-            city = sb.toString();
-
-            cursor.close();
-        }
-
-        return city;
-    }
+    // static String queryRegion(Context context, String number) {
+    // String city = null;
+    // // if (!TextUtils.isEmpty(number) && number.length() >= 11) {
+    // // String formatNumber = formatNumber(number);
+    // // Cursor cursor = null;
+    // // if (formatNumber.length() == 7) {
+    // // String selection = NumberRegion.NUMBER+"="+formatNumber;
+    // // cursor = context.getContentResolver().query(NumberRegion.CONTENT_URI,
+    // // null, selection, null, null);
+    // // } else {
+    // // String selection = CityCode.CODE+"="+formatNumber+" OR " +
+    // // CityCode.CODE+"=" + formatNumber.substring(0, 3);
+    // // cursor = context.getContentResolver().query(CityCode.CONTENT_URI,
+    // // null, selection, null, null);
+    // // }
+    // // //Log.v(TAG,
+    // // "queryRegion()-->formatNumber="+formatNumber+",cursor:::" +
+    // // cursor.getCount());
+    // // if (cursor != null && cursor.getCount() > 0) {
+    // // cursor.moveToNext();
+    // // city = cursor.getString(0);
+    // // cursor.close();
+    // // }
+    // // }
+    //
+    // // if (!TextUtils.isEmpty(number) && number.length() >= 11) {
+    // // String formatNumber = PhoneStatusRecevier.formatNumber(number);
+    // // String selection = null;
+    // // String[] projection = null;
+    // // Uri uri = NumberRegion.CONTENT_URI;
+    // // if (formatNumber.length() == 7) {
+    // // selection = NumberRegion.NUMBER + "=" + formatNumber;
+    // // uri = NumberRegion.CONTENT_URI;
+    // // projection = new String[] { NumberRegion.CITY };
+    // // } else {
+    // // selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" +
+    // // " OR " + NumberRegion.AREACODE
+    // // + "=" + "'" + formatNumber.substring(0, 3) + "'";
+    // // uri = NumberRegion.CONTENT_URI;
+    // // projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY
+    // // };
+    // // }
+    // // ContentResolver cr = context.getContentResolver();
+    // // Cursor cursor = cr.query(uri, projection, selection, null, null);
+    // // if (cursor != null && cursor.moveToNext()) {
+    // // city = cursor.getString(0);
+    // // cursor.close();
+    // // }
+    // // }
+    //
+    // /** zzz */
+    // String formatNumber = NumberLocate.formatNumber(number);
+    // Log.v(TAG, "formatNumber - " + formatNumber);
+    // String selection = null;
+    // String[] projection = null;
+    // Uri uri = NumberRegion.CONTENT_URI;
+    // if (formatNumber.startsWith("+") || formatNumber.startsWith("*")) {
+    // Log.v(TAG, "startsWith(\"+\")");
+    // Log.v(TAG, "formatNumber - " + formatNumber);
+    // // TODO
+    // return "";
+    // } else if (formatNumber.length() == 7) {
+    // Log.v(TAG, "formatNumber - " + formatNumber);
+    // selection = NumberRegion.NUMBER + "=" + formatNumber;
+    // uri = NumberRegion.CONTENT_URI;
+    // projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY,
+    // NumberRegion.CARD };
+    // } else {
+    //
+    // Log.v(TAG, "formatNumber - " + formatNumber);
+    // Log.v("NumberLocateSetting", "NumberRegion.AREACODE: " +
+    // NumberRegion.AREACODE + " formatNumber: "
+    // + formatNumber);
+    //
+    // /** zzz */
+    // if (formatNumber.startsWith("+")) {
+    // Log.v(TAG, "startsWith(\"+\")");
+    // // TODO
+    // return "";
+    // } else if (formatNumber.length() <= 3) {
+    // Log.v(TAG, "formatNumber.length() <= 3");
+    // // TODO
+    // return "";
+    // }
+    //
+    // selection = NumberRegion.AREACODE + "=" + "'" + formatNumber + "'" +
+    // " OR " + NumberRegion.AREACODE + "="
+    // + "'" + formatNumber.substring(0, 3) + "'";
+    // uri = NumberRegion.CONTENT_URI;
+    // projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
+    // }
+    //
+    // ContentResolver cr = context.getContentResolver();
+    // Cursor cursor = cr.query(uri, projection, selection, null, null);
+    // if (cursor != null && cursor.moveToNext()) {
+    // /** zzz */
+    // // city = cursor.getString(0);
+    //
+    // /** zzz */
+    // StringBuilder sb = new StringBuilder();
+    //
+    // String resProvince = cursor.getString(0);
+    // String resCity = cursor.getString(1);
+    //
+    // sb.append(resProvince);
+    //
+    // if (!resProvince.equals(resCity)) {
+    // sb.append(' ');
+    // sb.append(resCity);
+    // }
+    //
+    // String resCardp = "";
+    // if (cursor.getColumnCount() == 3) {
+    // resCardp = cursor.getString(2);
+    // if (resCardp.contains(mContext.getString(R.string.cardp_mobile))) {
+    // resCardp = mContext.getString(R.string.cardp_mobile);
+    // } else if (resCardp.contains(mContext.getString(R.string.cardp_telecom)))
+    // {
+    // resCardp = mContext.getString(R.string.cardp_telecom);
+    // } else if (resCardp.contains(mContext.getString(R.string.cardp_unicom)))
+    // {
+    // resCardp = mContext.getString(R.string.cardp_unicom);
+    // }
+    // sb.append(' ');
+    // sb.append(resCardp);
+    // }
+    //
+    // city = sb.toString();
+    //
+    // cursor.close();
+    // }
+    //
+    // return city;
+    // }
 
     @Override
     public void onReceive(Context context, Intent intent) {

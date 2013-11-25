@@ -13,7 +13,7 @@ public class NumberLocateProvider extends ContentProvider {
     private static final String TAG = "NumberLocateProvider";
     private NumberLocateDBHelper dbhelper;
 
-    public static final String AUTHORITY = "edu.bupt.contacts";
+    public static final String AUTHORITY = "edu.bupt.contacts.numberlocate";
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private static final int NUMBERS_REGION_ID = 102;

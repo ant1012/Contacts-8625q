@@ -57,6 +57,7 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
     public void addPeople(String name, String phone) {
         String sql = "select * from " + TB_NAME + " where phone = ?";
 
+        onCreate(this.getWritableDatabase());
         String strip1 = replacePattern(phone, "^((\\+{0,1}86){0,1})", ""); // strip
                                                                            // +86
         String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -

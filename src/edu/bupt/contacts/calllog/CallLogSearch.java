@@ -2,35 +2,22 @@ package edu.bupt.contacts.calllog;
 
 import java.util.Date;
 
-import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.DialtactsActivity;
-import edu.bupt.contacts.numberlocate.NumberLocateSetting;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.provider.CallLog.Calls;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 
 
 public class CallLogSearch extends Activity implements OnQueryTextListener, OnCloseListener {

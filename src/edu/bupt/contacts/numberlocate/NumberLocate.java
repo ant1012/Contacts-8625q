@@ -28,6 +28,7 @@ public class NumberLocate {
         queryHandler = new AsyncQueryHandler(mContext.getContentResolver()) {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+                Log.d(TAG, "onQueryComplete");
                 if (cursor != null && cursor.moveToNext()) {
                     /** zzz */
                     // String city = cursor.getString(0);
@@ -65,7 +66,7 @@ public class NumberLocate {
                     Message msg = new Message();
                     msg.obj = city;
                     handler.sendMessage(msg);
-                    PhoneStatusRecevier.saveAsCache(mContext, number, city);
+                    saveAsCache(mContext, number, city);
                 }
             }
         };
@@ -76,12 +77,13 @@ public class NumberLocate {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 // TODO
+                Log.d(TAG, "onQueryComplete");
                 String city = "yohe?";
 
                 Message msg = new Message();
                 msg.obj = city;
                 handler.sendMessage(msg);
-                PhoneStatusRecevier.saveAsCache(mContext, number, city);
+                // saveAsCache(mContext, number, city);
             }
         };
     }
@@ -102,58 +104,84 @@ public class NumberLocate {
 
     private void startQuery(Context context, String number) {
         this.number = number;
-        String city = queryFromCache(mContext, number);
+        // String city = queryFromCache(mContext, number);
+        String city = "";
         if (!TextUtils.isEmpty(city)) {
             Message msg = new Message();
             msg.obj = city;
             handler.sendMessage(msg);
         } else {
-            if (number.length() >= 11) {
-                String formatNumber = PhoneStatusRecevier.formatNumber(number);
-                Log.v(TAG, "formatNumber - " + formatNumber);
-                String selection = null;
-                String[] projection = null;
-                // Uri uri = CityCode.CONTENT_URI;
-                // if (formatNumber.length() == 7) {
-                // selection = NumberRegion.NUMBER+"="+formatNumber;
-                // uri = NumberRegion.CONTENT_URI;
-                // projection = new String[]{NumberRegion.CITY};
-                // } else {
-                // selection = CityCode.CODE+"="+formatNumber+" OR " +
-                // CityCode.CODE+"=" + formatNumber.substring(0, 3);
-                // uri = CityCode.CONTENT_URI;
-                // projection = new String[]{CityCode.CITY};
-                // }
+            // if (number.length() >= 11) {
+            String formatNumber = formatNumber(number);
+            Log.i(TAG, "formatNumber - " + formatNumber);
+            String selection = null;
+            String[] projection = null;
+            // Uri uri = CityCode.CONTENT_URI;
+            // if (formatNumber.length() == 7) {
+            // selection = NumberRegion.NUMBER+"="+formatNumber;
+            // uri = NumberRegion.CONTENT_URI;
+            // projection = new String[]{NumberRegion.CITY};
+            // } else {
+            // selection = CityCode.CODE+"="+formatNumber+" OR " +
+            // CityCode.CODE+"=" + formatNumber.substring(0, 3);
+            // uri = CityCode.CONTENT_URI;
+            // projection = new String[]{CityCode.CITY};
+            // }
+
+            /** zzz */
+            Uri uri = NumberRegion.CONTENT_URI;
+            if (formatNumber.startsWith("+")) { // foreign
+                Log.d(TAG, "foreign");
+                // TODO
+
+                if (formatNumber.length() >= 2) {
+                    Log.i(TAG, "formatNumber - " + formatNumber);
+                    StringBuilder sb = new StringBuilder(formatNumber.charAt(1));
+                    selection = CountryCodeProvider.CODE + " = " + sb.toString();
+                    uri = CountryCodeProvider.CONTENT_URI;
+                    projection = new String[] { CountryCodeProvider.CN_NAME };
+                    queryHandlerCountry.startQuery(0, null, uri, projection, selection, null, null);
+                }
+
+                // StringBuilder sb =
+
+                return;
+            } else if (formatNumber.length() == 7) { // mobile
+                Log.d(TAG, "mobile");
+                selection = NumberRegion.NUMBER + "=" + formatNumber;
+                uri = NumberRegion.CONTENT_URI;
+                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
+
+                queryHandler.startQuery(0, null, uri, projection, selection, null, null);
+
+            } else { // land line
 
                 /** zzz */
-                Uri uri = NumberRegion.CONTENT_URI;
-                if (formatNumber.startsWith("+")) {
-                    Log.v(TAG, "startsWith(\"+\")");
-                    Log.v(TAG, "formatNumber - " + formatNumber);
-                    // TODO
-                    return;
-                } else if (formatNumber.length() == 7) {
-                    Log.v(TAG, "formatNumber - " + formatNumber);
-                    selection = NumberRegion.NUMBER + "=" + formatNumber;
-                    uri = NumberRegion.CONTENT_URI;
-                    projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY, NumberRegion.CARD };
-                } else {
+                Log.d(TAG, "land line");
+                // if (formatNumber.startsWith("+")) {
+                // Log.v(TAG, "startsWith(\"+\")");
+                // // TODO
+                // return;
+                // }
 
-                    /** zzz */
-                    Log.v(TAG, "formatNumber - " + formatNumber);
-                    if (formatNumber.startsWith("+")) {
-                        Log.v(TAG, "startsWith(\"+\")");
-                        // TODO
-                        return;
-                    }
-
+                try {
                     selection = NumberRegion.AREACODE + "=" + formatNumber + " OR " + NumberRegion.AREACODE + "="
                             + formatNumber.substring(0, 3);
-                    uri = NumberRegion.CONTENT_URI;
-                    projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
+
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString());
+                    selection = NumberRegion.AREACODE + "= 0000";
                 }
+                Log.i(TAG, "selection - " + selection);
+                uri = NumberRegion.CONTENT_URI;
+                projection = new String[] { NumberRegion.PROVINCE, NumberRegion.CITY };
+
                 queryHandler.startQuery(0, null, uri, projection, selection, null, null);
+
             }
+            // queryHandler.startQuery(0, null, uri, projection, selection,
+            // null, null);
+            // }
         }
     }
 
@@ -161,8 +189,82 @@ public class NumberLocate {
         if (TextUtils.isEmpty(number))
             return null;
         SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
-        String formatNumber = PhoneStatusRecevier.formatNumber(number);
+        String formatNumber = formatNumber(number);
         Log.v(TAG, "formatNumber - " + formatNumber);
         return cache.getString(formatNumber, null);
     }
+
+    public static String formatNumber(String number) {
+        StringBuilder sb = new StringBuilder(number);
+        String ret = new String();
+        if (sb.charAt(0) == '+') {
+            /** zzz */
+            Log.v(TAG, "sb.charAt(0) == \'+\'");
+            if (sb.length() >= 3 && sb.substring(1, 3).equals("86")) { // +86
+                try {
+                    ret = sb.substring(3, 10).toString();
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString());
+                    ret = sb.substring(3).toString();
+                }
+            } else {
+                // ret = sb.toString(); // foreign
+                try { // foreign
+                    ret = sb.substring(0, 5).toString();
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString());
+                    ret = "";
+                }
+            }
+            // return sb.delete(0, 3).substring(0, 7).toString();
+        } else
+        // //zaizhe
+        // if(sb.indexOf("010")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("020")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("030")==0){
+        // return sb.substring(0, 3);
+        // }
+        //
+        // if(sb.indexOf("040")==0){
+        // return sb.substring(0, 3);
+        // }
+        // //zaizhe
+        if (sb.charAt(0) == '0') {
+            Log.v(TAG, "sb.charAt(0) == 0");
+            ret = sb.substring(0, 4);
+        } else if (sb.length() < 7) {
+            Log.v(TAG, "sb.length() < 7");
+            ret = sb.toString();
+        } else {
+            // return sb.substring(0, 7).toString();
+            Log.v(TAG, "defalt");
+            ret = sb.substring(0, 7).toString();
+        }
+        Log.v(TAG, "ret - " + ret);
+        return ret;
+    }
+
+    public static void saveAsCache(Context context, String number, String city) {
+        if (!TextUtils.isEmpty(city) && number.length() >= 11) {
+            String formatNumber = NumberLocate.formatNumber(number);
+            SharedPreferences cache = context.getSharedPreferences("number_region", Context.MODE_PRIVATE);
+            cache.edit().putString(formatNumber, city).commit();
+        }
+    }
+
+    // public static String queryFromCache(Context context, String number) {
+    // if (TextUtils.isEmpty(number))
+    // return null;
+    // SharedPreferences cache = context.getSharedPreferences("number_region",
+    // Context.MODE_PRIVATE);
+    // String formatNumber = NumberLocate.formatNumber(number);
+    // return cache.getString(formatNumber, null);
+    // // return null;
+    // }
 }

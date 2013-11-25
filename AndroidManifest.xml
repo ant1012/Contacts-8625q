@@ -789,9 +789,15 @@
 
         <provider
             android:name="edu.bupt.contacts.numberlocate.NumberLocateProvider"
-            android:authorities="edu.bupt.contacts"
+            android:authorities="edu.bupt.contacts.numberlocate"
             android:exported="false" />
 
+        <!-- zzz -->
+        <provider
+            android:name="edu.bupt.contacts.numberlocate.CountryCodeProvider"
+            android:authorities="edu.bupt.contacts.numberlocate.international_phonecode"
+            android:exported="false" />
+        
         <!-- ddd 去除历史记录actionbar -->
         <activity
             android:name="edu.bupt.contacts.activities.MenuHistory"
