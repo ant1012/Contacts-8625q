@@ -263,7 +263,7 @@ public class MenuHistory extends Activity {
                             date,
                             date,
                             DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                    | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                                    | DateUtils.FORMAT_SHOW_YEAR, getResources().getString(R.string.home_tz)).toString()); // TODO
                 }
                 Log.i("date", checkDur(duration) + ";" + dateValueSB.toString());
 
@@ -335,7 +335,7 @@ public class MenuHistory extends Activity {
                                 date,
                                 date,
                                 DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                        | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                                        | DateUtils.FORMAT_SHOW_YEAR, getResources().getString(R.string.home_tz)).toString()); // TODO
                     }
 
                     Map<String, Object> map = new HashMap<String, Object>();

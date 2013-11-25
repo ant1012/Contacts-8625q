@@ -182,7 +182,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
                     details.date,
                     details.date,
                     DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                            | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                            | DateUtils.FORMAT_SHOW_YEAR, mContext.getResources().getString(R.string.home_tz)).toString()); // TODO
         }
         dateView.setText(dateValueSB.toString());
 

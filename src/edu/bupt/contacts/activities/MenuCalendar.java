@@ -187,14 +187,14 @@ public class MenuCalendar extends Activity {
                         dtstart,
                         dtstart,
                         DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                                | DateUtils.FORMAT_SHOW_YEAR, getResources().getString(R.string.home_tz)).toString()); // TODO
                 dateValueEndSB.append(DateUtils.formatDateRange(
                         this,
                         new Formatter(),
                         dtend,
                         dtend,
                         DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
-                                | DateUtils.FORMAT_SHOW_YEAR, "Asia/Shanghai").toString()); // TODO
+                                | DateUtils.FORMAT_SHOW_YEAR, getResources().getString(R.string.home_tz)).toString()); // TODO
             }
             String eventStart = dateValueStartSB.toString();
             String eventEnd = dateValueEndSB.toString();

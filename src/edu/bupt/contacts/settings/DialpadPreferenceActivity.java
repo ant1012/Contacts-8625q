@@ -44,6 +44,10 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
                 getResources().getStringArray(R.array.time_setting)[Integer.parseInt(sp.getString(
                         "TimeSettingPreference", "0"))]);
 
+        // unusable when same time zone
+        
+        findPreference("TimeSettingPreference").setEnabled(true);
+
         sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
     }
 

@@ -16,10 +16,11 @@
 
 package edu.bupt.contacts;
 
+import java.util.TimeZone;
+
 import edu.bupt.contacts.calllog.CallTypeHelper;
 import edu.bupt.contacts.calllog.PhoneNumberHelper;
 import edu.bupt.contacts.test.NeededForTesting;
-
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -30,6 +31,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,11 +39,20 @@ import android.widget.TextView;
  * Helper class to fill in the views in {@link PhoneCallDetailsViews}.
  */
 public class PhoneCallDetailsHelper {
-    /** The maximum number of icons will be shown to represent the call types in a group. */
+    /**
+     * The maximum number of icons will be shown to represent the call types in
+     * a group.
+     */
     private static final int MAX_CALL_TYPE_ICONS = 3;
 
+    /** zzz */
+    private static final String TAG = "PhoneCallDetailsHelper";
+
     private final Resources mResources;
-    /** The injected current time in milliseconds since the epoch. Used only by tests. */
+    /**
+     * The injected current time in milliseconds since the epoch. Used only by
+     * tests.
+     */
     private Long mCurrentTimeMillisForTest;
     // Helper classes.
     private final CallTypeHelper mCallTypeHelper;
@@ -50,9 +61,11 @@ public class PhoneCallDetailsHelper {
     /**
      * Creates a new instance of the helper.
      * <p>
-     * Generally you should have a single instance of this helper in any context.
-     *
-     * @param resources used to look up strings
+     * Generally you should have a single instance of this helper in any
+     * context.
+     * 
+     * @param resources
+     *            used to look up strings
      */
     public PhoneCallDetailsHelper(Resources resources, CallTypeHelper callTypeHelper,
             PhoneNumberHelper phoneNumberHelper) {
@@ -62,8 +75,7 @@ public class PhoneCallDetailsHelper {
     }
 
     /** Fills the call details views with content. */
-    public void setPhoneCallDetails(PhoneCallDetailsViews views, PhoneCallDetails details,
-            boolean isHighlighted) {
+    public void setPhoneCallDetails(PhoneCallDetailsViews views, PhoneCallDetails details, boolean isHighlighted) {
         // Display up to a given number of icons.
         views.callTypeIcons.clear();
         int count = details.callTypes.length;
@@ -72,40 +84,50 @@ public class PhoneCallDetailsHelper {
         }
         views.callTypeIcons.setVisibility(View.VISIBLE);
 
-        // Show the total call count only if there are more than the maximum number of icons.
+        // Show the total call count only if there are more than the maximum
+        // number of icons.
         final Integer callCount;
         if (count > MAX_CALL_TYPE_ICONS) {
             callCount = count;
         } else {
             callCount = null;
         }
-        // The color to highlight the count and date in, if any. This is based on the first call.
-        Integer highlightColor =
-                isHighlighted ? mCallTypeHelper.getHighlightedColor(details.callTypes[0]) : null;
+        // The color to highlight the count and date in, if any. This is based
+        // on the first call.
+        Integer highlightColor = isHighlighted ? mCallTypeHelper.getHighlightedColor(details.callTypes[0]) : null;
 
-        // The date of this call, relative to the current time.
-        CharSequence dateText =
-            DateUtils.getRelativeTimeSpanString(details.date,
-                    getCurrentTimeMillis(),
-                    DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_RELATIVE);
+        /** zzz */
+         // The date of this call, relative to the current time.
+        CharSequence dateText = DateUtils.getRelativeTimeSpanString(details.date, getCurrentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+//        long offset = 0;
+//        // Log.v(TAG,
+//        // "TimeZone.getTimeZone(mResources.getString(R.string.home_tz)).getRawOffset() - "
+//        // +
+//        // TimeZone.getTimeZone(mResources.getString(R.string.home_tz)).getRawOffset());
+//        // Log.v(TAG, "TimeZone.getDefault().getRawOffset() - " +
+//        // TimeZone.getDefault().getRawOffset());
+//
+//        offset = TimeZone.getTimeZone(mResources.getString(R.string.home_tz)).getRawOffset()
+//                - TimeZone.getDefault().getRawOffset();// TODO
+//        Log.i(TAG, "offset - " + offset);
+//        StringBuilder dateTextSb = new StringBuilder(DateUtils.getRelativeTimeSpanString(details.date + offset,
+//                getCurrentTimeMillis() + offset, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE));
+//        CharSequence dateText = dateTextSb.toString();
 
         // Set the call count and date.
         setCallCountAndDate(views, callCount, dateText, highlightColor);
 
         CharSequence numberFormattedLabel = null;
         // Only show a label if the number is shown and it is not a SIP address.
-        if (!TextUtils.isEmpty(details.number)
-                && !PhoneNumberUtils.isUriNumber(details.number.toString())) {
-            numberFormattedLabel = Phone.getTypeLabel(mResources, details.numberType,
-                    details.numberLabel);
+        if (!TextUtils.isEmpty(details.number) && !PhoneNumberUtils.isUriNumber(details.number.toString())) {
+            numberFormattedLabel = Phone.getTypeLabel(mResources, details.numberType, details.numberLabel);
         }
 
         final CharSequence nameText;
         final CharSequence numberText;
         final CharSequence labelText;
-        final CharSequence displayNumber =
-            mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
+        final CharSequence displayNumber = mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
 
@@ -131,20 +153,19 @@ public class PhoneCallDetailsHelper {
         views.numberView.setText(numberText);
         views.labelView.setText(labelText);
         views.labelView.setVisibility(TextUtils.isEmpty(labelText) ? View.GONE : View.VISIBLE);
-        if(details.msimType==0){
-        	views.simView.setText("CDMA");
-        }else{
-        	views.simView.setText("GSM");
+        if (details.msimType == 0) {
+            views.simView.setText("CDMA");
+        } else {
+            views.simView.setText("GSM");
         }
-        
+
     }
 
     /** Sets the text of the header view for the details page of a phone call. */
     public void setCallDetailsHeader(TextView nameView, PhoneCallDetails details) {
         final CharSequence nameText;
-        final CharSequence displayNumber =
-                mPhoneNumberHelper.getDisplayNumber(details.number,
-                        mResources.getString(R.string.recentCalls_addToContact));
+        final CharSequence displayNumber = mPhoneNumberHelper.getDisplayNumber(details.number,
+                mResources.getString(R.string.recentCalls_addToContact));
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
         } else {
@@ -173,13 +194,12 @@ public class PhoneCallDetailsHelper {
     }
 
     /** Sets the call count and date. */
-    private void setCallCountAndDate(PhoneCallDetailsViews views, Integer callCount,
-            CharSequence dateText, Integer highlightColor) {
+    private void setCallCountAndDate(PhoneCallDetailsViews views, Integer callCount, CharSequence dateText,
+            Integer highlightColor) {
         // Combine the count (if present) and the date.
         final CharSequence text;
         if (callCount != null) {
-            text = mResources.getString(
-                    R.string.call_log_item_count_and_date, callCount.intValue(), dateText);
+            text = mResources.getString(R.string.call_log_item_count_and_date, callCount.intValue(), dateText);
         } else {
             text = dateText;
         }
@@ -195,7 +215,10 @@ public class PhoneCallDetailsHelper {
         views.callTypeAndDate.setText(formattedText);
     }
 
-    /** Creates a SpannableString for the given text which is bold and in the given color. */
+    /**
+     * Creates a SpannableString for the given text which is bold and in the
+     * given color.
+     */
     private CharSequence addBoldAndColor(CharSequence text, int color) {
         int flags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
         SpannableString result = new SpannableString(text);
