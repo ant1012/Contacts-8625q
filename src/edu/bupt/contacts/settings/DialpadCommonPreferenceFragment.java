@@ -113,13 +113,15 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        final Activity activity = getActivity();
 
         if (preference == findPreference("HelpPreference")) {
             Log.v(TAG, "HelpPreference");
-
-            final Activity activity = getActivity();
-
             startActivity(new Intent(activity, HelpActivity.class));
+        } else if (preference == findPreference("GSMIPPreference")) {
+            new IPSelectDialog(activity, IPSelectDialog.GSM).show();
+        } else if (preference == findPreference("CDMAIPPreference")) {
+            new IPSelectDialog(activity, IPSelectDialog.CDMA).show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
