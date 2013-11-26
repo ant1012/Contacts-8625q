@@ -17,8 +17,10 @@
 package edu.bupt.contacts.model;
 
 import edu.bupt.contacts.ContactsUtils;
+import edu.bupt.contacts.R;
 import edu.bupt.contacts.list.ContactListFilterController;
 import edu.bupt.contacts.util.Constants;
+
 import com.android.i18n.phonenumbers.PhoneNumberUtil;
 import com.android.internal.util.Objects;
 import com.google.android.collect.Lists;
@@ -65,8 +67,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Singleton holder for all parsed {@link AccountType} available on the
- * system, typically filled through {@link PackageManager} queries.
+ * Singleton holder for all parsed {@link AccountType} available on the system,
+ * typically filled through {@link PackageManager} queries.
  */
 public abstract class AccountTypeManager {
     static final String TAG = "AccountTypeManager";
@@ -74,13 +76,13 @@ public abstract class AccountTypeManager {
     public static final String ACCOUNT_TYPE_SERVICE = "contactAccountTypes";
 
     /**
-     * Requests the singleton instance of {@link AccountTypeManager} with data bound from
-     * the available authenticators. This method can safely be called from the UI thread.
+     * Requests the singleton instance of {@link AccountTypeManager} with data
+     * bound from the available authenticators. This method can safely be called
+     * from the UI thread.
      */
     public static AccountTypeManager getInstance(Context context) {
         context = context.getApplicationContext();
-        AccountTypeManager service =
-                (AccountTypeManager) context.getSystemService(ACCOUNT_TYPE_SERVICE);
+        AccountTypeManager service = (AccountTypeManager) context.getSystemService(ACCOUNT_TYPE_SERVICE);
         if (service == null) {
             service = createAccountTypeManager(context);
             Log.e(TAG, "No account type service in context: " + context);
@@ -93,10 +95,12 @@ public abstract class AccountTypeManager {
     }
 
     /**
-     * Returns the list of all accounts (if contactWritableOnly is false) or just the list of
-     * contact writable accounts (if contactWritableOnly is true).
+     * Returns the list of all accounts (if contactWritableOnly is false) or
+     * just the list of contact writable accounts (if contactWritableOnly is
+     * true).
      */
-    // TODO: Consider splitting this into getContactWritableAccounts() and getAllAccounts()
+    // TODO: Consider splitting this into getContactWritableAccounts() and
+    // getAllAccounts()
     public abstract List<AccountWithDataSet> getAccounts(boolean contactWritableOnly);
 
     /**
@@ -115,24 +119,28 @@ public abstract class AccountTypeManager {
     }
 
     /**
-     * @return Unmodifiable map from {@link AccountTypeWithDataSet}s to {@link AccountType}s
-     * which support the "invite" feature and have one or more account.
-     *
-     * This is a filtered down and more "usable" list compared to
-     * {@link #getAllInvitableAccountTypes}, where usable is defined as:
-     * (1) making sure that the app that contributed the account type is not disabled
-     * (in order to avoid presenting the user with an option that does nothing), and
-     * (2) that there is at least one raw contact with that account type in the database
-     * (assuming that the user probably doesn't use that account type).
-     *
-     * Warning: Don't use on the UI thread because this can scan the database.
+     * @return Unmodifiable map from {@link AccountTypeWithDataSet}s to
+     *         {@link AccountType}s which support the "invite" feature and have
+     *         one or more account.
+     * 
+     *         This is a filtered down and more "usable" list compared to
+     *         {@link #getAllInvitableAccountTypes}, where usable is defined as:
+     *         (1) making sure that the app that contributed the account type is
+     *         not disabled (in order to avoid presenting the user with an
+     *         option that does nothing), and (2) that there is at least one raw
+     *         contact with that account type in the database (assuming that the
+     *         user probably doesn't use that account type).
+     * 
+     *         Warning: Don't use on the UI thread because this can scan the
+     *         database.
      */
     public abstract Map<AccountTypeWithDataSet, AccountType> getUsableInvitableAccountTypes();
 
     /**
      * Find the best {@link DataKind} matching the requested
-     * {@link AccountType#accountType}, {@link AccountType#dataSet}, and {@link DataKind#mimeType}.
-     * If no direct match found, we try searching {@link FallbackAccountType}.
+     * {@link AccountType#accountType}, {@link AccountType#dataSet}, and
+     * {@link DataKind#mimeType}. If no direct match found, we try searching
+     * {@link FallbackAccountType}.
      */
     public DataKind getKindOrFallback(String accountType, String dataSet, String mimeType) {
         final AccountType type = getAccountType(accountType, dataSet);
@@ -141,13 +149,15 @@ public abstract class AccountTypeManager {
 
     /**
      * Returns all registered {@link AccountType}s, including extension ones.
-     *
-     * @param contactWritableOnly if true, it only returns ones that support writing contacts.
+     * 
+     * @param contactWritableOnly
+     *            if true, it only returns ones that support writing contacts.
      */
     public abstract List<AccountType> getAccountTypes(boolean contactWritableOnly);
 
     /**
-     * @param contactWritableOnly if true, it only returns ones that support writing contacts.
+     * @param contactWritableOnly
+     *            if true, it only returns ones that support writing contacts.
      * @return true when this instance contains the given account.
      */
     public boolean contains(AccountWithDataSet account, boolean contactWritableOnly) {
@@ -160,21 +170,18 @@ public abstract class AccountTypeManager {
     }
 }
 
-class AccountTypeManagerImpl extends AccountTypeManager
-        implements OnAccountsUpdateListener, SyncStatusObserver {
+class AccountTypeManagerImpl extends AccountTypeManager implements OnAccountsUpdateListener, SyncStatusObserver {
 
-    private static final Map<AccountTypeWithDataSet, AccountType>
-            EMPTY_UNMODIFIABLE_ACCOUNT_TYPE_MAP =
-            Collections.unmodifiableMap(new HashMap<AccountTypeWithDataSet, AccountType>());
+    private static final Map<AccountTypeWithDataSet, AccountType> EMPTY_UNMODIFIABLE_ACCOUNT_TYPE_MAP = Collections
+            .unmodifiableMap(new HashMap<AccountTypeWithDataSet, AccountType>());
 
     /**
-     * A sample contact URI used to test whether any activities will respond to an
-     * invitable intent with the given URI as the intent data. This doesn't need to be
-     * specific to a real contact because an app that intercepts the intent should probably do so
-     * for all types of contact URIs.
+     * A sample contact URI used to test whether any activities will respond to
+     * an invitable intent with the given URI as the intent data. This doesn't
+     * need to be specific to a real contact because an app that intercepts the
+     * intent should probably do so for all types of contact URIs.
      */
-    private static final Uri SAMPLE_CONTACT_URI = ContactsContract.Contacts.getLookupUri(
-            1, "xxx");
+    private static final Uri SAMPLE_CONTACT_URI = ContactsContract.Contacts.getLookupUri(1, "xxx");
 
     private Context mContext;
     private AccountManager mAccountManager;
@@ -189,20 +196,19 @@ class AccountTypeManagerImpl extends AccountTypeManager
     private List<AccountWithDataSet> mContactWritableAccounts = Lists.newArrayList();
     private List<AccountWithDataSet> mGroupWritableAccounts = Lists.newArrayList();
     private Map<AccountTypeWithDataSet, AccountType> mAccountTypesWithDataSets = Maps.newHashMap();
-    private Map<AccountTypeWithDataSet, AccountType> mInvitableAccountTypes =
-            EMPTY_UNMODIFIABLE_ACCOUNT_TYPE_MAP;
+    private Map<AccountTypeWithDataSet, AccountType> mInvitableAccountTypes = EMPTY_UNMODIFIABLE_ACCOUNT_TYPE_MAP;
 
     private final InvitableAccountTypeCache mInvitableAccountTypeCache;
 
     /**
-     * The boolean value is equal to true if the {@link InvitableAccountTypeCache} has been
-     * initialized. False otherwise.
+     * The boolean value is equal to true if the
+     * {@link InvitableAccountTypeCache} has been initialized. False otherwise.
      */
     private final AtomicBoolean mInvitablesCacheIsInitialized = new AtomicBoolean(false);
 
     /**
-     * The boolean value is equal to true if the {@link FindInvitablesTask} is still executing.
-     * False otherwise.
+     * The boolean value is equal to true if the {@link FindInvitablesTask} is
+     * still executing. False otherwise.
      */
     private final AtomicBoolean mInvitablesTaskIsRunning = new AtomicBoolean(false);
 
@@ -213,7 +219,7 @@ class AccountTypeManagerImpl extends AccountTypeManager
     private Handler mListenerHandler;
 
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
-    private final Runnable mCheckFilterValidityRunnable = new Runnable () {
+    private final Runnable mCheckFilterValidityRunnable = new Runnable() {
         @Override
         public void run() {
             ContactListFilterController.getInstance(mContext).checkFilterValidity(true);
@@ -230,7 +236,10 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
     };
 
-    /* A latch that ensures that asynchronous initialization completes before data is used */
+    /*
+     * A latch that ensures that asynchronous initialization completes before
+     * data is used
+     */
     private volatile CountDownLatch mInitializationLatch = new CountDownLatch(1);
 
     private static final Comparator<Account> ACCOUNT_COMPARATOR = new Comparator<Account>() {
@@ -245,8 +254,7 @@ class AccountTypeManagerImpl extends AccountTypeManager
                 bDataSet = ((AccountWithDataSet) b).dataSet;
             }
 
-            if (Objects.equal(a.name, b.name) && Objects.equal(a.type, b.type)
-                    && Objects.equal(aDataSet, bDataSet)) {
+            if (Objects.equal(a.name, b.name) && Objects.equal(a.type, b.type) && Objects.equal(aDataSet, bDataSet)) {
                 return 0;
             } else if (b.name == null || b.type == null) {
                 return -1;
@@ -262,7 +270,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
                     return diff;
                 }
 
-                // Accounts without data sets get sorted before those that have them.
+                // Accounts without data sets get sorted before those that have
+                // them.
                 if (aDataSet != null) {
                     return bDataSet == null ? 1 : aDataSet.compareTo(bDataSet);
                 } else {
@@ -282,7 +291,6 @@ class AccountTypeManagerImpl extends AccountTypeManager
         /** zzz */
         mPhoneAccountType = new PhoneAccountType(context);
         mSimAccountType = new SimAccountType(context);
-        
 
         mAccountManager = AccountManager.get(mContext);
 
@@ -292,12 +300,12 @@ class AccountTypeManagerImpl extends AccountTypeManager
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case MESSAGE_LOAD_DATA:
-                        loadAccountsInBackground();
-                        break;
-                    case MESSAGE_PROCESS_BROADCAST_INTENT:
-                        processBroadcastIntent((Intent) msg.obj);
-                        break;
+                case MESSAGE_LOAD_DATA:
+                    loadAccountsInBackground();
+                    break;
+                case MESSAGE_PROCESS_BROADCAST_INTENT:
+                    processBroadcastIntent((Intent) msg.obj);
+                    break;
                 }
             }
         };
@@ -315,7 +323,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
         sdFilter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         mContext.registerReceiver(mBroadcastReceiver, sdFilter);
 
-        // Request updates when locale is changed so that the order of each field will
+        // Request updates when locale is changed so that the order of each
+        // field will
         // be able to be changed on the locale change.
         filter = new IntentFilter(Intent.ACTION_LOCALE_CHANGED);
         mContext.registerReceiver(mBroadcastReceiver, filter);
@@ -362,8 +371,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * Loads account list and corresponding account types (potentially with data sets). Always
-     * called on a background thread.
+     * Loads account list and corresponding account types (potentially with data
+     * sets). Always called on a background thread.
      */
     protected void loadAccountsInBackground() {
         if (Log.isLoggable(Constants.PERFORMANCE_TAG, Log.DEBUG)) {
@@ -374,11 +383,12 @@ class AccountTypeManagerImpl extends AccountTypeManager
         final long startTimeWall = SystemClock.elapsedRealtime();
 
         // Account types, keyed off the account type and data set concatenation.
-        final Map<AccountTypeWithDataSet, AccountType> accountTypesByTypeAndDataSet =
-                Maps.newHashMap();
+        final Map<AccountTypeWithDataSet, AccountType> accountTypesByTypeAndDataSet = Maps.newHashMap();
 
-        // The same AccountTypes, but keyed off {@link RawContacts#ACCOUNT_TYPE}.  Since there can
-        // be multiple account types (with different data sets) for the same type of account, each
+        // The same AccountTypes, but keyed off {@link
+        // RawContacts#ACCOUNT_TYPE}. Since there can
+        // be multiple account types (with different data sets) for the same
+        // type of account, each
         // type string may have multiple AccountType entries.
         final Map<String, List<AccountType>> accountTypesByType = Maps.newHashMap();
 
@@ -394,7 +404,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
             final SyncAdapterType[] syncs = cs.getSyncAdapterTypes();
             final AuthenticatorDescription[] auths = am.getAuthenticatorTypes();
 
-            // First process sync adapters to find any that provide contact data.
+            // First process sync adapters to find any that provide contact
+            // data.
             for (SyncAdapterType sync : syncs) {
                 if (!ContactsContract.AUTHORITY.equals(sync.authority)) {
                     // Skip sync adapters that don't provide contact data.
@@ -416,9 +427,9 @@ class AccountTypeManagerImpl extends AccountTypeManager
                 } else if (ExchangeAccountType.ACCOUNT_TYPE.equals(type)) {
                     accountType = new ExchangeAccountType(mContext, auth.packageName);
                 } else {
-                    // TODO: use syncadapter package instead, since it provides resources
-                    Log.d(TAG, "Registering external account type=" + type
-                            + ", packageName=" + auth.packageName);
+                    // TODO: use syncadapter package instead, since it provides
+                    // resources
+                    Log.d(TAG, "Registering external account type=" + type + ", packageName=" + auth.packageName);
                     accountType = new ExternalAccountType(mContext, auth.packageName, false);
                 }
                 if (!accountType.isInitialized()) {
@@ -426,7 +437,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
                         throw new IllegalStateException("Problem initializing embedded type "
                                 + accountType.getClass().getCanonicalName());
                     } else {
-                        // Skip external account types that couldn't be initialized.
+                        // Skip external account types that couldn't be
+                        // initialized.
                         continue;
                     }
                 }
@@ -437,7 +449,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
                 addAccountType(accountType, accountTypesByTypeAndDataSet, accountTypesByType);
 
-                // Check to see if the account type knows of any other non-sync-adapter packages
+                // Check to see if the account type knows of any other
+                // non-sync-adapter packages
                 // that may provide other data sets of contact data.
                 extensionPackages.addAll(accountType.getExtensionPackageNames());
             }
@@ -446,10 +459,10 @@ class AccountTypeManagerImpl extends AccountTypeManager
             if (!extensionPackages.isEmpty()) {
                 Log.d(TAG, "Registering " + extensionPackages.size() + " extension packages");
                 for (String extensionPackage : extensionPackages) {
-                    ExternalAccountType accountType =
-                            new ExternalAccountType(mContext, extensionPackage, true);
+                    ExternalAccountType accountType = new ExternalAccountType(mContext, extensionPackage, true);
                     if (!accountType.isInitialized()) {
-                        // Skip external account types that couldn't be initialized.
+                        // Skip external account types that couldn't be
+                        // initialized.
                         continue;
                     }
                     if (!accountType.hasContactsMetadata()) {
@@ -459,13 +472,11 @@ class AccountTypeManagerImpl extends AccountTypeManager
                     }
                     if (TextUtils.isEmpty(accountType.accountType)) {
                         Log.w(TAG, "Skipping extension package " + extensionPackage + " because"
-                                + " the CONTACTS_STRUCTURE metadata doesn't have the accountType"
-                                + " attribute");
+                                + " the CONTACTS_STRUCTURE metadata doesn't have the accountType" + " attribute");
                         continue;
                     }
-                    Log.d(TAG, "Registering extension package account type="
-                            + accountType.accountType + ", dataSet=" + accountType.dataSet
-                            + ", packageName=" + extensionPackage);
+                    Log.d(TAG, "Registering extension package account type=" + accountType.accountType + ", dataSet="
+                            + accountType.dataSet + ", packageName=" + extensionPackage);
 
                     addAccountType(accountType, accountTypesByTypeAndDataSet, accountTypesByType);
                 }
@@ -475,7 +486,8 @@ class AccountTypeManagerImpl extends AccountTypeManager
         }
         timings.addSplit("Loaded account types");
 
-        // Map in accounts to associate the account names with each account type entry.
+        // Map in accounts to associate the account names with each account type
+        // entry.
         Account[] accounts = mAccountManager.getAccounts();
         for (Account account : accounts) {
             boolean syncable = false;
@@ -488,11 +500,12 @@ class AccountTypeManagerImpl extends AccountTypeManager
             if (syncable) {
                 List<AccountType> accountTypes = accountTypesByType.get(account.type);
                 if (accountTypes != null) {
-                    // Add an account-with-data-set entry for each account type that is
+                    // Add an account-with-data-set entry for each account type
+                    // that is
                     // authenticated by this account.
                     for (AccountType accountType : accountTypes) {
-                        AccountWithDataSet accountWithDataSet = new AccountWithDataSet(
-                                account.name, account.type, accountType.dataSet);
+                        AccountWithDataSet accountWithDataSet = new AccountWithDataSet(account.name, account.type,
+                                accountType.dataSet);
                         allAccounts.add(accountWithDataSet);
                         if (accountType.areContactsWritable()) {
                             contactWritableAccounts.add(accountWithDataSet);
@@ -516,17 +529,15 @@ class AccountTypeManagerImpl extends AccountTypeManager
             mAccounts = allAccounts;
             mContactWritableAccounts = contactWritableAccounts;
             mGroupWritableAccounts = groupWritableAccounts;
-            mInvitableAccountTypes = findAllInvitableAccountTypes(
-                    mContext, allAccounts, accountTypesByTypeAndDataSet);
+            mInvitableAccountTypes = findAllInvitableAccountTypes(mContext, allAccounts, accountTypesByTypeAndDataSet);
         }
 
         timings.dumpToLog();
         final long endTimeWall = SystemClock.elapsedRealtime();
         final long endTime = SystemClock.currentThreadTimeMillis();
 
-        Log.i(TAG, "Loaded meta-data for " + mAccountTypesWithDataSets.size() + " account types, "
-                + mAccounts.size() + " accounts in " + (endTimeWall - startTimeWall) + "ms(wall) "
-                + (endTime - startTime) + "ms(cpu)");
+        Log.i(TAG, "Loaded meta-data for " + mAccountTypesWithDataSets.size() + " account types, " + mAccounts.size()
+                + " accounts in " + (endTimeWall - startTimeWall) + "ms(wall) " + (endTime - startTime) + "ms(cpu)");
 
         if (mInitializationLatch != null) {
             mInitializationLatch.countDown();
@@ -536,12 +547,14 @@ class AccountTypeManagerImpl extends AccountTypeManager
             Log.d(Constants.PERFORMANCE_TAG, "AccountTypeManager.loadAccountsInBackground finish");
         }
 
-        // Check filter validity since filter may become obsolete after account update. It must be
+        // Check filter validity since filter may become obsolete after account
+        // update. It must be
         // done from UI thread.
         mMainThreadHandler.post(mCheckFilterValidityRunnable);
     }
 
-    // Bookkeeping method for tracking the known account types in the given maps.
+    // Bookkeeping method for tracking the known account types in the given
+    // maps.
     private void addAccountType(AccountType accountType,
             Map<AccountTypeWithDataSet, AccountType> accountTypesByTypeAndDataSet,
             Map<String, List<AccountType>> accountTypesByType) {
@@ -558,8 +571,7 @@ class AccountTypeManagerImpl extends AccountTypeManager
      * Find a specific {@link AuthenticatorDescription} in the provided list
      * that matches the given account type.
      */
-    protected static AuthenticatorDescription findAuthenticator(AuthenticatorDescription[] auths,
-            String accountType) {
+    protected static AuthenticatorDescription findAuthenticator(AuthenticatorDescription[] auths, String accountType) {
         for (AuthenticatorDescription auth : auths) {
             if (accountType.equals(auth.type)) {
                 return auth;
@@ -571,19 +583,32 @@ class AccountTypeManagerImpl extends AccountTypeManager
     /**
      * Return list of all known, contact writable {@link AccountWithDataSet}'s.
      */
-//    @Override
-//    public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
-//        ensureAccountsLoaded();
-//        return contactWritableOnly ? mContactWritableAccounts : mAccounts;
-//    }
+    // @Override
+    // public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly)
+    // {
+    // ensureAccountsLoaded();
+    // return contactWritableOnly ? mContactWritableAccounts : mAccounts;
+    // }
+
+    /** zzz */
     @Override
     public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
         ensureAccountsLoaded();
-        return mAccounts;
+
+        List<AccountWithDataSet> mAccountsRet = Lists.newArrayList();
+        for (AccountWithDataSet ac : mAccounts) {
+            if (ac.name.equals("PHONE") || ac.name.equals("SIM1") || ac.name.equals("UIM") || ac.name.equals("SIM2")) {
+                mAccountsRet.add(ac);
+            }
+
+        }
+
+        return mAccountsRet;
     }
 
     /**
-     * Return the list of all known, group writable {@link AccountWithDataSet}'s.
+     * Return the list of all known, group writable {@link AccountWithDataSet} 
+     * 's.
      */
     public List<AccountWithDataSet> getGroupWritableAccounts() {
         ensureAccountsLoaded();
@@ -592,8 +617,9 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
     /**
      * Find the best {@link DataKind} matching the requested
-     * {@link AccountType#accountType}, {@link AccountType#dataSet}, and {@link DataKind#mimeType}.
-     * If no direct match found, we try searching {@link FallbackAccountType}.
+     * {@link AccountType#accountType}, {@link AccountType#dataSet}, and
+     * {@link DataKind#mimeType}. If no direct match found, we try searching
+     * {@link FallbackAccountType}.
      */
     @Override
     public DataKind getKindOrFallback(String accountType, String dataSet, String mimeType) {
@@ -601,8 +627,7 @@ class AccountTypeManagerImpl extends AccountTypeManager
         DataKind kind = null;
 
         // Try finding account type and kind matching request
-        final AccountType type = mAccountTypesWithDataSets.get(
-                AccountTypeWithDataSet.get(accountType, dataSet));
+        final AccountType type = mAccountTypesWithDataSets.get(AccountTypeWithDataSet.get(accountType, dataSet));
         if (type != null) {
             kind = type.getKindForMimetype(mimeType);
         }
@@ -625,22 +650,23 @@ class AccountTypeManagerImpl extends AccountTypeManager
 
     /** zzz */
     // force all accounts as fallback type
-//    @Override
-//    public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
-//        ensureAccountsLoaded();
-//        synchronized (this) {
-//            AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
-//            return type != null ? type : mFallbackAccountType;
-//        }
-//    }
+    // @Override
+    // public AccountType getAccountType(AccountTypeWithDataSet
+    // accountTypeWithDataSet) {
+    // ensureAccountsLoaded();
+    // synchronized (this) {
+    // AccountType type = mAccountTypesWithDataSets.get(accountTypeWithDataSet);
+    // return type != null ? type : mFallbackAccountType;
+    // }
+    // }
 
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
-        if(accountTypeWithDataSet.accountType == null) {
+        if (accountTypeWithDataSet.accountType == null) {
             return mFallbackAccountType;
         }
-        if(accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
+        if (accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
             return mPhoneAccountType;
         } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) {
             return mSimAccountType;
@@ -649,9 +675,10 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * @return Unmodifiable map from {@link AccountTypeWithDataSet}s to {@link AccountType}s
-     * which support the "invite" feature and have one or more account. This is an unfiltered
-     * list. See {@link #getUsableInvitableAccountTypes()}.
+     * @return Unmodifiable map from {@link AccountTypeWithDataSet}s to
+     *         {@link AccountType}s which support the "invite" feature and have
+     *         one or more account. This is an unfiltered list. See
+     *         {@link #getUsableInvitableAccountTypes()}.
      */
     private Map<AccountTypeWithDataSet, AccountType> getAllInvitableAccountTypes() {
         ensureAccountsLoaded();
@@ -661,28 +688,39 @@ class AccountTypeManagerImpl extends AccountTypeManager
     @Override
     public Map<AccountTypeWithDataSet, AccountType> getUsableInvitableAccountTypes() {
         ensureAccountsLoaded();
-        // Since this method is not thread-safe, it's possible for multiple threads to encounter
+        // Since this method is not thread-safe, it's possible for multiple
+        // threads to encounter
         // the situation where (1) the cache has not been initialized yet or
-        // (2) an async task to refresh the account type list in the cache has already been
-        // started. Hence we use {@link AtomicBoolean}s and return cached values immediately
-        // while we compute the actual result in the background. We use this approach instead of
-        // using "synchronized" because computing the account type list involves a DB read, and
-        // can potentially cause a deadlock situation if this method is called from code which
-        // holds the DB lock. The trade-off of potentially having an incorrect list of invitable
-        // account types for a short period of time seems more manageable than enforcing the
+        // (2) an async task to refresh the account type list in the cache has
+        // already been
+        // started. Hence we use {@link AtomicBoolean}s and return cached values
+        // immediately
+        // while we compute the actual result in the background. We use this
+        // approach instead of
+        // using "synchronized" because computing the account type list involves
+        // a DB read, and
+        // can potentially cause a deadlock situation if this method is called
+        // from code which
+        // holds the DB lock. The trade-off of potentially having an incorrect
+        // list of invitable
+        // account types for a short period of time seems more manageable than
+        // enforcing the
         // context in which this method is called.
 
-        // Computing the list of usable invitable account types is done on the fly as requested.
-        // If this method has never been called before, then block until the list has been computed.
+        // Computing the list of usable invitable account types is done on the
+        // fly as requested.
+        // If this method has never been called before, then block until the
+        // list has been computed.
         if (!mInvitablesCacheIsInitialized.get()) {
             mInvitableAccountTypeCache.setCachedValue(findUsableInvitableAccountTypes(mContext));
             mInvitablesCacheIsInitialized.set(true);
         } else {
-            // Otherwise, there is a value in the cache. If the value has expired and
-            // an async task has not already been started by another thread, then kick off a new
+            // Otherwise, there is a value in the cache. If the value has
+            // expired and
+            // an async task has not already been started by another thread,
+            // then kick off a new
             // async task to compute the list.
-            if (mInvitableAccountTypeCache.isExpired() &&
-                    mInvitablesTaskIsRunning.compareAndSet(false, true)) {
+            if (mInvitableAccountTypeCache.isExpired() && mInvitablesTaskIsRunning.compareAndSet(false, true)) {
                 new FindInvitablesTask().execute();
             }
         }
@@ -691,8 +729,9 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * Return all {@link AccountType}s with at least one account which supports "invite", i.e.
-     * its {@link AccountType#getInviteContactActivityClassName()} is not empty.
+     * Return all {@link AccountType}s with at least one account which supports
+     * "invite", i.e. its
+     * {@link AccountType#getInviteContactActivityClassName()} is not empty.
      */
     @VisibleForTesting
     static Map<AccountTypeWithDataSet, AccountType> findAllInvitableAccountTypes(Context context,
@@ -702,12 +741,14 @@ class AccountTypeManagerImpl extends AccountTypeManager
         for (AccountWithDataSet account : accounts) {
             AccountTypeWithDataSet accountTypeWithDataSet = account.getAccountTypeWithDataSet();
             AccountType type = accountTypesByTypeAndDataSet.get(accountTypeWithDataSet);
-            if (type == null) continue; // just in case
-            if (result.containsKey(accountTypeWithDataSet)) continue;
+            if (type == null)
+                continue; // just in case
+            if (result.containsKey(accountTypeWithDataSet))
+                continue;
 
             if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Type " + accountTypeWithDataSet
-                        + " inviteClass=" + type.getInviteContactActivityClassName());
+                Log.d(TAG,
+                        "Type " + accountTypeWithDataSet + " inviteClass=" + type.getInviteContactActivityClassName());
             }
             if (!TextUtils.isEmpty(type.getInviteContactActivityClassName())) {
                 result.put(accountTypeWithDataSet, type);
@@ -717,16 +758,16 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * Return all usable {@link AccountType}s that support the "invite" feature from the
-     * list of all potential invitable account types (retrieved from
-     * {@link #getAllInvitableAccountTypes}). A usable invitable account type means:
-     * (1) there is at least 1 raw contact in the database with that account type, and
-     * (2) the app contributing the account type is not disabled.
-     *
+     * Return all usable {@link AccountType}s that support the "invite" feature
+     * from the list of all potential invitable account types (retrieved from
+     * {@link #getAllInvitableAccountTypes}). A usable invitable account type
+     * means: (1) there is at least 1 raw contact in the database with that
+     * account type, and (2) the app contributing the account type is not
+     * disabled.
+     * 
      * Warning: Don't use on the UI thread because this can scan the database.
      */
-    private Map<AccountTypeWithDataSet, AccountType> findUsableInvitableAccountTypes(
-            Context context) {
+    private Map<AccountTypeWithDataSet, AccountType> findUsableInvitableAccountTypes(Context context) {
         Map<AccountTypeWithDataSet, AccountType> allInvitables = getAllInvitableAccountTypes();
         if (allInvitables.isEmpty()) {
             return EMPTY_UNMODIFIABLE_ACCOUNT_TYPE_MAP;
@@ -739,23 +780,25 @@ class AccountTypeManagerImpl extends AccountTypeManager
         for (AccountTypeWithDataSet accountTypeWithDataSet : allInvitables.keySet()) {
             AccountType accountType = allInvitables.get(accountTypeWithDataSet);
 
-            // Make sure that account types don't come from apps that are disabled.
-            Intent invitableIntent = ContactsUtils.getInvitableIntent(accountType,
-                    SAMPLE_CONTACT_URI);
+            // Make sure that account types don't come from apps that are
+            // disabled.
+            Intent invitableIntent = ContactsUtils.getInvitableIntent(accountType, SAMPLE_CONTACT_URI);
             if (invitableIntent == null) {
                 result.remove(accountTypeWithDataSet);
                 continue;
             }
-            ResolveInfo resolveInfo = packageManager.resolveActivity(invitableIntent,
-                    PackageManager.MATCH_DEFAULT_ONLY);
+            ResolveInfo resolveInfo = packageManager
+                    .resolveActivity(invitableIntent, PackageManager.MATCH_DEFAULT_ONLY);
             if (resolveInfo == null) {
-                // If we can't find an activity to start for this intent, then there's no point in
+                // If we can't find an activity to start for this intent, then
+                // there's no point in
                 // showing this option to the user.
                 result.remove(accountTypeWithDataSet);
                 continue;
             }
 
-            // Make sure that there is at least 1 raw contact with this account type. This check
+            // Make sure that there is at least 1 raw contact with this account
+            // type. This check
             // is non-trivial and should not be done on the UI thread.
             if (!accountTypeWithDataSet.hasData(context)) {
                 result.remove(accountTypeWithDataSet);
@@ -780,13 +823,12 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * Background task to find all usable {@link AccountType}s that support the "invite" feature
-     * from the list of all potential invitable account types. Once the work is completed,
-     * the list of account types is stored in the {@link AccountTypeManager}'s
-     * {@link InvitableAccountTypeCache}.
+     * Background task to find all usable {@link AccountType}s that support the
+     * "invite" feature from the list of all potential invitable account types.
+     * Once the work is completed, the list of account types is stored in the
+     * {@link AccountTypeManager}'s {@link InvitableAccountTypeCache}.
      */
-    private class FindInvitablesTask extends AsyncTask<Void, Void,
-            Map<AccountTypeWithDataSet, AccountType>> {
+    private class FindInvitablesTask extends AsyncTask<Void, Void, Map<AccountTypeWithDataSet, AccountType>> {
 
         @Override
         protected Map<AccountTypeWithDataSet, AccountType> doInBackground(Void... params) {
@@ -801,15 +843,15 @@ class AccountTypeManagerImpl extends AccountTypeManager
     }
 
     /**
-     * This cache holds a list of invitable {@link AccountTypeWithDataSet}s, in the form of a
-     * {@link Map<AccountTypeWithDataSet, AccountType>}. Note that the cached value is valid only
-     * for {@link #TIME_TO_LIVE} milliseconds.
+     * This cache holds a list of invitable {@link AccountTypeWithDataSet}s, in
+     * the form of a {@link Map<AccountTypeWithDataSet, AccountType>}. Note that
+     * the cached value is valid only for {@link #TIME_TO_LIVE} milliseconds.
      */
     private static final class InvitableAccountTypeCache {
 
         /**
-         * The cached {@link #mInvitableAccountTypes} list expires after this number of milliseconds
-         * has elapsed.
+         * The cached {@link #mInvitableAccountTypes} list expires after this
+         * number of milliseconds has elapsed.
          */
         private static final long TIME_TO_LIVE = 60000;
 
@@ -818,16 +860,16 @@ class AccountTypeManagerImpl extends AccountTypeManager
         private long mTimeLastSet;
 
         /**
-         * Returns true if the data in this cache is stale and needs to be refreshed. Returns false
-         * otherwise.
+         * Returns true if the data in this cache is stale and needs to be
+         * refreshed. Returns false otherwise.
          */
         public boolean isExpired() {
-             return SystemClock.elapsedRealtime() - mTimeLastSet > TIME_TO_LIVE;
+            return SystemClock.elapsedRealtime() - mTimeLastSet > TIME_TO_LIVE;
         }
 
         /**
-         * Returns the cached value. Note that the caller is responsible for checking
-         * {@link #isExpired()} to ensure that the value is not stale.
+         * Returns the cached value. Note that the caller is responsible for
+         * checking {@link #isExpired()} to ensure that the value is not stale.
          */
         public Map<AccountTypeWithDataSet, AccountType> getCachedValue() {
             return mInvitableAccountTypes;
