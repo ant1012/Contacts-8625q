@@ -47,21 +47,19 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
                         "TimeSettingPreference", "0"))]);
 
         // unusable when same time zone
-        //ddd
+        // ddd
         TimeZone timeZone = TimeZone.getDefault();
-        //timeZone = TimeZone.getTimeZone("GMT+09:00");
+        // timeZone = TimeZone.getTimeZone("GMT+09:00");
         // 获取“时间偏移”。相对于“本初子午线”的偏移，单位是ms。
         int offset = timeZone.getRawOffset();
         // 获取“时间偏移” 对应的小时
-        int gmt = offset/(3600*1000);
-        Log.i(TAG,"timeZone--"+ String.valueOf(gmt));
-        if(gmt == 8){
-        	findPreference("TimeSettingPreference").setEnabled(false);
+        int gmt = offset / (3600 * 1000);
+        Log.i(TAG, "timeZone--" + String.valueOf(gmt));
+        if (gmt == 8) {
+            findPreference("TimeSettingPreference").setEnabled(false);
+        } else {
+            findPreference("TimeSettingPreference").setEnabled(true);
         }
-        else{
-        	findPreference("TimeSettingPreference").setEnabled(true);
-        }
-    
 
         sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
     }
@@ -115,6 +113,10 @@ public class DialpadPreferenceActivity extends PreferenceActivity {
         if (preference == findPreference("HelpPreference")) {
             Log.v(TAG, "HelpPreference");
             startActivity(new Intent(DialpadPreferenceActivity.this, HelpActivity.class));
+        } else if (preference == findPreference("GSMIPPreference")) {
+            new IPSelectDialog(this, IPSelectDialog.GSM).show();
+        } else if (preference == findPreference("CDMAIPPreference")) {
+            new IPSelectDialog(this, IPSelectDialog.CDMA).show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
