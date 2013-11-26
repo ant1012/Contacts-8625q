@@ -1,5 +1,6 @@
 package edu.bupt.contacts.settings;
 
+import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import edu.bupt.contacts.R;
@@ -22,7 +23,7 @@ public class DialpadSettingAcitivity extends Activity {
     private static final int TAB_INDEX_COUNT = 3;
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private TitlePageIndicator titleIndicator;
+    private TabPageIndicator titleIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class DialpadSettingAcitivity extends Activity {
         mViewPager = (ViewPager) findViewById(R.id.setting_viewpager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        titleIndicator = (TitlePageIndicator) findViewById(R.id.setting_indicator);
+        titleIndicator = (TabPageIndicator) findViewById(R.id.setting_indicator);
         titleIndicator.setViewPager(mViewPager);
     }
 
