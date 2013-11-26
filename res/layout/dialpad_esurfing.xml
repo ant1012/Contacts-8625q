@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
-
+<!--         android:text="中国+86" -->
     <TextView
         android:id="@+id/textView_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/ab_solid_custom_blue_inverse_holo"
         android:gravity="center"
-        android:text="中国+86"
+
         android:textColor="@color/white"
         android:textSize="@dimen/bigger1_textsize" >
     </TextView>
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="+86"
+      
             android:textSize="@dimen/bigger1_textsize" >
         </TextView>
 

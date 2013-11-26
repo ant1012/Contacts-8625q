@@ -60,7 +60,8 @@ public class EdialDialog extends HoloDialog {
     private EditText searchButtonEditText;
     private Button countrySearchButton;
     private String countryName;
-
+    private StringBuffer stringTitle;
+    private StringBuffer stringPre;
     // private Cursor cursor;
     // private SimpleAdapter adapter;
 
@@ -92,11 +93,24 @@ public class EdialDialog extends HoloDialog {
             call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
         }
 
-        // stringPre = new StringBuffer();
+         stringPre = new StringBuffer();
         // stringPre.append("+86");
-        // stringTitle = new StringBuffer();
-        // stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
+         stringTitle = new StringBuffer();
+        //stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
+         
+        //ddd change title and pre according to the simcountryiso
+        ContentValues simcv = getSimCountryCodeAndName();
+        Log.i(TAG,"simcv--"+simcv.toString());
+        stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
+        stringPre.replace(0, stringPre.length(), "+" + simcv.getAsString("code"));
+        title.setText(stringTitle);
+        TextViewPrefix.setText(stringPre);
+        callBackChinaButton.setText("拨回"+simcv.getAsString("name"));
+        //ddd end
 
+        
+        
+        
         EditTextNumber.setText(sendNumber);
         EditTextNumber.addTextChangedListener(new TextWatcher() {
 
@@ -126,24 +140,29 @@ public class EdialDialog extends HoloDialog {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                StringBuffer stringTitle = new StringBuffer();
-                StringBuffer stringPre = new StringBuffer();
+            	ContentValues simcv = getSimCountryCodeAndName();
+                
                 switch (checkedId) {
 
                 case R.id.radioButton_international:
-                    stringTitle.replace(0, stringTitle.length(),
-                            context.getString(R.string.esurfing_dial_call_title_china));
-                    stringPre.replace(0, stringPre.length(), "+86");
-                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
+                    //stringTitle.replace(0, stringTitle.length(),context.getString(R.string.esurfing_dial_call_title_china));
+                    //stringPre.replace(0, stringPre.length(), "+86");
+                    stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
+                    stringPre.replace(0, stringPre.length(), "+" + simcv.getAsString("code"));
+                	TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
                     callBackChinaButton.setChecked(true);
                     // callNumber = "+86" + sendNumber;
                     break;
 
                 case R.id.radioButton_133:
-                    stringTitle.replace(0, stringTitle.length(),
-                            context.getString(R.string.esurfing_dial_call_title_china));
-                    stringPre.replace(0, stringPre.length(), "**133*86");
-                    TextViewSuffix.setText(R.string.esurfing_dial_suffix_hash);
+                   // stringTitle.replace(0, stringTitle.length(),
+                   //         context.getString(R.string.esurfing_dial_call_title_china));
+                   // stringPre.replace(0, stringPre.length(), "**133*86");
+                    
+                    stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
+                    stringPre.replace(0, stringPre.length(), "+" + simcv.getAsString("code"));
+                	
+                	TextViewSuffix.setText(R.string.esurfing_dial_suffix_hash);
                     callBackChinaButton.setChecked(true);
                     // callNumber = "**133*86" + sendNumber + "%23";
                     break;
@@ -151,10 +170,13 @@ public class EdialDialog extends HoloDialog {
                 case R.id.radioButton_callOther:
                     // stringTitle.replace(0, stringTitle.length(), "美国+1");
                     // stringPre.replace(0, stringPre.length(), "+1");
-                    stringTitle.replace(0, stringTitle.length(),
-                            context.getString(R.string.esurfing_dial_call_title_china));
-                    stringPre.replace(0, stringPre.length(), "+86");
+//                    stringTitle.replace(0, stringTitle.length(),
+//                            context.getString(R.string.esurfing_dial_call_title_china));
+//                    stringPre.replace(0, stringPre.length(), "+86");
 
+                    stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
+                    stringPre.replace(0, stringPre.length(), "+" + simcv.getAsString("code"));
+                	
                     TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
                     callBackChinaButton.setChecked(false);
                     // Context context = getActivity();
@@ -208,7 +230,9 @@ public class EdialDialog extends HoloDialog {
                     TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
 
                     /** zzz */
+                                        
                     ContentValues cv = getLocalCountryCodeAndName();
+                    Log.i(TAG,"ZZZ CV"+cv.toString());
                     stringTitle.replace(0, stringTitle.length(), cv.getAsString("name") + " +" + cv.getAsString("code"));
                     stringPre.replace(0, stringPre.length(), "+" + cv.getAsString("code"));
                     // callNumber = "+" + cv.getAsString("code") + sendNumber;
@@ -435,6 +459,19 @@ public class EdialDialog extends HoloDialog {
         Log.i(TAG, countryIso);
         ContentValues ret = mdbHelper.queryLocalCountryCodeAndName(countryIso);
 
+        return ret;
+    }
+    //ddd
+    private ContentValues getSimCountryCodeAndName() {
+        CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
+       // TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+       // String countryIso = tm.getNetworkCountryIso();
+        TelephonyManager manager = (TelephonyManager) context.getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String countryIso = manager.getSimCountryIso();
+        countryIso = "TD";
+        Log.i(TAG,"countryCode_simType--"+countryIso);
+
+        ContentValues ret = mdbHelper.queryLocalCountryCodeAndName(countryIso);
         return ret;
     }
 
