@@ -18,13 +18,13 @@
             android:title="@string/preference_disp_locate" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_category_ipcall" >
-        <EditTextPreference
+        <Preference
             android:defaultValue="17909"
             android:dialogTitle="@string/cdma_ip_setting"
             android:key="CDMAIPPreference"
             android:summary="@string/default_ip_setting"
             android:title="@string/cdma_ip_setting" />
-        <EditTextPreference
+        <Preference
             android:defaultValue="17951"
             android:dialogTitle="@string/gsm_ip_setting"
             android:key="GSMIPPreference"
