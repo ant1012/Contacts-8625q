@@ -55,6 +55,7 @@ import edu.bupt.contacts.model.AccountWithDataSet;
 import edu.bupt.contacts.preference.ContactsPreferenceActivity;
 import edu.bupt.contacts.preference.DisplayOptionsPreferenceFragment;
 import edu.bupt.contacts.settings.DialpadPreferenceActivity;
+import edu.bupt.contacts.settings.DialpadSettingAcitivity;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.AccountPromptUtils;
 import edu.bupt.contacts.util.Constants;
@@ -1593,7 +1594,9 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
 
         /** zzz */
         case R.id.menu_call_setting: {
-            Intent intent = new Intent(PeopleActivity.this, DialpadPreferenceActivity.class);
+            // Intent intent = new Intent(PeopleActivity.this,
+            // DialpadPreferenceActivity.class);
+            Intent intent = new Intent(PeopleActivity.this, DialpadSettingAcitivity.class);
             startActivity(intent);
             return true;
         }

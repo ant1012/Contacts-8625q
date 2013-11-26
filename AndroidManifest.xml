@@ -945,7 +945,7 @@
             </intent-filter>
         </activity>
 
-        <!-- zzz -->
+        <!-- zzz -->DialpadSettingAcitivity
         <activity
             android:name="edu.bupt.contacts.settings.DialpadPreferenceActivity"
             android:theme="@android:style/Theme.Holo.Light" >
@@ -973,6 +973,12 @@
         <!-- zzz -->
         <activity
             android:name="edu.bupt.contacts.edial.HelpActivity" >
+        </activity>
+
+        <!-- zzz -->
+        <activity
+            android:name="edu.bupt.contacts.settings.DialpadSettingAcitivity"
+            android:theme="@android:style/Theme.Holo.Light" >
         </activity>
     </application>
 

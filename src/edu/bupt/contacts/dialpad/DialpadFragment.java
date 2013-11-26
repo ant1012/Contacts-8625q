@@ -1057,7 +1057,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 /** zzz */
                 // final Intent intent = new Intent(getActivity(),
                 // CalllogSettingActivity.class);
-                final Intent intent = new Intent(getActivity(), DialpadPreferenceActivity.class);
+
+                // final Intent intent = new Intent(getActivity(),
+                // DialpadPreferenceActivity.class);
+
+                final Intent intent = new Intent(getActivity(), DialpadSettingAcitivity.class);
 
                 startActivity(intent);
                 return false;

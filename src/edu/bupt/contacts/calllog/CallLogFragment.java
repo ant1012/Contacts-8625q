@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.settings.DialpadPreferenceActivity;
+import edu.bupt.contacts.settings.DialpadSettingAcitivity;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.EmptyLoader;
 
@@ -446,7 +447,9 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
             /** zzz */
 
         case R.id.menu_call_setting:
-            Intent intent = new Intent(getActivity(), DialpadPreferenceActivity.class);
+            // Intent intent = new Intent(getActivity(),
+            // DialpadPreferenceActivity.class);
+            Intent intent = new Intent(getActivity(), DialpadSettingAcitivity.class);
             startActivity(intent);
         default:
             return false;
