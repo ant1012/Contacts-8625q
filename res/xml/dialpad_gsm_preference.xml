@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/preference_category_ipcall" >
+
+        <!-- <Preference -->
+        <!-- android:defaultValue="17909" -->
+        <!-- android:dialogTitle="@string/cdma_ip_setting" -->
+        <!-- android:key="CDMAIPPreference" -->
+        <!-- android:summary="@string/default_ip_setting" -->
+        <!-- android:title="@string/cdma_ip_setting" /> -->
+        <Preference
+            android:defaultValue="17951"
+            android:dialogTitle="@string/gsm_ip_setting"
+            android:key="GSMIPPreference"
+            android:summary="@string/default_ip_setting"
+            android:title="@string/gsm_ip_setting" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

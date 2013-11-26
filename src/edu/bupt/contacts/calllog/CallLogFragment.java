@@ -19,7 +19,6 @@ package edu.bupt.contacts.calllog;
 import android.app.AlertDialog;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
-import edu.bupt.contacts.settings.DialpadPreferenceActivity;
 import edu.bupt.contacts.settings.DialpadSettingAcitivity;
 import edu.bupt.contacts.util.Constants;
 import edu.bupt.contacts.util.EmptyLoader;

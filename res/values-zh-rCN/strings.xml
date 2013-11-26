@@ -658,6 +658,9 @@
     <string name="vcard_preview_org">单位</string>
     <string name="vcard_preview_url">网址</string>
     <string name="vcard_preview_group">群组</string>
+    <string name="preference_tab_common">通用设置</string>
+    <string name="preference_tab_cdma">卡一设置</string>
+    <string name="preference_tab_gsm">卡二设置</string>
     <string name="preference_category_edial">翼拨号设置</string>
     <string name="preference_category_test">漫游测试</string>
     <string name="preference_category_ipcall">IP拨号设置</string>

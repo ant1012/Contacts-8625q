@@ -17,7 +17,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 public class DialpadCommonPreferenceFragment extends PreferenceFragment {
-    private final String TAG = "DialpadPreferenceActivity";
+    private final String TAG = "DialpadCommonPreferenceFragment";
     private SharedPreferences sp;
 
     @Override
@@ -26,7 +26,7 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
         final Activity activity = getActivity();
 
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.dialpad_preference);
+        addPreferencesFromResource(R.xml.dialpad_common_preference);
         sp = PreferenceManager.getDefaultSharedPreferences(activity);
     }
 
@@ -38,13 +38,17 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
         // getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sp.getString(
         // "EDialPreference", "0"))]);
 
-        if (sp.getString("CDMAIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
-            findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference", ""));
-        }
-
-        if (sp.getString("GSMIPPreference", null) != null && !sp.getString("GSMIPPreference", null).equals("")) {
-            findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference", ""));
-        }
+        // if (sp.getString("CDMAIPPreference", null) != null &&
+        // !sp.getString("CDMAIPPreference", null).equals("")) {
+        // findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference",
+        // ""));
+        // }
+        //
+        // if (sp.getString("GSMIPPreference", null) != null &&
+        // !sp.getString("GSMIPPreference", null).equals("")) {
+        // findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference",
+        // ""));
+        // }
 
         findPreference("TimeSettingPreference").setSummary(
                 getResources().getStringArray(R.array.time_setting)[Integer.parseInt(sp.getString(
@@ -76,25 +80,28 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
                 // getResources().getStringArray(R.array.edial_list_preference)[Integer.parseInt(sharedPreferences
                 // .getString("EDialPreference", "0"))]);
 
-            } else if (key.equals("CDMAIPPreference")) {
-                if (sp.getString("CDMAIPPreference", null) != null
-                        && !sp.getString("CDMAIPPreference", null).equals("")) {
-                    Log.v(TAG, "CDMAIPPreference");
-                    findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference", ""));
-                } else {
-                    Log.v(TAG, "no CDMAIPPreference !");
-                    findPreference("CDMAIPPreference").setSummary(R.string.default_ip_setting);
-                }
-
-            } else if (key.equals("GSMIPPreference")) {
-
-                if (sp.getString("GSMIPPreference", null) != null && !sp.getString("CDMAIPPreference", null).equals("")) {
-                    Log.v(TAG, "GSMIPPreference");
-                    findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference", ""));
-                } else {
-                    Log.v(TAG, "no GSMIPPreference !");
-                    findPreference("GSMIPPreference").setSummary(R.string.default_ip_setting);
-                }
+                // } else if (key.equals("CDMAIPPreference")) {
+                // if (sp.getString("CDMAIPPreference", null) != null
+                // && !sp.getString("CDMAIPPreference", null).equals("")) {
+                // Log.v(TAG, "CDMAIPPreference");
+                // findPreference("CDMAIPPreference").setSummary(sp.getString("CDMAIPPreference",
+                // ""));
+                // } else {
+                // Log.v(TAG, "no CDMAIPPreference !");
+                // findPreference("CDMAIPPreference").setSummary(R.string.default_ip_setting);
+                // }
+                //
+                // } else if (key.equals("GSMIPPreference")) {
+                //
+                // if (sp.getString("GSMIPPreference", null) != null &&
+                // !sp.getString("CDMAIPPreference", null).equals("")) {
+                // Log.v(TAG, "GSMIPPreference");
+                // findPreference("GSMIPPreference").setSummary(sp.getString("GSMIPPreference",
+                // ""));
+                // } else {
+                // Log.v(TAG, "no GSMIPPreference !");
+                // findPreference("GSMIPPreference").setSummary(R.string.default_ip_setting);
+                // }
 
             } else if (key.equals("DispLocatePreference")) {
                 Log.v(TAG, "DispLocatePreference");
@@ -118,10 +125,10 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
         if (preference == findPreference("HelpPreference")) {
             Log.v(TAG, "HelpPreference");
             startActivity(new Intent(activity, HelpActivity.class));
-        } else if (preference == findPreference("GSMIPPreference")) {
-            new IPSelectDialog(activity, IPSelectDialog.GSM).show();
-        } else if (preference == findPreference("CDMAIPPreference")) {
-            new IPSelectDialog(activity, IPSelectDialog.CDMA).show();
+            // } else if (preference == findPreference("GSMIPPreference")) {
+            // new IPSelectDialog(activity, IPSelectDialog.GSM).show();
+            // } else if (preference == findPreference("CDMAIPPreference")) {
+            // new IPSelectDialog(activity, IPSelectDialog.CDMA).show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

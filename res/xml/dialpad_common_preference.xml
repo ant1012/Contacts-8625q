@@ -17,20 +17,22 @@
             android:key="DispLocatePreference"
             android:title="@string/preference_disp_locate" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_category_ipcall" >
-        <Preference
-            android:defaultValue="17909"
-            android:dialogTitle="@string/cdma_ip_setting"
-            android:key="CDMAIPPreference"
-            android:summary="@string/default_ip_setting"
-            android:title="@string/cdma_ip_setting" />
-        <Preference
-            android:defaultValue="17951"
-            android:dialogTitle="@string/gsm_ip_setting"
-            android:key="GSMIPPreference"
-            android:summary="@string/default_ip_setting"
-            android:title="@string/gsm_ip_setting" />
-    </PreferenceCategory>
+    <!-- <PreferenceCategory android:title="@string/preference_category_ipcall" > -->
+    <!-- <Preference -->
+    <!-- android:defaultValue="17909" -->
+    <!-- android:dialogTitle="@string/cdma_ip_setting" -->
+    <!-- android:key="CDMAIPPreference" -->
+    <!-- android:summary="@string/default_ip_setting" -->
+    <!-- android:title="@string/cdma_ip_setting" /> -->
+    <!-- <Preference -->
+    <!-- android:defaultValue="17951" -->
+    <!-- android:dialogTitle="@string/gsm_ip_setting" -->
+    <!-- android:key="GSMIPPreference" -->
+    <!-- android:summary="@string/default_ip_setting" -->
+    <!-- android:title="@string/gsm_ip_setting" /> -->
+    <!-- </PreferenceCategory> -->
+
+
     <!-- </PreferenceCategory> -->
     <!-- <PreferenceCategory android:title="@string/preference_category_edial" > -->
     <!-- <ListPreference -->

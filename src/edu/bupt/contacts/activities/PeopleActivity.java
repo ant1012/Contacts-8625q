@@ -54,7 +54,6 @@ import edu.bupt.contacts.list.ProviderStatusWatcher.ProviderStatusListener;
 import edu.bupt.contacts.model.AccountWithDataSet;
 import edu.bupt.contacts.preference.ContactsPreferenceActivity;
 import edu.bupt.contacts.preference.DisplayOptionsPreferenceFragment;
-import edu.bupt.contacts.settings.DialpadPreferenceActivity;
 import edu.bupt.contacts.settings.DialpadSettingAcitivity;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.AccountPromptUtils;
