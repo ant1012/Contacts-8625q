@@ -302,10 +302,10 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menu.add(0, 0, 0, R.string.menu_select_all);
-        menu.add(0, 1, 1, R.string.cancel);
+        // menu.add(0, 1, 1, R.string.cancel);
         menu.add(0, 2, 2, R.string.ok);
-        menu.findItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.findItem(1).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        // menu.findItem(1).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.findItem(2).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
