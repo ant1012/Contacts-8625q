@@ -743,5 +743,11 @@
     <string name="esurfing_dial_suffix_null"></string>
     <string name="time_setting">时间显示设置</string>
     <string name="esurfing_dial_skiphelp">跳过</string>
+    <string name="call_log_search_with_name">按姓名搜索</string>
+    <string name="call_log_search_with_number">按号码搜索</string>
+    <string name="call_log_search_with_date">按日期搜索</string>
+    <string name="call_log_search_from">起始时间</string>
+    <string name="call_log_search_to">结束时间</string>
+    <string name="call_log_search_error">选择错误</string>
 
 </resources>

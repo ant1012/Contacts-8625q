@@ -344,7 +344,7 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.search_calls:
-            startActivity(new Intent(getActivity(), CallLogSearch.class));
+            startActivity(new Intent(getActivity(), CallLogSearchActivity.class));
             return true;
 
         case R.id.delete_all: // modified by yuan

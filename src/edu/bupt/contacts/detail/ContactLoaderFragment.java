@@ -25,8 +25,8 @@ import edu.bupt.contacts.ContactLoader;
 import edu.bupt.contacts.ContactSaveService;
 import edu.bupt.contacts.ContactsUtils;
 import edu.bupt.contacts.R;
-import edu.bupt.contacts.activities.MenuCalendar;
-import edu.bupt.contacts.activities.MenuHistory;
+import edu.bupt.contacts.activities.MenuCalendarActivity;
+import edu.bupt.contacts.activities.MenuHistoryActivity;
 import edu.bupt.contacts.activities.MultiSelectExport;
 import edu.bupt.contacts.activities.PersonInfo;
 import edu.bupt.contacts.activities.ContactDetailActivity.FragmentKeyListener;
@@ -343,7 +343,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             Log.i("update", "" + shortmsg[6]);
             Bundle bundle = new Bundle();
             bundle.putString("check_calendar", shortmsg[6]);
-            Intent intent = new Intent(mContext, MenuCalendar.class);
+            Intent intent = new Intent(mContext, MenuCalendarActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
             return true;
@@ -355,7 +355,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             Log.i("update", "" + shortmsg[6]);
             Bundle bundle = new Bundle();
             bundle.putString("check_history", shortmsg[6]);
-            Intent intent = new Intent(mContext, MenuHistory.class);
+            Intent intent = new Intent(mContext, MenuHistoryActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
             return true;

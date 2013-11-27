@@ -28,7 +28,7 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-public class MenuCalendar extends Activity {
+public class MenuCalendarActivity extends Activity {
     public static final Uri CONTENT_URI = Uri.parse("content://edu.bupt.calendar.attendee/AttendeePhone");//
     public List<String> calendarArrayList;
     public List<String> calendarEventArrayList;

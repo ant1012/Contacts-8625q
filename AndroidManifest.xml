@@ -800,12 +800,12 @@
         
         <!-- ddd 去除历史记录actionbar -->
         <activity
-            android:name="edu.bupt.contacts.activities.MenuHistory"
+            android:name="edu.bupt.contacts.activities.MenuHistoryActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar" />
         <!-- ddd 去除历史记录actionbar -->
         <activity
-            android:name="edu.bupt.contacts.activities.MenuCalendar"
+            android:name="edu.bupt.contacts.activities.MenuCalendarActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar" />
 
@@ -844,7 +844,7 @@
 
         <!-- ddd -->
         <activity
-            android:name="edu.bupt.contacts.calllog.CallLogSearch"
+            android:name="edu.bupt.contacts.calllog.CallLogSearchActivity"
             android:theme="@android:style/Theme.Holo.Light" />
 
         <!-- baoge -->
