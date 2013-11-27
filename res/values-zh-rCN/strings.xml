@@ -12,7 +12,14 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
+     limitations under the License.
+
+
+
+
+
+
+
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -743,11 +750,6 @@
     <string name="esurfing_dial_suffix_null"></string>
     <string name="time_setting">时间显示设置</string>
     <string name="esurfing_dial_skiphelp">跳过</string>
-    <string name="call_log_search_with_name">按姓名搜索</string>
-    <string name="call_log_search_with_number">按号码搜索</string>
-    <string name="call_log_search_with_date">按日期搜索</string>
-    <string name="call_log_search_from">起始时间</string>
-    <string name="call_log_search_to">结束时间</string>
-    <string name="call_log_search_error">选择错误</string>
-
+     <string name="gsm">卡二</string>
+     <string name="cdma">卡一</string>
 </resources>
