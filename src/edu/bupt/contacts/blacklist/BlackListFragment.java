@@ -238,11 +238,34 @@ public class BlackListFragment extends Fragment {
                     if (checkedMap.get(position)) {
                         // contact.moveToPosition(position);
                         // String name = contact.getString(PHONES_DISPLAY_NAME);
-                        // String phone = contact.getString(PHONES_NUMBER);
+                        // String phone = contact.getString(PHONES_NUMBER);]
 
-                        String name = list.get(position).get("name");
-                        String phone = list.get(position).get("number");
-                        save(name, phone, 0);
+                        String contactId = list.get(position).get("id");
+
+                        Cursor phonecur = context.getContentResolver().query(
+                                android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                new String[] { contactId }, null);
+                        // get number
+                        while (phonecur.moveToNext()) {
+                            String strPhoneNumber = phonecur.getString(phonecur
+                                    .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            // if (strPhoneNumber.length() > 4)
+                            // contactsList.add("18610011001" + "\n测试");
+                            // contactsList.add(strPhoneNumber+"\n"+name+"");
+
+                            // Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
+
+                            String name = list.get(position).get("name");
+                            String phone = strPhoneNumber;
+                            save(name, phone, 0);
+
+                        }
+                        phonecur.close();
+
+                        // String name = list.get(position).get("name");
+                        // String phone = list.get(position).get("number");
+                        // save(name, phone, 0);
                     }
                 }
                 checkedMap.clear();
@@ -292,26 +315,34 @@ public class BlackListFragment extends Fragment {
             String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             String strPhoneNumber = "";
 
-            phonecur = context.getContentResolver().query(
-                    android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                    android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                    new String[] { contactId }, null);
-            // get number
-            while (phonecur.moveToNext()) {
-                strPhoneNumber = phonecur.getString(phonecur
-                        .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
-                // if (strPhoneNumber.length() > 4)
-                // contactsList.add("18610011001" + "\n测试");
-                // contactsList.add(strPhoneNumber+"\n"+name+"");
-                Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("id", contactId);
+            map.put("name", name);
+            map.put("number", strPhoneNumber);
+            list.add(map);
 
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("id", contactId);
-                map.put("name", name);
-                map.put("number", strPhoneNumber);
-                list.add(map);
-            }
-            phonecur.close();
+            // phonecur = context.getContentResolver().query(
+            // android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            // null,
+            // android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+            // + " = ?",
+            // new String[] { contactId }, null);
+            // // get number
+            // while (phonecur.moveToNext()) {
+            // strPhoneNumber = phonecur.getString(phonecur
+            // .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+            // // if (strPhoneNumber.length() > 4)
+            // // contactsList.add("18610011001" + "\n测试");
+            // // contactsList.add(strPhoneNumber+"\n"+name+"");
+            // Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
+            //
+            // Map<String, String> map = new HashMap<String, String>();
+            // map.put("id", contactId);
+            // map.put("name", name);
+            // map.put("number", strPhoneNumber);
+            // list.add(map);
+            // }
+            // phonecur.close();
 
         }
         // if (phonecur != null)

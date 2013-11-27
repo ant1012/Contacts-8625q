@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 public class ContactMultiSelectAdapter extends BaseAdapter {
 
+    private static final String TAG = "ContactMultiSelectAdapter";
     private ArrayList<Map<String, String>> list;
     private static Context context;
     private LayoutInflater inflater = null;
@@ -33,8 +35,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
     // private TextView textViewNumber;
     // private CheckBox checkbox;
 
-    public ContactMultiSelectAdapter(ArrayList<Map<String, String>> list,
-            Context context) {
+    public ContactMultiSelectAdapter(ArrayList<Map<String, String>> list, Context context) {
 
         this.context = context;
         this.list = list;
@@ -62,18 +63,14 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        // Log.v(TAG, "getView");
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(
-                    R.layout.contact_multi_selection_adapter, null);
-            holder.textViewName = (TextView) convertView
-                    .findViewById(R.id.multiselect_tv_name);
-            holder.textViewNumber = (TextView) convertView
-                    .findViewById(R.id.multiselect_tv_number);
-            holder.checkbox = (CheckBox) convertView
-                    .findViewById(R.id.multiselect_checkbox);
-            holder.imageView = (ImageView) convertView
-                    .findViewById(R.id.multiselect_imageview);
+            convertView = inflater.inflate(R.layout.contact_multi_selection_adapter, null);
+            holder.textViewName = (TextView) convertView.findViewById(R.id.multiselect_tv_name);
+            holder.textViewNumber = (TextView) convertView.findViewById(R.id.multiselect_tv_number);
+            holder.checkbox = (CheckBox) convertView.findViewById(R.id.multiselect_checkbox);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.multiselect_imageview);
             convertView.setTag(holder);
 
         } else {
@@ -85,8 +82,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         holder.checkbox.setChecked(isSelected.get(position));
 
         String id = list.get(position).get("id");
-        holder.imageView.setImageBitmap(loadContactPhoto(
-                context.getContentResolver(), Long.valueOf(id)));
+        holder.imageView.setImageBitmap(loadContactPhoto(context.getContentResolver(), Long.valueOf(id)));
 
         return convertView;
     }
@@ -99,10 +95,8 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
     }
 
     public static Bitmap loadContactPhoto(ContentResolver cr, long id) {
-        Uri uri = ContentUris.withAppendedId(
-                ContactsContract.Contacts.CONTENT_URI, id);
-        InputStream input = ContactsContract.Contacts
-                .openContactPhotoInputStream(cr, uri);
+        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
+        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
         if (input == null) {
             return BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_contact_picture_holo_light);
         }

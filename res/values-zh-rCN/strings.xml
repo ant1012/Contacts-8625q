@@ -758,4 +758,5 @@
     <string name="call_log_search_from">起始时间</string>
     <string name="call_log_search_to">结束时间</string>
     <string name="call_log_search_error">选择错误</string>
+    <string name="multi_select_loading">正在读取</string>
 </resources>
