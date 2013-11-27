@@ -1487,7 +1487,10 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
         // makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
         makeMenuItemVisible(menu, R.id.menu_import_export, showMiscOptions);
-        makeMenuItemVisible(menu, R.id.menu_accounts, showMiscOptions);
+
+        /** zzz */
+        makeMenuItemVisible(menu, R.id.menu_accounts, false);
+
         makeMenuItemVisible(menu, R.id.menu_settings, showMiscOptions && !ContactsPreferenceActivity.isEmpty(this));//
 
         return true;
