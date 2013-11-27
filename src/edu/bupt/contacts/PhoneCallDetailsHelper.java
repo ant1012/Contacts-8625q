@@ -148,15 +148,15 @@ public class PhoneCallDetailsHelper {
             numberText = displayNumber;
             labelText = numberFormattedLabel;
         }
-
+        //ddd change GSM into 卡二
         views.nameView.setText(nameText);
         views.numberView.setText(numberText);
         views.labelView.setText(labelText);
         views.labelView.setVisibility(TextUtils.isEmpty(labelText) ? View.GONE : View.VISIBLE);
         if (details.msimType == 0) {
-            views.simView.setText("CDMA");
+            views.simView.setText(R.string.cdma);
         } else {
-            views.simView.setText("GSM");
+            views.simView.setText(R.string.gsm);
         }
 
     }

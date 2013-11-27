@@ -800,6 +800,7 @@ import libcore.util.Objects;
         final long date = c.getLong(CallLogQuery.DATE);
         final long duration = c.getLong(CallLogQuery.DURATION);
         final int callType = c.getInt(CallLogQuery.CALL_TYPE);
+        Log.i(TAG,"callType-ddd--"+String.valueOf(callType));
         final String countryIso = c.getString(CallLogQuery.COUNTRY_ISO);
 
         final ContactInfo cachedContactInfo = getContactInfoFromCallLog(c);
@@ -887,7 +888,8 @@ import libcore.util.Objects;
         final int[] callTypes = getCallTypes(c, count);
         final String geocode = c.getString(CallLogQuery.GEOCODED_LOCATION);
         final PhoneCallDetails details;
-
+        Log.i(TAG,"label-ddd--"+label);
+        Log.i(TAG,"info-ddd--"+info.toString());
         if (TextUtils.isEmpty(name)) {
             details = new PhoneCallDetails(number, formattedNumber, countryIso, geocode, callTypes, date, duration,
                     c.getInt(CallLogQuery.SUB_ID));

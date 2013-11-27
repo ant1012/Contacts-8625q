@@ -468,7 +468,6 @@ public class EdialDialog extends HoloDialog {
        // String countryIso = tm.getNetworkCountryIso();
         TelephonyManager manager = (TelephonyManager) context.getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = manager.getSimCountryIso();
-        countryIso = "TD";
         Log.i(TAG,"countryCode_simType--"+countryIso);
 
         ContentValues ret = mdbHelper.queryLocalCountryCodeAndName(countryIso);

@@ -193,10 +193,12 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
             durationView.setVisibility(View.VISIBLE);
             durationView.setText(formatDuration(details.duration));
         }
+        
+        //ddd change GSM into卡二
         if (details.msimType == 0) { // by yuan
-            msimcardView.setText("CDMA");
+            msimcardView.setText(R.string.cdma);
         } else if (details.msimType == 1) {
-            msimcardView.setText("GSM");
+            msimcardView.setText(R.string.gsm);
         } else {
             msimcardView.setText("unknown");
         }
