@@ -550,10 +550,16 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
 
     public static WindowManager.LayoutParams params = new WindowManager.LayoutParams();
     static {
-        // ��view�������ϲ�
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        // �õ�ǰViewʧȥ���㣬�ú���Ľ����ý���
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        // // ��view�������ϲ�
+        // params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        // // �õ�ǰViewʧȥ���㣬�ú���Ľ����ý���
+        // params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+
+        /** zzz */
+        // release focus
+        params.type = WindowManager.LayoutParams.TYPE_PHONE;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+
         params.format = PixelFormat.RGBA_8888;// ����͸��
         params.gravity = Gravity.TOP | Gravity.CENTER_VERTICAL;
         params.x = 0;
@@ -613,10 +619,6 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             ((TextView) toast.findViewById(R.id.city)).setText(code);
             ((TextView) toast.findViewById(R.id.operater)).setText(operator);
             ((TextView) toast.findViewById(R.id.call_type)).setText(charSequence);
-
-            /** zzz */
-            toast.setFocusable(false);
-
             mWm.addView(toast, params);
         }
         Log.v("test", "showToast");
