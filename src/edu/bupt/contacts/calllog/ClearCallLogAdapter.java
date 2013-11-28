@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public class ClearCallLogAdapter extends SimpleCursorAdapter{
 			holder = new ViewHolder();
 			holder.selected = (CheckBox)view.findViewById(R.id.item_cb);
 			holder.time = (TextView)view.findViewById(R.id.item_time);
+			holder.name = (TextView)view.findViewById(R.id.item_name);
 			holder.number = (TextView)view.findViewById(R.id.item_number);
 			holder.type = (TextView)view.findViewById(R.id.item_type);
 			final int p = position;
@@ -76,30 +78,56 @@ public class ClearCallLogAdapter extends SimpleCursorAdapter{
                 DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR);
 		holder.time.setText(dateValue);
 		holder.number.setText(cursor.getString(1));
+		
+		//ddd
+        if(cursor.getString(4)!=null){
+        	holder.name.setText(cursor.getString(4));
+        }else{
+        	holder.name.setText(cursor.getString(1));
+        }
+
 		int typeInt  = cursor.getInt(3);
-		switch(typeInt){
-		case 1:
-		    holder.type.setText(R.string.incoming);
-		    break;
-		case 2:
-			holder.type.setText(R.string.outcoming);
-			break;
-		case 3:
-			holder.type.setText(R.string.missed);
-			break;
-		default:
-			holder.type.setText("unknown");
-			break;
-		}
+//		switch(typeInt){
+//		case 1:
+//		    holder.type.setText(R.string.incoming);
+//		    break;
+//		case 2:
+//			holder.type.setText(R.string.outcoming);
+//			break;
+//		case 3:
+//			holder.type.setText(R.string.missed);
+//			break;
+//		default:
+//			holder.type.setText("unknown");
+//			break;
+//		}
+		//ddd change into image (incoming/outcoming/missed)
+		
+		ImageView imageView_type = (ImageView)view.findViewById(R.id.imageView_type);
+        switch(typeInt){
+        case 1:
+        	imageView_type.setImageResource(R.drawable.ic_call_incoming_holo_dark);
+        	break;
+        case 2:
+        	imageView_type.setImageResource(R.drawable.ic_call_outgoing_holo_dark);   	
+        	break;
+        case 3:
+        	imageView_type.setImageResource(R.drawable.ic_call_missed_holo_dark);
+        	break;
+        }
+		
+		
         cursor.moveToFirst();
         return view;
 	}
 	
+	//ddd add name
 	static class ViewHolder{
 		CheckBox selected;
         TextView time;
         TextView number;
         TextView type;
+        TextView name;
     }
 	
 	public static List<Boolean> getIsSelected(){

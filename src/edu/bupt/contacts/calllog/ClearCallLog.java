@@ -41,7 +41,8 @@ public class ClearCallLog extends Activity {
         checkboxSelectAll = (CheckBox) findViewById(R.id.checkBox_selectAll);
 
         resolver = getContentResolver();
-        cursor = resolver.query(CallLog.Calls.CONTENT_URI, new String[] { "_id", "number", "date", "type" }, null,
+        //ddd added name 
+        cursor = resolver.query(CallLog.Calls.CONTENT_URI, new String[] { "_id", "number", "date", "type","name" }, null,
                 null, null);
         Log.v("yuan", cursor.getCount() + "");
         // if(cursor.moveToFirst()) {
@@ -54,10 +55,10 @@ public class ClearCallLog extends Activity {
         // //resolver.delete(CallLog.Calls.CONTENT_URI, "_id=?", new String[]
         // {id + ""});
         // }
-
+       //ddd added name
         listAdapter = new ClearCallLogAdapter(this, R.layout.activity_clear_call_log_item, cursor, new String[] {
-                CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.TYPE }, new int[] { R.id.item_time,
-                R.id.item_number, R.id.item_type });
+                CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.TYPE, CallLog.Calls.CACHED_NAME}, new int[] { R.id.item_time,
+                R.id.item_number, R.id.item_type ,R.id.item_name});
 
         clearCalllogListview.setAdapter(listAdapter);
 
