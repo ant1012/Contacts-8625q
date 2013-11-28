@@ -12,8 +12,8 @@ public class ContactsCacheDBHelper extends SQLiteOpenHelper {
 
     public static final String TAG = "ContactsCacheDBHelper";
 
-    private static final String DATABASE_NAME = "blacklist.db";
-    public static final String TB_NAME = "BlackListFragment";
+    private static final String DATABASE_NAME = "contacts_cache.db";
+    public static final String TB_NAME = "ContactsCache";
     public static final String CONTACTID = "contactid";
     public static final String NAME = "name";
     public static final String NUMBER = "number";

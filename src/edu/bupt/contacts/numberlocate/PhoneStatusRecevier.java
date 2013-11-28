@@ -613,6 +613,10 @@ public class PhoneStatusRecevier extends BroadcastReceiver {
             ((TextView) toast.findViewById(R.id.city)).setText(code);
             ((TextView) toast.findViewById(R.id.operater)).setText(operator);
             ((TextView) toast.findViewById(R.id.call_type)).setText(charSequence);
+
+            /** zzz */
+            toast.setFocusable(false);
+
             mWm.addView(toast, params);
         }
         Log.v("test", "showToast");
