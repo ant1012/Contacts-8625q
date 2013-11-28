@@ -18,9 +18,7 @@ package edu.bupt.contacts.activities;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,27 +27,24 @@ import com.android.vcard.VCardConfig;
 
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.list.ContactMultiSelectAdapter;
+import edu.bupt.contacts.observer.ContactsCacheDBHelper;
 import edu.bupt.contacts.vcard.VCardComposer;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.RawContacts;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -58,18 +53,23 @@ import android.widget.AdapterView.OnItemClickListener;
  * Displays a list of contacts (or phone numbers or postal addresses) for the
  * purposes of selecting one.
  */
+/** zzz */
 public class ContactMultiSelectionActivity extends ListActivity {
     private final String TAG = "ContactMultiSelectionActivity";
 
     public ListView listView;
     // public int[] pos;
     private ArrayList<Map<String, String>> list;
-    private int flagPackageVcard = 0; // when 0 returns arraylist
-                                      // when 1 returns vcard file uri
+    private int flagPackageVcard = FLAG_SELECT_CONTACT; // when 0 returns
+                                                        // arraylist
+    // when 1 returns vcard file uri
 
     private ProgressDialog proDialog;
     private int soManyLines = 0;
-    private final int UPDATE_LIST = 0x0;
+
+    private static final int FLAG_SELECT_CONTACT = 0x0;
+    private static final int FLAG_PACKAGE_VCARD = 0x1;
+    private static final int UPDATE_LIST = 0x10;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -77,7 +77,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
 
         // for mms
         Intent i = getIntent();
-        flagPackageVcard = i.getIntExtra("package_vcard", 0);
+        flagPackageVcard = i.getIntExtra("package_vcard", FLAG_SELECT_CONTACT);
 
         list = new ArrayList<Map<String, String>>();
 
@@ -128,7 +128,9 @@ public class ContactMultiSelectionActivity extends ListActivity {
         // contactLookupArrayList.clear();
         list.clear();
 
-        Thread getcontacts = new Thread(new GetContacts());
+        // Thread getcontacts = new Thread(new GetContacts());
+        Thread getcontacts = new Thread(new GetCachedContacts());
+
         getcontacts.start();
         proDialog = ProgressDialog.show(ContactMultiSelectionActivity.this, getString(R.string.multi_select_loading),
                 getString(R.string.multi_select_loading), true, true);
@@ -211,9 +213,9 @@ public class ContactMultiSelectionActivity extends ListActivity {
             break;
 
         case 1:
-            if (flagPackageVcard == 0) {
+            if (flagPackageVcard == FLAG_SELECT_CONTACT) {
                 pickContacts();
-            } else if (flagPackageVcard == 1) {
+            } else if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
                 doShareCheckedContacts();
             }
             break;
@@ -365,6 +367,11 @@ public class ContactMultiSelectionActivity extends ListActivity {
             long tb = System.currentTimeMillis();
             soManyLines = 0;
 
+            // for caching data
+            ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(ContactMultiSelectionActivity.this,
+                    1);
+            contactsCacheDBHelper.dropTable();
+
             Uri uri = ContactsContract.Contacts.CONTENT_URI;
             String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                     ContactsContract.Contacts.PHOTO_ID };
@@ -387,7 +394,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
                         .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
                 String strPhoneNumber = "";
 
-                if (flagPackageVcard == 1) {
+                if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("id", contactId);
                     map.put("name", name);
@@ -414,6 +421,10 @@ public class ContactMultiSelectionActivity extends ListActivity {
                         map.put("name", name);
                         map.put("number", strPhoneNumber);
                         list.add(map);
+
+                        // cache data
+                        contactsCacheDBHelper.addLine(contactId, name, strPhoneNumber);
+
                         soManyLines++;
                     }
                     phonecur.close();
@@ -421,6 +432,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
             }
             // if (phonecur != null)
             cursor.close();
+            contactsCacheDBHelper.close();
 
             Message msg1 = new Message();
             msg1.what = UPDATE_LIST;
@@ -429,6 +441,58 @@ public class ContactMultiSelectionActivity extends ListActivity {
             Log.v(TAG, "after initData");
             long ta = System.currentTimeMillis();
             Log.w(TAG, "time cost for GetContacts, " + (ta - tb));
+            Log.w(TAG, "soManyLines - " + soManyLines);
+        }
+    }
+
+    private class GetCachedContacts implements Runnable {
+        @Override
+        public void run() {
+            Log.v(TAG, "before GetCachedContacts");
+            long tb = System.currentTimeMillis();
+            soManyLines = 0;
+
+            ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(ContactMultiSelectionActivity.this,
+                    1);
+
+            try {
+
+                if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
+                    throw new Exception("need query name only");
+                }
+
+                Cursor c = contactsCacheDBHelper.query();
+                if (c.getCount() == 0) {
+                    throw new Exception("no cached data, try to get data in foreground");
+                }
+                while (c.moveToNext()) {
+
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("id", c.getString(0));
+                    map.put("name", c.getString(1));
+                    map.put("number", c.getString(2));
+                    list.add(map);
+                    soManyLines++;
+                }
+
+                c.close();
+
+                Message msg1 = new Message();
+                msg1.what = UPDATE_LIST;
+                updateListHandler.sendMessage(msg1);
+            } catch (Exception e) {
+                Log.w(TAG, e.toString());
+
+                // use old way
+                Thread getcontacts = new Thread(new GetContacts());
+                getcontacts.start();
+            } finally {
+                contactsCacheDBHelper.close();
+            }
+
+            Log.v(TAG, "after GetCachedContacts");
+            long ta = System.currentTimeMillis();
+            Log.w(TAG, "time cost for GetCachedContacts, " + (ta - tb));
             Log.w(TAG, "soManyLines - " + soManyLines);
         }
     }

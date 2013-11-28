@@ -12,14 +12,7 @@
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
-     limitations under the License.
-
-
-
-
-
-
-
+     limitations under the License.
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -680,6 +673,7 @@
     <string name="preference_roaming">漫游测试</string>
     <string name="preference_disp_locate">显示来去电归属地</string>
     <string name="preference_time_setting">默认显示时间</string>
+    <string name="preference_clear_cache">清除联系人列表缓存</string>
     <string name="cardp_mobile">移动</string>
     <string name="cardp_telecom">电信</string>
     <string name="cardp_unicom">联通</string>
@@ -759,4 +753,5 @@
     <string name="call_log_search_to">结束时间</string>
     <string name="call_log_search_error">选择错误</string>
     <string name="multi_select_loading">正在读取</string>
+
 </resources>

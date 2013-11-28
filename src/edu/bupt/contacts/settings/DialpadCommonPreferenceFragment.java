@@ -3,7 +3,9 @@ package edu.bupt.contacts.settings;
 import java.util.TimeZone;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.activities.ContactMultiSelectionActivity;
 import edu.bupt.contacts.edial.HelpActivity;
+import edu.bupt.contacts.observer.ContactsCacheDBHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -129,6 +131,12 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
             // new IPSelectDialog(activity, IPSelectDialog.GSM).show();
             // } else if (preference == findPreference("CDMAIPPreference")) {
             // new IPSelectDialog(activity, IPSelectDialog.CDMA).show();
+        } else if (preference == findPreference("ClearCacheTestPreference")) {
+            Log.v(TAG, "ClearCacheTestPreference");
+
+            ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(activity, 1);
+            contactsCacheDBHelper.dropTable();
+
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

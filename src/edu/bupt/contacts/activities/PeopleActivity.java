@@ -52,6 +52,8 @@ import edu.bupt.contacts.list.OnContactsUnavailableActionListener;
 import edu.bupt.contacts.list.ProviderStatusWatcher;
 import edu.bupt.contacts.list.ProviderStatusWatcher.ProviderStatusListener;
 import edu.bupt.contacts.model.AccountWithDataSet;
+import edu.bupt.contacts.observer.ContactsContentObserver;
+import edu.bupt.contacts.observer.UpdateContactsCacheRunnable;
 import edu.bupt.contacts.preference.ContactsPreferenceActivity;
 import edu.bupt.contacts.preference.DisplayOptionsPreferenceFragment;
 import edu.bupt.contacts.settings.DialpadSettingAcitivity;
@@ -273,6 +275,14 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
         if (Log.isLoggable(Constants.PERFORMANCE_TAG, Log.DEBUG)) {
             Log.d(Constants.PERFORMANCE_TAG, "PeopleActivity.onCreate finish");
         }
+
+        /** zzz */
+        // for contacts list cache
+        new Thread(new UpdateContactsCacheRunnable(this)).start();
+        contactsContentObserver = new ContactsContentObserver(this, new Handler());
+        // registerContactsContentObserver();
+        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+        getContentResolver().registerContentObserver(uri, true, contactsContentObserver);
     }
 
     @Override
@@ -525,6 +535,19 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
         // the actual contents match the tab.
         updateFragmentsVisibility();
     }
+
+    /** zzz */
+    // for contacts list cache
+    private ContactsContentObserver contactsContentObserver;
+
+    // private void registerContactsContentObserver() {
+    // // contactsContentObserver = new ContactsContentObserver(this, new
+    // // Handler());
+    // Uri uri = ContactsContract.Contacts.CONTENT_URI;
+    // getContentResolver().registerContentObserver(uri, true,
+    // contactsContentObserver);
+    //
+    // }
 
     @Override
     protected void onStop() {

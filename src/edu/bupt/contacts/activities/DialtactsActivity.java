@@ -33,6 +33,7 @@ import edu.bupt.contacts.list.OnPhoneNumberPickerActionListener;
 import edu.bupt.contacts.list.PhoneFavoriteFragment;
 import edu.bupt.contacts.list.PhoneNumberPickerFragment;
 import edu.bupt.contacts.msim.MultiSimConfig;
+import edu.bupt.contacts.observer.UpdateContactsCacheRunnable;
 import edu.bupt.contacts.util.AccountFilterUtil;
 import edu.bupt.contacts.util.Constants;
 import android.app.ActionBar;
@@ -570,6 +571,10 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         if (UI.FILTER_CONTACTS_ACTION.equals(intent.getAction()) && icicle == null) {
             setupFilterText(intent);
         }
+
+        /** zzz */
+        // for contacts list cache
+        new Thread(new UpdateContactsCacheRunnable(this)).start();
     }
 
     @Override
