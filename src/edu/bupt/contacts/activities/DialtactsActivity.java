@@ -574,7 +574,9 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
 
         /** zzz */
         // for contacts list cache
-        new Thread(new UpdateContactsCacheRunnable(this)).start();
+        if (!UpdateContactsCacheRunnable.isInitilized) {
+            new Thread(new UpdateContactsCacheRunnable(this)).start();
+        }
     }
 
     @Override

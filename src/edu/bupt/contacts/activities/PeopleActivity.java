@@ -278,7 +278,9 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
 
         /** zzz */
         // for contacts list cache
-        new Thread(new UpdateContactsCacheRunnable(this)).start();
+        if (!UpdateContactsCacheRunnable.isInitilized) {
+            new Thread(new UpdateContactsCacheRunnable(this)).start();
+        }
 
         // Intent intent = new Intent();
         // intent.setAction("edu.bupt.action.UPDATE_CACHE");
