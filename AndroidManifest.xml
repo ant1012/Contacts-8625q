@@ -980,6 +980,15 @@
             android:name="edu.bupt.contacts.settings.DialpadSettingAcitivity"
             android:theme="@style/Theme.PageIndicatorDefaults" >
         </activity>
+
+        <!-- zzz -->
+        <service
+            android:name="edu.bupt.contacts.observer.UpdateContactsCacheService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="edu.bupt.action.UPDATE_CACHE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

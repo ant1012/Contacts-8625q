@@ -1,6 +1,7 @@
 package edu.bupt.contacts.observer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,5 +24,10 @@ public class ContactsContentObserver extends ContentObserver {
         Log.d(TAG, "onChange");
 
         new Thread(new UpdateContactsCacheRunnable(context)).start();
+
+        // Intent intent = new Intent();
+        // intent.setAction("edu.bupt.action.UPDATE_CACHE");
+        // intent.putExtra("flag", 1);
+        // context.startService(intent);
     }
 }

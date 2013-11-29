@@ -28,6 +28,8 @@ import com.android.vcard.VCardConfig;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.list.ContactMultiSelectAdapter;
 import edu.bupt.contacts.observer.ContactsCacheDBHelper;
+import edu.bupt.contacts.observer.OnCacheUpdatedListener;
+import edu.bupt.contacts.observer.UpdateContactsCacheRunnable;
 import edu.bupt.contacts.vcard.VCardComposer;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -129,9 +131,16 @@ public class ContactMultiSelectionActivity extends ListActivity {
         list.clear();
 
         // Thread getcontacts = new Thread(new GetContacts());
-        Thread getcontacts = new Thread(new GetCachedContacts());
 
-        getcontacts.start();
+        if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
+            // use old way
+            Thread getcontacts = new Thread(new GetContacts());
+            getcontacts.start();
+        } else {
+            Thread getcontacts = new Thread(new GetCachedContacts());
+            getcontacts.start();
+        }
+
         proDialog = ProgressDialog.show(ContactMultiSelectionActivity.this, getString(R.string.multi_select_loading),
                 getString(R.string.multi_select_loading), true, true);
 
@@ -367,10 +376,11 @@ public class ContactMultiSelectionActivity extends ListActivity {
             long tb = System.currentTimeMillis();
             soManyLines = 0;
 
-            // for caching data
-            ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(ContactMultiSelectionActivity.this,
-                    1);
-            contactsCacheDBHelper.dropTable();
+            // // for caching data
+            // ContactsCacheDBHelper contactsCacheDBHelper = new
+            // ContactsCacheDBHelper(ContactMultiSelectionActivity.this,
+            // 1);
+            // contactsCacheDBHelper.dropTable();
 
             Uri uri = ContactsContract.Contacts.CONTENT_URI;
             String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
@@ -392,47 +402,50 @@ public class ContactMultiSelectionActivity extends ListActivity {
                 // get id
                 String contactId = cursor.getString(cursor
                         .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
-                String strPhoneNumber = "";
+                // String strPhoneNumber = "";
 
-                if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("id", contactId);
-                    map.put("name", name);
-                    map.put("number", null);
-                    list.add(map);
-                    soManyLines++;
-                } else {
-                    phonecur = getContentResolver().query(
-                            android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[] { contactId }, null);
-                    // get number
-                    while (phonecur.moveToNext()) {
-                        strPhoneNumber = phonecur.getString(phonecur
-                                .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        // if (strPhoneNumber.length() > 4)
-                        // contactsList.add("18610011001" + "\n测试");
-                        // contactsList.add(strPhoneNumber+"\n"+name+"");
-
-                        // Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
-
-                        Map<String, String> map = new HashMap<String, String>();
-                        map.put("id", contactId);
-                        map.put("name", name);
-                        map.put("number", strPhoneNumber);
-                        list.add(map);
-
-                        // cache data
-                        contactsCacheDBHelper.addLine(contactId, name, strPhoneNumber);
-
-                        soManyLines++;
-                    }
-                    phonecur.close();
-                }
+                // if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("id", contactId);
+                map.put("name", name);
+                map.put("number", null);
+                list.add(map);
+                soManyLines++;
+                // } else {
+                // phonecur = getContentResolver().query(
+                // android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                // null,
+                // android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                // + " = ?",
+                // new String[] { contactId }, null);
+                // // get number
+                // while (phonecur.moveToNext()) {
+                // strPhoneNumber = phonecur.getString(phonecur
+                // .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
+                // // if (strPhoneNumber.length() > 4)
+                // // contactsList.add("18610011001" + "\n测试");
+                // // contactsList.add(strPhoneNumber+"\n"+name+"");
+                //
+                // // Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
+                //
+                // Map<String, String> map = new HashMap<String, String>();
+                // map.put("id", contactId);
+                // map.put("name", name);
+                // map.put("number", strPhoneNumber);
+                // list.add(map);
+                //
+                // // // cache data
+                // // contactsCacheDBHelper.addLine(contactId, name,
+                // strPhoneNumber);
+                //
+                // soManyLines++;
+                // }
+                // phonecur.close();
+                // }
             }
             // if (phonecur != null)
             cursor.close();
-            contactsCacheDBHelper.close();
+            // contactsCacheDBHelper.close();
 
             Message msg1 = new Message();
             msg1.what = UPDATE_LIST;
@@ -452,42 +465,34 @@ public class ContactMultiSelectionActivity extends ListActivity {
             long tb = System.currentTimeMillis();
             soManyLines = 0;
 
-            ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(ContactMultiSelectionActivity.this,
-                    1);
-
             try {
 
-                if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
-                    throw new Exception("need query name only");
-                }
+                // if (flagPackageVcard == FLAG_PACKAGE_VCARD) {
+                // throw new Exception("need query name only");
+                // }
 
-                Cursor c = contactsCacheDBHelper.query();
-                if (c.getCount() == 0) {
+                if (!UpdateContactsCacheRunnable.isUpdated) {
                     throw new Exception("no cached data, try to get data in foreground");
                 }
-                while (c.moveToNext()) {
 
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("id", c.getString(0));
-                    map.put("name", c.getString(1));
-                    map.put("number", c.getString(2));
-                    list.add(map);
-                    soManyLines++;
-                }
+                readFromCache();
 
-                c.close();
-
-                Message msg1 = new Message();
-                msg1.what = UPDATE_LIST;
-                updateListHandler.sendMessage(msg1);
             } catch (Exception e) {
                 Log.w(TAG, e.toString());
 
+                new Thread(new UpdateContactsCacheRunnable(ContactMultiSelectionActivity.this,
+                        new OnCacheUpdatedListener() {
+
+                            @Override
+                            public void OnCacheUpdated() {
+                                readFromCache();
+                            }
+                        })).start();
+
                 // use old way
-                Thread getcontacts = new Thread(new GetContacts());
-                getcontacts.start();
-            } finally {
-                contactsCacheDBHelper.close();
+                // Thread getcontacts = new Thread(new GetContacts());
+                // getcontacts.start();
+
             }
 
             Log.v(TAG, "after GetCachedContacts");
@@ -495,6 +500,32 @@ public class ContactMultiSelectionActivity extends ListActivity {
             Log.w(TAG, "time cost for GetCachedContacts, " + (ta - tb));
             Log.w(TAG, "soManyLines - " + soManyLines);
         }
+
+    }
+
+    private void readFromCache() {
+        ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(ContactMultiSelectionActivity.this, 1);
+        Cursor c = contactsCacheDBHelper.query();
+        // if (c.getCount() == 0) {
+        // throw new
+        // Exception("no cached data, try to get data in foreground");
+        // }
+        while (c.moveToNext()) {
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("id", c.getString(0));
+            map.put("name", c.getString(1));
+            map.put("number", c.getString(2));
+            list.add(map);
+            soManyLines++;
+        }
+
+        c.close();
+        contactsCacheDBHelper.close();
+
+        Message msg1 = new Message();
+        msg1.what = UPDATE_LIST;
+        updateListHandler.sendMessage(msg1);
     }
 
     private Handler updateListHandler = new Handler() {
