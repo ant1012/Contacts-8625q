@@ -21,14 +21,21 @@ public class UpdateContactsCacheService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Service.onStartCommand()");
-        if (intent == null || !intent.hasExtra("FLAG")) {
+        if (intent == null || !intent.hasExtra(FLAG)) {
             Log.e(TAG, "intent == null || !intent.hasExtra(\"flag\")");
             return super.onStartCommand(intent, flags, startId);
         }
         flag = intent.getIntExtra(FLAG, FLAG_DEFAULT);
+        
+        Log.v(TAG, "flag - " + flag);
+
         switch (flag) {
+
         case FLAG_UPDATE_CONTACTS:
-            new Thread(new UpdateContactsCacheRunnable(this)).start();
+            Log.v(TAG, "FLAG_UPDATE_CONTACTS");
+            if (!UpdateContactsCacheRunnable.isInitilized && !UpdateContactsCacheRunnable.isRunning) {
+                new Thread(new UpdateContactsCacheRunnable(this)).start();
+            }
             break;
         }
 

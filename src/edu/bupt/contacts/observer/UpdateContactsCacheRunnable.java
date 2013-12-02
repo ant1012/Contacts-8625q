@@ -13,10 +13,11 @@ import android.util.Log;
 public class UpdateContactsCacheRunnable implements Runnable, OnCacheUpdatedListener {
     private final String TAG = "UpdateContactsCacheRunnable";
     private Context context;
-    private OnCacheUpdatedListener onCacheUpdatedListener;
+    private static OnCacheUpdatedListener onCacheUpdatedListener;
 
     public static boolean isInitilized = false;
-    public static boolean isUpdated = false;
+    // public static boolean isUpdated = false;
+    public static boolean isRunning = false;
 
     public UpdateContactsCacheRunnable(Context context) {
         this.context = context;
@@ -24,15 +25,20 @@ public class UpdateContactsCacheRunnable implements Runnable, OnCacheUpdatedList
 
     public UpdateContactsCacheRunnable(Context context, OnCacheUpdatedListener l) {
         this.context = context;
-        this.onCacheUpdatedListener = l;
+        onCacheUpdatedListener = l;
     }
 
     @Override
     public void run() {
         Log.d(TAG, "run");
 
+        if (isRunning) {
+            return;
+        }
+
         Log.v(TAG, "before caching Data");
-        isUpdated = false;
+        // isUpdated = false;
+        isRunning = true;
         long tb = System.currentTimeMillis();
         int soManyLines = 0;
 
@@ -106,8 +112,9 @@ public class UpdateContactsCacheRunnable implements Runnable, OnCacheUpdatedList
         long ta = System.currentTimeMillis();
         Log.w(TAG, "time cost for caching Data, " + (ta - tb));
         Log.w(TAG, "soManyLines - " + soManyLines);
-        isUpdated = true;
+        // isUpdated = true;
         isInitilized = true;
+        isRunning = false;
         OnCacheUpdated();
     }
 

@@ -471,7 +471,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
                 // throw new Exception("need query name only");
                 // }
 
-                if (!UpdateContactsCacheRunnable.isUpdated) {
+                if (!UpdateContactsCacheRunnable.isInitilized || UpdateContactsCacheRunnable.isRunning) {
                     throw new Exception("no cached data, try to get data in foreground");
                 }
 
