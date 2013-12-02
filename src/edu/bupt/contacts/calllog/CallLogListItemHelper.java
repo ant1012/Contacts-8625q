@@ -61,15 +61,19 @@ import android.view.View;
         mPhoneCallDetailsHelper.setPhoneCallDetails(views.phoneCallDetailsViews, details,isHighlighted);
         boolean canCall = mPhoneNumberHelper.canPlaceCallsTo(details.number);
         boolean canPlay = details.callTypes[0] == Calls.VOICEMAIL_TYPE;
-
+        
+        //ddd make the calllog label go away (eg:work mobile)
+        views.phoneCallDetailsViews.labelView.setVisibility(View.GONE);
         if (canPlay) {
             // Playback action takes preference.
             configurePlaySecondaryAction(views, isHighlighted);
             views.dividerView.setVisibility(View.VISIBLE);
+
         } else if (canCall) {
             // Call is the secondary action.
             configureCallSecondaryAction(views, details);
             views.dividerView.setVisibility(View.VISIBLE);
+            
         } else {
             // No action available.
             views.secondaryActionView.setVisibility(View.GONE);
@@ -80,6 +84,10 @@ import android.view.View;
     /** Sets the secondary action to correspond to the call button. */
     private void configureCallSecondaryAction(CallLogListItemViews views,
             PhoneCallDetails details) {
+    	
+    	 //ddd make the calllog label go away (eg:work mobile)
+        views.phoneCallDetailsViews.labelView.setVisibility(View.GONE);
+        
         views.secondaryActionView.setVisibility(View.VISIBLE);
         views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_blue);
         views.secondaryActionView.setContentDescription(getCallActionDescription(details));
@@ -87,6 +95,7 @@ import android.view.View;
 
     /** Returns the description used by the call action for this phone call. */
     private CharSequence getCallActionDescription(PhoneCallDetails details) {
+
         final CharSequence recipient;
         if (!TextUtils.isEmpty(details.name)) {
             recipient = details.name;
@@ -99,6 +108,10 @@ import android.view.View;
 
     /** Sets the secondary action to correspond to the play button. */
     private void configurePlaySecondaryAction(CallLogListItemViews views, boolean isHighlighted) {
+
+    	 //ddd make the calllog label go away (eg:work mobile)
+        views.phoneCallDetailsViews.labelView.setVisibility(View.GONE);
+    	
         views.secondaryActionView.setVisibility(View.VISIBLE);
         views.secondaryActionView.setImageResource(
                 isHighlighted ? R.drawable.ic_play_active_holo_dark : R.drawable.ic_play_holo_dark);

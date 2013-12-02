@@ -89,6 +89,9 @@
                         android:singleLine="true"
                         android:ellipsize="marquee"
                         />
+                    
+<!--              ddd make the label go away by changing color       -->
+
                     <TextView
                         android:id="@+id/label"
                         android:layout_width="wrap_content"
@@ -98,7 +101,7 @@
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:singleLine="true"
-                        android:ellipsize="marquee"
+                        android:ellipsize="marquee"                        
                         />
                     </LinearLayout>
                 <LinearLayout
