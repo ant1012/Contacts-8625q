@@ -753,5 +753,7 @@
     <string name="call_log_search_to">结束时间</string>
     <string name="call_log_search_error">选择错误</string>
     <string name="multi_select_loading">正在读取</string>
+    <string name="menu_group_editor_add">新建</string>
+    <string name="menu_group_editor_insert">添加</string>
 
 </resources>
