@@ -20,6 +20,7 @@ import edu.bupt.contacts.list.ContactListFilterController;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.test.InjectedServices;
 import edu.bupt.contacts.util.Constants;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.Application;
@@ -29,6 +30,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -38,6 +40,9 @@ import android.util.Log;
 public final class ContactsApplication extends Application {
     private static final boolean ENABLE_LOADER_LOG = false; // Don't submit with true
     private static final boolean ENABLE_FRAGMENT_LOG = false; // Don't submit with true
+
+    /** zzz */
+    private static final String TAG = "ContactsApplication";
 
     private static InjectedServices sInjectedServices;
     private AccountTypeManager mAccountTypeManager;
@@ -138,6 +143,28 @@ public final class ContactsApplication extends Application {
         if (Log.isLoggable(Constants.PERFORMANCE_TAG, Log.DEBUG)) {
             Log.d(Constants.PERFORMANCE_TAG, "ContactsApplication.onCreate finish");
         }
+
+        /** zzz */
+        // set default value for ip call
+        setDefaultValue4IpCall();
+    }
+
+    /** zzz */
+    private void setDefaultValue4IpCall() {
+        Log.v(TAG, "setDefaultValue4IpCall");
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Editor editor = sp.edit();
+        if (!sp.contains("CDMAIPPreference")) {
+            Log.v(TAG, "set default value for CDMAIPPreference");
+            editor.putString("CDMAIPPreference", getResources().getStringArray(R.array.cdma_ip_defaults)[0]);
+        }
+        if (!sp.contains("GSMIPPreference")) {
+            Log.v(TAG, "set default value for GSMIPPreference");
+            editor.putString("GSMIPPreference", getResources().getStringArray(R.array.gsm_ip_defaults)[0]);
+        }
+        editor.commit();
     }
 
     private class DelayedInitializer extends AsyncTask<Void, Void, Void> {

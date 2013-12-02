@@ -10,7 +10,6 @@
         <!-- android:summary="@string/default_ip_setting" -->
         <!-- android:title="@string/cdma_ip_setting" /> -->
         <Preference
-            android:defaultValue="17951"
             android:dialogTitle="@string/gsm_ip_setting"
             android:key="GSMIPPreference"
             android:summary="@string/default_ip_setting"

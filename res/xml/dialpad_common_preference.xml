@@ -56,10 +56,10 @@
             android:dialogTitle="@string/preference_roaming"
             android:key="RoamingTestPreference"
             android:title="@string/preference_roaming" />
-        <Preference
-            android:key="ClearCacheTestPreference"
-            android:summary="@string/preference_clear_cache"
-            android:title="@string/preference_clear_cache" />
+<!--         <Preference -->
+<!--             android:key="ClearCacheTestPreference" -->
+<!--             android:summary="@string/preference_clear_cache" -->
+<!--             android:title="@string/preference_clear_cache" /> -->
     </PreferenceCategory>
 
 </PreferenceScreen>
