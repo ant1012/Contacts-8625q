@@ -15,10 +15,19 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- zzz -->
     <item
         android:id="@+id/menu_edit_group"
         android:title="@string/menu_editGroup"
+        android:showAsAction="always"
         android:alphabeticShortcut="e" />
+
+    <item
+        android:id="@+id/menu_add"
+        android:alphabeticShortcut="n"
+        android:showAsAction="always"
+        android:title="@string/menu_group_editor_add"/>
 
     <item
         android:id="@+id/menu_delete_group"

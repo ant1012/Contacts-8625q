@@ -770,11 +770,12 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
             if (getActivity().getIntent().hasExtra("group_id")) {
                 long groupid = getActivity().getIntent().getLongExtra("group_id", 0);
                 EntityDelta state = addToGroupFromIntent(type, entity, groupid);
+                // use out state instead of the 'final' entity
                 editor.setState(state, type, mViewIdGenerator, isEditingUserProfile());
             } else {
                 editor.setState(entity, type, mViewIdGenerator, isEditingUserProfile());
             }
-            // use out state instead of the 'final' entity
+
             // editor.setState(entity, type, mViewIdGenerator,
             // isEditingUserProfile());
 
@@ -847,7 +848,11 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
 
         ValuesDelta entry = EntityModifier.insertChild(state, mGroupMembershipKind);
         entry.put(GroupMembership.GROUP_ROW_ID, groupid); // TODO
-        state.addEntry(entry);
+        Log.i(TAG, entry.toString());
+        Log.i(TAG, state.toString());
+
+        // do not need this?
+        // state.addEntry(entry);
         return state;
     }
 

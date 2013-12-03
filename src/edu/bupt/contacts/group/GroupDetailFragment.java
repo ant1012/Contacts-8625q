@@ -42,6 +42,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Groups;
 import android.text.TextUtils;
 import android.util.Log;
@@ -445,7 +446,7 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
 
             /** zzz */
             case R.id.menu_add_group_to_whitelist: {
-                Log.d(TAG, "menu_add_group_to_whitelist");
+                Log.v(TAG, "menu_add_group_to_whitelist");
     
                 String[] projection = new String[] {
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -493,6 +494,15 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                 c.close();
 
                 return true;
+            }
+            case R.id.menu_add: {
+                Log.v(TAG, "menu_add");
+                Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+                // intent.putExtra("create_from_group", true);
+                // intent.putExtra("group_account", value);
+                intent.putExtra("group_id", mGroupId);
+                startActivity(intent);
+                break;
             }
         }
         return false;
