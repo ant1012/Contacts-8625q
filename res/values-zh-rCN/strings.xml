@@ -34,7 +34,7 @@
     <string name="viewContactDesription" msgid="214186610887547860">"查看联系人"</string>
     <string name="editContactDescription" msgid="2947202828256214947">"编辑联系人"</string>
     <string name="insertContactDescription" msgid="4709878105452681987">"创建联系人"</string>
-    <string name="editGroupDescription" msgid="6321161304201540561">"修改群组"</string>
+    <string name="editGroupDescription" msgid="6321161304201540561">"编辑群组"</string>
     <string name="insertGroupDescription" msgid="5658512271662210139">"创建群组"</string>
     <string name="contactDetailAbout" msgid="5430408883907061400">"关于"</string>
     <string name="contactDetailUpdates" msgid="3780588624763446941">"最新动态"</string>
@@ -45,14 +45,14 @@
     <string name="menu_callNumber" msgid="997146291983360266">"拨打 <xliff:g id="NUMBER">%s</xliff:g>"</string>
     <string name="menu_addStar" msgid="2908478235715404876">"添加到收藏"</string>
     <string name="menu_removeStar" msgid="5844227078364227030">"从收藏中删除"</string>
-    <string name="menu_editContact" msgid="9042415603857662633">"修改"</string>
+    <string name="menu_editContact" msgid="9042415603857662633">"编辑"</string>
     <string name="menu_deleteContact" msgid="6788644058868189393">"删除"</string>
     <string name="menu_copy" msgid="6108677035381940698">"复制"</string>
     <string name="menu_create_contact_shortcut" msgid="1217971915748509640">"放在主屏幕上"</string>
     <string name="menu_call" msgid="3992595586042260618">"呼叫联系人"</string>
     <string name="menu_sendSMS" msgid="5535886767547006515">"向联系人发送短信"</string>
     <string name="menu_splitAggregate" msgid="8368636463748691868">"拆分"</string>
-    <string name="menu_editGroup" msgid="5062005185370983720">"修改"</string>
+    <string name="menu_editGroup" msgid="5062005185370983720">"编辑"</string>
     <string name="menu_deleteGroup" msgid="3486380004411482874">"删除"</string>
     <string name="menu_new_contact_action_bar" msgid="8887818026717394343">"新建"</string>
     <string name="menu_new_group_action_bar" msgid="5055346725617932394">"新建群组"</string>
@@ -712,7 +712,7 @@
     <string name="number_locate_setting">号码归属地设置</string>
     <string name="cdma_ip_setting">CDMA IP电话设置</string>
     <string name="gsm_ip_setting">GSM IP电话设置</string>
-    <string name="default_ip_setting">修改IP电话前缀</string>
+    <string name="default_ip_setting">编辑IP电话前缀</string>
     <!-- ddd -->
     <string name="esurfing_dial">翼拨号</string>
     <string name="call_setting">设置</string>
