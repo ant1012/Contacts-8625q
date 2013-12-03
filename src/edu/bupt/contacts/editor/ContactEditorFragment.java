@@ -30,6 +30,7 @@ import edu.bupt.contacts.editor.Editor.EditorListener;
 import edu.bupt.contacts.model.AccountType;
 import edu.bupt.contacts.model.AccountTypeManager;
 import edu.bupt.contacts.model.AccountWithDataSet;
+import edu.bupt.contacts.model.DataKind;
 import edu.bupt.contacts.model.EntityDelta;
 import edu.bupt.contacts.model.EntityDelta.ValuesDelta;
 import edu.bupt.contacts.model.EntityDeltaList;
@@ -63,6 +64,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Event;
+import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.CommonDataKinds.Organization;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
@@ -364,8 +366,8 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
             } else if (Intent.ACTION_INSERT.equals(mAction)) {
                 /** zzz */
                 // final Account account = mIntentExtras == null ? null :
-                // (Account)
-                // mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
+                // (Account) mIntentExtras
+                // .getParcelable(Intents.Insert.ACCOUNT);
                 // final String dataSet = mIntentExtras == null ? null :
                 // mIntentExtras.getString(Intents.Insert.DATA_SET);
                 //
@@ -379,10 +381,16 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
                 // selectAccountAndCreateContact();
                 // }
 
-                Intent intent = new Intent(mContext, SelectLocalAccountActivity.class);
-                mStatus = Status.SUB_ACTIVITY;
-                startActivityForResult(intent, REQUEST_CODE_ACCOUNTS_CHANGED);
-
+                /** zzz */
+                if (getActivity().getIntent().hasExtra("group_id")) {
+                    // for contact created from group editor
+                    Log.v("zzz", "createContact for contact created from group editor");
+                    createContact(new AccountWithDataSet("PHONE", "com.android.localphone", null));
+                } else {
+                    Intent intent = new Intent(mContext, SelectLocalAccountActivity.class);
+                    mStatus = Status.SUB_ACTIVITY;
+                    startActivityForResult(intent, REQUEST_CODE_ACCOUNTS_CHANGED);
+                }
             } else if (ContactEditorActivity.ACTION_SAVE_COMPLETED.equals(mAction)) {
                 // do nothing
             } else
@@ -756,7 +764,19 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
 
             mContent.addView(editor);
 
-            editor.setState(entity, type, mViewIdGenerator, isEditingUserProfile());
+            /** zzz */
+            // for contact created from group editor
+            Log.v("zzz", "addToGroupFromIntent for contact created from group editor");
+            if (getActivity().getIntent().hasExtra("group_id")) {
+                long groupid = getActivity().getIntent().getLongExtra("group_id", 0);
+                EntityDelta state = addToGroupFromIntent(type, entity, groupid);
+                editor.setState(state, type, mViewIdGenerator, isEditingUserProfile());
+            } else {
+                editor.setState(entity, type, mViewIdGenerator, isEditingUserProfile());
+            }
+            // use out state instead of the 'final' entity
+            // editor.setState(entity, type, mViewIdGenerator,
+            // isEditingUserProfile());
 
             // Set up the photo handler.
             bindPhotoHandler(editor, type, mState);
@@ -817,6 +837,18 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
         final Activity activity = getActivity();
         if (activity != null)
             activity.invalidateOptionsMenu();
+    }
+
+    /** zzz */
+    private EntityDelta addToGroupFromIntent(AccountType type, EntityDelta state, long groupid) {
+        Log.v("RawContactEditorView", "addToGroupFromIntent");
+
+        DataKind mGroupMembershipKind = type.getKindForMimetype(GroupMembership.CONTENT_ITEM_TYPE);
+
+        ValuesDelta entry = EntityModifier.insertChild(state, mGroupMembershipKind);
+        entry.put(GroupMembership.GROUP_ROW_ID, groupid); // TODO
+        state.addEntry(entry);
+        return state;
     }
 
     /**

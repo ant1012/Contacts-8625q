@@ -563,6 +563,9 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         case R.id.menu_add:
             Log.v(TAG, "R.id.menu_add");
             Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+            // intent.putExtra("create_from_group", true);
+            // intent.putExtra("group_account", value);
+            intent.putExtra("group_id", mGroupId);
             startActivity(intent);
             break;
 
