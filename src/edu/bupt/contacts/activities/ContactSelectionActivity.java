@@ -137,6 +137,9 @@ public class ContactSelectionActivity extends ContactsActivity
         prepareSearchViewAndActionBar();
 
         mCreateNewContactButton = findViewById(R.id.new_contact);
+        //ddd
+        
+        
         if (mCreateNewContactButton != null) {
             if (shouldShowCreateNewContactButton()) {
                 mCreateNewContactButton.setVisibility(View.VISIBLE);
