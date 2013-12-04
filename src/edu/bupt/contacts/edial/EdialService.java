@@ -82,9 +82,6 @@ public class EdialService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
 
-        // show dialog
-        EdialDialog edialDialog = new EdialDialog(this, digit);
-
         if (sp.getString("EDialPreference", "0").equals("0")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
@@ -95,7 +92,11 @@ public class EdialService extends Service {
                 // if (showHelpActivity(intent, flags, startId)) {
                 // return super.onStartCommand(intent, flags, startId);
                 // }
+
                 // show dialog here
+                Log.v(TAG, "digit - " + digit);
+                // show dialog
+                EdialDialog edialDialog = new EdialDialog(this, digit);
                 edialDialog.show();
             } else {
                 digit = replacePattern(digit, "#", "%23"); // replace #
@@ -109,7 +110,11 @@ public class EdialService extends Service {
             // if (showHelpActivity(intent, flags, startId)) {
             // return super.onStartCommand(intent, flags, startId);
             // }
+
             // show dialog here
+            Log.v(TAG, "digit - " + digit);
+            // show dialog
+            EdialDialog edialDialog = new EdialDialog(this, digit);
             edialDialog.show();
         } else if (sp.getString("EDialPreference", "0").equals("2")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
@@ -214,9 +219,13 @@ public class EdialService extends Service {
     private String getLocalCallPrefix() {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = tm.getNetworkCountryIso();
+
+        // for debug
+        // countryIso = "jp";
+
         Log.i(TAG, countryIso);
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
-        String ret = mdbHelper.queryCallPrefix(tm.getNetworkCountryIso());
+        String ret = mdbHelper.queryCallPrefix(countryIso);
         mdbHelper.close();
 
         return ret;

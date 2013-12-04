@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
@@ -208,10 +209,14 @@ public class CountryCodeDBHelper extends SQLiteOpenHelper {
     public String queryCallPrefix(String countryIso) {
         String ret = null;
         Cursor cursor = null;
+
+        Log.v(TAG, "countryIso.toUpperCase() - " + countryIso.toUpperCase());
+
         cursor = getWritableDatabase().query(TB_NAME, new String[] { "call_prefix" }, "countryiso = ?",
                 new String[] { countryIso.toUpperCase() }, null, null, null);
         if (cursor.moveToFirst()) {
             ret = cursor.getString(0);
+            Log.v(TAG, "ret - " + ret);
         }
         cursor.close();
         ret = ret == null ? "00" : ret;
