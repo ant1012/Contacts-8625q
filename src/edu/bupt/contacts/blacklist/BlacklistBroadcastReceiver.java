@@ -39,7 +39,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
     private Context context;
     private BlacklistDBHelper mDBHelper;
     private WhiteListDBHelper mWhiteDBHelper;
-    private MsgBlockDBHelper msgDBHelper;
+    // private MsgBlockDBHelper msgDBHelper;
     private CallBlockDBHelper callDBHelper;
     private SimpleDateFormat formatter;
     private CallLogContent callLogContent;
@@ -49,6 +49,12 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
     private boolean blockStranger;
     private boolean white_block_mode;
     public MediaPlayer mMediaPlayer = null;
+
+    public static long justBlockOne = System.currentTimeMillis(); // for
+                                                                  // disabling
+                                                                  // call info
+
+    // activity
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -206,8 +212,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                     // blockStranger = sp.getBoolean("blockStranger", false);
                     blockStranger = false;
 
-                    mWhiteDBHelper = new WhiteListDBHelper(context, 1);
-                    String sql = "select * from WhiteListFragment where phone = ?";
+                    mWhiteDBHelper = new WhiteListDBHelper(context);
+                    String sql = "select * from " + WhiteListDBHelper.TB_NAME + " where phone = ?";
                     Cursor cursor = mWhiteDBHelper.getWritableDatabase().rawQuery(sql, new String[] { incomingNumber });
 
                     Log.v(TAG, "cursor.getCount() - " + cursor.getCount());
@@ -250,6 +256,10 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                         // mVibrator.vibrate(pattern, -1);
                         // }
 
+                        justBlockOne = System.currentTimeMillis(); // for
+                        // disabling
+                        // call info
+
                         try {
                             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
                                     .getService(Context.MSIM_TELEPHONY_SERVICE));
@@ -259,7 +269,9 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                             Log.e(TAG, "error: ", e);
                         }
 
-                        callDBHelper = new CallBlockDBHelper(context, 1);
+                        // activity
+
+                        callDBHelper = new CallBlockDBHelper(context);
                         callDBHelper.addRecord(name, incomingNumber, time);
                         callDBHelper.close();
 
@@ -274,6 +286,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                                 callLogContent);
                         // }
                         cursor.close();
+
                     } else if (callLogContent != null) {
                         context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
@@ -281,7 +294,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
                     Log.v(TAG, "mWhiteDBHelper.close()");
 
-                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
+                    // context.sendBroadcast(new
+                    // Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     // break;
                 } else {
                     Log.i(TAG, incomingNumber + " is calling...");
@@ -290,8 +304,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                     // blockStranger = sp.getBoolean("blockStranger", false);
                     blockStranger = false;
 
-                    mDBHelper = new BlacklistDBHelper(context, 1);
-                    String sql = "select * from BlackListFragment where phone = ?";
+                    mDBHelper = new BlacklistDBHelper(context);
+                    String sql = "select * from  " + BlacklistDBHelper.TB_NAME + "  where phone = ?";
                     Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql, new String[] { incomingNumber });
                     formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss E");
                     if (cursor.moveToFirst() || (blockStranger && isStranger(incomingNumber))) {
@@ -301,7 +315,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                         String name = context.getResources().getString(R.string.stranger);
 
                         if (cursor.moveToFirst()) {
-                            blockId = cursor.getInt(4);
+                            // blockId = cursor.getInt(4);
                             name = cursor.getString(1);
                         }
 
@@ -331,6 +345,11 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                             // mVibrator.vibrate(pattern, -1);
                             // }
 
+                            justBlockOne = System.currentTimeMillis(); // for
+                                                                       // disabling
+                                                                       // call
+                                                                       // info
+
                             try {
                                 ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
                                         .getService(Context.MSIM_TELEPHONY_SERVICE));
@@ -340,7 +359,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                                 Log.e(TAG, "error: ", e);
                             }
 
-                            callDBHelper = new CallBlockDBHelper(context, 1);
+                            callDBHelper = new CallBlockDBHelper(context);
                             callDBHelper.addRecord(name, incomingNumber, time);
                             callDBHelper.close();
 
@@ -355,11 +374,13 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                                     callLogContent);
                         }
                         cursor.close();
+
                     } else if (callLogContent != null) {
                         context.getContentResolver().unregisterContentObserver(callLogContent);
                     }
                     mDBHelper.close();
-                    context.sendBroadcast(new Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
+                    // context.sendBroadcast(new
+                    // Intent(MsgBlockFragment.ACTION_SMS_UPDATE));
                     // break;
                 }
 
@@ -380,7 +401,8 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onChange(boolean selfChange) {
-            // TODO Auto-generated method stub
+            Log.d(TAG, "onChange, del the last call log");
+
             super.onChange(selfChange);
 
             ContentResolver resolver = context.getContentResolver();
@@ -391,6 +413,7 @@ public class BlacklistBroadcastReceiver extends BroadcastReceiver {
                 resolver.delete(CallLog.Calls.CONTENT_URI, "_id=?", new String[] { id + "" });
             }
             cursorContact.close();
+            context.getContentResolver().unregisterContentObserver(callLogContent);
         }
     }
 

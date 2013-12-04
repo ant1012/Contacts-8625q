@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 public class BlackListFragment extends Fragment {
 
-    public static final String TAG = "franco--->BlackListFragment";
+    public static final String TAG = "BlackListFragment";
     public static final int PHONES_DISPLAY_NAME = 1;
     public static final int PHONES_NUMBER = 2;
 
@@ -57,14 +57,16 @@ public class BlackListFragment extends Fragment {
     private int spinnerLatestClicked;
     private String[] blockContent;
     private static BlacklistDBHelper mDBHelper;
-    private int _ID, blockId;
+    private int _ID;
+//    private int blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
     public BlackListFragment(Context context) {
         this.context = context;
-        spinnerLatestClicked = blockId = -1;
+        spinnerLatestClicked = -1;
+//        blockId = -1;
         blockContent = context.getResources().getStringArray(R.array.block_content);
         checkedMap = new HashMap<Integer, Boolean>();
     }
@@ -105,11 +107,11 @@ public class BlackListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new BlacklistDBHelper(context, 1);
+        mDBHelper = new BlacklistDBHelper(context);
         cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null, null, null, null, null,
                 BlacklistDBHelper.NAME + " ASC");
-        String[] from = new String[] { BlacklistDBHelper.NAME, BlacklistDBHelper.Phone, BlacklistDBHelper.BlockContent };
-        int[] to = new int[] { R.id.blacklist_item_text1, R.id.blacklist_item_text2, R.id.blacklist_item_text3 };
+        String[] from = new String[] { BlacklistDBHelper.NAME, BlacklistDBHelper.Phone};
+        int[] to = new int[] { R.id.blacklist_item_text1, R.id.blacklist_item_text2};
         adapter = new SimpleCursorAdapter(context, R.layout.blacklist_item, cursor, from, to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
@@ -118,18 +120,18 @@ public class BlackListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from BlackListFragment where _ID = " + arg3;
+                String sql = "select * from " + BlacklistDBHelper.TB_NAME +" where _ID = " + arg3;
                 Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql, null);
                 cursor.moveToFirst();
 
                 _ID = cursor.getInt(0);
                 name = cursor.getString(1);
                 phone = cursor.getString(2);
-                blockId = cursor.getInt(4);
+//                blockId = cursor.getInt(4);
                 Log.v(TAG, "_ID = " + _ID);
                 Log.v(TAG, "name = " + name);
                 Log.v(TAG, "phone = " + phone);
-                Log.v(TAG, "blockId = " + blockId);
+//                Log.v(TAG, "blockId = " + blockId);
                 cursor.close();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -15,15 +15,17 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
 
     public static final String TAG = "WhiteWhiteDBHelper";
-    public static final String TB_NAME = "WhiteListFragment";
+    public static final String TB_NAME = "WhiteList";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String Phone = "phone";
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public WhiteListDBHelper(Context context, int version) {
-        super(context, DATABASE_NAME, null, version);
+    private static final int VERSION = 2;
+
+    public WhiteListDBHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
         this.getWritableDatabase();
     }
 
@@ -33,7 +35,7 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + NAME + " VARCHAR,"
-                + Phone + " VARCHAR," + BlockContent + " VARCHAR," + BlockId + " INTEGER)");
+                + Phone + " VARCHAR)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

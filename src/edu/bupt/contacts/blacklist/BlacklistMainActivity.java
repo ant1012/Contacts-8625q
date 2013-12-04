@@ -29,7 +29,7 @@ public class BlacklistMainActivity extends FragmentActivity implements
 
         setContentView(R.layout.blacklist_main_activity);
 
-        DBHelper dbHelper = new DBHelper(this, 1);
+        DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.onCreate(db);
         Log.d(TAG, "onCreate");

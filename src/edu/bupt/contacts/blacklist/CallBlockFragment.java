@@ -89,7 +89,7 @@ public class CallBlockFragment extends Fragment {
     private void findViewAndSetListener() {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        callDBHelper = new CallBlockDBHelper(context, 1);
+        callDBHelper = new CallBlockDBHelper(context);
         cursor = callDBHelper.getWritableDatabase().query(
                 CallBlockDBHelper.TB_NAME, null, null, null, null, null,
                 CallBlockDBHelper.ID + " ASC");

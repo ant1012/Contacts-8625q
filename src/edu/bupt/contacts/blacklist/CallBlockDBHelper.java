@@ -16,8 +16,10 @@ public class CallBlockDBHelper extends SQLiteOpenHelper {
     public static final String PHONE = "phone";
     public static final String TIME = "time";
 
-    public CallBlockDBHelper(Context context, int version) {
-        super(context, DATABASE_NAME, null, version);
+    private static final int VERSION = 2;
+
+    public CallBlockDBHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
         this.getWritableDatabase();
     }
 
@@ -26,9 +28,8 @@ public class CallBlockDBHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
-                + " VARCHAR," + TIME + " VARCHAR)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + NAME + " VARCHAR,"
+                + PHONE + " VARCHAR," + TIME + " VARCHAR)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

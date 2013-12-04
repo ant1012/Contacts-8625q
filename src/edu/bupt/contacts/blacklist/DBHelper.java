@@ -9,10 +9,10 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
     public static final String TAG = "DBHelper";
-    public static final String TB_NAME_BLACK_LIST = "BlackListFragment";
+    public static final String TB_NAME_BLACK_LIST = "BlackList";
     public static final String TB_NAME_MSG_BLOCK = "MsgBlockRecord";
     public static final String TB_NAME_CALL_BLOCK = "CallBlockRecord";
-    public static final String TB_NAME_WHITE_LIST = "WhiteListFragment";
+    public static final String TB_NAME_WHITE_LIST = "WhiteList";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String PHONE = "phone";
@@ -21,27 +21,25 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public DBHelper(Context context, int version) {
-        super(context, DATABASE_NAME, null, version);
+    private static final int VERSION = 2;
+
+    public DBHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase arg0) {
         Log.d(TAG, "onCreate");
-        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_BLACK_LIST + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
-                + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
-                + " INTEGER)");
-        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_MSG_BLOCK + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
-                + " VARCHAR," + MESSAGE + " VARCHAR," + TIME + " VARCHAR)");
-        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_CALL_BLOCK + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
-                + " VARCHAR," + TIME + " VARCHAR)");
-        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_WHITE_LIST + " (" + ID
-                + " INTEGER PRIMARY KEY," + NAME + " VARCHAR," + PHONE
-                + " VARCHAR," + BlockContent + " VARCHAR," + BlockId
-                + " INTEGER)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_BLACK_LIST + " (" + ID + " INTEGER PRIMARY KEY," + NAME
+                + " VARCHAR," + PHONE + " VARCHAR)");
+        // arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_MSG_BLOCK + " ("
+        // + ID + " INTEGER PRIMARY KEY," + NAME
+        // + " VARCHAR," + PHONE + " VARCHAR," + MESSAGE + " VARCHAR," + TIME +
+        // " VARCHAR)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_CALL_BLOCK + " (" + ID + " INTEGER PRIMARY KEY," + NAME
+                + " VARCHAR," + PHONE + " VARCHAR," + TIME + " VARCHAR)");
+        arg0.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME_WHITE_LIST + " (" + ID + " INTEGER PRIMARY KEY," + NAME
+                + " VARCHAR," + PHONE + " VARCHAR)");
     }
 
     @Override

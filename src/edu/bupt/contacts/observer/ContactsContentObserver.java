@@ -21,6 +21,7 @@ public class ContactsContentObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange) {
+        super.onChange(selfChange);
         Log.d(TAG, "onChange");
 
         new Thread(new UpdateContactsCacheRunnable(context)).start();

@@ -270,7 +270,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
             viewCache.groupTitle.setText(entry.getTitle());
 
             int count = 0;
-            WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext, 1);
+            WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext);
             count = mDBHelper.getCount();
 
             String memberCountString = mContext.getResources().getQuantityString(

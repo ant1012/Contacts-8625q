@@ -458,7 +458,7 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                                 projection,
                                 ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID
                                         + "=" + mGroupId, null, null);
-                WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext, 1);;
+                WhiteListDBHelper mDBHelper = new WhiteListDBHelper(mContext);
                 
                 while (c.moveToNext()) {
                     String id = c
@@ -501,7 +501,7 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                 // intent.putExtra("create_from_group", true);
                 // intent.putExtra("group_account", value);
                 intent.putExtra("group_id", mGroupId);
-                startActivity(intent);
+//                startActivity(intent);
                 break;
             }
         }

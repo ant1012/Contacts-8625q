@@ -60,7 +60,8 @@ public class WhiteListFragment extends Fragment {
     private int spinnerLatestClicked;
     private String[] blockContent;
     private static WhiteListDBHelper mDBHelper;
-    private int _ID, blockId;
+    private int _ID;
+    // private int blockId;
     private String name, phone;
     private HashMap<Integer, Boolean> checkedMap;
 
@@ -72,7 +73,8 @@ public class WhiteListFragment extends Fragment {
 
     public WhiteListFragment(Context context) {
         this.context = context;
-        spinnerLatestClicked = blockId = -1;
+        spinnerLatestClicked = -1;
+        // blockId = -1;
         blockContent = context.getResources().getStringArray(R.array.block_content);
         checkedMap = new HashMap<Integer, Boolean>();
     }
@@ -113,11 +115,11 @@ public class WhiteListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
-        mDBHelper = new WhiteListDBHelper(context, 1);
+        mDBHelper = new WhiteListDBHelper(context);
         cursor = mDBHelper.getWritableDatabase().query(WhiteListDBHelper.TB_NAME, null, null, null, null, null,
                 WhiteListDBHelper.NAME + " ASC");
-        String[] from = new String[] { WhiteListDBHelper.NAME, WhiteListDBHelper.Phone, WhiteListDBHelper.BlockContent };
-        int[] to = new int[] { R.id.whitelist_item_text1, R.id.whitelist_item_text2, R.id.whitelist_item_text3 };
+        String[] from = new String[] { WhiteListDBHelper.NAME, WhiteListDBHelper.Phone };
+        int[] to = new int[] { R.id.whitelist_item_text1, R.id.whitelist_item_text2 };
         adapter = new SimpleCursorAdapter(context, R.layout.blacklist_whitelist_item, cursor, from, to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
@@ -126,18 +128,18 @@ public class WhiteListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Log.v(TAG, "arg3 = " + arg3);
-                String sql = "select * from WhiteListFragment where _ID = " + arg3;
+                String sql = "select * from " + WhiteListDBHelper.TB_NAME + " where _ID = " + arg3;
                 Cursor cursor = mDBHelper.getWritableDatabase().rawQuery(sql, null);
                 cursor.moveToFirst();
 
                 _ID = cursor.getInt(0);
                 name = cursor.getString(1);
                 phone = cursor.getString(2);
-                blockId = cursor.getInt(4);
+                // blockId = cursor.getInt(4);
                 Log.v(TAG, "_ID = " + _ID);
                 Log.v(TAG, "name = " + name);
                 Log.v(TAG, "phone = " + phone);
-                Log.v(TAG, "blockId = " + blockId);
+                // Log.v(TAG, "blockId = " + blockId);
                 cursor.close();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -929,7 +929,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         BlacklistDBHelper mDBHelper;
-                        mDBHelper = new BlacklistDBHelper(mContext, 1);
+                        mDBHelper = new BlacklistDBHelper(mContext);
                         mDBHelper.addPeople((String) mContactName, phoneNumber);
                         Toast.makeText(mContext, R.string.menu_add_to_blacklist, Toast.LENGTH_SHORT).show();
                     }
@@ -954,7 +954,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         WhiteListDBHelper mDBHelper;
-                        mDBHelper = new WhiteListDBHelper(mContext, 1);
+                        mDBHelper = new WhiteListDBHelper(mContext);
                         mDBHelper.addPeople((String) mContactName, phoneNumber);
                         Toast.makeText(mContext, R.string.menu_add_to_whitelist, Toast.LENGTH_SHORT).show();
                     }

@@ -16,15 +16,17 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
 
     public static final String TAG = "BlacklistDBHelper";
-    public static final String TB_NAME = "BlackListFragment";
+    public static final String TB_NAME = "BlackList";
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String Phone = "phone";
     public static final String BlockContent = "blockContent";
     public static final String BlockId = "blockId";
 
-    public BlacklistDBHelper(Context context, int version) {
-        super(context, DATABASE_NAME, null, version);
+    private static final int VERSION = 2;
+
+    public BlacklistDBHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
         this.getWritableDatabase();
     }
 
@@ -35,7 +37,7 @@ public class BlacklistDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "onCreate");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_NAME + " (" + ID + " INTEGER PRIMARY KEY," + NAME + " VARCHAR,"
-                + Phone + " VARCHAR," + BlockContent + " VARCHAR," + BlockId + " INTEGER)");
+                + Phone + " VARCHAR)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
