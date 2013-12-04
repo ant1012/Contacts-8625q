@@ -89,7 +89,10 @@ public class NumberLocate {
                 if (cursor != null && cursor.moveToNext()) {
                     StringBuilder sb = new StringBuilder(cursor.getString(0));
                     while (cursor.moveToNext()) {
-                        sb.append("/").append(cursor.getString(0));
+                        // sb.append("/").append(cursor.getString(0));
+
+                        // force set to us/ca when country code is +1
+                        sb = new StringBuilder(mContext.getString(R.string.country_locate_us_ca));
                     }
                     city = sb.toString();
 
