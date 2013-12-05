@@ -11,11 +11,15 @@ import android.view.View;
  * http://www.cnblogs.com/notice520/archive/2012/04/12/viewpager.html
  * 
  */
+
+/**
+ * 类描述： 实现翼拨号帮助菜单翻页适配器 ddd
+ * */
 public class ViewPagerAdapter extends PagerAdapter {
 
     // 界面列表
     private List<View> views;
-
+    
     public ViewPagerAdapter(List<View> views) {
         this.views = views;
     }

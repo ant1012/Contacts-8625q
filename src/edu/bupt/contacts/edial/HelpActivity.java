@@ -26,21 +26,36 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * 类描述： 翼拨号帮助菜单界面 ddd
+ * 
+ * */
+
 /** zzz */
 public class HelpActivity extends Activity implements OnPageChangeListener, OnClickListener {
     private final static String TAG = "HelpActivity";
+    //字段描述： 翻页效果视图
     private ViewPager vp;
+    //字段描述： 翻页效果视图适配器
     private ViewPagerAdapter vpAdapter;
+    //字段描述： 存放界面的列表
     private List<View> views;
+    //字段描述： “跳过”文本框
     private TextView tv_skip;
+    //字段描述： 电话号码
     private String digit;
-
+    //帮助菜单图片存储地址
     private final String[] pics = { "pic/edial_help1.png", "pic/edial_help2.png", "pic/edial_help3.png",
             "pic/edial_help4.png", "pic/edial_help5.png", "pic/edial_help6.png" };
+    //图片查看器
     private ImageView[] dots;
-
+    //当前页序号
     private int currentIndex;
 
+    /**
+     * 方法描述： 创建帮助菜单Activity ddd
+     * */
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -85,7 +100,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
         setShouldShowHelp(false);
     }
-
+    
+/**
+ * 方法描述： 获取对应文件地址中的位图 ddd
+ * */
     private Bitmap getImageFromAssetsFile(String fileName) {
         Bitmap image = null;
         AssetManager am = getResources().getAssets();
@@ -101,6 +119,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
     }
 
+    /**
+     * 方法描述： 初始化描述翻页的圆点 ddd
+     * 
+     * */
     private void initDots() {
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
 
@@ -116,6 +138,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         currentIndex = 0;
         dots[currentIndex].setEnabled(false);
     }
+    
+    /**
+     * 方法描述： 点击图片，翻页功能 ddd
+     * */
 
     @Override
     public void onClick(View arg0) {
@@ -143,11 +169,18 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         vp.setCurrentItem(position);
     }
 
+    
+    /**
+     * 方法描述： 继承自OnPageChangeListener，必须实现 ddd
+     * */
     @Override
     public void onPageScrollStateChanged(int arg0) {
         // Log.v(TAG, "arg0 - " + arg0);
     }
 
+    /**
+     * 方法描述： 继承自OnPageChangeListener，必须实现 ddd
+     * */
     @Override
     public void onPageScrolled(int arg0, float arg1, int arg2) {
         // Log.v(TAG, "arg0 - " + arg0);
@@ -155,11 +188,17 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         // Log.v(TAG, "arg2 - " + arg2);
     }
 
+    /**
+     * 方法描述： 选中某页 ddd
+     * */
     @Override
     public void onPageSelected(int arg0) {
         setCurDot(arg0);
     }
 
+    /**
+     * 方法描述： 是否启用翼拨号帮助菜单 ddd
+     * */
     private void setShouldShowHelp(boolean b) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = sp.edit();
@@ -167,6 +206,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         editor.commit();
     }
 
+    /**
+     * 方法描述： 硬件按下 ddd
+     * 
+     * */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.v(TAG, "keyCode - " + keyCode);

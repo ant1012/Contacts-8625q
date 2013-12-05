@@ -29,48 +29,99 @@ import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
+/**
+ * 
+ * 类描述： 翼拨号主窗口，当启动翼拨号功能时，点击拨号按钮启动  ddd
+ * 
+ * */
+
 public class EdialDialog extends HoloDialog {
 
     private static final String TAG = "EdialDialog";
-    private String callNumber;
-    private String sendNumber;
-    /** zzz */
+    
+    /**
+     * 翼拨号主窗口  ddd
+     * 
+     * */
     private Context context;
+    //字段描述： 从拨号盘提取的初始拨打号码
+    private String callNumber;
+    //字段描述： 经过加前后缀等处理的最终拨打号码
+    private String sendNumber;
+    /** zzz */    
+    //字段描述： 单选按钮组
     private RadioGroup radioGroupEsurfing;
+    //字段描述： 拨回所在国按钮，默认选中
     private RadioButton callBackChinaButton;
+    //字段描述： 选中拨号所在国按钮后，继续选择拨打方式：国际漫游呼叫按钮
     private RadioButton internationalButton;
+    //字段描述： 选中拨号所在国按钮后，继续选择拨打方式：**133回拨
     private RadioButton call133Button;
+    //字段描述： 拨打其他国家地区按钮
     private RadioButton callOtherButton;
+    //字段描述： 拨打本地按钮
     private RadioButton callLocalButton;
+    //字段描述： 翼拨号题头文本框，根据不同国家码改变内容
     private TextView title;
+    //字段描述： 拨打号码编辑框
     private EditText EditTextNumber;
+    //字段描述： 翼拨号国家码文本框，根据选择的不同呼叫国家改变内容
     private TextView TextViewPrefix;
+    //字段描述： 当拨叫方式为**133时，拨叫号码添加后缀“#”
     private TextView TextViewSuffix;
+    //字段描述： 拨号按钮
     private Button callButton;
 
-    // for pickCountry dialog
+    
+    /**
+     * 选择目标国家地区窗口
+     * 
+     * */
+    //字段描述： 搜索亚洲地区国家按钮
     private Button asiaButton;
+    //字段描述： 搜索欧洲地区国家按钮
     private Button europeButton;
+    //字段描述： 搜索大洋洲地区国家按钮
     private Button oceaniaButton;
+    //字段描述： 搜索非洲地区国家按钮
     private Button africaButton;
+    //字段描述： 搜索南美洲地区国家按钮
     private Button northAmericaButton;
+    //字段描述： 搜索北美洲地区国家按钮
     private Button southAmericaButton;
+    //字段描述： 搜索结果列表视图
     private ListView listView;
+    //字段描述： 列表视图表项格式：国家名称，国家码
     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+    //字段描述： 搜索国家名称编辑框		
     private EditText searchButtonEditText;
+    //字段描述： 搜索按钮
     private Button countrySearchButton;
+    //字段描述： 国家名称
     private String countryName;
+    //字段描述： 拨叫号码国家码前缀
     private StringBuffer stringTitle;
+    //字段描述： 拨叫号码后缀
     private StringBuffer stringPre;
     // private Cursor cursor;
     // private SimpleAdapter adapter;
-
+    
+    
+    /**
+     * 
+     * 方法描述： 翼拨号构造函数 ddd
+     * 
+     * */
     public EdialDialog(final Context context, String digits) {
         super(context);
 
         /** zzz */
         this.context = context;
-
+        
+        /**
+         * 初始化变量 ddd
+         * */
+        
         sendNumber = digits;
         // Dialog dialog = new Dialog(context);
         this.setContentView(R.layout.dialpad_esurfing);
@@ -88,6 +139,10 @@ public class EdialDialog extends HoloDialog {
         EditTextNumber = (EditText) this.findViewById(R.id.editTextInputNumber);
 
         // TODO
+        /**
+         * 判断是否可以使用**133回拨业务，不能使用时置灰相应按钮 ddd
+         * 
+         * */
         if (!is133Enabled()) {
             call133Button.setClickable(false);
             call133Button.setTextColor(context.getResources().getColor(R.color.edial_text_color_unclickable));
@@ -99,6 +154,12 @@ public class EdialDialog extends HoloDialog {
         //stringTitle.append(context.getString(R.string.esurfing_dial_call_title_china));
          
         //ddd change title and pre according to the simcountryiso
+         
+        /**
+         * 根据SIM卡所属国家，获取国家码，更改相应文本框内容 ddd
+         * 
+         * */
+         
         ContentValues simcv = getSimCountryCodeAndName();
         Log.i(TAG,"simcv--"+simcv.toString());
         stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
@@ -107,9 +168,10 @@ public class EdialDialog extends HoloDialog {
         TextViewPrefix.setText(stringPre);
         callBackChinaButton.setText("拨回"+simcv.getAsString("name"));
         //ddd end
-
         
-        
+        /**
+         * 获取拨号盘输入的拨叫号码，添加到号码编辑框内，并且能够修改该号码 ddd
+         * */
         
         EditTextNumber.setText(sendNumber);
         EditTextNumber.addTextChangedListener(new TextWatcher() {
@@ -136,6 +198,11 @@ public class EdialDialog extends HoloDialog {
         callButton = (Button) this.findViewById(R.id.dialButton);
         // 默认拨打国际漫游
         // callNumber = "+86" + sendNumber;
+        
+        /**
+         * 单选拨叫模式 ddd
+         * 
+         * */
         radioGroupEsurfing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
@@ -144,6 +211,10 @@ public class EdialDialog extends HoloDialog {
                 
                 switch (checkedId) {
 
+                /**
+                 * 国际漫游呼叫方式拨回国：获取SIM卡所在国，为拨叫号码添加相应国家码，设置号码后缀为空，默认选中拨回国按钮 ddd
+                 * */
+                
                 case R.id.radioButton_international:
                     //stringTitle.replace(0, stringTitle.length(),context.getString(R.string.esurfing_dial_call_title_china));
                     //stringPre.replace(0, stringPre.length(), "+86");
@@ -154,6 +225,12 @@ public class EdialDialog extends HoloDialog {
                     // callNumber = "+86" + sendNumber;
                     break;
 
+                    /**
+                     * **133方式拨回国： 获取SIM卡所在国，为拨叫号码添加相应国家码，设置号码后缀为#，默认选中拨回国按钮 ddd
+                     * 
+                     * */
+                    
+                    
                 case R.id.radioButton_133:
                    // stringTitle.replace(0, stringTitle.length(),
                    //         context.getString(R.string.esurfing_dial_call_title_china));
@@ -167,6 +244,10 @@ public class EdialDialog extends HoloDialog {
                     // callNumber = "**133*86" + sendNumber + "%23";
                     break;
 
+                    /**
+                     * 拨打其他国家地区：弹出国家选择窗 ddd
+                     * */
+                    
                 case R.id.radioButton_callOther:
                     // stringTitle.replace(0, stringTitle.length(), "美国+1");
                     // stringPre.replace(0, stringPre.length(), "+1");
@@ -226,6 +307,10 @@ public class EdialDialog extends HoloDialog {
 
                     break;
 
+                    /**
+                     * 拨打本地，获取本地国家码，添加相应前缀 ddd
+                     * */
+                    
                 case R.id.radioButton_callLocal:
                     TextViewSuffix.setText(R.string.esurfing_dial_suffix_null);
 
@@ -251,6 +336,10 @@ public class EdialDialog extends HoloDialog {
             }
 
         });
+        
+        /**
+         * 拨打按钮，点击拨号 ddd
+         * */
 
         callButton.setOnClickListener(new Button.OnClickListener() {
 
@@ -268,6 +357,11 @@ public class EdialDialog extends HoloDialog {
     }
 
     /** zzz */
+    
+    /**
+     * 方法描述： 拨打电话，调用系统拨打电话方法拨打 ddd
+     * */
+    
     private void call(String number) {
         try {
             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
@@ -287,6 +381,10 @@ public class EdialDialog extends HoloDialog {
     // southamerica 5
     // oceania 6
     // asia 8(698)
+    
+    /**
+     * 方法描述：拨打其他国家地区时，选择国家 ddd
+     * */
     private void pickCountry() {
         final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
 
@@ -402,6 +500,11 @@ public class EdialDialog extends HoloDialog {
         mdbHelper.close();
     }
 
+    /**
+     * 方法描述： 拨打其他国家时，搜索国家 ddd
+     * 
+     * */
+    
     private void searchCountry(final EditText inputcountry, Button searchButton) {
         final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
 
@@ -452,6 +555,11 @@ public class EdialDialog extends HoloDialog {
     // }
 
     /** zzz */
+
+    /**
+     * 方法描述： 获取本地国家码和国家名称 ddd
+     * 
+     * */
     private ContentValues getLocalCountryCodeAndName() {
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -462,6 +570,10 @@ public class EdialDialog extends HoloDialog {
         return ret;
     }
     //ddd
+    /**
+     * 方法描述： 获取SIM卡所在国家的国家码和名称 ddd
+     * 
+     * */
     private ContentValues getSimCountryCodeAndName() {
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
        // TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -475,6 +587,10 @@ public class EdialDialog extends HoloDialog {
     }
 
     /** zzz */
+    
+    /**
+     * 方法描述： 判断是否支持**133回拨功能 ddd
+     * */
     private boolean is133Enabled() {
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

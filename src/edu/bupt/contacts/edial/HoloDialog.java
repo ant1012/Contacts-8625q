@@ -6,6 +6,10 @@ import android.content.Context;
 import android.view.WindowManager;
 
 /** zzz */
+
+/**
+ * 类描述： 设置HoloDialog样式为R.style.HoloDialogTheme，为EdialDialog提供父类 ddd
+ * */
 public class HoloDialog extends Dialog {
 
     public HoloDialog(final Context context) {

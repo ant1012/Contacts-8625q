@@ -18,9 +18,13 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /** zzz */
+/**
+ * 类描述： 为翼拨号提供后台服务
+ * */
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
+    //电话号码
     private String digit = null;
 
     @Override
@@ -38,6 +42,9 @@ public class EdialService extends Service {
         Log.v(TAG, "Service.onStart()");
     }
 
+    /**
+     * 方法描述：获取拨叫号码，判断是否启用翼拨号 ddd
+     * */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Service.onStartCommand()");
@@ -132,6 +139,9 @@ public class EdialService extends Service {
         super.onDestroy();
     }
 
+    /**
+     * 方法描述： 拨打电话 ddd
+     * */
     private void call(String number) {
         try {
             ITelephonyMSim telephony = ITelephonyMSim.Stub.asInterface(ServiceManager
@@ -146,6 +156,10 @@ public class EdialService extends Service {
     }
 
     // call directly when return false
+    /**
+     * 判断是否启用翼拨号，返回值为false时直接拨打 ddd
+     * 
+     * */
     private boolean shouldShowEdial() {
         Log.d(TAG, "ShouldShowEdial?");
 
@@ -190,6 +204,9 @@ public class EdialService extends Service {
         return true;
     }
 
+    /**
+     * 方法描述： 电话号码格式处理 ddd
+     * */
     private static String formatNumber(String s) {
         String strip1 = replacePattern(s, "(\\:)", ""); // strip :
         String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
@@ -204,6 +221,9 @@ public class EdialService extends Service {
     // return strip1;
     // }
 
+    /**
+     * 方法描述： 去掉**133*86前缀 ddd
+     * */
     private static String strip133Prefix(String s) {
         StringBuilder sb = new StringBuilder(s);
         sb.delete(0, 8); // **133*86
@@ -211,11 +231,17 @@ public class EdialService extends Service {
         return sb.toString();
     }
 
+    /**
+     * 方法描述： 去掉0前缀 ddd
+     * */
     private static String stripZeroPrefix(String s) {
         String strip1 = replacePattern(s, "^(0{0,1})", ""); // strip 0
         return strip1;
     }
 
+    /**
+     * 方法描述： 获取当地拨叫号码前缀 ddd
+     * */
     private String getLocalCallPrefix() {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = tm.getNetworkCountryIso();
@@ -231,6 +257,9 @@ public class EdialService extends Service {
         return ret;
     }
 
+    /**
+     * 方法描述： 判断是否是C2C模式
+     * */
     private boolean isC2CRoaming() {
         MSimTelephonyManager m = (MSimTelephonyManager) getSystemService(MSIM_TELEPHONY_SERVICE);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -266,6 +295,9 @@ public class EdialService extends Service {
         return sb.toString();
     }
 
+    /**
+     * 方法描述： 是否显示翼拨号帮助界面 ddd
+     * */
     private boolean showHelpActivity(Intent intent, int flags, int startId) {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
