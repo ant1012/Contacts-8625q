@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/**
+ * https://code.google.com/p/android-vcard/
+ * */
+
 package a_vcard.android.content;
 
 //import android.os.Parcel;
