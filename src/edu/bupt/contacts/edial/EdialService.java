@@ -17,14 +17,18 @@ import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-/** zzz */
 /**
+ * 北邮ANT实验室 zzz
+ * 
  * 类描述： 为翼拨号提供后台服务
+ * 
+ * 应用中所有需要拨号的位置，统一通过“edu.bupt.action.EDIAL”的Intent调起此Service，在此进行是否漫游，
+ * 并按照“国际漫游状态下的呼叫流程”图执行后续逻辑。
  * */
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
-    //电话号码
+    // 字段描述： 准备拨出的电话号码
     private String digit = null;
 
     @Override
