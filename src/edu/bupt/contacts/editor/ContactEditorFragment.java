@@ -772,7 +772,7 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
                 long groupid = getActivity().getIntent().getLongExtra("group_id", 0);
                 String number = getActivity().getIntent().getStringExtra("number_to_add");
                 EntityDelta state = addToGroupFromIntent(type, entity, groupid);
-                if (!number.equals("")) { // number pre added 
+                if (number != null && !number.equals("")) { // number pre added
                     state = addNumberFromIntent(type, entity, number);
                 }
                 // use out state instead of the 'final' entity
