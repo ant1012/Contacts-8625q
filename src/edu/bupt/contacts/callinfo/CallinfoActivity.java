@@ -198,6 +198,7 @@ public class CallinfoActivity extends Activity {
         return contactidList;
     }
 
+    //add '-' to input number, match the format in DB
     private String fomatNumber(String input) {
         if (input.startsWith("1")) {
             if (input.length() == 1) {
