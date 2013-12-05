@@ -69,6 +69,7 @@ import android.provider.ContactsContract.CommonDataKinds.Organization;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
+import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Groups;
 import android.provider.ContactsContract.Intents;
@@ -769,7 +770,11 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
             Log.v("zzz", "addToGroupFromIntent for contact created from group editor");
             if (getActivity().getIntent().hasExtra("group_id")) {
                 long groupid = getActivity().getIntent().getLongExtra("group_id", 0);
+                String number = getActivity().getIntent().getStringExtra("number_to_add");
                 EntityDelta state = addToGroupFromIntent(type, entity, groupid);
+                if (!number.equals("")) { // number pre added 
+                    state = addNumberFromIntent(type, entity, number);
+                }
                 // use out state instead of the 'final' entity
                 editor.setState(state, type, mViewIdGenerator, isEditingUserProfile());
             } else {
@@ -848,6 +853,22 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
 
         ValuesDelta entry = EntityModifier.insertChild(state, mGroupMembershipKind);
         entry.put(GroupMembership.GROUP_ROW_ID, groupid); // TODO
+        Log.i(TAG, entry.toString());
+        Log.i(TAG, state.toString());
+
+        // do not need this?
+        // state.addEntry(entry);
+        return state;
+    }
+
+    /** zzz */
+    private EntityDelta addNumberFromIntent(AccountType type, EntityDelta state, String number) {
+        Log.v("RawContactEditorView", "addToGroupFromIntent");
+
+        DataKind mPhoneMembershipKind = type.getKindForMimetype(CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+
+        ValuesDelta entry = EntityModifier.insertChild(state, mPhoneMembershipKind);
+        entry.put(CommonDataKinds.Phone.DATA, number); // TODO
         Log.i(TAG, entry.toString());
         Log.i(TAG, state.toString());
 

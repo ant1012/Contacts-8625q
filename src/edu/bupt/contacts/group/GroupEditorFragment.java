@@ -566,6 +566,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
             // intent.putExtra("create_from_group", true);
             // intent.putExtra("group_account", value);
             intent.putExtra("group_id", mGroupId);
+            intent.putExtra("number_to_add", mAutoCompleteTextView.getText().toString());
             startActivity(intent);
             break;
 
