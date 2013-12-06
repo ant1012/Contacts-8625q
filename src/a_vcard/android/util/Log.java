@@ -22,6 +22,19 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人中的a_vcard包是为了实现短信应用中的vcard预览功能而加入的。
+ * 这是一个Google提供的开源库android-vcard，代码提取自Android 1.0
+ * https://code.google.com/p/android-vcard/
+ * Apache License 2.0
+ * 
+ * 此文件取自android-vcard库，未作修改
+ * 
+ * */
+
 
 /**
  * API for sending log output.

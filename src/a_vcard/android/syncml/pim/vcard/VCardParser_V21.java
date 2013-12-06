@@ -16,6 +16,7 @@
 
 package a_vcard.android.syncml.pim.vcard;
 
+
 import a_vcard.android.syncml.pim.VBuilder;
 //import android.syncml.pim.VParser;
 import a_vcard.android.util.Log;
@@ -28,6 +29,19 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人中的a_vcard包是为了实现短信应用中的vcard预览功能而加入的。
+ * 这是一个Google提供的开源库android-vcard，代码提取自Android 1.0
+ * https://code.google.com/p/android-vcard/
+ * Apache License 2.0
+ * 
+ * 此文件取自android-vcard库，未作修改
+ * 
+ * */
+
 
 /**
  * This class is used to parse vcard. Please refer to vCard Specification 2.1.

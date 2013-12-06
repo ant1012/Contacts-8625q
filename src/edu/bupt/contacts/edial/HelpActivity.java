@@ -27,7 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * 类描述： 翼拨号帮助菜单界面 ddd
+ * 北邮ANT实验室
+ * ddd
+ * 类描述： 翼拨号帮助菜单界面 
  * 
  * */
 
@@ -68,7 +70,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-
+/**
+ * 按序号升序遍历所有帮助菜单的图片 ddd
+ * 
+ * */
         for (int i = 0; i < pics.length; i++) {
             ImageView iv = new ImageView(this);
             iv.setLayoutParams(mParams);
@@ -81,6 +86,9 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         vp.setOnPageChangeListener(this);
 
         tv_skip = (TextView) findViewById(R.id.button_skip);
+        /**
+         * 跳过按钮，当按下该按钮时，跳过之后的帮助页面 ddd
+         * */
         tv_skip.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -95,7 +103,10 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
             }
 
         });
-
+/**
+ * 初始化进度点 ddd
+ * 
+ * */
         initDots();
 
         setShouldShowHelp(false);
@@ -125,9 +136,13 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
      * */
     private void initDots() {
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
-
+/**
+ * 初始化图片显示控件数组 ddd
+ * */
         dots = new ImageView[pics.length];
-
+         /**
+          * 按照图片的序号升序显示所有的圆点图片 ddd
+          * */
         for (int i = 0; i < pics.length; i++) {
             dots[i] = (ImageView) ll.getChildAt(i);
             dots[i].setEnabled(true);
@@ -150,6 +165,9 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
         setCurDot(position);
     }
 
+    /**
+     * 方法描述： 设置当前点
+     * */
     private void setCurDot(int position) {
         if (position < 0 || position > pics.length - 1 || currentIndex == position) {
             return;
@@ -160,7 +178,9 @@ public class HelpActivity extends Activity implements OnPageChangeListener, OnCl
 
         currentIndex = position;
     }
-
+/**
+ * 方法描述： 设置当前页面内容 ddd
+ * */
     private void setCurView(int position) {
         if (position < 0 || position >= pics.length) {
             return;

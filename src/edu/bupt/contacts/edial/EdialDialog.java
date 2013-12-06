@@ -30,8 +30,9 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 /**
- * 
- * 类描述： 翼拨号主窗口，当启动翼拨号功能时，点击拨号按钮启动  ddd
+ * 北邮ANT实验室
+ * ddd
+ * 类描述： 翼拨号主窗口，当启动翼拨号功能时，点击拨号按钮启动  
  * 
  * */
 
@@ -74,7 +75,7 @@ public class EdialDialog extends HoloDialog {
 
     
     /**
-     * 选择目标国家地区窗口
+     * 选择目标国家地区窗口 ddd
      * 
      * */
     //字段描述： 搜索亚洲地区国家按钮
@@ -124,6 +125,7 @@ public class EdialDialog extends HoloDialog {
         
         sendNumber = digits;
         // Dialog dialog = new Dialog(context);
+
         this.setContentView(R.layout.dialpad_esurfing);
         this.setTitle(R.string.esurfing_dial);
         callBackChinaButton = (RadioButton) this.findViewById(R.id.radioButton_callBackChina);
@@ -186,6 +188,10 @@ public class EdialDialog extends HoloDialog {
                 Log.v(TAG, "beforeTextChanged");
             }
 
+            /**
+             * 当文本编辑框的内容改变时，将更改后的值赋给sendNumber
+             * */
+            
             @Override
             public void afterTextChanged(Editable arg0) {
                 Log.v(TAG, "afterTextChanged");
@@ -265,7 +271,9 @@ public class EdialDialog extends HoloDialog {
                     /** zzz */
                     // Dialog nationalCodeDialog = new Dialog(context);
                     final HoloDialog nationalCodeDialog = new HoloDialog(context);
-
+                    /**
+                     * 启动国家码选择窗口，初始化洲选择按钮
+                     * */
                     nationalCodeDialog.setContentView(R.layout.dialpad_esurfing_national_code);
                     asiaButton = (Button) nationalCodeDialog.findViewById(R.id.button_national_picker_asia);
                     europeButton = (Button) nationalCodeDialog.findViewById(R.id.button_national_picker_europe);
@@ -280,11 +288,15 @@ public class EdialDialog extends HoloDialog {
                     searchButtonEditText = (EditText) nationalCodeDialog
                             .findViewById(R.id.edittext_national_picker_search);
                     countrySearchButton = (Button) nationalCodeDialog.findViewById(R.id.button_national_picker_search);
-
+                    /**
+                     * 调用此函数，当按下某个洲的按钮时，将该洲的国家显示到listView里面
+                     * */
                     pickCountry();
                     searchCountry(searchButtonEditText, countrySearchButton);
                     // chooseItem();
-
+                    /**
+                     * 当按下listView中的某个国家时，提取该国家的国家名称和国家码
+                     * */
                     listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 
                         @Override
@@ -394,7 +406,9 @@ public class EdialDialog extends HoloDialog {
                 new String[] { "cn_name", "code" }, new int[] { R.id.edial_item_text1, R.id.edial_item_text2 });
 
         listView.setAdapter(adapter);
-
+/**
+ * 按下非洲按钮后，从数据库匹配洲分类为非洲的国家，显示在listView中 ddd
+ * */
         africaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -411,7 +425,9 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-
+        /**
+         * 按下北美洲按钮后，从数据库匹配洲分类为北美洲的国家，显示在listView中 ddd
+         * */
         northAmericaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -429,6 +445,9 @@ public class EdialDialog extends HoloDialog {
             }
         });
 
+        /**
+         * 按下亚洲按钮后，从数据库匹配周分类为亚洲的国家，显示在listView中 ddd
+         * */
         asiaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -446,6 +465,9 @@ public class EdialDialog extends HoloDialog {
             }
         });
 
+        /**
+         * 按下南美洲按钮后，从数据库匹配周分类为南美洲的国家，显示在listView中 ddd
+         * */
         southAmericaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -462,7 +484,9 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-
+        /**
+         * 按下大洋洲按钮后，从数据库匹配周分类为大洋洲的国家，显示在listView中 ddd
+         * */
         oceaniaButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -479,7 +503,9 @@ public class EdialDialog extends HoloDialog {
 
             }
         });
-
+        /**
+         * 按下欧洲按钮后，从数据库匹配洲分类为欧洲的国家，显示在listView中 ddd
+         * */
         europeButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -507,7 +533,9 @@ public class EdialDialog extends HoloDialog {
     
     private void searchCountry(final EditText inputcountry, Button searchButton) {
         final CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
-
+/**
+ * 当搜索按钮被按下时：
+ * */
         searchButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override

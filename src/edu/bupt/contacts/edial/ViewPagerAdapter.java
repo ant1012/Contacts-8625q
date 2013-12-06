@@ -13,18 +13,26 @@ import android.view.View;
  */
 
 /**
- * 类描述： 实现翼拨号帮助菜单翻页适配器 ddd
+ * 北邮ANT实验室
+ * ddd
+ * 类描述： 实现翼拨号帮助菜单翻页适配器 
  * */
+
 public class ViewPagerAdapter extends PagerAdapter {
 
-    // 界面列表
+    /**
+     * 界面列表
+     * */
     private List<View> views;
     
     public ViewPagerAdapter(List<View> views) {
         this.views = views;
     }
 
-    // 销毁arg1位置的界面
+    /**
+     *    销毁arg1位置的界面  ddd
+     */
+
     @Override
     public void destroyItem(View arg0, int arg1, Object arg2) {
         ((ViewPager) arg0).removeView(views.get(arg1));
@@ -36,7 +44,9 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     }
 
-    // 获得当前界面数
+    /**
+     * 获得当前界面数  ddd
+     * */
     @Override
     public int getCount() {
         if (views != null) {
@@ -46,7 +56,11 @@ public class ViewPagerAdapter extends PagerAdapter {
         return 0;
     }
 
-    // 初始化arg1位置的界面
+    /**
+     * 初始化arg1位置的界面 ddd
+     * 
+     * */
+
     @Override
     public Object instantiateItem(View arg0, int arg1) {
 
@@ -55,7 +69,9 @@ public class ViewPagerAdapter extends PagerAdapter {
         return views.get(arg1);
     }
 
-    // 判断是否由对象生成界面
+    /**
+     * 判断是否由对象生成界面 ddd
+     * */ 
     @Override
     public boolean isViewFromObject(View arg0, Object arg1) {
         return (arg0 == arg1);

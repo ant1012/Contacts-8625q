@@ -17,25 +17,38 @@ import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-/** zzz */
+
 /**
- * 类描述： 为翼拨号提供后台服务
+ * 北邮ANT实验室
+ * ddd
+ * 类描述： 为翼拨号提供后台服务 
  * */
+
+/** zzz */
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
     //电话号码
     private String digit = null;
 
+    /**
+     * 方法描述： 必须实现的方法 ddd
+     * */
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
     }
 
+    /**
+     * 方法描述： 服务被创建时回调该方法 ddd
+     * */
     public void onCreate() {
         Log.v(TAG, "Service.onCreate()");
     }
 
+    /**
+     * 方法描述： 服务被启动时回调该方法 ddd
+     * */
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
@@ -49,11 +62,18 @@ public class EdialService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Service.onStartCommand()");
 
+        /**
+         *判断电话号码是否为空 ddd
+         * 
+         * */
         if (intent == null || !intent.hasExtra("digit")) {
             Log.e(TAG, "intent == null || !intent.hasExtra(\"digit\")");
             return super.onStartCommand(intent, flags, startId);
         }
 
+        /**
+         * 初始化 ddd
+         * */
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -70,6 +90,9 @@ public class EdialService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
 
+        /**
+         * 获取电话号码 ddd
+         * */
         digit = intent.getStringExtra("digit");
         Log.w(TAG, "digit - " + digit);
         digit = formatNumber(digit);
@@ -77,10 +100,16 @@ public class EdialService extends Service {
         Log.w(TAG, "digit - " + digit);
 
         // prepare the country code database
+        /**
+         * 准备国家码数据库 ddd
+         * */
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
         mdbHelper.onCreate(mdbHelper.getWritableDatabase());
         mdbHelper.close();
 
+        /**
+         * 判断是否开启翼拨号菜单 ddd
+         * */
         if (!shouldShowEdial()) { // may modify the number here
             // call directly
             Log.i(TAG, "digit - " + digit);
@@ -89,6 +118,9 @@ public class EdialService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
 
+        /**
+         * 对电话号码做预处理，然后拨打处理后的电话号码 ddd
+         * */
         if (sp.getString("EDialPreference", "0").equals("0")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
@@ -157,7 +189,7 @@ public class EdialService extends Service {
 
     // call directly when return false
     /**
-     * 判断是否启用翼拨号，返回值为false时直接拨打 ddd
+     * 方法描述： 判断是否启用翼拨号，返回值为false时直接拨打 ddd
      * 
      * */
     private boolean shouldShowEdial() {
@@ -281,6 +313,9 @@ public class EdialService extends Service {
 
     }
 
+    /**
+     * 方法描述：格式转换 ddd
+     * */
     private static String replacePattern(String origin, String pattern, String replace) {
         Log.i(TAG, "origin - " + origin);
         Pattern p = Pattern.compile(pattern);

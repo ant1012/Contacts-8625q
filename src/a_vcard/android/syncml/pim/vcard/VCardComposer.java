@@ -26,10 +26,23 @@ import org.apache.commons.codec.binary.Base64;
 
 import a_vcard.android.provider.Contacts;
 import a_vcard.android.syncml.pim.vcard.ContactStruct.PhoneData;
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人中的a_vcard包是为了实现短信应用中的vcard预览功能而加入的。
+ * 这是一个Google提供的开源库android-vcard，代码提取自Android 1.0
+ * https://code.google.com/p/android-vcard/
+ * Apache License 2.0
+ * 
+ * 此文件取自android-vcard库，未作修改
+ * 
+ * */
 
 /**
  * Compose VCard string
  */
+
 public class VCardComposer {
     final public static int VERSION_VCARD21_INT = 1;
 

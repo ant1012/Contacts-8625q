@@ -8,7 +8,9 @@ import android.view.WindowManager;
 /** zzz */
 
 /**
- * 类描述： 设置HoloDialog样式为R.style.HoloDialogTheme，为EdialDialog提供父类 ddd
+ * 北邮ANT实验室
+ * ddd
+ * 类描述： 设置HoloDialog样式为R.style.HoloDialogTheme，为EdialDialog提供父类 
  * */
 public class HoloDialog extends Dialog {
 
