@@ -756,5 +756,6 @@
     <string name="menu_group_editor_add">新建</string>
     <string name="menu_group_editor_insert">添加</string>
     <string name="country_locate_us_ca">美国/加拿大</string>
+    <string name="group_select_no_contact">找不到匹配的联系人</string>
 
 </resources>

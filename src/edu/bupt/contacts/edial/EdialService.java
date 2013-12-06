@@ -19,16 +19,19 @@ import android.util.Log;
 
 
 /**
- * 北邮ANT实验室
- * ddd
- * 类描述： 为翼拨号提供后台服务 
+ * 北邮ANT实验室 zzz
+ * 
+ * 类描述： 为翼拨号提供后台服务
+ * 
+ * 应用中所有需要拨号的位置，统一通过"edu.bupt.action.EDIAL"的Intent调起此Service，在此进行是否漫游，
+ * 并按照"国际漫游状态下的呼叫流程"图执行后续逻辑。
  * */
 
 /** zzz */
 public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
-    //电话号码
+    // 字段描述： 准备拨出的电话号码
     private String digit = null;
 
     /**
@@ -66,6 +69,8 @@ public class EdialService extends Service {
          *判断电话号码是否为空 ddd
          * 
          * */
+        // Service调起时需要传入"digit"参数，指明要拨打的号码，此后，在判断是否弹出翼拨号、以及修改和格式化弹出对话框中的号码，
+        // 都需要此参数 zzz
         if (intent == null || !intent.hasExtra("digit")) {
             Log.e(TAG, "intent == null || !intent.hasExtra(\"digit\")");
             return super.onStartCommand(intent, flags, startId);
@@ -74,7 +79,9 @@ public class EdialService extends Service {
         /**
          * 初始化 ddd
          * */
+        // 获取TelephonyManager用于判断是否漫游
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        // 获取SharedPreferences用于判断是否开启漫游测试
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         // for help activity
@@ -86,6 +93,8 @@ public class EdialService extends Service {
         // startActivity(i);
         // return super.onStartCommand(intent, flags, startId);
         // }
+
+        // 第一次启动翼拨号需要展示帮助页面 zzz
         if (showHelpActivity(intent, flags, startId)) {
             return super.onStartCommand(intent, flags, startId);
         }
@@ -95,6 +104,7 @@ public class EdialService extends Service {
          * */
         digit = intent.getStringExtra("digit");
         Log.w(TAG, "digit - " + digit);
+        // 去除号码中的空格、"-"、和"+86" zzz
         digit = formatNumber(digit);
 
         Log.w(TAG, "digit - " + digit);
@@ -103,6 +113,7 @@ public class EdialService extends Service {
         /**
          * 准备国家码数据库 ddd
          * */
+        // 初始化国家码数据库，否则会引起崩溃 zzz
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this);
         mdbHelper.onCreate(mdbHelper.getWritableDatabase());
         mdbHelper.close();
@@ -110,9 +121,12 @@ public class EdialService extends Service {
         /**
          * 判断是否开启翼拨号菜单 ddd
          * */
+        // 根据是否漫游和号码的类型，判断时候需要弹出翼拨号菜单，如果不需要弹出翼拨号，则直接拨打 zzz
         if (!shouldShowEdial()) { // may modify the number here
             // call directly
             Log.i(TAG, "digit - " + digit);
+
+            // 拨号时直接传#给"call"函数，不能识别，需要将"#"转换为"%23" zzz
             digit = replacePattern(digit, "#", "%23"); // replace #
             call(digit);
             return super.onStartCommand(intent, flags, startId);
@@ -121,11 +135,16 @@ public class EdialService extends Service {
         /**
          * 对电话号码做预处理，然后拨打处理后的电话号码 ddd
          * */
+        // 检查是否弹出翼拨号菜单的设置项 zzz
+        // SharedPreferences在此版本只启用了0、2两个状态
+        // 0表示漫游时启用
+        // 2表示不启用
         if (sp.getString("EDialPreference", "0").equals("0")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"0\")");
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
                 Log.v(TAG, "tm.isNetworkRoaming()");
                 // strip beginning '0'
+                // 去掉开头的0 zzz
                 digit = stripZeroPrefix(digit);
 
                 // if (showHelpActivity(intent, flags, startId)) {
@@ -135,15 +154,18 @@ public class EdialService extends Service {
                 // show dialog here
                 Log.v(TAG, "digit - " + digit);
                 // show dialog
+                // 弹出翼拨号菜单 zzz
                 EdialDialog edialDialog = new EdialDialog(this, digit);
                 edialDialog.show();
             } else {
+                // 拨号时直接传#给"call"函数，不能识别，需要将"#"转换为"%23" zzz
                 digit = replacePattern(digit, "#", "%23"); // replace #
                 call(digit);
             }
         } else if (sp.getString("EDialPreference", "0").equals("1")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"1\")");
             // strip beginning '0'
+            // 去掉开头的0 zzz
             digit = stripZeroPrefix(digit);
 
             // if (showHelpActivity(intent, flags, startId)) {
@@ -153,10 +175,12 @@ public class EdialService extends Service {
             // show dialog here
             Log.v(TAG, "digit - " + digit);
             // show dialog
+            // 弹出翼拨号菜单 zzz
             EdialDialog edialDialog = new EdialDialog(this, digit);
             edialDialog.show();
         } else if (sp.getString("EDialPreference", "0").equals("2")) {
             Log.v(TAG, "sp.getString(\"EDialPreference\", \"0\").equals(\"2\")");
+            // 拨号时直接传#给"call"函数，不能识别，需要将"#"转换为"%23" zzz
             digit = replacePattern(digit, "#", "%23"); // replace #
             call(digit);
         } else {
@@ -165,6 +189,9 @@ public class EdialService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * 方法描述： 继承自Service，销毁时调用，没有实际利用 zzz
+     * */
     @Override
     public void onDestroy() {
         Log.v(TAG, "Service.onDestroy()");
@@ -173,6 +200,10 @@ public class EdialService extends Service {
 
     /**
      * 方法描述： 拨打电话 ddd
+     * 调用 com.android.internal.telephony.msim.ITelephonyMSim 提供的接口拨打电话
+     * call方法的第二个参数用于指定拨出卡，但是实际在ZTE-N818和ZTE-N980上都不起作用
+     * 调用后调起Phone.apk的拨出卡选择界面。 zzz
+     * 
      * */
     private void call(String number) {
         try {
@@ -196,6 +227,7 @@ public class EdialService extends Service {
         Log.d(TAG, "ShouldShowEdial?");
 
         // start with '+' ?
+        // "+"开头则直接拨打 zzz
         Pattern p1 = Pattern.compile("^\\+");
         Matcher m1 = p1.matcher(digit);
         if (m1.find()) {
@@ -210,6 +242,7 @@ public class EdialService extends Service {
         }
 
         // start with '**133', end with '#' ?
+        // "133"开头而且"#"结尾则直接拨打 zzz
         Pattern p2 = Pattern.compile("^\\*\\*133.*\\#");
         Matcher m2 = p2.matcher(digit);
         if (m2.find()) {
@@ -225,6 +258,7 @@ public class EdialService extends Service {
         }
 
         // start with local country call prefix ?
+        // 以当地国际字冠码开头则直接拨打
         String localcode = getLocalCallPrefix();
         Pattern p3 = Pattern.compile("^" + localcode);
         Matcher m3 = p3.matcher(digit);
@@ -240,6 +274,7 @@ public class EdialService extends Service {
      * 方法描述： 电话号码格式处理 ddd
      * */
     private static String formatNumber(String s) {
+        // 去除号码中的空格、"-"、和"+86" zzz
         String strip1 = replacePattern(s, "(\\:)", ""); // strip :
         String strip2 = replacePattern(strip1, "(\\-)", ""); // strip -
         String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
@@ -290,7 +325,7 @@ public class EdialService extends Service {
     }
 
     /**
-     * 方法描述： 判断是否是C2C模式
+     * 方法描述： 判断是否是C2C模式 ddd
      * */
     private boolean isC2CRoaming() {
         MSimTelephonyManager m = (MSimTelephonyManager) getSystemService(MSIM_TELEPHONY_SERVICE);
@@ -315,6 +350,7 @@ public class EdialService extends Service {
 
     /**
      * 方法描述：格式转换 ddd
+     * 利用正则处理字符串 zzz
      * */
     private static String replacePattern(String origin, String pattern, String replace) {
         Log.i(TAG, "origin - " + origin);

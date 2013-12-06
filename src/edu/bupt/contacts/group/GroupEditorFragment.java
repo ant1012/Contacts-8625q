@@ -540,6 +540,14 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
     }
 
     public void onDoneClicked() {
+
+        /** zzz */
+        Log.v(TAG, "onDoneClicked");
+        if (!mAutoCompleteTextView.getText().toString().equals("")) {
+            Log.v(TAG, "mAutoCompleteTextView - " + mAutoCompleteTextView.getText().toString());
+            Toast.makeText(mContext, R.string.group_select_no_contact, Toast.LENGTH_SHORT).show();
+        }
+
         if (isGroupMembershipEditable()) {
             save();
         } else {
