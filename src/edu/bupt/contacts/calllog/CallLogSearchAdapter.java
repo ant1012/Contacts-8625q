@@ -13,21 +13,78 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
 public class CallLogSearchAdapter extends SimpleCursorAdapter{
 
+	 //private Context myContext;
+	//ddd
+	public static Context myContext;
+	private String TAG="CallLogSearchAdapter";
 	public CallLogSearchAdapter(Context context, int layout, Cursor cursor,String[] from, int[] to) {
-		super(context, layout, cursor, from, to);
+		
+		super(context, layout, cursor, from, to);	
+		//ddd 修改context空值的问题
+		myContext=context;
 	} 
 	
-	@Override  
+	// ddd 在历史记录列表中，点击某一项，弹出联系人历史记录详情页面 
+    private final View.OnClickListener mPrimaryActionListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            
+        	Log.i(TAG,"item click 2");
+            IntentProvider intentProvider = (IntentProvider) view.getTag();
+           
+        	if(view.getTag()==null){
+        		Log.i(TAG,"item click 3");
+        	}
+            Log.i(TAG,"item click 4");
+            if (intentProvider != null) {
+            	
+            	 Log.i(TAG,"myContext: "+myContext);	
+            	
+                myContext.startActivity(intentProvider.getIntent(myContext));
+            }
+
+        }
+    };
+    
+    private void findAndCacheViews(View view) {
+        // Get the views to bind to.
+        CallLogListItemViews views = CallLogListItemViews.fromView(view);
+        views.primaryActionView.setOnClickListener(mPrimaryActionListener);
+
+        /** zzz */
+//        views.primaryActionView.setOnLongClickListener(mPrimaryLongActionListener);
+//
+//        views.secondaryActionView.setOnClickListener(mSecondaryActionListener);
+//        views.thirdaryActionView.setOnClickListener(mThirdaryActionListener);
+        view.setTag(views);
+    }
+    
+    protected View newStandAloneView(Context context, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.call_log_list_item, parent, false);
+        findAndCacheViews(view);
+        return view;
+    }
+
+
+
+	
+//	@Override  
+    //ddd 添加setTag
     public void bindView(View view, Context context, Cursor cursor) {   
         super.bindView(view, context, cursor);
         TextView textView_name = (TextView)view.findViewById(R.id.item_name);
@@ -56,7 +113,14 @@ public class CallLogSearchAdapter extends SimpleCursorAdapter{
         	imageView_type.setImageResource(R.drawable.ic_call_missed_holo_dark);
         	break;
         }
-        
+        Log.i(TAG,"item click 1"+cursor.toString());
+        view.setTag(IntentProvider.getCallSearchDetailIntentProvider(this, cursor.getPosition(),
+                cursor.getLong(CallLogQuery.ID), 1));
+        Log.i(TAG,"position--"+cursor.getPosition());
+        Log.i(TAG,"ID--"+cursor.getLong(CallLogQuery.ID));
+        Log.i(TAG,"count--"+1);
+        view.setOnClickListener(mPrimaryActionListener);
+
         
         
 //        final int id = cursor.getInt(cursor.getColumnIndex(MySQLiteOpenHelper.VOLUMN_ID));   
@@ -67,7 +131,7 @@ public class CallLogSearchAdapter extends SimpleCursorAdapter{
 //            public void onClick(View v) {   
 //                SQLiteDatabase writableDB = sqlite.getWritableDatabase();   
 //                writableDB.delete(MySQLiteOpenHelper.TABLE_NAME   
-//                        , MySQLiteOpenHelper.VOLUMN_ID+"=?" //����"=��"   
+//                        , MySQLiteOpenHelper.VOLUMN_ID+"=?" //���"=��"   
 //                        , new String[] {String.valueOf(id)});   
 //                writableDB.close();   
 //                initListView();   

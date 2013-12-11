@@ -32,6 +32,9 @@ public class EdialService extends Service {
 
     private static final String TAG = "EdialService";
     // 字段描述： 准备拨出的电话号码
+    
+    
+    
     private String digit = null;
 
     /**

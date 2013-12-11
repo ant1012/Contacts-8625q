@@ -119,7 +119,7 @@ import libcore.util.Objects;
     /** The size of the cache of contact info. */
     private static final int CONTACT_INFO_CACHE_SIZE = 100;
 
-    private final Context mContext;
+    public static  Context mContext;
     private final ContactInfoHelper mContactInfoHelper;
     private final CallFetcher mCallFetcher;
     private ViewTreeObserver mViewTreeObserver = null;
@@ -222,8 +222,9 @@ import libcore.util.Objects;
         @Override
         public void onClick(View view) {
 
-            // by yuan
+            // by yuan 在历史记录列表中，点击某一项，弹出联系人历史记录详情页面 ddd
             IntentProvider intentProvider = (IntentProvider) view.getTag();
+            Log.i(TAG,"callLogAdapter--"+intentProvider.getIntent(mContext).toString());
             if (intentProvider != null) {
                 mContext.startActivity(intentProvider.getIntent(mContext));
             }
@@ -807,6 +808,10 @@ import libcore.util.Objects;
 
         views.primaryActionView.setTag(IntentProvider.getCallDetailIntentProvider(this, c.getPosition(),
                 c.getLong(CallLogQuery.ID), count));
+        Log.i(TAG,"position--"+c.getPosition());
+        Log.i(TAG,"ID--"+c.getLong(CallLogQuery.ID));
+        Log.i(TAG,"count--"+count);
+        
         // Log.v("eeeee",IntentProvider.getCallDetailIntentProvider(this,
         // c.getPosition(), c.getLong(CallLogQuery.ID),
         // count).getIntent(mContext).getDataString());
