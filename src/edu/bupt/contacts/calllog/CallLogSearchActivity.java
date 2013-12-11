@@ -80,11 +80,6 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
         // v.set
         // new
         // AlertDialog.Builder(this).setTitle(R.string.calllog_search).setView(v).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         /** zzz */
         // create dialog to choose a search mode
@@ -467,6 +462,12 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
         //
         // });
         builder.setTitle(R.string.calllog_search).create().show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     private void configureActionBar() {
