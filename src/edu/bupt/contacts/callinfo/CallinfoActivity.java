@@ -97,7 +97,7 @@ public class CallinfoActivity extends Activity {
         cursor.close();
         
         /**
-         * ddd 取电话号码后十一位，格式化之后，取后十三位
+         * ddd 取电话号码后十位，具体操作，首先取后11位，格式化（加横杠，加空格，不加）之后，再对格式化之后的号码取
          * */
     	
         // 获取TelephonyManager用于判断是否漫游
@@ -116,12 +116,14 @@ public class CallinfoActivity extends Activity {
             else{
             	
             numberCut10=number.substring(number.length()-10,number.length());
+            
             numberCut11 = number.substring(number.length()-11,number.length());
-            Log.v(TAG, "numberCut11 - " + numberCut11);
             numberCutFormat11 = fomatNumber(numberCut11);
             Log.v(TAG, "numberCutFormat11 - " + numberCutFormat11);
             Log.v(TAG,"fomatBlankNumber(numberCut11)"+fomatBlankNumber(numberCut11));
+            
             numberBlank10 = fomatBlankNumber(numberCut11).substring(fomatBlankNumber(numberCut11).length()-12,fomatBlankNumber(numberCut11).length());
+            
             numberCutFormat10 = numberCutFormat11.substring(numberCutFormat11.length()-13,numberCutFormat11.length());
             Log.v(TAG, "numberCutFormat10 - " + numberCutFormat10);
             }
@@ -134,9 +136,9 @@ public class CallinfoActivity extends Activity {
            Log.v(TAG,"map--"+map);
            
            if(map.size() != 0){
-        	   //name = map.get("displayName");
+        	   name = map.get("displayName");
         	   Log.v(TAG,"displayName--"+name);
-        	   //number = map.get("contactNumber");
+        	   number = map.get("contactNumber");
         	   Log.v(TAG,"contactNumber--"+number);
         	   modifyCallLog(id,map.get("displayName"),map.get("contactNumber"));
            } 
@@ -144,36 +146,6 @@ public class CallinfoActivity extends Activity {
         	
         	
         }
-        
-
-       
-//        Cursor phonecur = null;
-//        phonecur = getContentResolver().query(
-//                android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
-//                android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+"LIKE '%"+numberCutFormat10+"'",           
-//                null, null);
-//        // get number
-//        Log.v(TAG,android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI.toString());
-//        while (phonecur.moveToNext()) {
-//            strPhoneNumber = phonecur.getString(phonecur
-//                    .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
-//            Log.v(TAG,"strPhoneNumber--"+strPhoneNumber);
-            // if (strPhoneNumber.length() > 4)
-            // contactsList.add("18610011001" + "\n测试");
-            // contactsList.add(strPhoneNumber+"\n"+name+"");
-
-            // Log.i(TAG, "strPhoneNumber - " + strPhoneNumber);
-
-//            Map<String, String> map = new HashMap<String, String>();
-//            map.put("id", contactId);
-//            map.put("name", name);
-//            map.put("number", strPhoneNumber);
-//            contactsCacheDBHelper.addLine(contactId, name, strPhoneNumber);
-
-            // list.add(map);
-//            soManyLines++;
-//          }
-//        phonecur.close();
 
         
 
@@ -331,6 +303,7 @@ public class CallinfoActivity extends Activity {
     private Map<String, String> getContactidFromCutNumber(String phoneNumber,String formatNmuber,String formatBlankNmuber) {
         Log.i(TAG, "phone-number--"+phoneNumber);
         Map<String, String> map = new HashMap<String, String>();
+        
         Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
         		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
         		null, null);
@@ -354,10 +327,11 @@ public class CallinfoActivity extends Activity {
                     .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
             map.put("contactNumber",pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
             map.put("displayName",pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-            Log.i(TAG,"ddd-purformat-number--"+pCurFormat.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
+            Log.i(TAG,"ddd-purformat-number--"+pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
         }
         pCurFormat.close();
         
+        //ddd  空格的情况
         Cursor pCurBlank = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
         		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+formatBlankNmuber+"'",
         		null, null);
@@ -367,8 +341,9 @@ public class CallinfoActivity extends Activity {
             map.put("displayName",pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
         Log.v(TAG,"ddd-pCurBlank-number--"+pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
         }
+
+        pCurBlank.close();
         
-        pCur.close();
         return map;
     }
     
@@ -398,19 +373,10 @@ public class CallinfoActivity extends Activity {
         return "";
     }
 
+    /**
+     * ddd 将数字中加入空格
+     * */
     private String fomatBlankNumber(String input) {
-//        if (input.startsWith("1")) {
-//            if (input.length() == 1) {
-//                return input;
-//            } else if (input.length() > 1 && input.length() < 5) {
-//                return input.substring(0, 1) + "-" + input.substring(1, input.length());
-//            } else if (input.length() >= 5 && input.length() < 8) {
-//                return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, input.length());
-//            } else if (input.length() >= 8) {
-//                return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, 7) + "-"
-//                        + input.substring(7, input.length());
-//            }
-//        } else {
             if (input.length() <= 3) {
                 return input;
             } else if (input.length() > 3 && input.length() < 7) {
@@ -422,7 +388,6 @@ public class CallinfoActivity extends Activity {
             	return input;
             	
             }
-//        }
         return "";
     }
     
@@ -495,7 +460,9 @@ public class CallinfoActivity extends Activity {
     
     
     
-    
+    /**
+     * ddd 修改数据库中的通话记录
+     * */
     private void modifyCallLog(long id2,String name,String number){
     	android.content.ContentValues content = new android.content.ContentValues();
     	content.put(CallLog.Calls.NUMBER, number);
