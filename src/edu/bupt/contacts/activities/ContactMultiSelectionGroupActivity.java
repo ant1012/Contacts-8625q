@@ -137,8 +137,14 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // choose group
         // ArrayList<String> groupName = new ArrayList<String>();
         // ArrayList<String> groupId = new ArrayList<String>();
+
+        /** zzz */
+        // filter deleted groups
+        String sel = ContactsContract.Groups.DELETED + "=?";
+        String[] selArgs = new String[] { String.valueOf(0) };
+
         Cursor groupCursor = getContentResolver().query(ContactsContract.Groups.CONTENT_URI,
-                new String[] { ContactsContract.Groups.TITLE, ContactsContract.Groups._ID }, null, null, null);
+                new String[] { ContactsContract.Groups.TITLE, ContactsContract.Groups._ID }, sel, selArgs, null);
         while (groupCursor.moveToNext()) {
             groupName.add(groupCursor.getString(0));
             groupId.add(groupCursor.getString(1));
@@ -538,6 +544,11 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                 rawcontactIdSelection.append(',').append(id);
             }
             rawcontactIdSelection.append(')');
+
+            /** zzz */
+            // filter deleted contacts
+            rawcontactIdSelection.append(" AND " + RawContacts.DELETED + " = 0");
+
             Cursor contactIdCursor = getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
                     new String[] { ContactsContract.RawContacts.CONTACT_ID }, rawcontactIdSelection.toString(), null,
                     null);

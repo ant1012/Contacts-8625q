@@ -254,7 +254,8 @@ public class SuggestedMemberListAdapter extends ArrayAdapter<SuggestedMember> {
                                                             // contactId
                             RawContacts.CONTENT_URI, //
                             PROJECTION_FILTERED_MEMBERS, //
-                            accountClause + " AND (" + RawContacts.CONTACT_ID + " = ?)",//
+                            accountClause + " AND (" + RawContacts.CONTACT_ID + " = ?) AND (" + RawContacts.DELETED
+                                    + " = 0)",//
                             new String[] { mAccountName, mAccountType, String.valueOf(phonecur.getLong(0)) },//
                             null);//
                     for (; rawcur.moveToNext();) {
