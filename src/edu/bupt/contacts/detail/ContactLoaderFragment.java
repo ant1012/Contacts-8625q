@@ -48,6 +48,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1122,11 +1123,14 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         // mContext.startService(intent);
 
         Log.i(TAG, "handleMsgRingPicked - " + pickedUri);
-        Cursor c = mContext.getContentResolver().query(mLookupUri, null, null, null, null);
-        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        // Cursor c = mContext.getContentResolver().query(mLookupUri, null,
+        // null, null, null);
+        // int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        //
+        // c.moveToNext();
+        // long contactId = c.getLong(idIdx);
 
-        c.moveToNext();
-        long contactId = c.getLong(idIdx);
+        final long contactId = ContentUris.parseId(mLookupUri);
 
         MsgRingDBHelper dbhelper = new MsgRingDBHelper(mContext, 1);
         dbhelper.setRing(String.valueOf(contactId), mCustomMsgRing);

@@ -55,6 +55,7 @@ public class MsgRingService extends Service {
                 }
                 Log.i(TAG, "Msg from " + incomingNumber);
                 Log.i(TAG, "formatted " + fomatNumber(incomingNumber));
+                Log.i(TAG, "formatted with space " + fomatNumberWithSpace   (incomingNumber));
 
                 ArrayList<String> contactidList = getContactidFromNumber(incomingNumber);
                 for (String s : contactidList) {
@@ -110,45 +111,61 @@ public class MsgRingService extends Service {
     private ArrayList<String> getContactidFromNumber(String phoneNumber) {
         Log.d(TAG, "getContactidFromNumber");
         ArrayList<String> contactidList = new ArrayList<String>();
+
+        // zzz 需要考虑多种情况，因为在数据库中存储的号码可能是正常号码，也可能用‘-’分隔，也可能用‘ ’分隔
+        StringBuilder selectionSB = new StringBuilder();
+        selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? or "); // zzz 原始
+        selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? or "); // zzz 减号
+        selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?"); // zzz 空格
+
+        String[] selectionArgsSB = new String[]{ phoneNumber, fomatNumber(phoneNumber), fomatNumberWithSpace(phoneNumber) };
+
         Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
+                selectionSB.toString(), selectionArgsSB, null);
         while (pCur.moveToNext()) {
             contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
         }
         pCur.close();
 
-        // -
-        Cursor pCurFormat = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-                        new String[] { fomatNumber(phoneNumber) }, null);
-        while (pCurFormat.moveToNext()) {
-            contactidList.add(pCurFormat.getString(pCurFormat
-                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCurFormat.close();
-
-        // +86
-        phoneNumber = replacePattern(phoneNumber, "^((\\+{0,1}86){0,1})", ""); // strip
-                                                                               // +86
-        Cursor pCur86 = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
-        while (pCur86.moveToNext()) {
-            contactidList
-                    .add(pCur86.getString(pCur86.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCur86.close();
-
-        // -
-        Cursor pCur86Format = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-                        new String[] { fomatNumber(phoneNumber) }, null);
-        while (pCur86Format.moveToNext()) {
-            contactidList.add(pCur86Format.getString(pCur86Format
-                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCur86Format.close();
+//        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+//                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
+//        while (pCur.moveToNext()) {
+//            contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+//        }
+//        pCur.close();
+//
+//        // -
+//        Cursor pCurFormat = getContentResolver()
+//                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+//                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+//                        new String[] { fomatNumber(phoneNumber) }, null);
+//        while (pCurFormat.moveToNext()) {
+//            contactidList.add(pCurFormat.getString(pCurFormat
+//                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+//        }
+//        pCurFormat.close();
+//
+//        // +86
+//        phoneNumber = replacePattern(phoneNumber, "^((\\+{0,1}86){0,1})", ""); // strip
+//                                                                               // +86
+//        Cursor pCur86 = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+//                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
+//        while (pCur86.moveToNext()) {
+//            contactidList
+//                    .add(pCur86.getString(pCur86.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+//        }
+//        pCur86.close();
+//
+//        // -
+//        Cursor pCur86Format = getContentResolver()
+//                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+//                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+//                        new String[] { fomatNumber(phoneNumber) }, null);
+//        while (pCur86Format.moveToNext()) {
+//            contactidList.add(pCur86Format.getString(pCur86Format
+//                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+//        }
+//        pCur86Format.close();
         return contactidList;
     }
 
@@ -174,6 +191,18 @@ public class MsgRingService extends Service {
             }
         }
         return "";
+    }
+
+    private String fomatNumberWithSpace(String input) {
+        if (input.startsWith("1")) {
+            if (input.length() == 11) {
+                return input.substring(0, 3) + ' ' + input.substring(3, 7) + ' ' + input.substring(7, 11);
+            } else {
+                return input;
+            }
+        } else {
+            return input;
+        }
     }
 
     private String replacePattern(String origin, String pattern, String replace) {
