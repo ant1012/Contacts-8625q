@@ -55,6 +55,16 @@ import static com.android.internal.telephony.MSimConstants.SUBSCRIPTION_KEY;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 实现联系人的导入导出
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
+/**
  * An dialog invoked to import/export contacts.
  */
 public class ImportExportDialogFragment extends DialogFragment

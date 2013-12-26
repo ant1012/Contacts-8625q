@@ -68,6 +68,16 @@ import java.util.LinkedList;
 import libcore.util.Objects;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 电话模块，显示历史记录列表
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Adapter class to fill in data for the Call Log.
  */
 /* package */class CallLogAdapter extends GroupingListAdapter implements ViewTreeObserver.OnPreDrawListener,
@@ -292,12 +302,14 @@ import libcore.util.Objects;
             // return false;
 
             /** zzz */
+//        	在通话记录列表长按某个记录，实现删除该记录联系人的所有通话记录的功能  电话模块功能7
             String s = null;
             IntentProvider intentProvider = (IntentProvider) view.getTag();
             if (intentProvider == null) {
                 Log.w(TAG, "intentProvider == null");
                 return false;
             }
+//            在数据库中，根据通话记录id，得到该记录电话号码
             if (intentProvider.getIntent(mContext).getData() != null) {
                 s = getPhoneNumberForUri(intentProvider.getIntent(mContext).getData());
             } else if (intentProvider.getIntent(mContext).hasExtra(CallDetailActivity.EXTRA_CALL_LOG_IDS)) {
@@ -309,6 +321,9 @@ import libcore.util.Objects;
 
             Log.i(TAG, "phoneNumber - " + phoneNumber);
             String[] itemchoice = new String[] { mContext.getString(R.string.calllog_delete_all_of_this_number) };
+            
+//            弹出是否删除该人通话记录对话框
+            
             new AlertDialog.Builder(mContext, 0).setTitle(R.string.calllog_options)
                     .setItems(itemchoice, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -316,13 +331,14 @@ import libcore.util.Objects;
 
                             // final String phoneNumber =
                             // getPhoneCallDetailsForUri(callUris[0]).number.toString();
-
+                            //在通话记录中，根据该通话记录id删除通话记录
                             ContentResolver cr = mContext.getContentResolver();
                             Cursor cursor = cr.query(Calls.CONTENT_URI, new String[] { Calls.NUMBER, Calls._ID }, null,
                                     null, null);
                             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                                 String number = cursor.getString(0);
                                 String id = cursor.getString(1);
+                                
                                 if (!number.isEmpty() && number.endsWith(phoneNumber)) {
                                     cr.delete(Calls.CONTENT_URI, Calls._ID + " = " + id, null);
                                 }
@@ -339,6 +355,7 @@ import libcore.util.Objects;
     };
 
     // by yuan
+//    通过URI获取电话号码
     /** Return the phone call details for a given call log URI. */
     private String getPhoneNumberForUri(Uri callUri) {
 
@@ -358,7 +375,7 @@ import libcore.util.Objects;
             }
         }
     }
-
+//调起拨号 电话模块功能5
     public void call(String number) {
         // try {
         // ITelephonyMSim telephony =
@@ -378,7 +395,7 @@ import libcore.util.Objects;
     }
 
     // edited by yuan
-
+    //点击通话记录列表中某项的拨号图标，若设置IP拨号模式，弹出IP拨号选择框，选择卡一IP拨号，卡二IP拨号，或直接拨号。
     /** Listener for the secondary action in the list, either call or play. */
     private final View.OnClickListener mSecondaryActionListener = new View.OnClickListener() {
         @Override
@@ -414,6 +431,7 @@ import libcore.util.Objects;
 
             });
             final IPCall ipcall = new IPCall(mContext);
+            //选择卡一IP拨号，在拨叫号码加上相应拨号前缀，调起拨号方法
             if (ipcall.isCDMAIPEnabled()) {
                 layout.findViewById(R.id.imageButton_ipcall_one).setVisibility(View.VISIBLE);
                 layout.findViewById(R.id.imageButton_ipcall_one).setOnClickListener(new OnClickListener() {
@@ -425,6 +443,8 @@ import libcore.util.Objects;
                 });
 
             }
+            
+            //选择卡二IP拨号，在拨叫号码加上相应拨号前缀，调起拨号方法
             if (ipcall.isGSMIPEnabled()) {
                 layout.findViewById(R.id.imageButton_ipcall_two).setVisibility(View.VISIBLE);
                 layout.findViewById(R.id.imageButton_ipcall_two).setOnClickListener(new OnClickListener() {
@@ -436,7 +456,7 @@ import libcore.util.Objects;
                 });
 
             }
-
+//若选择普通拨号，直接调起拨号方法
             if (!ipcall.isCDMAIPEnabled() && !ipcall.isGSMIPEnabled()) {
                 // try {
                 // ITelephonyMSim telephony =
@@ -759,6 +779,7 @@ import libcore.util.Objects;
         views.primaryActionView.setOnClickListener(mPrimaryActionListener);
 
         /** zzz */
+        //绑定listener
         views.primaryActionView.setOnLongClickListener(mPrimaryLongActionListener);
 
         views.secondaryActionView.setOnClickListener(mSecondaryActionListener);
@@ -827,7 +848,7 @@ import libcore.util.Objects;
             // views.secondaryActionView.setTag(IntentProvider.getReturnCallIntentProvider(number));
             views.secondaryActionView.setTag(number);
 
-            /** �����е�������� */
+
             ViewEntry entry = new ViewEntry(mContext.getString(R.string.menu_callNumber,
                     FormatUtils.forceLeftToRight(number)), ContactsUtils.getCallIntent(number), mContext.getString(
                     R.string.description_call, number));
@@ -923,6 +944,7 @@ import libcore.util.Objects;
     }
 
     // by yuan
+    //描述一级、二级动作
     static final class ViewEntry {
         public final String text;
         public final Intent primaryIntent;
@@ -954,6 +976,7 @@ import libcore.util.Objects;
     }
 
     /** Returns true if this is the last item of a section. */
+    //判断是否是最后一项通话记录，若是，返回true
     private boolean isLastOfSection(Cursor c) {
         if (c.isLast())
             return true;

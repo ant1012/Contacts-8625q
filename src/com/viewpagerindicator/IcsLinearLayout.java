@@ -8,6 +8,16 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.LinearLayout;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+
 /**
  * A simple extension of a regular linear layout that supports the divider API
  * of Android 4.0+. The dividers are added adjacent to the children by changing

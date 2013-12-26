@@ -39,6 +39,15 @@ import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+
+/**
  * Draws circles (one for each view). The current view position is filled and
  * others are only stroked.
  */

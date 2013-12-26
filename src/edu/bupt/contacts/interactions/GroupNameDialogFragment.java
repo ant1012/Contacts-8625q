@@ -33,6 +33,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A common superclass for creating and renaming groups.
  */
 public abstract class GroupNameDialogFragment extends DialogFragment {

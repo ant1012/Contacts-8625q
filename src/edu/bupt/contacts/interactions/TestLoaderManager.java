@@ -34,6 +34,15 @@ import java.util.List;
 import junit.framework.Assert;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+
+/**
  * A {@link LoaderManager} that records which loaders have been completed.
  * <p>
  * You should wrap the existing LoaderManager with an instance of this class, which will then

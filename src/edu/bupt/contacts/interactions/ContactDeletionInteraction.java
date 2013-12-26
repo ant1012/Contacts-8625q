@@ -58,6 +58,16 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 删除一个联系人（包括保存在卡一卡二中） 通讯录功能2
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * An interaction invoked to delete a contact.
  */
 public class ContactDeletionInteraction extends Fragment
@@ -346,7 +356,7 @@ public class ContactDeletionInteraction extends Fragment
                             
                             Cursor p =  mContext.getContentResolver().query(
                                  ContactsContract.RawContacts.CONTENT_URI, //
-                                 new String[] { ContactsContract.RawContacts.ACCOUNT_NAME},
+                                 new String[] { ContactsContract.RawContacts.ACCOUNT_NAME},  //通过联系人的rawContactId得到该联系人所在账户（手机、卡一、卡二）
                                  ContactsContract.RawContacts._ID+" =? ", //
                                  new String[] { String.valueOf(rawContactId) }, //
                                  null);
@@ -361,7 +371,7 @@ public class ContactDeletionInteraction extends Fragment
                              
                             }
                             p.close();
-                    		
+                    		//调用删除联系人的函数，删除选定联系人，该函数参数为联系人所在的账户
                             SimDelete(account_name);
 //ddd_end                            
                         	}
@@ -435,13 +445,13 @@ public class ContactDeletionInteraction extends Fragment
     */
     
 
-//ddd
+//ddd 删除存在卡中的联系人
     public void SimDelete(String account_name) {
     	Uri simUri = null;
-        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
-            simUri = Uri.parse("content://iccmsim/adn");
+        if (account_name.equals("UIM") || account_name.equals("SIM1") ) {//判断联系人所在账户
+            simUri = Uri.parse("content://iccmsim/adn");//将卡一地址赋给uri
             Log.i(TAG, "content://iccmsim/adn");
-        } else if(account_name.equals("SIM2")) {
+        } else if(account_name.equals("SIM2")) {       //将卡二地址赋给uri
             simUri = Uri.parse("content://iccmsim/adn_sub2");
             Log.i(TAG, "content://iccmsim/adn_sub2");
         } else {
@@ -454,14 +464,14 @@ public class ContactDeletionInteraction extends Fragment
                 null, null);
         Log.d("delete account", ">>>>>> " + cursor.getCount());
         while (cursor.moveToNext()) {
-            String name = cursor.getString(cursor.getColumnIndex(People.NAME));
+            String name = cursor.getString(cursor.getColumnIndex(People.NAME));  
             String phoneNumber = cursor.getString(cursor
                     .getColumnIndex(People.NUMBER));
             name = display_name;
             phoneNumber = display_number;
-            String where = "tag='" + name + "'";
+            String where = "tag='" + name + "'"; //通过联系人姓名、电话确定删除项
             where += " AND number='" + phoneNumber + "'";
-            int deleteSimRow=mContext.getContentResolver().delete(simUri, where, null);
+            int deleteSimRow=mContext.getContentResolver().delete(simUri, where, null);  //删除所选联系人
             
             Log.i(TAG, "delete_name - " + name);
             Log.i(TAG, "delete_phoneNumber - " + phoneNumber);
@@ -469,7 +479,7 @@ public class ContactDeletionInteraction extends Fragment
             Log.i(TAG, "where " + where);
             Log.i(TAG, "Simuri " + simUri);
             if (deleteSimRow !=0) {
-                Log.d(TAG, "delate sim card successfully");
+                Log.d(TAG, "delate sim card successfully");  
             }
       
             

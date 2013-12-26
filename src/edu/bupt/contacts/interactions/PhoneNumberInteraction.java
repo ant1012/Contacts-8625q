@@ -68,6 +68,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+
+
+/**
  * Initiates phone calls or a text message. If there are multiple candidates,
  * this class shows a dialog to pick one. Creating one of these interactions
  * should be done through the static factory methods.

@@ -33,6 +33,14 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Draws a line for each page. The current page line is colored differently
  * than the unselected page lines.
  */

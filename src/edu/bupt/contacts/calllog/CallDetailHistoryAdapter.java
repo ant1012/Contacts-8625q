@@ -32,6 +32,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 电话模块显示历史记录
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
+
+
 /**
  * Adapter for a ListView containing history items from the details of a call.
  */
@@ -151,6 +165,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         callTypeTextView.setText(mCallTypeHelper.getCallTypeText(callType));
 
         /** zzz */
+//        设置时间，如需要，可显示北京时间或者当地时间
         // // Set the date.
         // CharSequence dateValue = DateUtils.formatDateRange(mContext,
         // details.date, details.date,
@@ -164,18 +179,18 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
 
         StringBuilder dateValueSB = new StringBuilder();
-        if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+        if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {//若在漫游情况下
             String timeLocate = showBJTime ? mContext.getResources().getStringArray(R.array.time_setting)[1] : mContext
-                    .getResources().getStringArray(R.array.time_setting)[0];
+                    .getResources().getStringArray(R.array.time_setting)[0];//若选择显示北京时间，则显示北京时间，否则，显示当地时间
             dateValueSB.append(timeLocate);
             dateValueSB.append(' ');
         }
 
-        if (!showBJTime) { // local time
+        if (!showBJTime) { // local time 显示当地时间
             dateValueSB.append(DateUtils.formatDateRange(mContext, details.date, details.date,
                     DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY
                             | DateUtils.FORMAT_SHOW_YEAR));
-        } else { // bj time
+        } else { // bj time 显示北京时间
             dateValueSB.append(DateUtils.formatDateRange(
                     mContext,
                     new Formatter(),
@@ -186,7 +201,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
         }
         dateView.setText(dateValueSB.toString());
 
-        // Set the duration
+        // Set the duration 显示通话时长
         if (callType == Calls.MISSED_TYPE || callType == Calls.VOICEMAIL_TYPE) {
             durationView.setVisibility(View.GONE);
         } else {
@@ -194,7 +209,8 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
             durationView.setText(formatDuration(details.duration));
         }
         
-        //ddd change GSM into卡二
+        //ddd 将标示卡一卡二的标签 “GSM”改为“卡二” 
+        //判断该条通话记录的卡类型并且显示  电话模块功能4
         if (details.msimType == 0) { // by yuan
             msimcardView.setText(R.string.cdma);
         } else if (details.msimType == 1) {
