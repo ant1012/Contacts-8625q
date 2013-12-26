@@ -20,6 +20,18 @@ package com.viewpagerindicator;
 import android.support.v4.view.ViewPager;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 开源库，实现ViewPager的滑动切换tab的效果
+ * https://github.com/JakeWharton/Android-ViewPagerIndicator
+ * Apache License 2.0
+ * 
+ * 此文件取自Android-ViewPagerIndicator库，未修改
+ * 
+ * */
+
+/**
  * A PageIndicator is responsible to show an visual indicator on the total views
  * number and the current visible view.
  */

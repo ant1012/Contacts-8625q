@@ -11,6 +11,7 @@ import com.android.internal.telephony.msim.ITelephonyMSim;
 
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.observer.ContactsCacheDBHelper;
+import edu.bupt.contacts.util.PhoneQueryUtils;
 import a_vcard.android.content.ContentValues;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -61,10 +62,10 @@ public class CallinfoActivity extends Activity {
     private long id = -1;
     private String number = "";
     private String name = "";
-    private String numberCut10= "";
-    private String numberCut11 = "";  //原始后十一位电话号码
-    private String numberCutFormat11 =""; //格式化的后十一位电话号码
-    private String numberCutFormat10 = "";//格式化的后十位位电话号码，因为添加了横杠，实际有十三位
+    private String numberCut10 = "";
+    private String numberCut11 = ""; // 原始后十一位电话号码
+    private String numberCutFormat11 = ""; // 格式化的后十一位电话号码
+    private String numberCutFormat10 = "";// 格式化的后十位位电话号码，因为添加了横杠，实际有十三位
     private String strPhoneNumber;
     private String numberBlank10;
     private Context context;
@@ -91,68 +92,70 @@ public class CallinfoActivity extends Activity {
         Log.v(TAG, "id - " + id);
         number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
         Log.v(TAG, "number - " + number);
-        Log.v(TAG,"raw_number_format - "+fomatNumber(number));
+        // Log.v(TAG, "raw_number_format - " + fomatNumber(number));
         name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
         Log.v(TAG, "name - " + name);
         cursor.close();
-        
+
         /**
          * ddd 取电话号码后十位，具体操作，首先取后11位，格式化（加横杠，加空格，不加）之后，再对格式化之后的号码取
          * */
-    	
+
         // 获取TelephonyManager用于判断是否漫游
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // 获取SharedPreferences用于判断是否开启漫游测试
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        if(tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)){
-        	Log.v(TAG, "tm.isNetworkRoaming()");
-        	if(number.length()<11){
-        		numberCut10 = number;
-        		numberBlank10 = fomatBlankNumber(number);
-        		numberCutFormat10 = fomatNumber(number);
-        		Log.v(TAG,"numberCutFormat10_less_than_11"+numberCutFormat10);
-            }
-            else{
-            	
-            numberCut10=number.substring(number.length()-10,number.length());
-            
-            numberCut11 = number.substring(number.length()-11,number.length());
-            numberCutFormat11 = fomatNumber(numberCut11);
-            Log.v(TAG, "numberCutFormat11 - " + numberCutFormat11);
-            Log.v(TAG,"fomatBlankNumber(numberCut11)"+fomatBlankNumber(numberCut11));
-            
-            numberBlank10 = fomatBlankNumber(numberCut11).substring(fomatBlankNumber(numberCut11).length()-12,fomatBlankNumber(numberCut11).length());
-            
-            numberCutFormat10 = numberCutFormat11.substring(numberCutFormat11.length()-13,numberCutFormat11.length());
-            Log.v(TAG, "numberCutFormat10 - " + numberCutFormat10);
-            }
-        	
-            Log.v(TAG,"numberCut10--"+numberCut10);
-            Log.v(TAG,"numberBlank10--"+numberBlank10);
 
-            Map<String, String> map =  getContactidFromCutNumber(numberCut10,numberCutFormat10,numberBlank10);
-            
-           Log.v(TAG,"map--"+map);
-           
-           if(map.size() != 0){
-        	   name = map.get("displayName");
-        	   Log.v(TAG,"displayName--"+name);
-        	   number = map.get("contactNumber");
-        	   Log.v(TAG,"contactNumber--"+number);
-        	   modifyCallLog(id,map.get("displayName"),map.get("contactNumber"));
-           } 
+        if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) { // zzz
+                                                                                      // 漫游时
+            Log.v(TAG, "tm.isNetworkRoaming()");
+            // zzz 这一段应该放在getContactidFromCutNumber方法中进行操作
+            // if (number.length() < 11) {
+            // numberCut10 = number;
+            // numberBlank10 = fomatBlankNumber(number);
+            // numberCutFormat10 = fomatNumber(number);
+            // Log.v(TAG, "numberCutFormat10_less_than_11" + numberCutFormat10);
+            // } else {
+            //
+            // numberCut10 = number.substring(number.length() - 10,
+            // number.length());
+            //
+            // numberCut11 = number.substring(number.length() - 11,
+            // number.length());
+            // numberCutFormat11 = fomatNumber(numberCut11);
+            // Log.v(TAG, "numberCutFormat11 - " + numberCutFormat11);
+            // Log.v(TAG, "fomatBlankNumber(numberCut11)" +
+            // fomatBlankNumber(numberCut11));
+            //
+            // numberBlank10 =
+            // fomatBlankNumber(numberCut11).substring(fomatBlankNumber(numberCut11).length()
+            // - 12,
+            // fomatBlankNumber(numberCut11).length());
+            //
+            // numberCutFormat10 =
+            // numberCutFormat11.substring(numberCutFormat11.length() - 13,
+            // numberCutFormat11.length());
+            // Log.v(TAG, "numberCutFormat10 - " + numberCutFormat10);
+            // }
+            //
+            // Log.v(TAG, "numberCut10--" + numberCut10);
+            // Log.v(TAG, "numberBlank10--" + numberBlank10);
 
-        	
-        	
+            Map<String, String> map = PhoneQueryUtils.getContactidFromCutNumber(number, this).get(0);
+
+            Log.v(TAG, "map--" + map);
+
+            if (map.size() != 0) {
+                name = map.get("display_name");
+                Log.i(TAG, "display_name - " + name);
+                number = map.get("number");
+                Log.i(TAG, "number - " + number);
+                modifyCallLog(id, name, number);
+            }
+
         }
 
-        
-
-        
-        
-
-        ArrayList<String> contactids = getContactidFromNumber(number);
+        ArrayList<String> contactids = PhoneQueryUtils.getContactidFromNumber(number, this);
 
         Bitmap bm = contactids.size() == 0 ? BitmapFactory.decodeResource(getResources(),
                 R.drawable.ic_contact_picture_holo_dark) : loadContactPhoto(getContentResolver(),
@@ -226,185 +229,224 @@ public class CallinfoActivity extends Activity {
         return BitmapFactory.decodeStream(input);
     }
 
-    private ArrayList<String> getContactidFromNumber(String phoneNumber) {
-        Log.d(TAG, "getContactidFromNumber");
-        ArrayList<String> contactidList = new ArrayList<String>();
-        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",        		
-        		new String[] { phoneNumber }, null);
-        while (pCur.moveToNext()) {
-            contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCur.close();
+    // private ArrayList<String> getContactidFromNumber(String phoneNumber) {
+    // Log.d(TAG, "getContactidFromNumber");
+    // ArrayList<String> contactidList = new ArrayList<String>();
+    // Cursor pCur =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] {
+    // phoneNumber }, null);
+    // while (pCur.moveToNext()) {
+    // contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // }
+    // pCur.close();
+    //
+    // // -
+    // Cursor pCurFormat = getContentResolver()
+    // .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+    // ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+    // new String[] { fomatNumber(phoneNumber) }, null);
+    // while (pCurFormat.moveToNext()) {
+    // contactidList.add(pCurFormat.getString(pCurFormat
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // }
+    // pCurFormat.close();
+    //
+    // // +86
+    // phoneNumber = replacePattern(phoneNumber, "^((\\+{0,1}86){0,1})", ""); //
+    // strip
+    // // +86
+    // Cursor pCur86 =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] {
+    // phoneNumber }, null);
+    // while (pCur86.moveToNext()) {
+    // contactidList
+    // .add(pCur86.getString(pCur86.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // }
+    // pCur86.close();
+    //
+    // // -
+    // Cursor pCur86Format = getContentResolver()
+    // .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+    // ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+    // new String[] { fomatNumber(phoneNumber) }, null);
+    // while (pCur86Format.moveToNext()) {
+    // contactidList.add(pCur86Format.getString(pCur86Format
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // }
+    // pCur86Format.close();
+    // return contactidList;
+    // }
 
-        // -
-        Cursor pCurFormat = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-                        new String[] { fomatNumber(phoneNumber) }, null);
-        while (pCurFormat.moveToNext()) {
-            contactidList.add(pCurFormat.getString(pCurFormat
-                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCurFormat.close();
+    // ddd 通过截短的十位电话找到contact_id
+    // private ArrayList<String> getContactidFromCutNumber(String phoneNumber) {
+    // Log.d(TAG, "getContactidFromCutNumber");
+    // ArrayList<String> contactidList = new ArrayList<String>();
+    // Cursor pCur =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
+    // null, null);
+    // while (pCur.moveToNext()) {
+    // contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // //
+    // contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // }
+    // pCur.close();
+    //
+    // // -
+    // Cursor pCurFormat = getContentResolver()
+    // .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+    // //ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+    // android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
+    // null, null);
+    // while (pCurFormat.moveToNext()) {
+    // contactidList.add(pCurFormat.getString(pCurFormat
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // //
+    // contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // }
+    // pCurFormat.close();
+    // return contactidList;
+    // }
 
-        // +86
-        phoneNumber = replacePattern(phoneNumber, "^((\\+{0,1}86){0,1})", ""); // strip
-                                                                               // +86
-        Cursor pCur86 = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?", new String[] { phoneNumber }, null);
-        while (pCur86.moveToNext()) {
-            contactidList
-                    .add(pCur86.getString(pCur86.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCur86.close();
+    // private Map<String, String> getContactidFromCutNumber(String phoneNumber,
+    // String formatNmuber,
+    // String formatBlankNmuber) {
+    // Log.i(TAG, "phone-number--" + phoneNumber);
+    // Map<String, String> map = new HashMap<String, String>();
+    //
+    // Cursor pCur =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER +
+    // " LIKE '%" + phoneNumber + "'", null,
+    // null);
+    // while (pCur.moveToNext()) {
+    // map.put("contactId",
+    // pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // map.put("contactNumber",
+    // pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // map.put("displayName",
+    // pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+    // Log.v(TAG,
+    // "ddd-pur-number--"
+    // +
+    // pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // }
+    //
+    // pCur.close();
+    //
+    // // -
+    // Cursor pCurFormat =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // // ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
+    // android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER +
+    // " LIKE '%" + formatNmuber + "'", null,
+    // null);
+    // while (pCurFormat.moveToNext()) {
+    // map.put("contactId",
+    // pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // map.put("contactNumber",
+    // pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // map.put("displayName", pCurFormat.getString(pCurFormat
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+    // Log.i(TAG,
+    // "ddd-purformat-number--"
+    // + pCurFormat.getString(pCurFormat
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // }
+    // pCurFormat.close();
+    //
+    // // ddd 空格的情况
+    // Cursor pCurBlank =
+    // getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    // null,
+    // android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER +
+    // " LIKE '%" + formatBlankNmuber + "'",
+    // null, null);
+    // while (pCurBlank.moveToNext()) {
+    // map.put("contactId",
+    // pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+    // map.put("contactNumber",
+    // pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // map.put("displayName",
+    // pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+    // Log.v(TAG,
+    // "ddd-pCurBlank-number--"
+    // + pCurBlank.getString(pCurBlank
+    // .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+    // }
+    //
+    // pCurBlank.close();
+    //
+    // return map;
+    // }
 
-        // -
-        Cursor pCur86Format = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-                        new String[] { fomatNumber(phoneNumber) }, null);
-        while (pCur86Format.moveToNext()) {
-            contactidList.add(pCur86Format.getString(pCur86Format
-                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-        }
-        pCur86Format.close();
-        return contactidList;
-    }
-
-    //ddd 通过截短的十位电话找到contact_id
-//    private ArrayList<String> getContactidFromCutNumber(String phoneNumber) {
-//        Log.d(TAG, "getContactidFromCutNumber");
-//        ArrayList<String> contactidList = new ArrayList<String>();
-//        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-//        		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
-//        		null, null);
-//        while (pCur.moveToNext()) {
-//            contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-//         //   contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-//        }
-//        pCur.close();
-//
-//        // -
-//        Cursor pCurFormat = getContentResolver()
-//                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-//                        //ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-//                		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
-//                		null, null);
-//        while (pCurFormat.moveToNext()) {
-//            contactidList.add(pCurFormat.getString(pCurFormat
-//                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-//    //        contactidList.add(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-//        }
-//        pCurFormat.close();
-//        return contactidList;
-//    }
-    
-    private Map<String, String> getContactidFromCutNumber(String phoneNumber,String formatNmuber,String formatBlankNmuber) {
-        Log.i(TAG, "phone-number--"+phoneNumber);
-        Map<String, String> map = new HashMap<String, String>();
-        
-        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-        		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+phoneNumber+"'",
-        		null, null);
-        while (pCur.moveToNext()) {
-            map.put("contactId",pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-            map.put("contactNumber",pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-            map.put("displayName",pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-        Log.v(TAG,"ddd-pur-number--"+pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
-        }
-        
-        pCur.close();
-
-        // -
-        Cursor pCurFormat = getContentResolver()
-                .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        //ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?",
-                		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+formatNmuber+"'",
-                		null, null);
-        while (pCurFormat.moveToNext()) {
-            map.put("contactId",pCurFormat.getString(pCurFormat
-                    .getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-            map.put("contactNumber",pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-            map.put("displayName",pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-            Log.i(TAG,"ddd-purformat-number--"+pCurFormat.getString(pCurFormat.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
-        }
-        pCurFormat.close();
-        
-        //ddd  空格的情况
-        Cursor pCurBlank = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-        		android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE '%"+formatBlankNmuber+"'",
-        		null, null);
-        while (pCurBlank.moveToNext()) {
-            map.put("contactId",pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-            map.put("contactNumber",pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-            map.put("displayName",pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-        Log.v(TAG,"ddd-pCurBlank-number--"+pCurBlank.getString(pCurBlank.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))); 
-        }
-
-        pCurBlank.close();
-        
-        return map;
-    }
-    
-    
-    //add '-' to input number, match the format in DB
-    private String fomatNumber(String input) {
-        if (input.startsWith("1")) {
-            if (input.length() == 1) {
-                return input;
-            } else if (input.length() > 1 && input.length() < 5) {
-                return input.substring(0, 1) + "-" + input.substring(1, input.length());
-            } else if (input.length() >= 5 && input.length() < 8) {
-                return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, input.length());
-            } else if (input.length() >= 8) {
-                return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, 7) + "-"
-                        + input.substring(7, input.length());
-            }
-        } else {
-            if (input.length() <= 3) {
-                return input;
-            } else if (input.length() > 3 && input.length() < 7) {
-                return input.substring(0, 3) + "-" + input.substring(3, input.length());
-            } else if (input.length() >= 7) {
-                return input.substring(0, 3) + "-" + input.substring(3, 6) + "-" + input.substring(6, input.length());
-            }
-        }
-        return "";
-    }
+    // // add '-' to input number, match the format in DB
+    // private String fomatNumber(String input) {
+    // if (input.startsWith("1")) {
+    // if (input.length() == 1) {
+    // return input;
+    // } else if (input.length() > 1 && input.length() < 5) {
+    // return input.substring(0, 1) + "-" + input.substring(1, input.length());
+    // } else if (input.length() >= 5 && input.length() < 8) {
+    // return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" +
+    // input.substring(4, input.length());
+    // } else if (input.length() >= 8) {
+    // return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" +
+    // input.substring(4, 7) + "-"
+    // + input.substring(7, input.length());
+    // }
+    // } else {
+    // if (input.length() <= 3) {
+    // return input;
+    // } else if (input.length() > 3 && input.length() < 7) {
+    // return input.substring(0, 3) + "-" + input.substring(3, input.length());
+    // } else if (input.length() >= 7) {
+    // return input.substring(0, 3) + "-" + input.substring(3, 6) + "-" +
+    // input.substring(6, input.length());
+    // }
+    // }
+    // return "";
+    // }
 
     /**
      * ddd 将数字中加入空格
      * */
-    private String fomatBlankNumber(String input) {
-            if (input.length() <= 3) {
-                return input;
-            } else if (input.length() > 3 && input.length() < 7) {
-                return input.substring(0, 3) + " " + input.substring(3, input.length());
-            } else if (input.length() >= 7 && input.length() <= 11 ) {
-                return input.substring(0, 3) + " " + input.substring(3, 7) + " " + input.substring(7, input.length());
-            }
-            else if(input.length()>11){
-            	return input;
-            	
-            }
-        return "";
-    }
-    
+    // private String fomatBlankNumber(String input) {
+    // if (input.length() <= 3) {
+    // return input;
+    // } else if (input.length() > 3 && input.length() < 7) {
+    // return input.substring(0, 3) + " " + input.substring(3, input.length());
+    // } else if (input.length() >= 7 && input.length() <= 11) {
+    // return input.substring(0, 3) + " " + input.substring(3, 7) + " " +
+    // input.substring(7, input.length());
+    // } else if (input.length() > 11) {
+    // return input;
+    //
+    // }
+    // return "";
+    // }
 
-    private String replacePattern(String origin, String pattern, String replace) {
-        Log.i(TAG, "origin - " + origin);
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(origin);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, replace);
-        }
-
-        m.appendTail(sb);
-        Log.i(TAG, "sb.toString() - " + sb.toString());
-        return sb.toString();
-    }
+    // private String replacePattern(String origin, String pattern, String
+    // replace) {
+    // Log.i(TAG, "origin - " + origin);
+    // Pattern p = Pattern.compile(pattern);
+    // Matcher m = p.matcher(origin);
+    // StringBuffer sb = new StringBuffer();
+    // while (m.find()) {
+    // m.appendReplacement(sb, replace);
+    // }
+    //
+    // m.appendTail(sb);
+    // Log.i(TAG, "sb.toString() - " + sb.toString());
+    // return sb.toString();
+    // }
 
     public Spanned getSpan(int id, String s) {
         ImageGetter imgGetter = new Html.ImageGetter() {
@@ -457,31 +499,16 @@ public class CallinfoActivity extends Activity {
         exist = false;
         super.onDestroy();
     }
-    
-    
-    
+
     /**
      * ddd 修改数据库中的通话记录
      * */
-    private void modifyCallLog(long id2,String name,String number){
-    	android.content.ContentValues content = new android.content.ContentValues();
-    	content.put(CallLog.Calls.NUMBER, number);
-    	content.put(CallLog.Calls.CACHED_NAME,name);
-    	getContentResolver().update(CallLog.Calls.CONTENT_URI, content, CallLog.Calls._ID+"="+id2, null);
-    	
+    private void modifyCallLog(long id2, String name, String number) {
+        android.content.ContentValues content = new android.content.ContentValues();
+        content.put(CallLog.Calls.NUMBER, number);
+        content.put(CallLog.Calls.CACHED_NAME, name);
+        getContentResolver().update(CallLog.Calls.CONTENT_URI, content, CallLog.Calls._ID + "=" + id2, null);
+
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 }

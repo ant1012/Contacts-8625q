@@ -42,7 +42,11 @@ import static android.widget.LinearLayout.VERTICAL;
  * 北邮ANT实验室
  * ddd
  * 
- * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 开源库，实现ViewPager的滑动切换tab的效果
+ * https://github.com/JakeWharton/Android-ViewPagerIndicator
+ * Apache License 2.0
+ * 
+ * 此文件取自Android-ViewPagerIndicator库，未修改
  * 
  * */
 

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.CallLog;
 import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
@@ -16,7 +18,7 @@ public class CallstateBroadcastReceiver extends BroadcastReceiver {
     private Context context;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         this.context = context;
         String action = intent.getAction();
 
@@ -42,9 +44,26 @@ public class CallstateBroadcastReceiver extends BroadcastReceiver {
                         return;
                     }
 
-                    Intent i = new Intent(context, CallinfoActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(i);
+                    // wait for 500 msecs
+                    final Handler mHandler = new Handler() {
+                        public void handleMessage(Message msg) {
+                            Intent i = new Intent(context, CallinfoActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(i);
+                        }
+                    };
+
+                    new Thread() {
+                        public void run() {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            mHandler.sendEmptyMessage(0);
+                        }
+                    }.start();
+
                     // } else {
                     // BlacklistBroadcastReceiver.justBlockOne = false;
                     // }

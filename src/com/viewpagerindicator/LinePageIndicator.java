@@ -34,6 +34,18 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 开源库，实现ViewPager的滑动切换tab的效果
+ * https://github.com/JakeWharton/Android-ViewPagerIndicator
+ * Apache License 2.0
+ * 
+ * 此文件取自Android-ViewPagerIndicator库，未修改
+ * 
+ * */
+
+/**
  * Draws a line for each page. The current page line is colored differently
  * than the unselected page lines.
  */

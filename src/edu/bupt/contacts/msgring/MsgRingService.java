@@ -55,7 +55,7 @@ public class MsgRingService extends Service {
                 }
                 Log.i(TAG, "Msg from " + incomingNumber);
                 Log.i(TAG, "formatted " + fomatNumber(incomingNumber));
-                Log.i(TAG, "formatted with space " + fomatNumberWithSpace   (incomingNumber));
+                Log.i(TAG, "formatted with space " + fomatNumberWithSpace(incomingNumber));
 
                 ArrayList<String> contactidList = getContactidFromNumber(incomingNumber);
                 for (String s : contactidList) {
