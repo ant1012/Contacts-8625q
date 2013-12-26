@@ -176,6 +176,7 @@ import javax.annotation.concurrent.GuardedBy;
     /**
      * by yuan
      */
+    //根据需求显示相应卡中的通话记录
     public void fetchSimCalls(String callSim) {
         cancelFetch();
         int requestId = newCallsRequest();

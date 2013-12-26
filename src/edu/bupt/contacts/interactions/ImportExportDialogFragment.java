@@ -157,17 +157,17 @@ public class ImportExportDialogFragment extends DialogFragment
                 final int resId = adapter.getItem(which);
                 switch (resId) {
                     // baoge
-                    case R.string.manage_sim_contacts:{//����ɼ����ϵ��
+                    case R.string.manage_sim_contacts:{//批量分享联系人
                         dismissDialog = true;
                         Intent exportIntent = new Intent(getActivity(), MultiSelectExport.class);
                         getActivity().startActivity(exportIntent);
                         break;
                     }
-                    case R.string.import_from_sdcard: {//�Ӵ洢�豸����
+                    case R.string.import_from_sdcard: {//从存储设备导入
                         dismissDialog = handleImportRequest(resId);
                         break;
                     }
-                    case R.string.export_to_sdcard: {//�������洢�豸
+                    case R.string.export_to_sdcard: {//导出到存储设备
                         dismissDialog = true;
                         Intent exportIntent = new Intent(getActivity(), ExportVCardActivity.class);
                         getActivity().startActivity(exportIntent);
@@ -175,13 +175,13 @@ public class ImportExportDialogFragment extends DialogFragment
                     }
 
                     /** zzz */
-//                    case R.string.share_visible_contacts: {//����ɼ����ϵ��
+//                    case R.string.share_visible_contacts: 
 //                        dismissDialog = true;
 //                        doShareVisibleContacts();
 //                        break;
 //                    }
 
-                    case R.string.export_to_sim: {//������SIM��
+                    case R.string.export_to_sim: {//导出到sim卡
                         dismissDialog = true;
                         if (MultiSimConfig.isMultiSimEnabled()) {
                             displaySIMSelection();
