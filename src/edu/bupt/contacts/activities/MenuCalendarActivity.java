@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.bupt.contacts.R;
+import edu.bupt.contacts.util.PhoneQueryUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.provider.CalendarContract.Events;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.telephony.TelephonyManager;
@@ -30,6 +32,7 @@ import android.widget.SimpleAdapter;
 
 public class MenuCalendarActivity extends Activity {
     public static final Uri CONTENT_URI = Uri.parse("content://edu.bupt.calendar.attendee/AttendeePhone");//
+    private static final String TAG = "MenuCalendarActivity";
     public List<String> calendarArrayList;
     public List<String> calendarEventArrayList;
     public ArrayList<Map<String, Object>> list;
@@ -122,21 +125,33 @@ public class MenuCalendarActivity extends Activity {
     private void getCalendar() {
         // TODO Auto-generated method stub
         calendarArrayList.clear();
-        Log.i("getCalendar_phoneNumber", "" + phoneNumber);
-        Cursor cur = getContentResolver().query(CONTENT_URI, null, null, null, "phoneNumber = " + phoneNumber, null);
-        cur.moveToFirst();
-        while (cur.getCount() > cur.getPosition()) {
-            String number = cur.getString(cur.getColumnIndex("phoneNumber"));
-            String event_id = cur.getString(cur.getColumnIndex("event_id"));
-            String name = cur.getString(cur.getColumnIndex("name"));
-            Log.i("Calendar_number", "" + number);
-            if (number.equals(phoneNumber)) {
-                calendarArrayList.add(event_id);
-                Log.i("name", "" + name);
-                Log.i("event_id", "" + event_id);
-            }
+        Log.i(TAG, "phoneNumber - " + phoneNumber);
+        Log.i(TAG, "fomatNumberWithDash - " + PhoneQueryUtils.fomatNumberWithDash(phoneNumber));
+        Log.i(TAG, "fomatNumberWithSpace - " + PhoneQueryUtils.fomatNumberWithSpace(phoneNumber));
 
-            cur.moveToNext();
+        // zzz 需要考虑多种情况，因为在数据库中存储的号码可能是正常号码，也可能用‘-’分隔，也可能用‘ ’分隔
+        StringBuilder selectionSB = new StringBuilder();
+        selectionSB.append("phoneNumber" + " like ? or "); // zzz
+                                                           // 原始
+        selectionSB.append("phoneNumber" + " like ? or "); // zzz
+                                                           // 减号
+        selectionSB.append("phoneNumber" + " like ?"); // zzz
+                                                       // 空格
+
+        String[] selectionArgsSB = new String[] { "%" + phoneNumber,// zzz
+                                                                    // 原始
+                "%" + PhoneQueryUtils.fomatNumberWithDash(phoneNumber), // zzz
+                                                                        // 减号
+                "%" + PhoneQueryUtils.fomatNumberWithSpace(phoneNumber) }; // zzz
+                                                                           // 空格
+
+        Cursor cur = getContentResolver().query(CONTENT_URI, null, selectionSB.toString(), selectionArgsSB, null);
+
+        Log.i(TAG, "cur.getCount() - " + cur.getCount());
+
+        while (cur.moveToNext()) {
+            String event_id = cur.getString(cur.getColumnIndex("event_id"));
+            calendarArrayList.add(event_id);
         }
         cur.close();
     }
