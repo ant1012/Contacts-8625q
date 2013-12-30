@@ -37,6 +37,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -129,14 +130,6 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // });
 
         // setListView();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // choose group
-        // ArrayList<String> groupName = new ArrayList<String>();
-        // ArrayList<String> groupId = new ArrayList<String>();
 
         /** zzz */
         // filter deleted groups
@@ -152,6 +145,12 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
         final CharSequence[] items = groupName.toArray(new CharSequence[groupName.size()]);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setOnCancelListener(new OnCancelListener(){
+            @Override
+            public void onCancel(DialogInterface arg0) {
+                ContactMultiSelectionGroupActivity.this.finish();
+            }
+        });
         builder.setTitle(R.string.groupsLabel);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
@@ -160,6 +159,15 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                 setListView();
             }
         }).create().show();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // choose group
+        // ArrayList<String> groupName = new ArrayList<String>();
+        // ArrayList<String> groupId = new ArrayList<String>();
 
     }
 
