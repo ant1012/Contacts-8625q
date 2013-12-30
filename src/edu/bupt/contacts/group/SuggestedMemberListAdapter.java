@@ -17,11 +17,13 @@ package edu.bupt.contacts.group;
 
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.group.SuggestedMemberListAdapter.SuggestedMember;
+import edu.bupt.contacts.util.PhoneQueryUtils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -235,14 +237,30 @@ public class SuggestedMemberListAdapter extends ArrayAdapter<SuggestedMember> {
             }
 
             /** zzz */
+            // zzz 给出对电话号码的匹配提示列表
             // for querying number
-            String formatedSearchQuery = fomatNumber(searchQuery);
+            String dashFormatedSearchQuery = PhoneQueryUtils.fomatNumberWithDash(prefix.toString());
+            String spaceFormatedSearchQuery = PhoneQueryUtils.fomatNumberWithSpace(prefix.toString());
+            // zzz 需要考虑多种情况，因为在数据库中存储的号码可能是正常号码，也可能用‘-’分隔，也可能用‘ ’分隔
+            StringBuilder selectionSB = new StringBuilder();
+            selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " like ? or "); // zzz
+                                                                                               // 原始
+            selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " like ? or "); // zzz
+                                                                                               // 减号
+            selectionSB.append(ContactsContract.CommonDataKinds.Phone.NUMBER + " like ?"); // zzz
+                                                                                           // 空格
+
+            String[] selectionArgsSB = new String[] { "%" + prefix.toString() + "%" ,// zzz
+                                                                        // 原始
+                    "%" + PhoneQueryUtils.fomatNumberWithDash(prefix.toString()) + "%" , // zzz 减号
+                    "%" + PhoneQueryUtils.fomatNumberWithSpace(prefix.toString()) + "%"  }; // zzz 空格
+
             Cursor phonecur = mContentResolver.query( // query phone number for
                                                       // contact id
                     CommonDataKinds.Phone.CONTENT_URI, //
                     new String[] { CommonDataKinds.Phone.CONTACT_ID },//
-                    CommonDataKinds.Phone.NUMBER + " LIKE ? OR " + CommonDataKinds.Phone.NUMBER + " LIKE ? ",//
-                    new String[] { searchQuery, formatedSearchQuery },//
+                    selectionSB.toString(),//
+                    selectionArgsSB,//
                     null);//
             Log.v("SuggestedMemberListAdapter", "phonecur.getCount() - " + phonecur.getCount());
             try {
@@ -374,33 +392,33 @@ public class SuggestedMemberListAdapter extends ArrayAdapter<SuggestedMember> {
             notifyDataSetChanged();
         }
 
-        /** zzz */
-        // add '-' to input number, match the format in DB
-        private String fomatNumber(String input) {
-            if (input.startsWith("1")) {
-                if (input.length() == 1) {
-                    return input;
-                } else if (input.length() > 1 && input.length() < 5) {
-                    return input.substring(0, 1) + "-" + input.substring(1, input.length());
-                } else if (input.length() >= 5 && input.length() < 8) {
-                    return input.substring(0, 1) + "-" + input.substring(1, 4) + "-"
-                            + input.substring(4, input.length());
-                } else if (input.length() >= 8) {
-                    return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, 7) + "-"
-                            + input.substring(7, input.length());
-                }
-            } else {
-                if (input.length() <= 3) {
-                    return input;
-                } else if (input.length() > 3 && input.length() < 7) {
-                    return input.substring(0, 3) + "-" + input.substring(3, input.length());
-                } else if (input.length() >= 7) {
-                    return input.substring(0, 3) + "-" + input.substring(3, 6) + "-"
-                            + input.substring(6, input.length());
-                }
-            }
-            return "";
-        }
+//        /** zzz */
+//        // add '-' to input number, match the format in DB
+//        private String fomatNumber(String input) {
+//            if (input.startsWith("1")) {
+//                if (input.length() == 1) {
+//                    return input;
+//                } else if (input.length() > 1 && input.length() < 5) {
+//                    return input.substring(0, 1) + "-" + input.substring(1, input.length());
+//                } else if (input.length() >= 5 && input.length() < 8) {
+//                    return input.substring(0, 1) + "-" + input.substring(1, 4) + "-"
+//                            + input.substring(4, input.length());
+//                } else if (input.length() >= 8) {
+//                    return input.substring(0, 1) + "-" + input.substring(1, 4) + "-" + input.substring(4, 7) + "-"
+//                            + input.substring(7, input.length());
+//                }
+//            } else {
+//                if (input.length() <= 3) {
+//                    return input;
+//                } else if (input.length() > 3 && input.length() < 7) {
+//                    return input.substring(0, 3) + "-" + input.substring(3, input.length());
+//                } else if (input.length() >= 7) {
+//                    return input.substring(0, 3) + "-" + input.substring(3, 6) + "-"
+//                            + input.substring(6, input.length());
+//                }
+//            }
+//            return "";
+//        }
     }
 
     /**
