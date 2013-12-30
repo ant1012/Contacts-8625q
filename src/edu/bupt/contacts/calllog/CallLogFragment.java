@@ -53,6 +53,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 电话模块，菜单列表
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
+/**
  * Displays a list of call log entries.
  */
 public class CallLogFragment extends ListFragment implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher {
@@ -343,18 +354,20 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        //搜索通话记录
         case R.id.search_calls:
             startActivity(new Intent(getActivity(), CallLogSearchActivity.class));
             return true;
-
+        //删除所有通话记录   电话模块功能6
         case R.id.delete_all: // modified by yuan
             startActivity(new Intent(getActivity(), ClearCallLog.class));
             return true;
-
+        //显示通话记录选项
         case R.id.show_calls_options: // modified by ddd
                                       // modified by zzz
             // ddd startActivity(new Intent (getActivity(),
             // ShowCallsOptionsAcivity.class) );
+        	//弹出显示通话记录选项 电话模块功能2
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.show_calls_option);
             builder.setIcon(R.drawable.ic_ab_dialer_holo_blue);
@@ -362,7 +375,7 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    choose_show_calls_options(which);
+                    choose_show_calls_options(which);//调用显示通话记录方法，显示匹配要求的通话记录
                     mShowingVoicemailOnly = false;
                     dialog.dismiss();
 
@@ -444,7 +457,7 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
             // b.show();
 
             /** zzz */
-
+       //通话设置
         case R.id.menu_call_setting:
             // Intent intent = new Intent(getActivity(),
             // DialpadPreferenceActivity.class);
@@ -608,14 +621,15 @@ public class CallLogFragment extends ListFragment implements CallLogQueryHandler
     // //</array>
 
     // modified by zzz
+    //选择显示的通话记录
     private void choose_show_calls_options(int which) {
         if (which == 0) {
-            mCallLogQueryHandler.fetchAllCalls();
+            mCallLogQueryHandler.fetchAllCalls();     //显示所有通话记录
         } else if (which <= 2) {
-            mCallLogQueryHandler.fetchSimCalls(String.valueOf(which - 1));
+            mCallLogQueryHandler.fetchSimCalls(String.valueOf(which - 1)); //根据需求，显示相应sim卡中的通话记录
 
         } else {
-            mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which - 2));
+            mCallLogQueryHandler.fetchPartialCalls(String.valueOf(which - 2));//根据需求，显示来电、去电、未接通话记录
 
         }
 

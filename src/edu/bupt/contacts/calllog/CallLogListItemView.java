@@ -21,6 +21,17 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+
+/**
  * An entry in the call log.
  */
 public class CallLogListItemView extends LinearLayout {

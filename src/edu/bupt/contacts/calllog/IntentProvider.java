@@ -29,6 +29,14 @@ import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Used to create an intent to attach to an action in the call log.
  * <p>
  * The intent is constructed lazily with the given information.

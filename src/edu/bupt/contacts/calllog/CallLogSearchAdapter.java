@@ -23,6 +23,15 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 在通话记录搜索结果界面中，点击某一项通话记录，跳转到该记录详情
+ *
+ * 
+ * */
+
 public class CallLogSearchAdapter extends SimpleCursorAdapter {
 
     // private Context myContext;

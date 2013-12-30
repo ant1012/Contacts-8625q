@@ -18,7 +18,13 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 删除通话记录 电话模块功能6
+ * 
+ * */
 
 public class ClearCallLogAdapter extends SimpleCursorAdapter{
 
@@ -79,7 +85,7 @@ public class ClearCallLogAdapter extends SimpleCursorAdapter{
 		holder.time.setText(dateValue);
 		holder.number.setText(cursor.getString(1));
 		
-		//ddd
+		//ddd 清除通话记录列表下 添加该通话记录的联系人姓名
         if(cursor.getString(4)!=null){
         	holder.name.setText(cursor.getString(4));
         }else{

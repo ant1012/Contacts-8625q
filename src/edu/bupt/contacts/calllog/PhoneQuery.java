@@ -19,6 +19,15 @@ package edu.bupt.contacts.calllog;
 import android.provider.ContactsContract.PhoneLookup;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+
+/**
  * The query to look up the {@link ContactInfo} for a given number in the Call Log.
  */
 final class PhoneQuery {

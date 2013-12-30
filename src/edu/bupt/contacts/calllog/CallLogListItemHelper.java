@@ -25,6 +25,18 @@ import android.provider.CallLog.Calls;
 import android.text.TextUtils;
 import android.view.View;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 电话模块通话记录列表
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
 /**
  * Helper class to fill in the views of a call log entry.
  */
@@ -63,6 +75,7 @@ import android.view.View;
         boolean canPlay = details.callTypes[0] == Calls.VOICEMAIL_TYPE;
         
         //ddd make the calllog label go away (eg:work mobile)
+        //将通话记录列表中每一项通话记录的电话号码类型隐去，号码类型包括：工作、个人等
         views.phoneCallDetailsViews.labelView.setVisibility(View.GONE);
         if (canPlay) {
             // Playback action takes preference.

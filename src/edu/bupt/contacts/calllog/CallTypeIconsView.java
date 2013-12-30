@@ -30,6 +30,14 @@ import android.view.View;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+/**
  * View that draws one or more symbols for different types of calls (missed calls, outgoing etc).
  * The symbols are set up horizontally. As this view doesn't create subviews, it is better suited
  * for ListView-recycling that a regular LinearLayout using ImageViews.

@@ -24,6 +24,15 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+
+/**
  * Wraps a cursor to add an additional column with the same value for all rows.
  * <p>
  * The number of rows in the cursor and the set of columns is determined by the cursor being

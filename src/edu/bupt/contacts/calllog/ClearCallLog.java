@@ -23,6 +23,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 删除通话记录 电话模块功能6
+ * 
+ * */
+
 public class ClearCallLog extends Activity {
 
     private ListView clearCalllogListview;
@@ -42,6 +50,7 @@ public class ClearCallLog extends Activity {
 
         resolver = getContentResolver();
         //ddd added name 
+        //在删除通话历史记录中，添加返回联系人的姓名
         cursor = resolver.query(CallLog.Calls.CONTENT_URI, new String[] { "_id", "number", "date", "type","name" }, null,
                 null, null);
         Log.v("yuan", cursor.getCount() + "");

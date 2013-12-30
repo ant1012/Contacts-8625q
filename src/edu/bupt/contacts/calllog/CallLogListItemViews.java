@@ -27,6 +27,17 @@ import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
+/**
  * Simple value object containing the various views within a call log entry.
  */
 public final class CallLogListItemViews {

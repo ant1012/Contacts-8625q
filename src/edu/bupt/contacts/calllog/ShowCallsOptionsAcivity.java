@@ -73,6 +73,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 要显示的通话记录activity
+ * 
+ * */
+
 public class ShowCallsOptionsAcivity extends Activity{
 
 	private RadioGroup callOptionRadiogroup;

@@ -42,6 +42,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.GuardedBy;
 
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 通话记录搜索功能
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
 /** Handles asynchronous queries to the call log. */
 /*package*/ class CallLogQueryHandler extends AsyncQueryHandler {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -165,6 +174,7 @@ import javax.annotation.concurrent.GuardedBy;
     /**
      * by yuan
      */
+    //显示来电、去电、未接通话记录的方法  电话模块功能2
     public void fetchPartialCalls(String callType) {
         cancelFetch();
         int requestId = newCallsRequest();
@@ -176,7 +186,7 @@ import javax.annotation.concurrent.GuardedBy;
     /**
      * by yuan
      */
-    //根据需求显示相应卡中的通话记录
+    //根据需求显示相应卡中的通话记录 ddd 电话模块功能3
     public void fetchSimCalls(String callSim) {
         cancelFetch();
         int requestId = newCallsRequest();
@@ -229,6 +239,7 @@ import javax.annotation.concurrent.GuardedBy;
      * 
      * by yuan
      */
+    //根据callType的不同，显示来电、去电、未接的全部历史通话记录  电话模块功能2 ddd
     private void fetchTypeCalls(int token, int requestId, boolean isNew, boolean voicemailOnly, String callType) {
         // We need to check for NULL explicitly otherwise entries with where READ is NULL
         // may not match either the query or its negation.
@@ -254,6 +265,7 @@ import javax.annotation.concurrent.GuardedBy;
      * 
      * by yuan
      */
+    //根据callSim的不同，查询卡一或卡二中的全部通话记录  电话模块功能3
     private void fetchSimCalls(int token, int requestId, boolean isNew, boolean voicemailOnly, String callSim) {
         // We need to check for NULL explicitly otherwise entries with where READ is NULL
         // may not match either the query or its negation.

@@ -19,6 +19,14 @@ package edu.bupt.contacts.calllog;
 import android.net.Uri;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+/**
  * Handles notifications for voicemails.
  */
 public interface VoicemailNotifier {

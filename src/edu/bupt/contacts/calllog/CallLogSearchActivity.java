@@ -35,6 +35,17 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 通话记录搜索  电话模块功能14
+ * 
+ * 
+ * */
+
+
 public class CallLogSearchActivity extends Activity implements OnQueryTextListener, OnCloseListener {
     private static final String TAG = "CallLogSearchActivity";
 
@@ -84,6 +95,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
         /** zzz */
         // create dialog to choose a search mode
         // copied from sms project
+        //弹出对话框选择搜索模式，搜索模式有：按姓名、按号码、按日期
         AlertDialog.Builder builder = new Builder(CallLogSearchActivity.this);
 
         builder.setSingleChoiceItems( // 设置单选列表选项
@@ -94,7 +106,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
 
                         // Log.v("TraditionalActivity", "which:"+which);
 
-                        case 0: // search with name
+                        case 0: // search with name  按姓名搜索
                             Log.v(TAG, "which - " + which);
                             Log.v(TAG, "search with name");
                             // flag = 5;
@@ -172,7 +184,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
 
                             break;
 
-                        case 1: // search for number
+                        case 1: // search for number 按电话号码搜索
                             Log.v(TAG, "which - " + which);
                             Log.v(TAG, "search with name");
 
@@ -300,7 +312,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
                         // bodyBuilder.show();
                         //
                         // break;
-                        case 2: // search with date stamp
+                        case 2: // search with date stamp  按时间搜索
 
                             dialog.dismiss();
 
@@ -491,7 +503,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
             onHomeSelected();
             return true;
         }
-        case R.id.show_threedays: {
+        case R.id.show_threedays: {  //显示三天以内的通话记录 最终方案没有采用
             long threeto = System.currentTimeMillis();
             long threefrom = System.currentTimeMillis() - 2 * 24 * 3600 * 1000L;
             Log.v(new Date(threefrom).toLocaleString(), new Date(threeto).toLocaleString());
@@ -499,7 +511,7 @@ public class CallLogSearchActivity extends Activity implements OnQueryTextListen
             queryCallLog(threefrom, threeto);
             return true;
         }
-        case R.id.show_threedays_ago: { // modified by yuan
+        case R.id.show_threedays_ago: { // modified by yuan 显示三天以后的通话记录 最终方案没有采用
             long threeagoto = System.currentTimeMillis() - 3 * 24 * 3600 * 1000L;
             Log.v(threeagoto + "", threeagoto + "");
             queryCallLog(0, threeagoto);

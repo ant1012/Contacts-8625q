@@ -22,6 +22,14 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+/**
  * Information for a contact as needed by the Call Log.
  */
 public final class ContactInfo {

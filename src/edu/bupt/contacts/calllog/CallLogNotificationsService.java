@@ -21,6 +21,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
 /**
  * Provides operations for managing notifications.
  * <p>

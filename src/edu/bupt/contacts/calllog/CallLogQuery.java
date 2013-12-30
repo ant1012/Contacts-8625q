@@ -20,6 +20,15 @@ import android.database.Cursor;
 import android.provider.CallLog.Calls;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+
+/**
  * The query for the call log table.
  */
 public final class CallLogQuery {

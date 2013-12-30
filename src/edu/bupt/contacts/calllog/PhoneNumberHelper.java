@@ -26,6 +26,14 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+/**
  * Helper for formatting and managing phone numbers.
  */
 public class PhoneNumberHelper {
