@@ -237,22 +237,27 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         } else if (Intent.ACTION_EDIT.equals(mAction)) {
             startGroupMetaDataLoader();
         } else if (Intent.ACTION_INSERT.equals(mAction)) {
-            final Account account = mIntentExtras == null ? null : (Account) mIntentExtras
-                    .getParcelable(Intents.Insert.ACCOUNT);
-            final String dataSet = mIntentExtras == null ? null : mIntentExtras.getString(Intents.Insert.DATA_SET);
-
-            if (account != null) {
-                // Account specified in Intent - no data set can be specified in
-                // this manner.
-                mAccountName = account.name;
-                mAccountType = account.type;
-                mDataSet = dataSet;
-                setupEditorForAccount();
-            } else {
-                // No Account specified. Let the user choose from a
-                // disambiguation dialog.
-                selectAccountAndCreateGroup();
-            }
+            // zzz 强制使用PHONE账户，不允许其他本地账户，也不允许创建到sim卡
+            mAccountName = "PHONE";
+            mAccountType = "com.android.localphone";
+            mDataSet = null;
+            setupEditorForAccount();
+//            final Account account = mIntentExtras == null ? null : (Account) mIntentExtras
+//                    .getParcelable(Intents.Insert.ACCOUNT);
+//            final String dataSet = mIntentExtras == null ? null : mIntentExtras.getString(Intents.Insert.DATA_SET);
+//
+//            if (account != null) {
+//                // Account specified in Intent - no data set can be specified in
+//                // this manner.
+//                mAccountName = account.name;
+//                mAccountType = account.type;
+//                mDataSet = dataSet;
+//                setupEditorForAccount();
+//            } else {
+//                // No Account specified. Let the user choose from a
+//                // disambiguation dialog.
+//                selectAccountAndCreateGroup();
+//            }
         } else {
             throw new IllegalArgumentException("Unknown Action String " + mAction + ". Only support "
                     + Intent.ACTION_EDIT + " or " + Intent.ACTION_INSERT);
