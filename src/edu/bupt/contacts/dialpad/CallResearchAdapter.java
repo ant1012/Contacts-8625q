@@ -11,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 拨号盘号码搜索匹配adapter
+ * 
+ * */
+
 public class CallResearchAdapter extends BaseAdapter{
 	
 	public List<CallResearchModel> contactList;
@@ -51,21 +58,23 @@ public class CallResearchAdapter extends BaseAdapter{
 	}
 
 	@Override
+	/**
+	 * 在拨号盘输入电话号码，自动匹配对应联系人，显示联系人姓名、号码、匹配项
+	 * */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		CallResearchModel model = null;
 		convertView = View.inflate(context, R.layout.call_contact_search_item, null);
-		TextView tvname = (TextView) convertView.findViewById(R.id.textView_contact_name);
-		TextView tvtel = (TextView) convertView.findViewById(R.id.textView_contact_num);
-//	ddd 删除拨号盘匹配字符	
-		TextView tvGroup = (TextView) convertView.findViewById(R.id.textView_contact_group);
+		TextView tvname = (TextView) convertView.findViewById(R.id.textView_contact_name); //联系人姓名
+		TextView tvtel = (TextView) convertView.findViewById(R.id.textView_contact_num);   //联系人号码
+
+		TextView tvGroup = (TextView) convertView.findViewById(R.id.textView_contact_group);//联系人匹配项
 		model = contactList.get(position);
 		tvname.setText(model.name);
 		tvtel.setText(model.telnum);
 		if(isShowAll){
 			model.group = "";
 		}
-		
-	//	ddd 删除 拨号盘匹配 字符 
+
 		tvGroup.setText(model.group);
 		return convertView;
 	}

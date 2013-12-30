@@ -9,6 +9,14 @@ import android.provider.Contacts.Phones;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
 
+/**
+ * åŒ—é‚®ANTå®éªŒå®¤
+ * ddd
+ * å·ç é¢„å¤„ç†
+ * 
+ * */
+
+
 public class BaseUtil {
 
 	public final static String[] PHONES_PROJECTION = new String[] {
@@ -18,8 +26,8 @@ public class BaseUtil {
 			"[mno]", "[pqrs]", "[tuv]", "[wxyz]" };
 
 	/**
-	 * ½«×Ö·û´®ÖĞµÄÖĞÎÄ×ª»¯ÎªÆ´Òô,ÆäËû×Ö·û²»±ä
 	 * 
+	 * è·å–ä¸­æ–‡çš„æ±‰è¯­æ‹¼éŸ³
 	 * @param inputString
 	 * @return
 	 */
@@ -38,7 +46,7 @@ public class BaseUtil {
 		try {
 			for (int i = 0; i < input.length; i++) {
 				if (java.lang.Character.toString(input[i]).matches(
-						"[\\u4E00-\\u9FA5]+")) {
+						"[\\u4E00-\\u9FA5]+")) {                  //åˆ¤æ–­æ˜¯å¦æ˜¯ä¸­æ–‡
 					String[] temp = PinyinHelper.toHanyuPinyinStringArray(
 							input[i], format);
 					if (temp == null || TextUtils.isEmpty(temp[0])) {
@@ -56,7 +64,7 @@ public class BaseUtil {
 	}
 	
 	/*
-	 * by yuan, È¥³ıºÅÂëÖĞËùÓĞµÄ¿Õ¸ñ
+	 * by yuan, å°†åˆå§‹ç”µè¯å·ç å»æ‰ç©ºæ ¼â€œ â€å’Œæ¨ªæ â€œ-â€
 	 */
 	public static String getSearchPhoneNumber(String originalNumber){
 		

@@ -23,6 +23,15 @@ import android.view.View;
 import android.widget.ImageButton;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 拨号盘
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，无修改
+ * 
+ * */
+
+/**
  * Custom {@link ImageButton} for dialpad buttons.
  *
  * During horizontal swipe, we want to exit "fading out" animation offered by its background

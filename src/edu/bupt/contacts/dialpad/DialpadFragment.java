@@ -101,6 +101,19 @@ import edu.bupt.contacts.phone.CallLogAsync;
 import edu.bupt.contacts.phone.HapticFeedback;
 import edu.bupt.contacts.settings.*;
 
+
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 拨号盘
+ * 在拨号盘界面用户输入号码后，用户能够快捷（不超过两步）发送信息    电话功能31
+ * 在拨号盘界面用户输入号码后，用户能够快捷（不超过两步）发起IP拨号呼叫    电话功能30
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+
 /**
  * Fragment that displays a twelve-key phone dialpad.
  */
@@ -161,7 +174,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private View mDialButton;
     private ListView mDialpadChooser;
     private DialpadChooserAdapter mDialpadChooserAdapter;
-    // ddd
+    // ddd  拨号盘添加发送短信按钮
     private View mSmsButton;
     private Button asiaButton;
     private Button northAmericaButton;
@@ -205,7 +218,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     private String mCurrentCountryIso;
 
     /*
-     * added by yuan
+     * added by yuan 拨号盘输入电话号码后补全、匹配联系人
      */
     private List<CallResearchModel> allContactList, totalMatchedList;
 
@@ -314,7 +327,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
     public void onCreate(Bundle state) {
         super.onCreate(state);
 
-        // added by yuan
+        // added by yuan 拨号盘输入电话号码时补全、匹配联系人
 
         allContactList = new ArrayList<CallResearchModel>();
         totalMatchedList = new ArrayList<CallResearchModel>();
@@ -360,10 +373,11 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         mDigits.setOnLongClickListener(this);
         mDigits.addTextChangedListener(this);
 
-        // added by yuan
+        // added by yuan 匹配到的电话号码和联系人姓名
         mMatchedPhones = (TextView) fragmentView.findViewById(R.id.textView_match_phonenumber);
         mMatchedName = (TextView) fragmentView.findViewById(R.id.textView_match_name);
         mMatchedPhones.setClickable(true);
+        //点击电话号码的OnClickListener
         mMatchedPhones.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -376,7 +390,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                     mDialpad.setVisibility(View.VISIBLE);
                 }
 
-                if (numbers != null && numbers.size() > 1) {
+                if (numbers != null && numbers.size() > 1) {//若一个联系人匹配不止一个电话号码，则弹出dialog，提供号码选择
                     final String sequence[] = (String[]) numbers.toArray(new String[numbers.size()]);
                     Builder dialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.call_disambig_title)
                             .setItems(sequence, new DialogInterface.OnClickListener() {
@@ -384,7 +398,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                                     // TODO Auto-generated method stub
                                     mDigits.getText().append(sequence[which]);
                                 }
-                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//取消
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             });
@@ -393,7 +407,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                 }
 
                 if (numbers != null && numbers.size() == 1) {
-                    mDigits.getText().append(numbers.get(0).toString());
+                    mDigits.getText().append(numbers.get(0).toString());//若一个联系人只匹配一个电话号码，点击后，将该号码显示到输入框中
                 }
             }
 
@@ -419,7 +433,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         }
         mDialButton = fragmentView.findViewById(R.id.dialButton);
 
-        // ddd start
+        // ddd start  在拨号盘界面用户输入号码后，用户能够快捷（不超过两步）发送信息
         mSmsButton = fragmentView.findViewById(R.id.smsButton);
         if (mSmsButton != null) {
             mSmsButton.setOnClickListener(new View.OnClickListener() {
@@ -429,7 +443,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
                     String sendNumber = mDigits.getText().toString();
                     Uri uri = Uri.parse("smsto:" + sendNumber);
                     Intent smsIntent = new Intent(Intent.ACTION_SENDTO, uri);
-                    startActivity(smsIntent);
+                    startActivity(smsIntent); //调起发送短信的activity
 
                 }
 
@@ -454,7 +468,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         mDialpad = fragmentView.findViewById(R.id.dialpad); // This is null in
                                                             // landscape mode.
 
-        // added by yuan
+        // added by yuan 电话号码匹配项结果多于一条时，显示“more”button
         mMatchList = fragmentView.findViewById(R.id.dialpad_match_list);
         matchListView = (ListView) mMatchList.findViewById(R.id.listView_match_list);
         matchListView.setAdapter(adapter);
@@ -473,7 +487,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         mMatchMore = (Button) fragmentView.findViewById(R.id.button_more);
         mMatchMore.setVisibility(View.GONE);
-        mMatchMore.setOnClickListener(new OnClickListener() {
+        mMatchMore.setOnClickListener(new OnClickListener() {//点击“more”button，列表显示所有的匹配项
 
             @Override
             public void onClick(View arg0) {
@@ -492,7 +506,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             }
         });
 
-        // by yuan
+        // by yuan 点击某个匹配项，将其显示在输入框中，完成电话号码搜索匹配
         matchListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -802,13 +816,13 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
         // commit this out
         // why clear digits here???
         // mDigits.getText().clear();
-
-        mMatchedPhones.setText("");
-        mMatchedName.setText("");
-        mMatchList.setVisibility(View.GONE);
-        mDialpad.setVisibility(View.VISIBLE);
-        mMatchMore.setVisibility(View.GONE);
-        mMatchAddNew.setVisibility(View.GONE);
+        //初始化电话号码匹配搜索模块 
+        mMatchedPhones.setText("");  //匹配电话号码
+        mMatchedName.setText("");    //匹配联系人姓名
+        mMatchList.setVisibility(View.GONE); //匹配结果列表
+        mDialpad.setVisibility(View.VISIBLE);//拨号盘
+        mMatchMore.setVisibility(View.GONE); //“more”button
+        mMatchAddNew.setVisibility(View.GONE);//添加联系人button
 
     }
 
@@ -887,11 +901,12 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
         final MenuItem callIPOneMenuItem = menu.findItem(R.id.menu_ip_call_one);
         final MenuItem callIPTwoMenuItem = menu.findItem(R.id.menu_ip_call_two);
-        // by yuan
+        // by yuan  IP拨号
 
         final IPCall ipcall = new IPCall(getActivity());
 
         /** zzz */
+        //设置是否启用翼拨号
         final MenuItem ifShowEdialMenuItem = menu.findItem(R.id.menu_if_show_edial);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (sp.getString("EDialPreference", "0").equals("2")) {
@@ -1001,6 +1016,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
          */
 
         // ddd end
+        //卡一IP拨号
         callIPOneMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             @Override
@@ -1014,7 +1030,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             }
 
         });
-
+        //卡二IP拨号
         callIPTwoMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
             @Override
@@ -1225,7 +1241,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
     /*
      * 
-     * added by yuan
+     * added by yuan  匹配电话号码
      */
     private void matchPhoneNumber(String phonenumber) {
         // TODO Auto-generated method stub
@@ -1238,7 +1254,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
             mMatchAddNew.setVisibility(View.GONE);
             mDialpad.setVisibility(View.VISIBLE);
         } else {
-            totalMatchedList.clear();
+            totalMatchedList.clear(); //清空匹配list
             mMatchAddNew.setVisibility(View.GONE);
             // Log.v("aaaa",""+rawThreeDaysListThread.get_state());
             if (rawThreeDaysListThread != null && rawThreeDaysListThread.get_state() && rawThreeDaysList.size() > 0) {
@@ -1287,7 +1303,7 @@ public class DialpadFragment extends Fragment implements View.OnClickListener, V
 
     /*
      * 
-     * added by yuan
+     * added by yuan 初始查询数据
      */
 
     public void initQueryData() {

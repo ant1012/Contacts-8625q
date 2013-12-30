@@ -47,7 +47,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 通话结束后，显示3-5秒的通话信息界面，可以对该号码进行再次呼叫、发送短信，点击确认或用回退键可以迅速退出此界面		电话模块功能43
+ * 
+ * */
 
 
 public class CallinfoActivity extends Activity {
@@ -84,13 +90,13 @@ public class CallinfoActivity extends Activity {
         textviewName = (TextView) findViewById(R.id.name);
         textviewPhoneNumber = (TextView) findViewById(R.id.phoneNumber);
         textviewLabel = (TextView) findViewById(R.id.label);
-        buttonMsg = (Button) findViewById(R.id.bt_msg);
-        buttonDial = (Button) findViewById(R.id.bt_dial);
-        buttonAdd = (Button) findViewById(R.id.bt_add);
+        buttonMsg = (Button) findViewById(R.id.bt_msg); //发送短信button
+        buttonDial = (Button) findViewById(R.id.bt_dial);//再次拨号button
+        buttonAdd = (Button) findViewById(R.id.bt_add);//添加联系人button
 
         Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, "date desc limit 1");
         cursor.moveToFirst();
-
+        //获取该联系人id，拨叫号码，姓名
         id = cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID));
         Log.v(TAG, "id - " + id);
         number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
@@ -187,7 +193,7 @@ public class CallinfoActivity extends Activity {
         public void onClick(View v) {
             if (v.equals(buttonMsg)) {
                 Log.v(TAG, "buttonMsg clicked");
-                Uri uri = Uri.parse("smsto:" + number);
+                Uri uri = Uri.parse("smsto:" + number);//调起发送短信activity
                 Intent i = new Intent(Intent.ACTION_SENDTO, uri);
                 startActivity(i);
 
@@ -209,11 +215,11 @@ public class CallinfoActivity extends Activity {
                 /** zzz */
                 Intent intent = new Intent();
                 intent.setAction("edu.bupt.action.EDIAL");
-                intent.putExtra("digit", number);
+                intent.putExtra("digit", number);//调起拨打电话service
                 startService(intent);
 
             } else if (v.equals(buttonAdd)) {
-                Log.v(TAG, "buttonAdd clicked");
+                Log.v(TAG, "buttonAdd clicked");//调起添加联系人activity
                 Intent intent = new Intent(Intent.ACTION_INSERT, People.CONTENT_URI);
                 intent.putExtra(ContactsContract.Intents.Insert.PHONE, number);
 
@@ -223,7 +229,7 @@ public class CallinfoActivity extends Activity {
         }
     };
 
-    public Bitmap loadContactPhoto(ContentResolver cr, long id) {
+    public Bitmap loadContactPhoto(ContentResolver cr, long id) { //加载联系人照片
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
         if (input == null) {
