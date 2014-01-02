@@ -27,6 +27,14 @@ import android.os.Bundle;
 import android.os.Handler;
 
 /**
+ * 北邮ANT实验室
+ * ddd
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Indeterminate progress dialog wrapped up in a DialogFragment to work even when the device
  * orientation is changed. Currently, only supports adding a title and/or message to the progress
  * dialog.  There is an additional parameter of the minimum amount of time to display the progress

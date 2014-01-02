@@ -12,6 +12,14 @@ import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * ddd
+ * 通话状态BroadcastReceiver
+ * 
+ * */
+
+
 public class CallstateBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG = "CallstateBroadcastReceiver";
     public static final String ACTION_CALL = "android.intent.action.PHONE_STATE";
