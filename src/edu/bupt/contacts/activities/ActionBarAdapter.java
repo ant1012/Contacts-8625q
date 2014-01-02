@@ -41,6 +41,14 @@ import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Adapter for the action bar at the top of the Contacts activity.
  */
 public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {

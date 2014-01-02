@@ -26,6 +26,14 @@ import android.provider.VoicemailContract.Voicemails;
 import android.util.Log;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Class used by {@link CallDetailActivity} to fire async content resolver queries.
  */
 public class CallDetailActivityQueryHandler extends AsyncQueryHandler {
@@ -61,6 +69,7 @@ public class CallDetailActivityQueryHandler extends AsyncQueryHandler {
                 null, null, null);
     }
 
+    // zzz 禁用了voicemail相关的功能
 //    @Override
 //    protected synchronized void onQueryComplete(int token, Object cookie, Cursor cursor) {
 //        try {

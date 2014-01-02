@@ -36,6 +36,14 @@ import android.view.View;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Helper class to fill in the views in {@link PhoneCallDetailsViews}.
  */
 public class PhoneCallDetailsHelper {
@@ -97,6 +105,7 @@ public class PhoneCallDetailsHelper {
         Integer highlightColor = isHighlighted ? mCallTypeHelper.getHighlightedColor(details.callTypes[0]) : null;
 
         /** zzz */
+        // zzz 由于这里的时间是相对时间，所以没有按照时间显示方案做调整
          // The date of this call, relative to the current time.
         CharSequence dateText = DateUtils.getRelativeTimeSpanString(details.date, getCurrentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);

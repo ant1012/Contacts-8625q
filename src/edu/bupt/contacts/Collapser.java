@@ -20,6 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Class used for collapsing data items into groups of similar items. The data items that should be
  * collapsible should implement the Collapsible interface. The class also contains a utility
  * function that takes an ArrayList of items and returns a list of the same items collapsed into

@@ -55,6 +55,16 @@ import java.util.ArrayList;
 
 import com.android.internal.telephony.msim.ITelephonyMSim;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人详情的Activity
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
 public class ContactDetailActivity extends ContactsActivity {
     private static final String TAG = "ContactDetailActivity";
 
@@ -283,12 +293,14 @@ public class ContactDetailActivity extends ContactsActivity {
             }
             try {
                 /** zzz */
+                // zzz 原本直接调起Intent的方法需要更高的权限(ACTION_CALL_PRIVILEGED)
                 // startActivity(intent);
                 Log.v(TAG, "dial here?");
                 Log.v(TAG, "intent - " + intent.toString());
                 Log.v(TAG, "intent - " + intent.getDataString());
 
                 if (intent.getAction() == Intent.ACTION_CALL_PRIVILEGED) {
+                    // zzz 取出Intent中的电话号码
                     String number = intent.getDataString().substring(intent.getDataString().indexOf(':'));
                     // try {
                     // ITelephonyMSim telephony = ITelephonyMSim.Stub
@@ -300,6 +312,7 @@ public class ContactDetailActivity extends ContactsActivity {
                     // }
 
                     /** zzz */
+                    // zzz 调用翼拨号处理的Service，由翼拨号流程判断是否应该弹出翼拨号菜单
                     Intent i = new Intent();
                     i.setAction("edu.bupt.action.EDIAL");
                     i.putExtra("digit", number);

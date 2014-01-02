@@ -21,6 +21,14 @@ import android.net.Uri;
 import android.provider.ContactsContract.Groups;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Group loader for the group list that includes details such as the number of contacts per group
  * and number of groups per account. This list is sorted by account type, account name, where the
  * group names are in alphabetical order. Note that the list excludes default, favorite, and deleted

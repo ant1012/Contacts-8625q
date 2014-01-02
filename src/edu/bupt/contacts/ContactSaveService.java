@@ -70,6 +70,16 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 保存联系人的Service
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * A service responsible for saving changes to the content provider.
  */
 public class ContactSaveService extends IntentService {
@@ -222,9 +232,9 @@ public class ContactSaveService extends IntentService {
             setRingtone(intent);
             CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
         /** baoge */
-        } else if (ACTION_SET_MSGRING.equals(action)) {
-            setMsgRing(intent);
-            CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
+//        } else if (ACTION_SET_MSGRING.equals(action)) {
+//            setMsgRing(intent);
+//            CallerInfoCacheUtils.sendUpdateCallerInfoCacheIntent(this);
         } 
     }
 
@@ -358,17 +368,21 @@ public class ContactSaveService extends IntentService {
         boolean succeeded = false;
 
         /** zzz */
+        // zzz 获取姓名和电话信息，用于将联系人信息保存到SIM卡(通讯录功能2)
         //get info
         String ori_name = null;
         String ori_phone = null;
         final EntityDelta entity = state.get(0);
         final ValuesDelta values = entity.getValues();
+        // zzz 根据账户名确定是否要保存到卡上
         String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
         Log.i(TAG, "account_name - " + account_name);
-        long contact_id = values.getAsLong(RawContacts._ID);
+        // zzz 获取contact_id
+        long contact_id = values.getAsLong(RawContacts.CONTACT_ID);
         Log.i(TAG, state.toString());
         Log.i(TAG, "_id - " + contact_id);
 
+        // zzz 根据contact_id查询修改前的姓名和号码
         Cursor p = getContentResolver().query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI, //
                 new String[] { CommonDataKinds.Phone.DISPLAY_NAME,
@@ -377,7 +391,6 @@ public class ContactSaveService extends IntentService {
                 new String[] { String.valueOf(contact_id) }, //
                 null);
         if (p.moveToNext()) {
-
             try {
                 ori_name = p.getString(0);
                 ori_phone = p.getString(1);
@@ -523,24 +536,35 @@ public class ContactSaveService extends IntentService {
         }
 
         /** zzz */
+        // zzz 将联系人保存到SIM卡
         // write to sim card
-        
-        if (state.get(0).isContactInsert()) {
+
+        if (state.get(0).isContactInsert()) { // zzz 新建 
             Log.d(TAG, "Insert");
             saveToSimcard(lookupUri, account_name);
-        } else {
+        } else { // zzz 修改
             Log.d(TAG, "Modify");
             saveToSimcard(lookupUri, account_name, ori_name, ori_phone);
         }
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 在SIM卡上新建联系人(通讯录功能2)
+     *
+     * */
     private void saveToSimcard(Uri lookupUri, String account_name) {
         Uri simUri = null;
+        // zzz 先判断是否是在SIM卡相应的账户中，否则不保存到卡上
         if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
+            // zzz 卡一
             simUri = Uri.parse("content://iccmsim/adn");
             Log.i(TAG, "content://iccmsim/adn");
         } else if(account_name.equals("SIM2")) {
+            // zzz 卡二
             simUri = Uri.parse("content://iccmsim/adn_sub2");
             Log.i(TAG, "content://iccmsim/adn_sub2");
         } else {
@@ -554,16 +578,17 @@ public class ContactSaveService extends IntentService {
         String phone = null;
         long contactId = 0;
 
+        // zzz 根据URI查询新保存的联系人信息
         Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
         int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
-        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
+        int idIdx = c.getColumnIndexOrThrow(Phone.CONTACT_ID);
         int phoneIdx = 0;
 
         c.moveToNext();
         name = c.getString(nameIdx);
 //        phone = c.getString(phoneIdx);
         contactId = c.getLong(idIdx);
-        
+
         if (Integer.parseInt(c.getString(c
                 .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
             Cursor p = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -582,19 +607,29 @@ public class ContactSaveService extends IntentService {
 
 
         // add it on the SIM card
+        // zzz 写入SIM卡，需要SIM卡的URI和新添加的联系人信息作为参数
         ContentValues newSimValues = new ContentValues();
         newSimValues.put("tag", name);
         newSimValues.put("number", phone);
         Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
         if (newSimRow != null) {
+            // zzz 写入时间会很长(10秒+)，即使运行到这里也不代表已经写入完成，需要等待较长时间才能验证是否成功
             Log.d(TAG, "insert to sim card successfully");
         }
     }
-    
+
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 更新SIM卡上的联系人信息(通讯录功能2)
+     *
+     * */
     private void saveToSimcard(Uri lookupUri, String account_name, String ori_name, String ori_phone) {
         Uri simUri = null;
+        // zzz 先判断是否是在SIM卡相应的账户中，否则不保存到卡上
         if (account_name.equals("UIM") || account_name.equals("SIM1") ) {
             simUri = Uri.parse("content://iccmsim/adn");
             Log.i(TAG, "content://iccmsim/adn");
@@ -612,6 +647,7 @@ public class ContactSaveService extends IntentService {
         String phone = null;
         long contactId = 0;
 
+        // zzz 根据URI查询新保存的联系人信息
         Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
         int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
         int idIdx = c.getColumnIndexOrThrow(Phone._ID);
@@ -640,8 +676,8 @@ public class ContactSaveService extends IntentService {
 
 
         // add it on the SIM card
+        // zzz 写入SIM卡，需要SIM卡的URI，修改前的原联系人信息、修改后的的联系人信息作为参数
         ContentValues newSimValues = new ContentValues();
-
         newSimValues.put("tag", ori_name);
         newSimValues.put("number", ori_phone);
         newSimValues.put("newTag", name);
@@ -649,6 +685,7 @@ public class ContactSaveService extends IntentService {
         int newSimRow = getContentResolver().update(simUri, newSimValues, null, null);
 //        Uri newSimRow = getContentResolver().insert(simUri, newSimValues);
         if (newSimRow > 0) {
+            // zzz 写入时间会很长(10秒+)，即使运行到这里也不代表已经写入完成，需要等待较长时间才能验证是否成功
             Log.d(TAG, "insert to sim card successfully");
         }
     }
@@ -1064,28 +1101,29 @@ public class ContactSaveService extends IntentService {
 
 
     /** baoge */
-    public static Intent createSetMsgRing(Context context, Uri contactUri,
-            String value) {
-        Intent serviceIntent = new Intent(context, ContactSaveService.class);
-        serviceIntent.setAction(ContactSaveService.ACTION_SET_MSGRING);
-        serviceIntent.putExtra(ContactSaveService.EXTRA_CONTACT_URI, contactUri);
-        serviceIntent.putExtra(ContactSaveService.EXTRA_CUSTOM_MSGRING, value);
-
-        return serviceIntent;
-    }
+    // zzz 原本的短信铃声保存方法，利用系统数据库的SOURCE_ID列。已经被取代
+//    public static Intent createSetMsgRing(Context context, Uri contactUri,
+//            String value) {
+//        Intent serviceIntent = new Intent(context, ContactSaveService.class);
+//        serviceIntent.setAction(ContactSaveService.ACTION_SET_MSGRING);
+//        serviceIntent.putExtra(ContactSaveService.EXTRA_CONTACT_URI, contactUri);
+//        serviceIntent.putExtra(ContactSaveService.EXTRA_CUSTOM_MSGRING, value);
+//
+//        return serviceIntent;
+//    }
 
     /** baoge */
-    private void setMsgRing(Intent intent) {
-        Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
-        String value = intent.getStringExtra(EXTRA_CUSTOM_MSGRING);
-        if (contactUri == null) {
-            Log.e(TAG, "Invalid arguments for setMsgRing");
-            return;
-        }
-        ContentValues values = new ContentValues(1);
-        values.put(RawContacts.SOURCE_ID, value);
-        getContentResolver().update(contactUri, values, null, null);
-    }
+//    private void setMsgRing(Intent intent) {
+//        Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+//        String value = intent.getStringExtra(EXTRA_CUSTOM_MSGRING);
+//        if (contactUri == null) {
+//            Log.e(TAG, "Invalid arguments for setMsgRing");
+//            return;
+//        }
+//        ContentValues values = new ContentValues(1);
+//        values.put(RawContacts.SOURCE_ID, value);
+//        getContentResolver().update(contactUri, values, null, null);
+//    }
 
 
     /**

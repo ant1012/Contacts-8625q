@@ -21,6 +21,16 @@ import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 单条通话记录的详情
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * The details of a phone call to be shown in the UI.
  */
 public class PhoneCallDetails {
@@ -57,12 +67,13 @@ public class PhoneCallDetails {
      * This is meant to store the high-res photo only.
      */
     public final Uri photoUri;
-    
+
     public final int msimType;    // by yuan 
 
     /** Create the details for a call with a number not associated with a contact. */
     public PhoneCallDetails(CharSequence number, CharSequence formattedNumber,
             String countryIso, String geocode, int[] callTypes, long date, long duration , int msimType) {
+        // zzz 增加了msimType参数，用于表示通话记录的卡标识，以显示到通话记录详情页面中的列表
         this(number, formattedNumber, countryIso, geocode, callTypes, date, duration, "", 0, "",
                 null, null, msimType);  // by yuan
     }
@@ -84,6 +95,8 @@ public class PhoneCallDetails {
         this.numberLabel = numberLabel;
         this.contactUri = contactUri;
         this.photoUri = photoUri;
+
+        // zzz 增加了msimType参数，用于表示通话记录的卡标识，以显示到通话记录详情页面中的列表
         this.msimType = msimType;  // by yuan
     }
 }

@@ -25,7 +25,6 @@ import edu.bupt.contacts.calllog.CallTypeHelper;
 import edu.bupt.contacts.calllog.ContactInfo;
 import edu.bupt.contacts.calllog.ContactInfoHelper;
 import edu.bupt.contacts.calllog.PhoneNumberHelper;
-import edu.bupt.contacts.dialpad.CallResearchModel;
 import edu.bupt.contacts.format.FormatUtils;
 import edu.bupt.contacts.ipcall.IPCall;
 import edu.bupt.contacts.numberlocate.NumberLocate;
@@ -38,12 +37,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -52,15 +48,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ServiceManager;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
 import android.provider.CallLog.Calls;
 import android.provider.Contacts.Intents.Insert;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
-import android.provider.VoicemailContract.Voicemails;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -77,9 +69,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-import com.android.internal.telephony.msim.ITelephonyMSim;
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 通话记录的详情界面(电话功能15)
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
 
 /**
  * Displays the details of a specific call log entry.
@@ -257,10 +255,12 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
             // startActivity(((ViewEntry) view.getTag()).primaryIntent);
 
             /** zzz */
-            Intent intent = new Intent();
-            intent.setAction("edu.bupt.action.EDIAL");
-            intent.putExtra("digit", mNumber);
-            startService(intent);
+            // zzz 点击号码时的响应，调起翼拨号的处理Service，直接拨号或调起翼拨号菜单
+            call(mNumber);
+            // Intent intent = new Intent();
+            // intent.setAction("edu.bupt.action.EDIAL");
+            // intent.putExtra("digit", mNumber);
+            // startService(intent);
 
         }
     };
@@ -375,6 +375,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
             uris[index] = ContentUris.withAppendedId(Calls.CONTENT_URI, ids[index]);
         }
         /** zzz */
+        // zzz Log显示当前记录详情界面的URI列表
         for (Uri u : uris) {
             Log.i(TAG, "uris - " + u.toString());
         }
@@ -747,7 +748,9 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     /** Configures the call button area using the given entry. */
     private void configureCallButton(ViewEntry entry, String mNumber) {
 
+        // zzz 查询号码归属地
         new NumberLocate(mContext, handler).getLocation(mNumber);
+
         View convertView = findViewById(R.id.call_and_sms);
         convertView.setVisibility(View.VISIBLE);
 
@@ -785,6 +788,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     }
 
     // by yuan
+    // 归属地查询完成后显示到界面中
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             View convertView = findViewById(R.id.call_and_sms);
@@ -808,6 +812,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
         menu.findItem(R.id.menu_edit_number_before_call).setVisible(mHasEditNumberBeforeCallOption);
 
         // ddd
+        // 初始化黑白名单的菜单项
         menu.findItem(R.id.menu_calllog_add_to_blacklist).setVisible(true);
         menu.findItem(R.id.menu_calllog_add_to_whitelist).setVisible(true);
         // ddd end
@@ -877,6 +882,14 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
         });
     }
 
+
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 调起翼拨号的处理Service，直接拨号或调起翼拨号菜单
+     * 
+     * */
     public void call(String number) {
         // try {
         // ITelephonyMSim telephony =

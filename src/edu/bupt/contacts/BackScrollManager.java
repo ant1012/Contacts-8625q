@@ -21,6 +21,14 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Handles scrolling back of a list tied to a header.
  * <p>
  * This is used to implement a header that scrolls up with the content of a list to be partially

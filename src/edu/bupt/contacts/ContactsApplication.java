@@ -37,6 +37,16 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人和电话模块的应用
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
 public final class ContactsApplication extends Application {
     private static final boolean ENABLE_LOADER_LOG = false; // Don't submit with true
     private static final boolean ENABLE_FRAGMENT_LOG = false; // Don't submit with true
@@ -150,6 +160,15 @@ public final class ContactsApplication extends Application {
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 设定IP拨号的初始设置(电话功能29)
+     * 
+     * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+     * 
+     * */
     private void setDefaultValue4IpCall() {
         Log.v(TAG, "setDefaultValue4IpCall");
 

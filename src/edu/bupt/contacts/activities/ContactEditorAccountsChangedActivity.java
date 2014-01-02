@@ -39,6 +39,16 @@ import edu.bupt.contacts.util.AccountsListAdapter.AccountListFilter;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人保存账户相关
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * This activity can be shown to the user when creating a new contact to inform the user about
  * which account the contact will be saved in. There is also an option to add an account at
  * this time. The {@link Intent} in the activity result will contain an extra

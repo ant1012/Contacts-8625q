@@ -79,6 +79,14 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * This is a dialog-themed activity for confirming the addition of a detail to an existing contact
  * (once the user has selected this contact from a list of all contacts). The incoming intent
  * must have an extra with max 1 phone or email specified, using

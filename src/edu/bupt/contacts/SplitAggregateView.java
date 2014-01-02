@@ -47,6 +47,14 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A list view for constituent contacts of an aggregate.  Shows the contact name, source icon
  * and additional data such as a nickname, email address or phone number, whichever
  * is available.

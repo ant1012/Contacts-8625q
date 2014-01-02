@@ -26,6 +26,14 @@ import android.os.IBinder;
 import android.util.Log;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Service that sends out a view notification for a contact. At the moment, this is only
  * supposed to be used by the Phone app
  */
