@@ -34,6 +34,14 @@ import android.provider.ContactsContract.Intents.Insert;
 import android.text.TextUtils;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Activity that intercepts DIAL and VIEW intents for phone numbers for devices that can not
  * be used as a phone. This allows the user to see the phone number
  */

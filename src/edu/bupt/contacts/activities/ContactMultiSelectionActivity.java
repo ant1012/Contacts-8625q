@@ -70,6 +70,7 @@ public class ContactMultiSelectionActivity extends ListActivity {
     public ListView listView;
     // public int[] pos;
     private ArrayList<Map<String, String>> list;
+    // zzz 调起此Activity的两种情况，可能需要返回号码，也可能需要返回打包后的vcard文件
     private int flagPackageVcard = FLAG_SELECT_CONTACT; // when 0 returns
                                                         // arraylist
     // when 1 returns vcard file uri
@@ -309,7 +310,6 @@ public class ContactMultiSelectionActivity extends ListActivity {
 
     }
 
-    /** zzz */
     /** zzz */
     /**
      * 北邮ANT实验室

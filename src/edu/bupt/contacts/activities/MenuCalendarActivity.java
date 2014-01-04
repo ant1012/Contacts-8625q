@@ -30,6 +30,14 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 查看与该联系人相关的日程安排(通讯录功能24)
+ * 
+ * */
+
 public class MenuCalendarActivity extends Activity {
     public static final Uri CONTENT_URI = Uri.parse("content://edu.bupt.calendar.attendee/AttendeePhone");//
     private static final String TAG = "MenuCalendarActivity";
@@ -50,9 +58,12 @@ public class MenuCalendarActivity extends Activity {
         bundle = this.getIntent().getExtras();
         String phone_id = bundle.getString("check_calendar");
         Log.i("phone_id", "" + phone_id);
+        // zzz 用CONTACT_ID查询得到通讯录中存储的号码phoneNumber
         getPhoneid(phone_id);
         if (phoneNumber != null && !phoneNumber.equals("UNKNOWN")) {
+            // zzz 先读取日程id列表calendarArrayList
             getCalendar();
+            // zzz 根据日程id列表显示日程信息
             getCalendarEvent();
         }
         // else{
@@ -96,6 +107,13 @@ public class MenuCalendarActivity extends Activity {
 
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 用CONTACT_ID查询得到通讯录中存储的号码phoneNumber
+     * 
+     * */
     private void getPhoneid(String phone_id) {
         String[] projection = { Phone.DISPLAY_NAME, Phone.NUMBER, Phone.PHOTO_ID, Phone.CONTACT_ID };
         Cursor cur = getContentResolver().query(Phone.CONTENT_URI, projection, null, null,
@@ -122,6 +140,13 @@ public class MenuCalendarActivity extends Activity {
         cur.close();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 根据电话号码查询出相关的日程的列表，保存到calendarArrayList
+     * 
+     * */
     private void getCalendar() {
         // TODO Auto-generated method stub
         calendarArrayList.clear();
@@ -156,6 +181,13 @@ public class MenuCalendarActivity extends Activity {
         cur.close();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 根据电话号码查询出相关的日程的列表，保存到calendarArrayList
+     * 
+     * */
     private void getCalendarEvent() {
         // TODO Auto-generated method stub
         // calendarEventArrayList.clear();
@@ -171,6 +203,7 @@ public class MenuCalendarActivity extends Activity {
             String description = cur.getString(cur.getColumnIndex("description"));
 
             /** zzz */
+            // zzz 时间现实方案(国际漫游相关需求)
             // String eventStart = dt(dtstart);
             // String eventEnd = dt(dtend);
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -180,7 +213,9 @@ public class MenuCalendarActivity extends Activity {
             StringBuilder dateValueStartSB = new StringBuilder();
             StringBuilder dateValueEndSB = new StringBuilder();
 
+            // zzz 只在漫游时判断
             if (tm.isNetworkRoaming() || sp.getBoolean("RoamingTestPreference", false)) {
+                // zzz 显示‘北京时间’或‘当地时间’
                 String timeLocate = showBJTime ? getResources().getStringArray(R.array.time_setting)[1]
                         : getResources().getStringArray(R.array.time_setting)[0];
                 dateValueStartSB.append(timeLocate);
@@ -196,6 +231,7 @@ public class MenuCalendarActivity extends Activity {
                 dateValueEndSB.append(DateUtils.formatDateRange(this, dtend, dtend, DateUtils.FORMAT_SHOW_TIME
                         | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
             } else { // bj time
+                // zzz 时间格式化时指定时区
                 dateValueStartSB.append(DateUtils.formatDateRange(
                         this,
                         new Formatter(),
@@ -277,6 +313,13 @@ public class MenuCalendarActivity extends Activity {
         cur.close();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 格式化时间，似乎已经废弃
+     * 
+     * */
     public static String dt(long time) {
         Date now = new Date(time);
         SimpleDateFormat temp = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");

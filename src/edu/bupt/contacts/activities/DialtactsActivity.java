@@ -82,6 +82,16 @@ import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 电话模块的入口Activity
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * The dialer activity that has one tab with the virtual 12key dialer, a tab
  * with recent calls in it, a tab with the contacts and a tab with the favorite.
  * This is the container and the tabs are embedded using intents. The dialer
@@ -573,6 +583,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         }
 
         /** zzz */
+        // 启动时开始缓存联系人多选列表，在后台缓存以提高请求列表时的响应速度
         // for contacts list cache
         if (!UpdateContactsCacheRunnable.isInitilized) {
             new Thread(new UpdateContactsCacheRunnable(this)).start();
@@ -948,6 +959,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
         // }
 
         /** zzz */
+        // zzz 调起翼拨号的处理Service，由翼拨号流程判断直接拨号或调起翼拨号菜单
         Intent intent = new Intent();
         intent.setAction("edu.bupt.action.EDIAL");
         intent.putExtra("digit", number);
@@ -1047,6 +1059,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
             Intent intent = ContactsUtils.getCallIntent(phoneNumber, getCallOrigin());
 
             /** zzz */
+            // zzz 所有拨号的功能都应该由翼拨号接管
             // startActivity(intent);
             Log.v(TAG, "dial here?");
             Log.v(TAG, "intent - " + intent.toString());
@@ -1064,6 +1077,7 @@ public class DialtactsActivity extends TransactionSafeActivity implements View.O
                 // }
 
                 /** zzz */
+                // zzz 调起翼拨号的处理Service，由翼拨号流程判断直接拨号或调起翼拨号菜单
                 Intent i = new Intent();
                 i.setAction("edu.bupt.action.EDIAL");
                 i.putExtra("digit", number);

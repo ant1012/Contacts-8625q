@@ -16,6 +16,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 选择账户，本地或者SIM卡
+ * 
+ * */
+
 /** zzz */
 // select account before edit new contact
 public class SelectLocalAccountActivity extends Activity {

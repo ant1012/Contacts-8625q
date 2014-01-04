@@ -57,6 +57,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ListView;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人封装及发送(通讯录功能15)(通讯录功能16)(通讯录功能17)(通讯录功能18)(通讯录功能19)(通讯录功能20)
+ * 
+ * */
+
 public class MultiSelectExport extends ListActivity {
     private final String TAG = "MultiSelectExport";
 
@@ -114,6 +122,7 @@ public class MultiSelectExport extends ListActivity {
         // contactModArrayList));
 
         list = new ArrayList<Map<String, String>>();
+        // zzz 读取联系人列表
         initData(list);
         mAdapter = new ContactMultiSelectAdapter(list, this);
         listView = getListView();
@@ -129,9 +138,9 @@ public class MultiSelectExport extends ListActivity {
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // TODO Auto-generated method stub
-
+                // zzz 用ViewHolder控制列表项
                 ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
+                // zzz 触发选中
                 holder.checkbox.toggle();
                 // Log.i("Click",""+contactArrayList.get(arg2).toString());
                 // String xx = "You had click those items: \n";
@@ -158,10 +167,12 @@ public class MultiSelectExport extends ListActivity {
                 // Log.i("pos", "" + pos[i]);
                 // }
 
+                // zzz 用ContactMultiSelectAdapter类的静态变量保存选中状态
                 ContactMultiSelectAdapter.getIsSelected().put(arg2, holder.checkbox.isChecked());
             }
         });
 
+        // zzz 如果长按通讯录初始界面中的列表项进入此Activity，则需要把长按的项设为选中
         Intent intent = getIntent();
         int positionSelected = intent.getIntExtra("selected", -1);
         if (positionSelected > 0) {
@@ -171,9 +182,11 @@ public class MultiSelectExport extends ListActivity {
         }
     }
 
+    // zzz 初始化联系人数据列表
     private void initData(ArrayList<Map<String, String>> list) {
         Log.d(TAG, "initData");
         list.clear();
+        // zzz 查询Contacts表
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
@@ -189,10 +202,12 @@ public class MultiSelectExport extends ListActivity {
 
         while (cursor.moveToNext()) {
             // get name
+            // zzz 姓名
             int nameFieldColumnIndex = cursor
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
             String name = cursor.getString(nameFieldColumnIndex);
             // get id
+            // zzz 获取id用于进一步查询
             String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             // phonecur = getContentResolver().query(
             // android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -246,6 +261,13 @@ public class MultiSelectExport extends ListActivity {
     // }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 将选中的联系人项打包成vcard并发送
+     * 
+     * */
     private void doShareCheckedContacts() {
         // TODO move the query into a loader and do this in a background
         // thread//Contacts.CONTENT_URI
@@ -305,6 +327,7 @@ public class MultiSelectExport extends ListActivity {
         // }
         // }
 
+        // zzz 利用VCardComposer打包vcard
         final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
 
         VCardComposer composer = null;
@@ -325,6 +348,7 @@ public class MultiSelectExport extends ListActivity {
         // return;
         // }
 
+        // zzz 打包文件用到的VCardComposer类需要用cursor来初始化，因此首先要根据id查询出要打包的联系人的cursor
         // for file name
         StringBuilder sbName = new StringBuilder();
 
@@ -332,6 +356,7 @@ public class MultiSelectExport extends ListActivity {
         String[] projection = new String[] { Contacts._ID, Contacts.DISPLAY_NAME };
 
         // selection
+        // 用sbwhere生成用于查询的selection参数
         StringBuilder sbwhere = new StringBuilder();
         sbwhere.append("_id = ? ");
 
@@ -342,8 +367,10 @@ public class MultiSelectExport extends ListActivity {
         for (int i = 0; i < list.size(); i++) {
             if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 if (!first) {
+                    // zzz 附加sql中的‘or’语句
                     sbwhere.append(" or _id = ? ");
                 } else {
+                    // zzz 如果是第一个，则取出联系人的名字，以生成文件名
                     sbName.append(list.get(i).get("name"));
                     Log.i(TAG, "sbName - " + sbName.toString());
                 }
@@ -352,6 +379,7 @@ public class MultiSelectExport extends ListActivity {
                 first = false;
             }
         }
+        // zzz 生成selectionArgs用于查询
         args = argsList.toArray(new String[argsList.size()]);
         Log.i(TAG, "sbwhere - " + sbwhere.toString());
         Log.i(TAG, "args - " + args.length);
@@ -360,6 +388,7 @@ public class MultiSelectExport extends ListActivity {
         Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, projection, sbwhere.toString(), args, null);
 
         // init
+        // zzz 用查询得到的cursor初始化composer
         if (!composer.init(cursor)) {
             final String errorReason = composer.getErrorReason();
             Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
@@ -367,16 +396,18 @@ public class MultiSelectExport extends ListActivity {
         }
 
         final int total = composer.getCount();
-        if (total == 0) {
+        if (total == 0) { // zzz 没有选择
             Toast.makeText(this, R.string.share_error, Toast.LENGTH_SHORT).show();
             ;
             return;
-        } else if (total > 1) {
+        } else if (total > 1) { // zzz 不止一个联系人信息被打包，文件名附加‘等xxx人’
             sbName.append(getString(R.string.vcard_share_filename_more, total));
         }
         Log.i(TAG, "composer.getCount() - " + total);
 
         // compose
+        // zzz 打包，将vcard文件输出成String
+
         // final OutputStream outputStream;
         // outputStream = getContentResolver().openOutputStream(uri);
         // Writer writer = new BufferedWriter(new
@@ -413,6 +444,7 @@ public class MultiSelectExport extends ListActivity {
             // current++;
         }
         Log.i(TAG, sb.toString());
+        // zzz 将生成的String保存到临时文件
         File tempFile = null;
         try {
             tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf", this.getExternalCacheDir());
@@ -425,6 +457,7 @@ public class MultiSelectExport extends ListActivity {
         }
 
         // send
+        // zzz 打包成文件后发送，弹出应用选择的菜单
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/x-vcard");
         // i.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
@@ -451,11 +484,11 @@ public class MultiSelectExport extends ListActivity {
         // 获取联系人处理实例
 
         switch (item.getItemId()) {
-        case 0:
+        case 0: // zzz 文本分享
             doShareCheckedContactsText();
             break;
 
-        case 1:
+        case 1: // zzz vcard文件分享
             doShareCheckedContacts();
             break;
 
@@ -465,6 +498,13 @@ public class MultiSelectExport extends ListActivity {
 
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 将选中的联系人项通过短信文本分享
+     * 
+     * */
     private void doShareCheckedContactsText() {
 
         // selection
@@ -473,6 +513,7 @@ public class MultiSelectExport extends ListActivity {
 
         // selectionArgs
         String[] args = new String[] {};
+        // zzz 生成selectionArgs用于查询
         List<String> argsList = new ArrayList<String>();
         boolean first = true;
         for (int i = 0; i < list.size(); i++) {
@@ -492,6 +533,7 @@ public class MultiSelectExport extends ListActivity {
         // do query
         Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, null, sbwhere.toString(), args, null);
 
+        // zzz 查询得到要分享的联系人后，逐条输出成文本
         StringBuilder sb = new StringBuilder();
         while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
@@ -517,7 +559,7 @@ public class MultiSelectExport extends ListActivity {
 
                 sb.append("电话: ");
                 sb.append(phones.getString(phones.getColumnIndex("data1")));
-                while (phones.moveToNext()) {
+                while (phones.moveToNext()) { // zzz 可能会有多个电话号码
                     sb.append('/');
                     sb.append(phones.getString(phones.getColumnIndex("data1")));
                 }
@@ -528,6 +570,7 @@ public class MultiSelectExport extends ListActivity {
         Log.v(TAG, sb.toString());
 
         // send
+        // zzz 调起短信应用通过文本发送
         Uri uri = Uri.parse("smsto:");
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", sb.toString());

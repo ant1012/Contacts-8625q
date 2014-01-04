@@ -23,6 +23,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Displays a list to browse groups.
  */
 public class GroupBrowserActivity extends ContactsActivity {

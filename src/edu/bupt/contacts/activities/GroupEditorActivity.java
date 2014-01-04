@@ -33,6 +33,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 编辑群组的Activity，主要功能在GroupEditorFragment中实现
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
 public class GroupEditorActivity extends ContactsActivity
         implements DialogManager.DialogShowingViewActivity {
 

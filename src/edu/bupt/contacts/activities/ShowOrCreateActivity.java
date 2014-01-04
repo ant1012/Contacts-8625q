@@ -37,6 +37,15 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
+
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
 /**
  * Handle several edge cases around showing or possibly creating contacts in
  * connected with a specific E-mail address or phone number. Will search based

@@ -102,6 +102,16 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人模块的入口Activity
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Displays a list to browse contacts. For xlarge screens, this also displays a
  * detail-pane on the right.
  */
@@ -219,6 +229,8 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
     }
 
     /** zzz */
+    // zzz 强制使账户对群组可写，否则无法在本地账户下新建或编辑群组
+    // 因为Google默认的本地账户应该是为空，而为了兼容中兴数据库的设计，在本应用中使用的中兴定义的com.android.localphone账户
     // private boolean areGroupWritableAccountsAvailable() {
     // // return true;
     // return ContactsUtils.areGroupWritableAccountsAvailable(this);
@@ -278,6 +290,7 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
 
         /** zzz */
         // for contacts list cache
+        // zzz 打开应用时开始缓存联系人多选号码列表
         if (!UpdateContactsCacheRunnable.isInitilized) {
             new Thread(new UpdateContactsCacheRunnable(this)).start();
         }
@@ -546,6 +559,7 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
 
     /** zzz */
     // for contacts list cache
+    // zzz 监控数据库，一旦有修改则开始重新缓存联系人号码多选列表
     private ContactsContentObserver contactsContentObserver;
 
     // private void registerContactsContentObserver() {
@@ -1520,6 +1534,7 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
         makeMenuItemVisible(menu, R.id.menu_import_export, showMiscOptions);
 
         /** zzz */
+        // zzz 账户选择菜单不可见，只是用本地和SIM卡账户
         makeMenuItemVisible(menu, R.id.menu_accounts, false);
 
         makeMenuItemVisible(menu, R.id.menu_settings, showMiscOptions && !ContactsPreferenceActivity.isEmpty(this));//
@@ -1626,6 +1641,7 @@ public class PeopleActivity extends ContactsActivity implements View.OnCreateCon
         }
 
         /** zzz */
+        // zzz 设置菜单，与拨号盘模块统一
         case R.id.menu_call_setting: {
             // Intent intent = new Intent(PeopleActivity.this,
             // DialpadPreferenceActivity.class);

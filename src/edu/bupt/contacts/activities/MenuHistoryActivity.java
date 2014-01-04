@@ -26,6 +26,14 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 查看与该联系人的历史通信纪录(通讯录功能23)
+ * 
+ * */
+
 //修改 历史记录的页面 ddd
 public class MenuHistoryActivity extends Activity {
     public static Uri ALL_INBOX = Uri.parse("content://sms/");
@@ -43,7 +51,9 @@ public class MenuHistoryActivity extends Activity {
         Bundle bundle = new Bundle();
         bundle = this.getIntent().getExtras();
         String phone_id = bundle.getString("check_history");
+        // zzz 用CONTACT_ID查询得到通讯录中存储的号码phoneNumber
         getPhoneid(phone_id);
+        // zzz 通过电话号码查询历史记录
         getCallrecord();
         SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.menu_history, new String[] { "img", "typeIndex",
                 "date", "duration", "sub_id" }, new int[] { R.id.img, R.id.typeIndex, R.id.date, R.id.duration,
@@ -187,6 +197,13 @@ public class MenuHistoryActivity extends Activity {
         return str;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 用CONTACT_ID查询得到通讯录中存储的号码phoneNumber
+     * 
+     * */
     private void getPhoneid(String phone_id) {
         String[] projection = { Phone.DISPLAY_NAME, Phone.NUMBER, Phone.PHOTO_ID, Phone.CONTACT_ID };
         Cursor cur = getContentResolver().query(Phone.CONTENT_URI, projection, null, null,
@@ -213,9 +230,17 @@ public class MenuHistoryActivity extends Activity {
         cur.close();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 通过电话号码查询历史记录
+     * 
+     * */
     public void getCallrecord() {
         try {
             list.clear();
+            // zzz 查询通话记录
             Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI,
 
             null, "number=?", new String[] { phoneNumber }, CallLog.Calls.DEFAULT_SORT_ORDER);
@@ -240,6 +265,7 @@ public class MenuHistoryActivity extends Activity {
                 // Log.i("date", checkDur(duration) + ";" + dt(date));
 
                 /** zzz */
+                // zzz 时间现实方案
                 // if need to show bj time or local time
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                 boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");
@@ -281,6 +307,8 @@ public class MenuHistoryActivity extends Activity {
                 list.add(map);
 
             } while (cursor.moveToNext());
+
+            // zzz 查询短信记录
             Cursor cur = getContentResolver().query(ALL_INBOX, null, null, null, null);
             if (!cur.moveToFirst())
 
@@ -310,6 +338,7 @@ public class MenuHistoryActivity extends Activity {
                     }
 
                     /** zzz */
+                    // zzz 时间现实方案
                     // if need to show bj time or local time
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
                     boolean showBJTime = !sp.getString("TimeSettingPreference", "0").equals("0");

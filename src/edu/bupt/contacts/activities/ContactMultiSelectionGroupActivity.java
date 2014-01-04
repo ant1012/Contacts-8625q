@@ -62,6 +62,14 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 分组选择联系人的选择界面，即先选择群组，再选择群组中的联系人的Activity，由短信应用调用(短信功能38)
+ * 
+ * */
+
+/**
  * Displays a list of contacts (or phone numbers or postal addresses) for the
  * purposes of selecting one.
  */
@@ -71,6 +79,10 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     public ListView listView;
     // public int[] pos;
     private ArrayList<Map<String, String>> list;
+
+    // zzz 与ContactMultiSelectionActivity考虑类似的场景
+    // 调起此Activity的两种情况，可能需要返回号码，也可能需要返回打包后的vcard文件
+    // 当前暂时没有用到按分组打包vcard的功能
     private int flagPackageVcard = 0; // when 0 returns arraylist
                                       // when 1 returns vcard file uri
 
@@ -87,6 +99,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         // for mms
+        // zzz 判断是需要返回号码，或者需要返回打包后的vcard文件
         Intent i = getIntent();
         flagPackageVcard = i.getIntExtra("package_vcard", 0);
 
@@ -132,7 +145,9 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // setListView();
 
         /** zzz */
+        // zzz 读取群组信息
         // filter deleted groups
+        // zzz 在Groups中的群组项可能具有DELETED的属性，即可能已经被删除
         String sel = ContactsContract.Groups.DELETED + "=?";
         String[] selArgs = new String[] { String.valueOf(0) };
 
@@ -144,10 +159,12 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         }
 
         final CharSequence[] items = groupName.toArray(new CharSequence[groupName.size()]);
+        // zzz 显示群组列表
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setOnCancelListener(new OnCancelListener(){
             @Override
             public void onCancel(DialogInterface arg0) {
+                // zzz 群组列表的Dialog取消后需要结束Activity，避免bug
                 ContactMultiSelectionGroupActivity.this.finish();
             }
         });
@@ -155,6 +172,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.v(TAG, "clicked group " + groupId.get(item));
+                // zzz 只支持单选，选择后更新Activity上的列表
                 SelectedGrouId = groupId.get(item);
                 setListView();
             }
@@ -171,12 +189,22 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 初始化联系人列表
+     * 
+     * */
     private void setListView() {
         list = new ArrayList<Map<String, String>>();
 
+        // zzz 计时
         Log.v(TAG, "before initData");
         long tb = System.currentTimeMillis();
+        // zzz 初始化数据
         initData(list);
+        // zzz 计时
         Log.v(TAG, "after initData");
         long ta = System.currentTimeMillis();
         Log.w(TAG, "time cost for initData, " + (ta - tb));
@@ -217,11 +245,19 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // });
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 初始化联系人列表
+     * 
+     * */
     private void initData(ArrayList<Map<String, String>> list) {
         // contactLookupArrayList.clear();
         list.clear();
         Thread getcontacts = new Thread(new GetContacts());
         getcontacts.start();
+        // zzz 用ProgressDialog表示正在读取列表的过程
         proDialog = ProgressDialog.show(ContactMultiSelectionGroupActivity.this,
                 getString(R.string.multi_select_loading), getString(R.string.multi_select_loading), true, true);
         // String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP
@@ -351,7 +387,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        // zzz 不设置取消按钮，只有全选和确定
         menu.add(0, 0, 0, R.string.menu_select_all);
         // menu.add(0, 1, 1, R.string.cancel);
         menu.add(0, 2, 2, R.string.ok);
@@ -368,6 +404,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
         switch (item.getItemId()) {
         case 0:
+            // zzz 全选
             for (int i = 0; i < list.size(); i++) {
                 ContactMultiSelectAdapter.getIsSelected().put(i, true);
             }
@@ -379,6 +416,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             break;
         case 2:
             if (flagPackageVcard == 0) {
+                // zzz 选取联系人号码
                 pickContacts();
             } else if (flagPackageVcard == 1) {
                 doShareCheckedContacts();
@@ -389,6 +427,13 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 选取联系人号码
+     * 
+     * */
     private void pickContacts() {
         Log.i(TAG, "pickContacts");
 
@@ -406,6 +451,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // List<String> argsList = new ArrayList<String>();
         // boolean first = true;
         for (int i = 0; i < list.size(); i++) {
+            // zzz 选中的项添加到返回的ArrayList中，ContactMultiSelectAdapter.getIsSelected()方法提供了被选中的项的列表
             if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 // if (!first) {
                 // sbwhere.append(" or _id = ? ");
@@ -427,6 +473,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
         Intent intent = new Intent();
 
+        // zzz 返回
         intent.putExtra("ret", ret);
         setResult(RESULT_OK, intent);
         finish();
@@ -434,19 +481,30 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 选打包成vcard，因为暂时没有俺群组打包的场景，故此方法不会被调用
+     * 
+     * */
     private void doShareCheckedContacts() {
         final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
 
         VCardComposer composer = null;
+        // zzz 利用vcad包提供的打包方法生成vcard文件
         composer = new VCardComposer(this, vcardType, true);
 
         // for file name
+        // zzz 用选择的联系人姓名生成vcard文件的文件名
         StringBuilder sbName = new StringBuilder();
 
         // projection
         String[] projection = new String[] { Contacts._ID, Contacts.DISPLAY_NAME };
 
         // selection
+        // zzz 打包文件用到的VCardComposer类需要用cursor来初始化，因此首先要根据id查询出要打包的联系人的cursor
+        // 用sbwhere生成用于查询的selection参数
         StringBuilder sbwhere = new StringBuilder();
         sbwhere.append("_id = ? ");
 
@@ -457,8 +515,10 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         for (int i = 0; i < list.size(); i++) {
             if (ContactMultiSelectAdapter.getIsSelected().get(i) == true) {
                 if (!first) {
+                    // zzz 附加sql中的‘or’语句
                     sbwhere.append(" or _id = ? ");
                 } else {
+                    // zzz 如果是第一个，则取出联系人的名字，以生成文件名
                     sbName.append(list.get(i).get("name"));
                     Log.i(TAG, "sbName - " + sbName.toString());
                 }
@@ -467,6 +527,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                 first = false;
             }
         }
+        // zzz 生成selectionArgs用于查询
         args = argsList.toArray(new String[argsList.size()]);
         Log.i(TAG, "sbwhere - " + sbwhere.toString());
         Log.i(TAG, "args - " + args.length);
@@ -475,6 +536,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI, projection, sbwhere.toString(), args, null);
 
         // init
+        // zzz 用查询得到的cursor初始化composer
         if (!composer.init(cursor)) {
             final String errorReason = composer.getErrorReason();
             Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
@@ -482,16 +544,17 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         }
 
         final int total = composer.getCount();
-        if (total == 0) {
+        if (total == 0) { // zzz 没有选择
             Toast.makeText(this, R.string.share_error, Toast.LENGTH_SHORT).show();
             ;
             return;
-        } else if (total > 1) {
+        } else if (total > 1) { // zzz 不止一个联系人信息被打包，文件名附加‘等xxx人’
             sbName.append(getString(R.string.vcard_share_filename_more, total));
         }
         Log.i(TAG, "composer.getCount() - " + total);
 
         // compose
+        // zzz 打包，将vcard文件输出成String
         StringBuilder sb = new StringBuilder();
         while (!composer.isAfterLast()) {
             sb.append(composer.createOneEntry());
@@ -499,6 +562,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         Log.i(TAG, sb.toString());
         File tempFile = null;
         try {
+            // zzz 将生成的String保存到临时文件
             tempFile = File.createTempFile("VCard-" + sbName.toString(), ".vcf", this.getExternalCacheDir());
             FileOutputStream fos = new FileOutputStream(tempFile);
             byte[] bytes = sb.toString().getBytes();
@@ -519,11 +583,19 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         // return
         Intent intent = new Intent();
 
+        // zzz 返回临时文件的URI
         intent.putExtra("ret", Uri.fromFile(tempFile));
         setResult(RESULT_OK, intent);
         finish();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 异步读取联系人信息
+     * 
+     * */
     private class GetContacts implements Runnable {
         @Override
         public void run() {
@@ -534,6 +606,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             /** zzz */
             // for group selection
             // query raw contact id using group id
+            // zzz 按群组查询RAW_CONTACT_ID
             Cursor rawcontactCursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                     new String[] { ContactsContract.Data.RAW_CONTACT_ID },
                     ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.Data.DATA1 + " = ?",
@@ -547,6 +620,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             rawcontactCursor.close();
 
             // query contact id using raw contact id
+            // zzz 按RAW_CONTACT_ID查询CONTACT_ID
             StringBuilder rawcontactIdSelection = new StringBuilder(RawContacts._ID).append(" IN ( 0");
             for (long id : rawcontacts) {
                 rawcontactIdSelection.append(',').append(id);
@@ -555,6 +629,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
 
             /** zzz */
             // filter deleted contacts
+            // zzz 需要过滤掉易经被删除的联系人
             rawcontactIdSelection.append(" AND " + RawContacts.DELETED + " = 0");
 
             Cursor contactIdCursor = getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
@@ -588,6 +663,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             // }rawcontactIdSelection
 
             // query contact using contact id
+            // zzz 用CONTACT_ID查询联系人的其他信息
             StringBuilder contactIdSelection = new StringBuilder(ContactsContract.Contacts._ID).append(" IN ( 0");
             for (long id : contactsid) {
                 contactIdSelection.append(',').append(id);
@@ -606,10 +682,12 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             while (cursor.moveToNext()) {
 
                 // get name
+                // zzz 获取联系人姓名
                 int nameFieldColumnIndex = cursor
                         .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
                 String name = cursor.getString(nameFieldColumnIndex);
                 // get id
+                // zzz 获取联系人id，用于确定选择项
                 String contactId = cursor.getString(cursor
                         .getColumnIndex(android.provider.ContactsContract.Contacts._ID));
                 String strPhoneNumber = "";
@@ -619,6 +697,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                         android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                         new String[] { contactId }, null);
                 // get number
+                // zzz 获取联系人号码，每个联系人可能有多个号码，需要把每个号码单独保存到ArrayList中的一项
                 while (phonecur.moveToNext()) {
                     strPhoneNumber = phonecur.getString(phonecur
                             .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -644,10 +723,12 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
             // msg1.what = UPDATE_LIST;
             // updateListHandler.sendMessage(msg1);
 
+            // zzz 查询完成后取消掉’正在读取‘的对话框
             Message msg1 = new Message();
             msg1.what = UPDATE_LIST;
             updateListHandler.sendMessage(msg1);
 
+            // zzz 计时
             Log.v(TAG, "after initData");
             long ta = System.currentTimeMillis();
             Log.w(TAG, "time cost for GetContacts, " + (ta - tb));
@@ -655,6 +736,13 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         }
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 取消’正在读取‘的对话框
+     * 
+     * */
     private Handler updateListHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -668,6 +756,13 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
         }
     };
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 读取完成后更新列表显示
+     * 
+     * */
     private void updateList() {
         if (list != null) {
             mAdapter = new ContactMultiSelectAdapter(list, this);
@@ -685,7 +780,9 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
+                    // zzz 用ViewHolder控制列表项
                     ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
+                    // zzz 点击后设为选中
                     holder.checkbox.toggle();
                     // for (int i = 0; i < listView.getCount(); i++) {
                     // if (listView.isItemChecked(i)) {
@@ -698,6 +795,7 @@ public class ContactMultiSelectionGroupActivity extends ListActivity {
                     // }
                     // }
                     // }
+                    // zzz 记录列表项的选中状态
                     ContactMultiSelectAdapter.getIsSelected().put(arg2, holder.checkbox.isChecked());
                 }
             });

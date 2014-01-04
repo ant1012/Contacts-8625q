@@ -61,6 +61,16 @@ import android.widget.SearchView.OnQueryTextListener;
 import java.util.Set;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 选择联系人，由其他应用通过ACTION_PICE或ACTION_INSERT_OR_EDIT调起，只支持单选
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Displays a list of contacts (or phone numbers or postal addresses) for the
  * purposes of selecting one.
  */
