@@ -10,6 +10,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 黑名单功能的Activity，包含4个Fragment
+ * 
+ * */
+
 public class BlacklistMainActivity extends FragmentActivity implements
         RadioButtonsFragment.SwitchTabs {
 
@@ -33,9 +41,11 @@ public class BlacklistMainActivity extends FragmentActivity implements
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         dbHelper.onCreate(db);
         Log.d(TAG, "onCreate");
+        // zzz 默认打开黑名单页面
         initFragment(savedInstanceState);
 
         /** zzz */
+        // zzz 如果从群组的白名单入口进入，则显示白名单页面
         if (getIntent().getExtras() != null
                 && getIntent().getExtras().getBoolean("fragment_display_whitelist", false)) {
             Log.d(TAG, "fragment_display_whitelist");
@@ -47,6 +57,13 @@ public class BlacklistMainActivity extends FragmentActivity implements
         }
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 初始化RadioButton，默认显示黑名单页面
+     * 
+     * */
     private void initFragment(Bundle savedInstanceState) {
 
         FragmentManager fragmentManager;
@@ -85,6 +102,8 @@ public class BlacklistMainActivity extends FragmentActivity implements
         finish();
         return super.onOptionsItemSelected(item);
     }
+    
+    // zzz 以下方法用于显示不同的Fragment，其中msgBlock为短信拦截，暂不可用
 
     @Override
     public void msgBlock() {

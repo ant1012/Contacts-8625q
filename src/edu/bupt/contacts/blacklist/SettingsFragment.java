@@ -22,6 +22,14 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 黑名单设置页面Fragment，已废弃，仅有两项设置项，现至于白名单的Fragment中
+ * 
+ * */
+
 public class SettingsFragment extends Fragment {
 
     public static final String TAG = "franco--->SettingsFragment";

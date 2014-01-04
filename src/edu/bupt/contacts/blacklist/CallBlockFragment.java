@@ -21,6 +21,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 拦截记录页面的Fragment
+ * 
+ * */
+
 public class CallBlockFragment extends Fragment {
 
     public static final String TAG = "franco--->CallBlockFragment";
@@ -86,6 +94,14 @@ public class CallBlockFragment extends Fragment {
         super.onDestroy();
     }
 
+
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 初始化控件
+     * 
+     * */
     private void findViewAndSetListener() {
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
@@ -107,7 +123,7 @@ public class CallBlockFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                     long arg3) {
-                // TODO Auto-generated method stub
+                // zzz 点击响应
                 Log.v(TAG, "arg3 = " + arg3);
                 String sql = "select * from CallBlockRecord where _ID = "
                         + arg3;
@@ -131,7 +147,6 @@ public class CallBlockFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface arg0,
                                             int arg1) {
-                                        // TODO Auto-generated method stub
                                         switch (arg1) {
 
                                         case 0:// 删除
@@ -166,6 +181,13 @@ public class CallBlockFragment extends Fragment {
         });
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 收到广播后更新显示
+     * 
+     * */
     private void update() {
         cursor = callDBHelper.getWritableDatabase().query(
                 CallBlockDBHelper.TB_NAME, null, null, null, null, null,
@@ -177,7 +199,7 @@ public class CallBlockFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
+            // zzz 收到广播后更新显示，因为有可能新来电被拦截，数据库有变化
             update();
         }
 

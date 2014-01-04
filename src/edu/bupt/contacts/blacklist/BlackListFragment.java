@@ -36,6 +36,14 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 黑名单页面的Fragment，主要包括黑名单列表和添加号码按钮
+ * 
+ * */
+
 public class BlackListFragment extends Fragment {
 
     public static final String TAG = "BlackListFragment";
@@ -60,6 +68,7 @@ public class BlackListFragment extends Fragment {
     private int _ID;
 //    private int blockId;
     private String name, phone;
+    // zzz 从通讯录添加到黑名单时的列表，记录列表项的选中状态
     private HashMap<Integer, Boolean> checkedMap;
     private ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
@@ -104,7 +113,7 @@ public class BlackListFragment extends Fragment {
     }
 
     private void findViewAndSetListener() {
-
+        // zzz 黑名单号码列表
         listView = (ListView) view.findViewById(android.R.id.list);
         listView.setEmptyView(view.findViewById(android.R.id.empty));
         mDBHelper = new BlacklistDBHelper(context);
@@ -116,7 +125,7 @@ public class BlackListFragment extends Fragment {
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+            // zzz 列表项的点击响应，弹出删除和清空两项菜单
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Log.v(TAG, "arg3 = " + arg3);
@@ -156,6 +165,7 @@ public class BlackListFragment extends Fragment {
             }
 
         });
+        // zzz 添加新号码按钮
         newRecord = (Button) view.findViewById(R.id.new_record);
         newRecord.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -164,6 +174,7 @@ public class BlackListFragment extends Fragment {
             }
 
         });
+        // zzz 从通讯录中选择号码的按钮
         importContact = (Button) view.findViewById(R.id.import_contact);
         importContact.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -174,6 +185,13 @@ public class BlackListFragment extends Fragment {
         });
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 从通讯录中选择号码，多选
+     * 
+     * */
     private void showImportContactDialog() {
 
         Button save = null;
@@ -201,6 +219,7 @@ public class BlackListFragment extends Fragment {
         // R.layout.blacklist_contact_item, contact, from, to,
         // CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
+        // zzz 初始化联系人列表，只显示联系人，不列出所有号码
         initData(list);
         ContactMultiSelectAdapter adapter = new ContactMultiSelectAdapter(list, context);
 
@@ -212,6 +231,7 @@ public class BlackListFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                // zzz 记录选中状态
                 ContactMultiSelectAdapter.ViewHolder holder = (ContactMultiSelectAdapter.ViewHolder) arg1.getTag();
                 holder.checkbox.toggle();
 
@@ -237,6 +257,7 @@ public class BlackListFragment extends Fragment {
             public void onClick(View v) {
                 importContactDialog.dismiss();
                 for (int position : checkedMap.keySet()) {
+                    // zzz 保存选中的项到黑名单表
                     if (checkedMap.get(position)) {
                         // contact.moveToPosition(position);
                         // String name = contact.getString(PHONES_DISPLAY_NAME);
@@ -249,6 +270,7 @@ public class BlackListFragment extends Fragment {
                                 android.provider.ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                                 new String[] { contactId }, null);
                         // get number
+                        // zzz 选择联系人后，将联系人的所有号码都保存到黑名单
                         while (phonecur.moveToNext()) {
                             String strPhoneNumber = phonecur.getString(phonecur
                                     .getColumnIndex(android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -293,9 +315,17 @@ public class BlackListFragment extends Fragment {
         importContactDialog.show();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 初始化联系人列表
+     * 
+     * */
     private void initData(ArrayList<Map<String, String>> list) {
         // contactLookupArrayList.clear();
         list.clear();
+        // zzz 查询Contacts表，查出所有联系人
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID };
@@ -314,6 +344,7 @@ public class BlackListFragment extends Fragment {
                     .getColumnIndex(android.provider.ContactsContract.PhoneLookup.DISPLAY_NAME);
             String name = cursor.getString(nameFieldColumnIndex);
             // get id
+            // zzz id用于进一步查询
             String contactId = cursor.getString(cursor.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
             String strPhoneNumber = "";
 
@@ -356,6 +387,13 @@ public class BlackListFragment extends Fragment {
 
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 添加新记录
+     * 
+     * */
     private void showNewRecordDialog(String name, String phone, int blockId, final boolean isExisted) {
 
         Button save = null;
@@ -364,10 +402,13 @@ public class BlackListFragment extends Fragment {
         view = inflater.inflate(R.layout.blacklist_new_record_dialog, null);
         save = (Button) view.findViewById(R.id.save);
         cancle = (Button) view.findViewById(R.id.cancle);
+        // zzz 姓名，只用于黑名单列表的显示，与通讯录中的姓名无关
         contactName = (EditText) view.findViewById(R.id.contact_name_et);
         contactName.setText(name);
+        // zzz 号码，拦截时的关键参数
         phoneNumber = (EditText) view.findViewById(R.id.phone_number_et);
         phoneNumber.setText(phone);
+        // zzz 拦截类型，已经废弃不起作用
         Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.block_content,
@@ -404,6 +445,7 @@ public class BlackListFragment extends Fragment {
                 String phone = phoneNumber.getText().toString();
                 String name = contactName.getText().toString();
                 if ("".equals(phone)) {
+                    // zzz 保存时号码不能为空
                     Toast.makeText(context, R.string.no_phone_input, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -426,19 +468,42 @@ public class BlackListFragment extends Fragment {
         newRecordDialog.show();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 保存
+     * 
+     * */
     private void save(String name, String phone, Integer latestClicked) {
         // mDBHelper.addPeople(name, phone, blockContent[latestClicked],
         // latestClicked);
         mDBHelper.addPeople(name, phone);
+        // zzz 保存联系人后重新读取，以更新显示
         update();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 保存联系人后重新读取，以更新显示
+     * 
+     * */
     private void update() {
         cursor = mDBHelper.getWritableDatabase().query(BlacklistDBHelper.TB_NAME, null, null, null, null, null,
                 BlacklistDBHelper.NAME + " ASC");
         adapter.changeCursor(cursor);
     }
 
+
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 黑名单列表项的Adapter，似乎已经废弃，没有调用
+     * 
+     * */
     public class MyAdapter extends SimpleCursorAdapter {
 
         Context context;

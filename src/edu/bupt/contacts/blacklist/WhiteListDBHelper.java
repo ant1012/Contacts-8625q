@@ -11,6 +11,14 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 操作白名单数据库的Helper类
+ * 
+ * */
+
 public class WhiteListDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
 
@@ -54,6 +62,13 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
     // WhiteListDBHelper.ID, values);
     // }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 添加号码
+     * 
+     * */
     public void addPeople(String name, String phone) {
         String sql = "select * from " + TB_NAME + " where phone = ?";
         onCreate(this.getWritableDatabase());
@@ -64,6 +79,7 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         String strip3 = replacePattern(strip2, "(\\ )", ""); // strip space
         phone = strip3;
 
+        // zzz 先查询数据库，如果已经存在则不重复添加 
         Cursor cursor = this.getWritableDatabase().rawQuery(sql, new String[] { phone });
 
         if (!cursor.moveToFirst()) {
@@ -79,14 +95,35 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 删除号码
+     * 
+     * */
     public void delPeople(int id) {
         this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME, WhiteListDBHelper.ID + " = " + id, null);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 删除所有
+     * 
+     * */
     public void delAllPeople() {
         this.getWritableDatabase().delete(WhiteListDBHelper.TB_NAME, null, null);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 计数
+     * 
+     * */
     public int getCount() {
         int count = 0;
         Cursor cursor = this.getWritableDatabase().rawQuery("select count(*) from " + TB_NAME, null);
@@ -96,6 +133,13 @@ public class WhiteListDBHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 用正则修改字符串
+     * 
+     * */
     private String replacePattern(String origin, String pattern, String replace) {
         Log.i(TAG, "origin - " + origin);
         Pattern p = Pattern.compile(pattern);

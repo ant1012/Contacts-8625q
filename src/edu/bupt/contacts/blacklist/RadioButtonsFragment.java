@@ -12,6 +12,16 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * BlacklistMainActivity页面下方的RadioBurron的Fragment
+ * 
+ * */
+
+
 public class RadioButtonsFragment extends Fragment {
 
     private RadioGroup mRadioGroup;
@@ -68,13 +78,14 @@ public class RadioButtonsFragment extends Fragment {
         }
     }
 
+    // zzz 初始化按钮
     private void findViewAndSetListener() {
         mRadioGroup = (RadioGroup) view.findViewById(R.id.radiogroup);
-        msgBlock = (RadioButton) view.findViewById(R.id.msg_block);
+        msgBlock = (RadioButton) view.findViewById(R.id.msg_block); // zzz 已废弃
         callBlock = (RadioButton) view.findViewById(R.id.call_block);
         blackList = (RadioButton) view.findViewById(R.id.black_list);
         whiteList = (RadioButton) view.findViewById(R.id.white_list);
-        settings = (RadioButton) view.findViewById(R.id.settings);
+        settings = (RadioButton) view.findViewById(R.id.settings); // zzz 已废弃
         mRadioGroup.setOnCheckedChangeListener(mChangeRadio);
     }
 
@@ -84,7 +95,7 @@ public class RadioButtonsFragment extends Fragment {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             // TODO Auto-generated method stub
             if (checkedId == msgBlock.getId()) {
-                mCallback.msgBlock();
+                mCallback.msgBlock(); // zzz 已废弃
                 return;
             }
 
@@ -102,7 +113,7 @@ public class RadioButtonsFragment extends Fragment {
                 return;
             }
             if (checkedId == settings.getId()) {
-                mCallback.settings();
+                mCallback.settings(); // zzz 已废弃
             }
         }
 

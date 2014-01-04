@@ -5,6 +5,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 黑白名单添加记录用到的Dialog
+ * 
+ * */
+
 public class MyAlertDialog extends Dialog {
 
     public MyAlertDialog(Context context) {

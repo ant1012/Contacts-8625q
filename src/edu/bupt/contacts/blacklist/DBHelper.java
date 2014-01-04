@@ -6,6 +6,14 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 操作数据库的Helper类,主要用于对数据库三个表的初始化和更新，防止表不存在的情况下对表进行操作
+ * 
+ * */
+
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "blacklist.db";
     public static final String TAG = "DBHelper";

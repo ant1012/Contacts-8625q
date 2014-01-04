@@ -6,6 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 操作拦截记录数据库的Helper类
+ * 
+ * */
+
 public class CallBlockDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "blacklist.db";
@@ -37,6 +45,13 @@ public class CallBlockDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 新添加记录
+     * 
+     * */
     public void addRecord(String name, String phone, String time) {
         ContentValues values = new ContentValues();
         values.put(NAME, name);
@@ -45,10 +60,24 @@ public class CallBlockDBHelper extends SQLiteOpenHelper {
         this.getWritableDatabase().insert(TB_NAME, ID, values);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 删除记录
+     * 
+     * */
     public void delRecord(int id) {
         this.getWritableDatabase().delete(TB_NAME, ID + " = " + id, null);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 清空记录
+     * 
+     * */
     public void delAllRecord() {
         this.getWritableDatabase().delete(TB_NAME, null, null);
     }
