@@ -37,6 +37,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
 public class ContactDetailUpdatesFragment extends ListFragment implements FragmentKeyListener {
 
     private static final String TAG = "ContactDetailUpdatesFragment";

@@ -39,6 +39,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A simple dialog containing an {@link DatePicker}.
  *
  * <p>See the <a href="{@docRoot}resources/tutorials/views/hello-datepicker.html">Date Picker

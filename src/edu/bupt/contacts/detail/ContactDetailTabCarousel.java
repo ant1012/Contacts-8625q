@@ -38,6 +38,14 @@ import android.widget.TextView;
 import android.util.Log;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * This is a horizontally scrolling carousel with 2 tabs: one to see info about the contact and
  * one to see updates from the contact.
  */

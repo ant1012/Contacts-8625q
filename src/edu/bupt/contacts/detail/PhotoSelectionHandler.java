@@ -50,6 +50,14 @@ import edu.bupt.contacts.util.ContactPhotoUtils;
 import java.io.File;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Handles displaying a photo selection popup for a given photo view and dealing with the results
  * that come back.
  */

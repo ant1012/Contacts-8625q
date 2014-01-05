@@ -75,6 +75,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人详情页面
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * This is an invisible worker {@link Fragment} that loads the contact details
  * for the contact card. The data is then passed to the listener, who can then
  * pass the data to other {@link View}s.
@@ -368,6 +378,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             return true;
         }
         /** baoge */
+        // zzz 联系人设定独特的信息铃声(通讯录功能29)
         case R.id.menu_set_msgring: {
             if (mContactData == null)
                 return false;
@@ -375,6 +386,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             // msgUri();
             return true;
         }
+        // zzz vcard封装分享联系人(通讯录功能22)(通讯录功能23)
         case R.id.menu_share: {
             if (mContactData == null)
                 return false;
@@ -396,15 +408,18 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             // intent.setType(Contacts.CONTENT_VCARD_TYPE);
             // intent.putExtra(Intent.EXTRA_STREAM, shareUri);
 
+            // zzz vcard封装联系人，与多选封装过程相同，只是查找时只查找特定的一个联系人，而不是多选
             final int vcardType = VCardConfig.getVCardTypeFromString(getString(R.string.config_export_vcard_type));
 
             VCardComposer composer = null;
             composer = new VCardComposer(mContext, vcardType, true);
 
             // do query
+            // zzz 封装联系人用到的VCardComposer类需要用一个cursor来初始化，所以要查找得到只含有当前联系人的cursor
             Cursor cursor = mContext.getContentResolver().query(mLookupUri, null, null, null, null);
 
             // init
+            // zzz 初始化
             if (!composer.init(cursor)) {
                 final String errorReason = composer.getErrorReason();
                 Log.e(TAG, "initialization of vCard composer failed: " + errorReason);
@@ -419,12 +434,14 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             Log.i(TAG, "composer.getCount() - " + total);
 
             StringBuilder sb = new StringBuilder();
+            // zzz 输出成String
             while (!composer.isAfterLast()) {
                 sb.append(composer.createOneEntry());
             }
             Log.i(TAG, sb.toString());
             File tempFile = null;
             try {
+                // zzz 将封装好的String保存到临时文件
                 tempFile = File.createTempFile("VCard-" + mContactData.getDisplayName(), ".vcf",
                         mContext.getExternalCacheDir());
                 FileOutputStream fos = new FileOutputStream(tempFile);
@@ -436,11 +453,13 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
 
             // send
+            // zzz 发送
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/x-vcard");
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempFile));
 
             // Launch chooser to share contact via
+            // zzz 弹出选择对话框，由用户选择发送方式
             final CharSequence chooseTitle = mContext.getText(R.string.share_via);
             final Intent chooseIntent = Intent.createChooser(i, chooseTitle);
 
@@ -479,9 +498,11 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         }
 
         /** zzz */
+        // zzz 添加到黑名单
         case R.id.menu_add_to_blacklist: {
             Log.d(TAG, "menu_add_to_blacklist");
 
+            // zzz 用于显示在黑名单的姓名
             final String name = mContactData.getDisplayName();
             // Log.i(TAG, mContactData.getContentValues().toString());
             // Log.i(TAG, mContactData.getContentValues().get(2).toString());
@@ -492,6 +513,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             // .getAsString("data1");
 
             // get phone number
+            // 获取号码
             Uri uri = mContactData.getLookupUri();
             String phone = null;
             long contactId;
@@ -523,6 +545,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
             final String phoneFinal = phone;
 
+            // zzz 弹出对话框要求用户确认
             new AlertDialog.Builder(mContext).setTitle(R.string.menu_add_to_blacklist)
                     .setMessage(mContext.getString(R.string.menu_add_to_blacklist_check, name))
                     .setIconAttribute(android.R.attr.alertDialogIcon)
@@ -530,6 +553,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             BlacklistDBHelper mDBHelper;
+                            // zzz 写入黑名单数据库
                             mDBHelper = new BlacklistDBHelper(mContext);
                             mDBHelper.addPeople(name, phoneFinal);
                             Toast.makeText(mContext, R.string.menu_add_to_blacklist, Toast.LENGTH_SHORT).show();
@@ -542,6 +566,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         case R.id.menu_add_to_whitelist: {
             Log.d(TAG, "menu_add_to_whitelist");
 
+            // zzz 用于显示在白名单的姓名
             final String name = mContactData.getDisplayName();
             // Log.i(TAG, mContactData.getContentValues().toString());
             //
@@ -553,6 +578,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             // .getAsString("data1");
 
             // get phone number
+            // 获取号码
             Uri uri = mContactData.getLookupUri();
             String phone = null;
             long contactId;
@@ -584,6 +610,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
             final String phoneFinal = phone;
 
+            // zzz 弹出对话框要求用户确认
             new AlertDialog.Builder(mContext).setTitle(R.string.menu_add_to_whitelist)
                     .setMessage(mContext.getString(R.string.menu_add_to_whitelist_check, name))
                     .setIconAttribute(android.R.attr.alertDialogIcon)
@@ -591,6 +618,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             WhiteListDBHelper mDBHelper;
+                            // zzz 写入白名单数据库
                             mDBHelper = new WhiteListDBHelper(mContext);
                             mDBHelper.addPeople(name, phoneFinal);
                             Toast.makeText(mContext, R.string.menu_add_to_whitelist, Toast.LENGTH_SHORT).show();
@@ -601,12 +629,14 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
         }
         /** zzz */
+        // zzz 文本分享(通讯录功能21)
         case R.id.menu_share_as_text: {
             Log.v(TAG, "R.id.menu_share_as_text");
             shareAsText();
             return true;
         }
         /** zzz */
+        // zzz 呼叫前编辑(通讯录功能26)
         case R.id.menu_edit_and_dial: {
             Log.v(TAG, "R.id.menu_edit_and_dial");
             Uri uri = mContactData.getLookupUri();
@@ -621,6 +651,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             // phone = c.getString(phoneIdx);
             contactId = c.getLong(idIdx);
 
+            // zzz 得到联系人的号码
             if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                 Cursor p = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         new String[] { CommonDataKinds.Phone.NUMBER }, CommonDataKinds.Phone.CONTACT_ID + " =? ",
@@ -631,6 +662,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                 p.close();
             }
             c.close();
+            // zzz 调起拨号盘，传入号码参数
             startActivity(new Intent(Intent.ACTION_DIAL, ContactsUtils.getCallUri(phone)));
         }
         }
@@ -639,16 +671,20 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
     /** zzz */
     // copied from qqq
+    // zzz 文本分享联系人信息
     private void shareAsText() {
         ArrayList<String> number_selected = new ArrayList<String>();
 
         Uri contactData2 = mLookupUri;
 
+        // zzz 查询得到cursor
         final Cursor c2 = mContext.getContentResolver().query(contactData2, null, null, null, null);
         if (c2.moveToFirst()) {
 
+            // zzz 获取id
             String id = c2.getString(c2.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
 
+            // zzz 姓名
             String name = c2.getString(c2.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
             if (name != null) {
                 number_selected.add("姓名： " + name);
@@ -656,6 +692,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
             Log.i(TAG, "id - " + id);
 
+            // zzz 邮箱
             Cursor emailCur = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[] { id }, null);
             while (emailCur.moveToNext()) {
@@ -671,6 +708,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
             emailCur.close();
 
+            // zzz 地址
             String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
             String[] addrWhereParams = new String[] { id,
                     ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
@@ -724,6 +762,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
             addrCur.close();
 
+            // zzz 即时消息
             String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
             String[] imWhereParams = new String[] { id, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE };
             Cursor imCur = mContext.getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, imWhere,
@@ -740,6 +779,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
             imCur.close();
 
+            // zzz 单位
             String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
             String[] orgWhereParams = new String[] { id,
                     ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE };
@@ -757,6 +797,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
             orgCur.close();
 
+            // zzz 电话
             String hasPhone = c2.getString(c2.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
             Log.i(TAG, "hasPhone - " + hasPhone);
@@ -787,6 +828,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
+                // zzz 弹出对话框选择要分享的项
                 builder.setMultiChoiceItems(number_a, null, new DialogInterface.OnMultiChoiceClickListener() {
 
                     @Override
@@ -822,6 +864,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                         /** zzz */
                         Log.i(TAG, sb_text.toString());
 
+                        // zzz 调起短信应用
                         Uri uri = Uri.parse("smsto:");
                         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
                         it.putExtra("sms_body", sb_text.toString());
@@ -985,17 +1028,27 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     }
 
     /** baoge */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 联系人设定独特的信息铃声(通讯录功能29)
+     * 
+     * */
     private void doPickMsgRing() {
 
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         // // Allow user to pick 'Default'
         // intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
         // Show only ringtones
+        // zzz 显示通知铃声的列表
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         // Don't show 'Silent'
+        // zzz 不显示静音选项
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
 
         /** zzz */
+        // zzz 在弹出的铃声列表对话框中，将系统信息铃声设为默认选中的状态
         Uri selectedRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
                 RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, selectedRingtoneUri);
@@ -1019,6 +1072,13 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         startActivityForResult(intent, REQUEST_CODE_PICK_MSGRING);
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 原本采用SOURCE_ID列保存铃声的方法，已经废弃
+     * 
+     * */
     private void msgUri() {
         Uri msgringUri;
         Log.i("mCustomMsgRing", "" + mCustomMsgRing);
@@ -1050,6 +1110,13 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         // return msg;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 原本采用SOURCE_ID列保存铃声的方法，已经废弃
+     * 
+     * */
     private String fetchMsgUri() {
         String msg = null;
         String msg0 = "" + mLookupUri;
@@ -1083,9 +1150,12 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             break;
         }
         case REQUEST_CODE_PICK_MSGRING: {
+            // zzz 选择信息铃声后返回
             // msgUri();
+            // zzz 获取选择的信息铃声的URI
             Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);// fetchMsgUri()
             Log.i("RingtoneManager", pickedUri + ";");
+            // zzz 处理
             handleMsgRingPicked(pickedUri);
             // String msg = "" + mLookupUri;
             // String shortmsg[] = msg.split("/");
@@ -1112,8 +1182,16 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
     /** baoge */
     // modified by zzz
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 处理选择的信息铃声
+     * 
+     * */
     private void handleMsgRingPicked(Uri pickedUri) {
         if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
+            // zzz 如果选择为空或者选择的与系统信息铃声相同，则不必保存
             mCustomMsgRing = null;
         } else {
             mCustomMsgRing = pickedUri.toString();
@@ -1132,6 +1210,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
 
         final long contactId = ContentUris.parseId(mLookupUri);
 
+        // zzz 保存铃声地址到数据库
         MsgRingDBHelper dbhelper = new MsgRingDBHelper(mContext, 1);
         dbhelper.setRing(String.valueOf(contactId), mCustomMsgRing);
     }

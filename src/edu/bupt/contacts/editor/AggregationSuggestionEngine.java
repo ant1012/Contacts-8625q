@@ -45,6 +45,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Runs asynchronous queries to obtain aggregation suggestions in the as-you-type mode.
  */
 public class AggregationSuggestionEngine extends HandlerThread {

@@ -45,6 +45,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A view for selecting a month / year / day based on a calendar like layout.
  *
  * <p>See the <a href="{@docRoot}resources/tutorials/views/hello-datepicker.html">Date Picker
