@@ -36,6 +36,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Base view that provides common code for the editor interaction for a specific
  * RawContact represented through an {@link EntityDelta}.
  * <p>

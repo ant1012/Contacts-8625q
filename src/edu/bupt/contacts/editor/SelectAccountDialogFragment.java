@@ -29,6 +29,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Shows a dialog asking the user which account to chose.
  *
  * The result is passed to {@code targetFragment} passed to {@link #show}.

@@ -76,6 +76,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人应用的群组页面的Fragment
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
 public class GroupEditorFragment extends Fragment implements SelectAccountDialogFragment.Listener {
     private static final String TAG = "GroupEditorFragment";
 
@@ -346,6 +356,13 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         }
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 选择账户，已废弃
+     * 
+     * */
     private void selectAccountAndCreateGroup() {
         final List<AccountWithDataSet> accounts = AccountTypeManager.getInstance(mContext)
                 .getAccounts(true /* writeable */);
@@ -375,6 +392,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         // R.string.dialog_new_group_account,
         // AccountListFilter.ACCOUNTS_GROUP_WRITABLE,
         // null);
+        // zzz 默认的ACCOUNTS_GROUP_WRITABLE没有PHONE账户，为了使本地账户可用，改为ALL_ACCOUNTS
         SelectAccountDialogFragment.show(getFragmentManager(), this, R.string.dialog_new_group_account,
                 AccountListFilter.ALL_ACCOUNTS, null);
     }
@@ -548,6 +566,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
 
         /** zzz */
         Log.v(TAG, "onDoneClicked");
+        // zzz 如果没有选择联系人的输入框中有文字，但是没有匹配为联系人，则不能点击保存按钮，需要给出没有匹配的提示
         if (!mAutoCompleteTextView.getText().toString().equals("")) {
             Log.v(TAG, "mAutoCompleteTextView - " + mAutoCompleteTextView.getText().toString());
             Toast.makeText(mContext, R.string.group_select_no_contact, Toast.LENGTH_SHORT).show();
@@ -574,6 +593,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
 
             /** zzz */
         case R.id.menu_add:
+            // zzz 在当前群组添加联系人
             Log.v(TAG, "R.id.menu_add");
             Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
             // intent.putExtra("create_from_group", true);

@@ -58,6 +58,14 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Base class for editors that handles labels and values. Uses
  * {@link ValuesDelta} to read any existing {@link Entity} values, and to
  * correctly write any changes values.

@@ -53,6 +53,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人应用的群组页面的Fragment
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Fragment to display the list of groups.
  */
 public class GroupBrowseListFragment extends Fragment implements OnFocusChangeListener, OnTouchListener {
@@ -129,9 +139,11 @@ public class GroupBrowseListFragment extends Fragment implements OnFocusChangeLi
                 GroupListItemViewCache groupListItem = (GroupListItemViewCache) view.getTag();
 
                 /** zzz */
+                // zzz 如果选中了白名单显示到群组的选项，最后一项是白名单的入口(通讯录功能9)
                 SharedPreferences sp = mContext.getSharedPreferences("blacklist_pref", 0);
                 if (sp.getBoolean("show_as_group", false) && position == mListView.getCount() - 1) {
                     Log.d(TAG, "white list entry clicked");
+                    // zzz 点击最后一项时进入白名单
                     Intent i = new Intent(mContext, BlacklistMainActivity.class);
                     i.putExtra("fragment_display_whitelist", true);
                     startActivity(i);
@@ -200,6 +212,7 @@ public class GroupBrowseListFragment extends Fragment implements OnFocusChangeLi
     }
 
     /** zzz */
+    // zzz 解决白名单人数不改变的bug，界面onResume时重新加载Adapter
     @Override
     public void onResume() {
         Log.d(TAG, "onResume");

@@ -45,6 +45,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Shows a list of all available accounts, letting the user select under which account to view
  * contacts.
  */

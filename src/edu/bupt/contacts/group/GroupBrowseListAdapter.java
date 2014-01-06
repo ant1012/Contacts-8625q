@@ -39,6 +39,16 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人应用的群组页面的列表Adapter
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Adapter to populate the list of groups.
  */
 public class GroupBrowseListAdapter extends BaseAdapter {
@@ -110,7 +120,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         /** zzz */
-
+        // zzz 如果白名单显示到群组，群组列表就增加了一项(通讯录功能9)
         SharedPreferences sp = mContext.getSharedPreferences("blacklist_pref", 0);
         if (sp.getBoolean("show_as_group", false)) {
             return mCursor == null ? 1 : mCursor.getCount() + 1;
@@ -184,6 +194,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
 
             /** zzz */
+            // zzz 如果白名单显示到群组，最后一项是白名单的入口(通讯录功能9)
             if (position == getCount() - 1) {
                 Log.v(TAG, "position == getCount() - 1");
                 return new GroupListItem("accountName", "accountType", "dataSet", -1,
@@ -264,6 +275,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
 
         // Bind the group data
         /** zzz */
+        // zzz 如果白名单显示到群组，最后一项是白名单的入口(通讯录功能9)
         if (entry.getGroupId() == -1) { // white list
             viewCache.accountType.setText(R.string.white_list);
             viewCache.accountName.setText("");

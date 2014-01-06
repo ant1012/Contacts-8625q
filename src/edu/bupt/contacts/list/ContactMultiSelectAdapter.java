@@ -22,6 +22,14 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人多选界面列表项的Adapter
+ * 
+ * */
+
 public class ContactMultiSelectAdapter extends BaseAdapter {
 
     private static final String TAG = "ContactMultiSelectAdapter";

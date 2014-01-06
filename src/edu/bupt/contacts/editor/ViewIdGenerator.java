@@ -25,6 +25,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A class that provides unique view ids for {@link ContentEditorView}, {@link KindSectionView},
  * {@link LabeledEditorView} and {@link EditView} on {@link EditContactActivity}.
  * It is used to assign a unique but consistent id to each view across {@link EditContactActivity}'s

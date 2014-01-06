@@ -5,6 +5,14 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 用于判断是否弹出ip拨号的对话框
+ * 
+ * */
+
 public class IPCall {
 
     protected SharedPreferences sp;

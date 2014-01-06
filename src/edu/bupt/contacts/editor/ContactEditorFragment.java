@@ -94,6 +94,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人新建和修改页面的Fragment
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
 public class ContactEditorFragment extends Fragment implements SplitContactConfirmationDialogFragment.Listener,
         AggregationSuggestionEngine.Listener, AggregationSuggestionView.Listener, RawContactReadOnlyEditorView.Listener {
 
@@ -384,6 +394,7 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
 
                 /** zzz */
                 if (getActivity().getIntent().hasExtra("group_id")) {
+                    // zzz 如果在群组中新建联系人，账户一定是PHONE
                     // for contact created from group editor
                     Log.v("zzz", "createContact for contact created from group editor");
                     createContact(new AccountWithDataSet("PHONE", "com.android.localphone", null));
@@ -544,6 +555,13 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
         }
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 选择账户，已废弃
+     * 
+     * */
     private void selectAccountAndCreateContact() {
         // If this is a local profile, then skip the logic about showing the
         // accounts changed
@@ -766,13 +784,16 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
             mContent.addView(editor);
 
             /** zzz */
+            // zzz 从群组中创建的联系人，需要预先勾选相应的群组
             // for contact created from group editor
             Log.v("zzz", "addToGroupFromIntent for contact created from group editor");
             if (getActivity().getIntent().hasExtra("group_id")) {
                 long groupid = getActivity().getIntent().getLongExtra("group_id", 0);
                 String number = getActivity().getIntent().getStringExtra("number_to_add");
+                // zzz 将相应群组设为选中
                 EntityDelta state = addToGroupFromIntent(type, entity, groupid);
                 if (number != null && !number.equals("")) { // number pre added
+                    // zzz 号码
                     state = addNumberFromIntent(type, entity, number);
                 }
                 // use out state instead of the 'final' entity
@@ -846,6 +867,13 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 将新建的联系人预先选定群组
+     * 
+     * */
     private EntityDelta addToGroupFromIntent(AccountType type, EntityDelta state, long groupid) {
         Log.v("RawContactEditorView", "addToGroupFromIntent");
 
@@ -862,6 +890,13 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
     }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 将新建的联系人预先输入电话号码
+     * 
+     * */
     private EntityDelta addNumberFromIntent(AccountType type, EntityDelta state, String number) {
         Log.v("RawContactEditorView", "addToGroupFromIntent");
 

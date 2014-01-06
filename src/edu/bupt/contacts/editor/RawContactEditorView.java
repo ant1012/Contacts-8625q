@@ -51,6 +51,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Custom view that provides all the editor interaction for a specific
  * {@link Contacts} represented through an {@link EntityDelta}. Callers can
  * reuse this view and quickly rebuild its contents through

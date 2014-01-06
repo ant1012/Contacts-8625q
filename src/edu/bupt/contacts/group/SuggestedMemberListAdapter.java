@@ -48,6 +48,16 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 群组编辑时的联系人补全列表Adapter
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * This adapter provides suggested contacts that can be added to a group for an
  * {@link AutoCompleteTextView} within the group editor.
  */

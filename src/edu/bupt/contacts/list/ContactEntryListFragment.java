@@ -62,6 +62,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Common base class for various contact-related list fragments.
  */
 public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter>
@@ -938,6 +946,7 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
     };
 
     /** zzz  */
+    // zzz 长按响应，被DefaultContactBrowseListFragment继承后在联系人列表中长按调起多选打包的界面
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         hideSoftKeyboard();
