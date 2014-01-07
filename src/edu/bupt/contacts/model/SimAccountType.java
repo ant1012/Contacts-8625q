@@ -31,6 +31,14 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 参照FallbackAccountType修改编写的SIM卡帐户类型
+ * 
+ * */
+
 public class SimAccountType extends BaseAccountType {
     private static final String TAG = "SimAccountType";
 
@@ -45,6 +53,8 @@ public class SimAccountType extends BaseAccountType {
         this.syncAdapterPackageName = resPackageName;
 
         try {
+            // zzz SIM联系人不支持很多信息，但是StructuredName和PhoneticName如果去掉会引起一连串的报错
+            // 如果在SIM卡账户新建时输入了不支持的项，可能会引起com.android.phone崩溃
             addDataKindStructuredName(context);
             addDataKindDisplayName(context);
             addDataKindPhoneticName(context);

@@ -30,6 +30,14 @@ import android.util.Log;
 import java.util.ArrayList;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A singleton that keeps track of the last known provider status.
  *
  * All methods must be called on the UI thread unless noted otherwise.

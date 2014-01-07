@@ -52,6 +52,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 帐户类型的基类，被PhoneAccountType和SimAccountType继承
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
 public abstract class BaseAccountType extends AccountType {
     private static final String TAG = "BaseAccountType";
 

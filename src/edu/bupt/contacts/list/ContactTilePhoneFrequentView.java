@@ -25,6 +25,14 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A dark version of the {@link ContactTileView} that is used in Dialtacts
  * for frequently called contacts. Slightly different behavior from superclass...
  * when you tap it, you want to call the frequently-called number for the

@@ -67,6 +67,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 帐户类型管理类
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Singleton holder for all parsed {@link AccountType} available on the system,
  * typically filled through {@link PackageManager} queries.
  */
@@ -189,6 +199,7 @@ class AccountTypeManagerImpl extends AccountTypeManager implements OnAccountsUpd
     private AccountType mFallbackAccountType;
 
     /** zzz */
+    // zzz 新增了两种帐户类型
     private AccountType mPhoneAccountType;
     private AccountType mSimAccountType;
 
@@ -289,6 +300,7 @@ class AccountTypeManagerImpl extends AccountTypeManager implements OnAccountsUpd
         mFallbackAccountType = new FallbackAccountType(context);
 
         /** zzz */
+        // zzz 新增了两种帐户类型
         mPhoneAccountType = new PhoneAccountType(context);
         mSimAccountType = new SimAccountType(context);
 
@@ -591,6 +603,13 @@ class AccountTypeManagerImpl extends AccountTypeManager implements OnAccountsUpd
     // }
 
     /** zzz */
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 此返回已知的帐户类型，即帐户列表中的本地账户和SIM卡账户，其他帐户不被允许使用
+     * 
+     * */
     @Override
     public List<AccountWithDataSet> getAccounts(boolean contactWritableOnly) {
         ensureAccountsLoaded();
@@ -660,15 +679,22 @@ class AccountTypeManagerImpl extends AccountTypeManager implements OnAccountsUpd
     // }
     // }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 获取帐户类型，即本地账户或SIM卡账户
+     * 
+     * */
     @Override
     public AccountType getAccountType(AccountTypeWithDataSet accountTypeWithDataSet) {
         ensureAccountsLoaded();
         if (accountTypeWithDataSet.accountType == null) {
             return mFallbackAccountType;
         }
-        if (accountTypeWithDataSet.accountType.equals("com.android.localphone")) {
+        if (accountTypeWithDataSet.accountType.equals("com.android.localphone")) { // zzz 本地账户
             return mPhoneAccountType;
-        } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) {
+        } else if (accountTypeWithDataSet.accountType.equals("com.android.sim")) { // zzz SIM卡账户
             return mSimAccountType;
         }
         return mFallbackAccountType;

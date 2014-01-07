@@ -21,6 +21,14 @@ import edu.bupt.contacts.test.NeededForTesting;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 参照FallbackAccountType修改编写的本地帐户类型
+ * 
+ * */
+
 public class PhoneAccountType extends BaseAccountType {
     private static final String TAG = "PhoneAccountType";
 
@@ -48,6 +56,7 @@ public class PhoneAccountType extends BaseAccountType {
             addDataKindNote(context);
             addDataKindWebsite(context);
             addDataKindSipAddress(context);
+            // zzz 比FallbackAccountType增加了群组项
             addDataKindGroupMembership(context);
 
             mIsInitialized = true;

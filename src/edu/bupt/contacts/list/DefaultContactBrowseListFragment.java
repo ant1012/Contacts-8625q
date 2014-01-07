@@ -37,6 +37,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人模块入口Activity的联系人列表项界面
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，有修改
+ * 
+ * */
+
+/**
  * Fragment containing a contact list used for browsing (as compared to
  * picking a contact with one of the PICK intents).
  */
@@ -84,6 +94,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
     }
 
     /** zzz */
+    // zzz 长按调起多选封装联系人的界面
     @Override
     protected void onItemLongClick(int position, long id) {
         Log.v(TAG, "onItemLongClick");

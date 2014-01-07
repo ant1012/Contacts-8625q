@@ -26,6 +26,16 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 封装accountType和dataSet两个String参数
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
 
 /**
  * Encapsulates an "account type" string and a "data set" string.

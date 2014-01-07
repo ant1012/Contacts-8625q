@@ -72,6 +72,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Shows a list of all available {@link Groups} available, letting the user
  * select which ones they want to be visible.
  */

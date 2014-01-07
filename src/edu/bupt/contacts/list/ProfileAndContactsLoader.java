@@ -28,6 +28,14 @@ import android.provider.ContactsContract.Profile;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A loader for use in the default contact list, which will also query for the user's profile
  * if configured to do so.
  */

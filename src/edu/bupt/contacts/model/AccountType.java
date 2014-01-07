@@ -40,6 +40,16 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 帐户类型
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Internal structure that represents constraints and styles for a specific data
  * source, such as the various data types they support, including details on how
  * those types should be rendered and edited.

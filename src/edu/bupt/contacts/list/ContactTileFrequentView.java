@@ -21,6 +21,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * A {@link ContactTileView} that is used for most frequently contacted in the People app
  */
 public class ContactTileFrequentView extends ContactTileView {

@@ -38,6 +38,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Parses a Contacts intent, extracting all relevant parts and packaging them
  * as a {@link ContactsRequest} object.
  */

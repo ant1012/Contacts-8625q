@@ -36,6 +36,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
     private ArrayList<Map<String, String>> list;
     private static Context context;
     private LayoutInflater inflater = null;
+    // zzz 选中标记
     private static HashMap<Integer, Boolean> isSelected;
     public ViewHolder holder = null;
 
@@ -73,6 +74,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Log.v(TAG, "getView");
         if (convertView == null) {
+            // zzz 用ViewHolder提高加载效率
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.contact_multi_selection_adapter, null);
             holder.textViewName = (TextView) convertView.findViewById(R.id.multiselect_tv_name);
@@ -82,6 +84,7 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
             convertView.setTag(holder);
 
         } else {
+            // zzz 提高效率的地方在这里，不必每次getView都重新findViewById
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -90,11 +93,19 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         holder.checkbox.setChecked(isSelected.get(position));
 
         String id = list.get(position).get("id");
+        // zzz 获取联系人头像
         holder.imageView.setImageBitmap(loadContactPhoto(context.getContentResolver(), Long.valueOf(id)));
 
         return convertView;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 用ViewHolder提高加载效率
+     * 
+     * */
     public class ViewHolder {
         TextView textViewName;
         TextView textViewNumber;
@@ -102,6 +113,13 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         ImageView imageView;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 获取联系人头像
+     * 
+     * */
     public static Bitmap loadContactPhoto(ContentResolver cr, long id) {
         Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
@@ -115,6 +133,13 @@ public class ContactMultiSelectAdapter extends BaseAdapter {
         return isSelected;
     }
 
+    /**
+     * 北邮ANT实验室
+     * zzz
+     * 
+     * 处理选中状态，供list调用
+     * 
+     * */
     public static void setIsSelected(HashMap<Integer, Boolean> isSelected) {
         ContactMultiSelectAdapter.isSelected = isSelected;
     }

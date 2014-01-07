@@ -20,6 +20,14 @@ import android.content.Intent;
 import android.net.Uri;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Action callbacks that can be sent by a phone number picker.
  */
 public interface OnPhoneNumberPickerActionListener  {

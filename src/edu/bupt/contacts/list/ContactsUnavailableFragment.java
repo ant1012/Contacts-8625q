@@ -31,6 +31,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Fragment shown when contacts are unavailable. It contains provider status
  * messaging as well as instructions for the user.
  */

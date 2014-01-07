@@ -24,6 +24,14 @@ import android.view.View;
 import android.widget.ImageButton;
 
 /**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 此文件取自codeaurora提供的适用于高通8625Q的android 4.1.2源码，未修改
+ * 
+ * */
+
+/**
  * Displays the contact's picture overlayed with their name
  * in a perfect square. It also has an additional touch target for a secondary action.
  */
