@@ -52,7 +52,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_category_test" >
         <CheckBoxPreference
-            android:defaultValue="0"
+            android:defaultValue="false"
             android:dialogTitle="@string/preference_roaming"
             android:key="RoamingTestPreference"
             android:title="@string/preference_roaming" />
@@ -60,6 +60,12 @@
 <!--             android:key="ClearCacheTestPreference" -->
 <!--             android:summary="@string/preference_clear_cache" -->
 <!--             android:title="@string/preference_clear_cache" /> -->
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dialogTitle="@string/preference_roaming_gsm"
+            android:key="RoamingGSMTestPreference"
+            android:dependency="RoamingTestPreference"
+            android:title="@string/preference_roaming_gsm" />
     </PreferenceCategory>
 
 </PreferenceScreen>

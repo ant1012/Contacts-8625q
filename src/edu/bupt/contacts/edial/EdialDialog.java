@@ -238,13 +238,16 @@ public class EdialDialog extends HoloDialog {
                     
                     
                 case R.id.radioButton_133:
-                   // stringTitle.replace(0, stringTitle.length(),
-                   //         context.getString(R.string.esurfing_dial_call_title_china));
-                   // stringPre.replace(0, stringPre.length(), "**133*86");
-                    
-                    stringTitle.replace(0, stringTitle.length(), simcv.getAsString("name") + " +" + simcv.getAsString("code"));
-                    stringPre.replace(0, stringPre.length(), "+" + simcv.getAsString("code"));
-                	
+                    stringTitle.replace(0, stringTitle.length(),
+                            context.getString(R.string.esurfing_dial_call_title_china));
+                    stringPre.replace(0, stringPre.length(), "**133*86");
+
+                    // stringTitle.replace(0, stringTitle.length(),
+                    // simcv.getAsString("name") + " +" +
+                    // simcv.getAsString("code"));
+                    // stringPre.replace(0, stringPre.length(), "+" +
+                    // simcv.getAsString("code"));
+
                 	TextViewSuffix.setText(R.string.esurfing_dial_suffix_hash);
                     callBackChinaButton.setChecked(true);
                     // callNumber = "**133*86" + sendNumber + "%23";
@@ -620,6 +623,8 @@ public class EdialDialog extends HoloDialog {
      * 方法描述： 判断是否支持**133回拨功能 ddd
      * */
     private boolean is133Enabled() {
+        Log.w(TAG, "is133Enabled()");
+
         CountryCodeDBHelper mdbHelper = new CountryCodeDBHelper(this.getContext());
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         MSimTelephonyManager mtm = (MSimTelephonyManager) context.getSystemService(context.MSIM_TELEPHONY_SERVICE);
@@ -631,19 +636,25 @@ public class EdialDialog extends HoloDialog {
 //        }
 
         if (!(mtm.isNetworkRoaming(0) || sp.getBoolean("RoamingTestPreference", false))) {
+            Log.w(TAG, "not roaming");
             return false;
-        }
-        switch (MSimTelephonyManager.getNetworkType(0)) {
-        case TelephonyManager.NETWORK_TYPE_CDMA:
-        case TelephonyManager.NETWORK_TYPE_1xRTT:
-        case TelephonyManager.NETWORK_TYPE_EVDO_0:
-        case TelephonyManager.NETWORK_TYPE_EVDO_A:
-        case TelephonyManager.NETWORK_TYPE_EVDO_B:
-            return false;
-        default:
-            String countryIso = tm.getNetworkCountryIso();
-            return mdbHelper.queryIs133Enabled(countryIso);
-        }
+        } else if (sp.getBoolean("RoamingGSMTestPreference", false)) {
+            Log.w(TAG, "test **133");
+            return true;
+        } else {
+            Log.w(TAG, "else");
 
+            switch (MSimTelephonyManager.getNetworkType(0)) {
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                return false;
+            default:
+                String countryIso = tm.getNetworkCountryIso();
+                return mdbHelper.queryIs133Enabled(countryIso);
+            }
+        }
     }
 }

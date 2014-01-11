@@ -13,6 +13,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 
+/**
+ * 北邮ANT实验室
+ * zzz
+ * 
+ * 联系人信息铃声设置保存，数据库的Helper类
+ * 
+ * */
+
 /** zzz */
 public class MsgRingDBHelper extends SQLiteOpenHelper {
 
