@@ -673,7 +673,9 @@
     <string name="preference_roaming">漫游测试</string>
     <string name="preference_roaming_gsm">G网漫游**133测试</string>
     <string name="preference_disp_locate">显示来去电归属地</string>
-    <string name="preference_time_setting">时间显示方案</string>
+<!--     ddd 默认显示时间改成时间显示方案 -->
+<!--     <string name="preference_time_setting">默认显示时间</string> -->
+     <string name="preference_time_setting">时间显示方案</string>
     <string name="preference_clear_cache">清除联系人列表缓存</string>
     <string name="cardp_mobile">移动</string>
     <string name="cardp_telecom">电信</string>
@@ -711,6 +713,9 @@
     <string name="search_failed">没有找到匹配的</string>
     <string name="searching">正在查找....</string>
     <string name="number_locate_setting">号码归属地设置</string>
+<!--     <string name="cdma_ip_setting">CDMA IP电话设置</string> -->
+<!--     <string name="gsm_ip_setting">GSM IP电话设置</string> -->
+<!-- ddd 修改 -->
     <string name="cdma_ip_setting">IP电话设置</string>
     <string name="gsm_ip_setting">IP电话设置</string>
     <string name="default_ip_setting">编辑IP电话前缀</string>
