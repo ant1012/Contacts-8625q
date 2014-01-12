@@ -18,8 +18,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="launcherDialer" msgid="8636288196618486553">"拨号"</string>
-    <string name="people" msgid="1048457247435785074">"联系人"</string>
-    <string name="contactsList" msgid="8661624236494819731">"联系人"</string>
+    <string name="people" msgid="1048457247435785074">"通讯录"</string>
+    <string name="contactsList" msgid="8661624236494819731">"通讯录"</string>
     <string name="shortcutContact" msgid="749243779392912958">"联系人"</string>
     <string name="shortcutDialContact" msgid="746622101599186779">"直接拨打电话"</string>
     <string name="shortcutMessageContact" msgid="2460337253595976198">"直接发送短信"</string>
