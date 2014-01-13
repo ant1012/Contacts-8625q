@@ -378,9 +378,9 @@ public class ContactSaveService extends IntentService {
         String account_name = values.getAsString(RawContacts.ACCOUNT_NAME);
         Log.i(TAG, "account_name - " + account_name);
         // zzz 获取contact_id
-        long contact_id = values.getAsLong(RawContacts.CONTACT_ID);
+        long contact_id = values.getAsLong(RawContacts._ID);
         Log.i(TAG, state.toString());
-        Log.i(TAG, "_id - " + contact_id);
+        Log.i(TAG, "contact_id - " + contact_id);
 
         // zzz 根据contact_id查询修改前的姓名和号码
         Cursor p = getContentResolver().query(
@@ -390,6 +390,7 @@ public class ContactSaveService extends IntentService {
                 CommonDataKinds.Phone.CONTACT_ID + " =? ", //
                 new String[] { String.valueOf(contact_id) }, //
                 null);
+        Log.v(TAG, "p.getCount() - " + p.getCount());
         if (p.moveToNext()) {
             try {
                 ori_name = p.getString(0);
@@ -581,7 +582,7 @@ public class ContactSaveService extends IntentService {
         // zzz 根据URI查询新保存的联系人信息
         Cursor c = getContentResolver().query(lookupUri, null, null, null, null);
         int nameIdx = c.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
-        int idIdx = c.getColumnIndexOrThrow(Phone.CONTACT_ID);
+        int idIdx = c.getColumnIndexOrThrow(Phone._ID);
         int phoneIdx = 0;
 
         c.moveToNext();
