@@ -79,7 +79,28 @@ public class SimAccountType extends BaseAccountType {
 
         kind.fieldList = Lists.newArrayList();
         kind.fieldList.add(new EditField(StructuredName.DISPLAY_NAME,
-                R.string.full_name, FLAGS_PERSON_NAME).setShortForm(true));
+                R.string.full_name, FLAGS_PERSON_NAME).setShortForm(false)); // zzz 这里需要false参数禁止姓名分成姓、名等几部分
+
+        return kind;
+    }
+
+    @Override
+    protected DataKind addDataKindPhoneticName(Context context) throws DefinitionException {
+        DataKind kind = addKind(new DataKind(DataKind.PSEUDO_MIME_TYPE_PHONETIC_NAME,
+                R.string.name_phonetic, -1, true, R.layout.phonetic_name_editor_view));
+        kind.actionHeader = new SimpleInflater(R.string.nameLabelsGroup);
+        kind.actionBody = new SimpleInflater(Nickname.NAME);
+        kind.typeOverallMax = 0;
+
+        kind.fieldList = Lists.newArrayList();
+//        kind.fieldList.add(new EditField(DataKind.PSEUDO_COLUMN_PHONETIC_NAME,
+//                R.string.name_phonetic, FLAGS_PHONETIC).setShortForm(true));
+//        kind.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
+//                R.string.name_phonetic_family, FLAGS_PHONETIC).setLongForm(true));
+//        kind.fieldList.add(new EditField(StructuredName.PHONETIC_MIDDLE_NAME,
+//                R.string.name_phonetic_middle, FLAGS_PHONETIC).setLongForm(true));
+//        kind.fieldList.add(new EditField(StructuredName.PHONETIC_GIVEN_NAME,
+//                R.string.name_phonetic_given, FLAGS_PHONETIC).setLongForm(true));
 
         return kind;
     }
