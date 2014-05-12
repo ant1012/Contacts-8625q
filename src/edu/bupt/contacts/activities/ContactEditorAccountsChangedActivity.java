@@ -99,7 +99,8 @@ public class ContactEditorAccountsChangedActivity extends Activity {
         if (numAccounts >= 2) {
             // When the user has 2+ writable accounts, show a list of accounts so the user can pick
             // which account to create a contact in.
-            setContentView(R.layout.contact_editor_accounts_changed_activity_with_picker);
+
+        setContentView(R.layout.contact_editor_accounts_changed_activity_with_picker);
 
             final TextView textView = (TextView) findViewById(R.id.text);
             textView.setText(getString(R.string.contact_editor_prompt_multiple_accounts));
@@ -119,7 +120,8 @@ public class ContactEditorAccountsChangedActivity extends Activity {
             // If the user has 1 writable account we will just show the user a message with 2
             // possible action buttons.
             setContentView(R.layout.contact_editor_accounts_changed_activity_with_text);
-
+            //DDD 
+            Log.v(TAG,"setContentView(R.layout.contact_editor_accounts_changed_activity_with_text)--1");
             final TextView textView = (TextView) findViewById(R.id.text);
             final Button leftButton = (Button) findViewById(R.id.left_button);
             final Button rightButton = (Button) findViewById(R.id.right_button);
@@ -146,7 +148,8 @@ public class ContactEditorAccountsChangedActivity extends Activity {
             // If the user has 0 writable accounts, we will just show the user a message with 2
             // possible action buttons.
             setContentView(R.layout.contact_editor_accounts_changed_activity_with_text);
-
+            //DDD
+            Log.v(TAG,"setContentView(R.layout.contact_editor_accounts_changed_activity_with_text)--2");
             final TextView textView = (TextView) findViewById(R.id.text);
             final Button leftButton = (Button) findViewById(R.id.left_button);
             final Button rightButton = (Button) findViewById(R.id.right_button);

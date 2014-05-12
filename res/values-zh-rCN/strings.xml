@@ -663,6 +663,10 @@
     <string name="preference_tab_gsm">卡二设置</string>
     <string name="preference_category_edial">翼拨号设置</string>
     <string name="preference_category_test">漫游测试</string>
+<!--     ddd联系人去重 -->
+	<string name="preference_category_contact">联系人设置</string>
+    <string name="preference_category_contact_removal">联系人去重</string>
+    <string name="smart_removal">智能合并</string>
     <string name="preference_category_ipcall">IP拨号设置</string>
     <string name="preference_category_ipcall_else">其他</string>
     <string name="preference_category_disp_locate">归属地设置</string>

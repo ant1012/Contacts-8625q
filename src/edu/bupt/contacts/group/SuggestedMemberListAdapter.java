@@ -209,16 +209,21 @@ public class SuggestedMemberListAdapter extends ArrayAdapter<SuggestedMember> {
                 accountClause += " AND " + RawContacts.DATA_SET + "=?";
                 args = new String[] { mAccountName, mAccountType, mDataSet, searchQuery, searchQuery };
             }
-
-            Cursor cursor = mContentResolver.query(RawContacts.CONTENT_URI, PROJECTION_FILTERED_MEMBERS, accountClause
+//ddd  修复bug：
+            accountClause += " AND " + RawContacts.DELETED + "=0";
+//ddd    end            
+            Cursor cursor = mContentResolver.query(RawContacts.CONTENT_URI, PROJECTION_FILTERED_MEMBERS,accountClause
                     + " AND (" + RawContacts.DISPLAY_NAME_PRIMARY + " LIKE ? OR "
                     + RawContacts.DISPLAY_NAME_ALTERNATIVE + " LIKE ? )", args, RawContacts.DISPLAY_NAME_PRIMARY
                     + " COLLATE LOCALIZED ASC");
-
+            
             if (cursor == null) {
                 return results;
+              
             }
-
+            Log.v("dengjie cursor", "cursor - " + accountClause
+                    + " AND (" + RawContacts.DISPLAY_NAME_PRIMARY + " LIKE ? OR "
+                    + RawContacts.DISPLAY_NAME_ALTERNATIVE + " LIKE ? )");
             // Read back the results from the cursor and filter out existing
             // group members.
             // For valid suggestions, add them to the hash map of suggested

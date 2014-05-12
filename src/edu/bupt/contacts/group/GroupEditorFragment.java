@@ -54,6 +54,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Intents;
+import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -233,7 +234,9 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        
+      
+        
         if (savedInstanceState != null) {
             // Just restore from the saved state. No loading.
             onRestoreInstanceState(savedInstanceState);

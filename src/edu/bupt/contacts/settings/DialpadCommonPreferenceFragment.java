@@ -5,6 +5,7 @@ import java.util.TimeZone;
 import edu.bupt.contacts.R;
 import edu.bupt.contacts.activities.ContactMultiSelectionActivity;
 import edu.bupt.contacts.edial.HelpActivity;
+import edu.bupt.contacts.removal.*;
 import edu.bupt.contacts.observer.ContactsCacheDBHelper;
 import android.app.Activity;
 import android.content.Intent;
@@ -137,6 +138,10 @@ public class DialpadCommonPreferenceFragment extends PreferenceFragment {
             ContactsCacheDBHelper contactsCacheDBHelper = new ContactsCacheDBHelper(activity, 1);
             contactsCacheDBHelper.dropTable();
 
+        }else if (preference == findPreference("ContactPreference")){
+        	Log.v(TAG,"ContactPreference");
+        	startActivity(new Intent(activity,RemovalActivity.class));
+        	
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

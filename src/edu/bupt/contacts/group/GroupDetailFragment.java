@@ -489,6 +489,7 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
             // intent.putExtra("create_from_group", true);
             // intent.putExtra("group_account", value);
             intent.putExtra("group_id", mGroupId);
+            Log.v(TAG+"-ddd", intent.toString());
             startActivity(intent);
             break;
         }

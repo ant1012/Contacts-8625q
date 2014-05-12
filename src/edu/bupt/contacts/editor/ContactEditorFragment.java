@@ -293,11 +293,14 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
 
     private OnItemClickListener mAggregationSuggestionItemClickListener = new OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final AggregationSuggestionView suggestionView = (AggregationSuggestionView) view;
             suggestionView.handleItemClickEvent();
             mAggregationSuggestionPopup.dismiss();
             mAggregationSuggestionPopup = null;
+            Log.v("ddd hope","ddd");
+
         }
     };
 
@@ -797,8 +800,11 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
                     state = addNumberFromIntent(type, entity, number);
                 }
                 // use out state instead of the 'final' entity
+                //ddd 修改bug：在群组中新建联系人时，选择sim卡，崩溃
+                disableAccountSwitcher(editor);
                 editor.setState(state, type, mViewIdGenerator, isEditingUserProfile());
             } else {
+
                 editor.setState(entity, type, mViewIdGenerator, isEditingUserProfile());
             }
 
@@ -1021,6 +1027,8 @@ public class ContactEditorFragment extends Fragment implements SplitContactConfi
                         }
                     }
                 });
+                //ddd
+                
                 popup.show();
             }
         });

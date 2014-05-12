@@ -38,6 +38,7 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -344,7 +345,7 @@ public class RawContactEditorView extends BaseRawContactEditorView {
                 || mState == null) {
             return;
         }
-
+    
         boolean hasGroupMembership = false;
         ArrayList<ValuesDelta> entries = mState.getMimeEntries(GroupMembership.CONTENT_ITEM_TYPE);
         if (entries != null) {

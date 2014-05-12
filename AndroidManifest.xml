@@ -17,8 +17,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.bupt.contacts"
-    android:versionCode="15"
-    android:versionName="1.0a" >
+    android:versionCode="16"
+    android:versionName="1.1" >
 
     <uses-sdk android:minSdkVersion="16" />
 
@@ -980,6 +980,11 @@
         <activity
             android:name="edu.bupt.contacts.settings.DialpadSettingAcitivity"
             android:theme="@style/Theme.PageIndicatorDefaults" >
+        </activity>
+<!-- ddd -->
+        <activity
+            android:name="edu.bupt.contacts.removal.RemovalActivity"
+            android:theme="@android:style/Theme.Holo.Light" >
         </activity>
 
         <!-- zzz -->
